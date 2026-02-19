@@ -9,6 +9,8 @@ export interface ManageProposalCardProps {
   bidAmount: string;
   payType: string;
   availability: string;
+  attachmentUrl?: string | null;
+  receivedOn?: string | null;
   onClick?: () => void;
 }
 
@@ -27,6 +29,8 @@ const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
   bidAmount,
   payType,
   availability,
+  attachmentUrl,
+  receivedOn,
   onClick,
 }) => {
   return (
@@ -78,6 +82,31 @@ const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
           </span>{" "}
           {availability}
         </p>
+
+        {attachmentUrl && (
+          <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+            <span className="font-semibold text-gray-900 dark:text-gray-100">
+              Attachment:
+            </span>{" "}
+            <a
+              href={attachmentUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 dark:text-blue-400 underline"
+            >
+              View PDF
+            </a>
+          </p>
+        )}
+
+        {receivedOn && (
+          <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+            <span className="font-semibold text-gray-900 dark:text-gray-100">
+              Received On:
+            </span>{" "}
+            {receivedOn}
+          </p>
+        )}
       </div>
     </div>
   );

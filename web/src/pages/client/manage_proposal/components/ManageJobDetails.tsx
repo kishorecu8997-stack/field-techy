@@ -22,9 +22,7 @@ const ManageJobDetails = () => {
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
-  const [OfferJobStatus, setOfferJobStatus] = useState<
-    AssignmentStatus | undefined
-  >(undefined);
+  const [OfferJobStatus] = useState<AssignmentStatus | undefined>(undefined);
 
   const filter = () => {
     return sampleJobs.find((job) => {
@@ -52,7 +50,6 @@ const ManageJobDetails = () => {
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
               setActiveTab={setActiveTab}
-              setOfferJobStatus={setOfferJobStatus}
               OfferJobStatus={OfferJobStatus}
             />
             <JobTabSection

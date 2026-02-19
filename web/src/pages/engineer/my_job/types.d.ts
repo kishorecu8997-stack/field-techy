@@ -1,8 +1,10 @@
+import type React from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type {
-  AssignmentStatus,
   JobStatus as SearchJobStatus,
   SortOption,
   WorkingType as SearchWorkingType,
+  AssignmentStatus,
 } from "../search_result/types";
 export type { OfferedJobStatusType } from "../search_result/types";
 
@@ -102,7 +104,7 @@ export interface JobHeaderCardProps {
   client: string;
   duration: string;
   type?: WorkingType | string;
-  status?: JobStatus | string;
+  status?: JobStatus | AssignmentStatus | string;
   setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   isSendProposal?: boolean;
@@ -111,16 +113,16 @@ export interface JobHeaderCardProps {
   setOfferJobStatus?: Dispatch<
     SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>
   >;
-  OfferJobStatus?: OfferedJobStatusType | AssignmentStatus | undefined;
+  OfferJobStatus?: AssignmentStatus | OfferedJobStatusType | undefined;
   hideBreakDetails?: boolean;
   jobLocation?: string;
   numberOfVacancy?: number;
   numberOfApplicants?: number;
   hideDurationAndClient?: boolean;
-  assignmentId?: number;
   activeTab?: string;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
+  assignmentId?: number;
 }
 
 export interface JobTabsProps {

@@ -32,9 +32,10 @@ const ProposalForm = ({
   setSubmittedProposal,
   setSendProposal,
   setSelectedTab,
+  setHasApplied,
   reviewData,
   onConfirm,
-  isDummyNetworkEngineer = false,
+  // isDummyNetworkEngineer kept for future use
 }: {
   methods: UseFormReturn<ProposalFormData>;
   onSubmit: (data: ProposalFormData) => void;
@@ -47,6 +48,7 @@ const ProposalForm = ({
   >;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedTab?: React.Dispatch<React.SetStateAction<string>>;
+  setHasApplied?: React.Dispatch<React.SetStateAction<boolean>>;
   reviewData: ProposalFormData | null;
   onConfirm?: (data: ProposalFormData) => Promise<void>;
   isDummyNetworkEngineer?: boolean;
@@ -176,15 +178,19 @@ const ProposalForm = ({
                     const data = reviewData || methods.getValues();
                     await onConfirm(data);
                   }
+                  // Set hasApplied to show Proposal Info tab immediately
+                  if (setHasApplied) setHasApplied(true);
+                  // Close review modal and show success
                   setShowReview(false);
                   setShowSuccess(true);
+                  // Switch to tabs immediately and select Proposal Info tab
+                  if (setSendProposal) setSendProposal(false);
+                  if (setSelectedTab)
+                    setSelectedTab(JOB_TAB_LABELS.proposalInfo);
                   setTimeout(() => {
                     setShowSuccess(false);
                     const data = reviewData || methods.getValues();
                     if (setSubmittedProposal) setSubmittedProposal(data);
-                    if (setSendProposal) setSendProposal(false);
-                    if (isDummyNetworkEngineer && setSelectedTab)
-                      setSelectedTab(JOB_TAB_LABELS.proposalInfo);
                     methods.reset();
                   }, JOB_TAB_CONFIG.successDelayMs);
                 } catch (error) {
