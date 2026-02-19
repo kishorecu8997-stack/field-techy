@@ -74,7 +74,6 @@ const JobDetailsPage = () => {
   const { showPopup } = usePopupStore();
   const handleOpenGiveClientFeedback = () => {
     showPopup({
-      title: "Your Rating & Review",
       body: (
         <GiveFeedbackModal
           targetName={isDummyJob ? "Kraft and Co" : ""}

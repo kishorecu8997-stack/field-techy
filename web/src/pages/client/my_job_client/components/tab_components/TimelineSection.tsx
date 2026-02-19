@@ -468,7 +468,6 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
                   onClick={async (e) => {
                     e.stopPropagation();
                     await showPopup({
-                      title: "Your Rating & Review",
                       body: (
                         <GiveFeedbackModal
                           targetName={engineerTimelineData.name}
