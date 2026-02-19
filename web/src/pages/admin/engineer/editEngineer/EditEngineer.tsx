@@ -13,7 +13,6 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useAdminGetEngineerById } from "@/shared/apiServices/admin/adminOpenApiService"
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-import { usePhoneCountries } from "@/shared/apiServices/client/clientService";
 
 /**
  * EditEngineer component for editing an existing engineer.
@@ -25,7 +24,6 @@ export default function EditEngineer() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { showPopup } = usePopupStore();
-  const { data: phoneCountries = [] } = usePhoneCountries();
 
   // Fetch engineer data
   const { data: engineerData, isLoading } = useAdminGetEngineerById(Number(id), !!id);
@@ -58,29 +56,11 @@ const methods = useForm<EngineerFormData>({
 useEffect(() => {
   if (!engineerData) return;
 
-  const rawPhone =
-    engineerData.phoneNumber ??
-    "";
-
-  let formattedPhone = "";
-
-  if (rawPhone) {
-    const matchedCountry = phoneCountries.find((c) =>
-      rawPhone.startsWith(c.code)
-    );
-
-    if (matchedCountry) {
-      const nationalNumber = rawPhone.replace(matchedCountry.code, "");
-      formattedPhone = `${matchedCountry.code} ${nationalNumber}`;
-    } else {
-      formattedPhone = rawPhone;
-    }
-  }
 
   methods.reset({
     name: engineerData.name ?? "",
     email: engineerData.email ?? "",
-    phoneNumber: formattedPhone,
+    phoneNumber: engineerData.phoneNumber,
     profileImage: null,
     address: engineerData.address ?? "",
     skills: [],
@@ -99,7 +79,7 @@ useEffect(() => {
     governmentId: "",
     certificate: "",
   });
-}, [engineerData, phoneCountries, methods]);
+}, [engineerData, methods]);
 
   const { trigger, getValues, reset } = methods;
 

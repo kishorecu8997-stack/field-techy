@@ -30,16 +30,17 @@ export default function AllUsers() {
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
 
-  const filteredData = manageEngineer.filter((e) => {
-    const query = search.toLowerCase();
+const filteredData = manageEngineer.filter((e) => {
+  const query = search.toLowerCase();
 
-    return (
-      e.engineerID.toLowerCase().includes(query) ||
-      e.details.name.toLowerCase().includes(query) ||
-      e.details.email.toLowerCase().includes(query) ||
-      e.location.toLowerCase().includes(query)
-    );
-  });
+  return (
+    String(e.engineerID ?? "").toLowerCase().includes(query) ||
+    e.details?.name?.toLowerCase().includes(query) ||
+    e.details?.email?.toLowerCase().includes(query) ||
+    e.location?.toLowerCase().includes(query)
+  );
+});
+
 
   const columns: Column<ManageEngineerProps>[] = [
     { key: "id", label: "Sr.No." },
@@ -51,9 +52,9 @@ export default function AllUsers() {
         <div className="flex items-center gap-2">
           <FaUserCircle className="h-6 w-6 text-gray-500" />
           <div>
-            <div className="font-semibold">{row.details.name}</div>
-            <div className="text-sm text-gray-500">{row.details.phone}</div>
-            <div className="text-sm text-gray-500">{row.details.email}</div>
+            <div className="font-semibold">{row.name}</div>
+            <div className="text-sm text-gray-500">{row.phoneNumber}</div>
+            <div className="text-sm text-gray-500">{row.email}</div>
           </div>
         </div>
       ),
@@ -109,7 +110,7 @@ export default function AllUsers() {
             <div className="p-4">
               <div className="flex justify-between items-center">
                 <span className="font-bold">
-                  View File for {selectedEngineer.details.name}
+                  View File for {selectedEngineer.name}
                 </span>
                 <div
                   className="text-xl font-semibold cursor-pointer"
