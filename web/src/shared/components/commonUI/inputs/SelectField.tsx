@@ -53,7 +53,7 @@ export const SelectField = ({
   onChange: externalOnChange,
 }: SelectFieldProps & {
   multiple?: boolean;
-  onChange?: (value: any) => void;
+  onChange?: (value: unknown) => void;
 }) => {
   const { control, trigger } = useFormContext();
   const [search, setSearch] = useState("");
@@ -157,7 +157,7 @@ export const SelectField = ({
           const handleSelect = (
             selected: SelectOption | SelectOption[] | null,
           ) => {
-            let newValue: any;
+            let newValue: unknown;
             if (multiple) {
               if (Array.isArray(selected)) {
                 newValue = selected.map((s) => s.value);
