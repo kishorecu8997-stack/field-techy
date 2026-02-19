@@ -217,6 +217,8 @@ const EngineersActions = ({
     (status === JOB_STATUSES.applied || OfferJobStatus === "applied") &&
     OfferJobStatus !== "accepted" &&
     OfferJobStatus !== "assigned";
+  const isRejected = OfferJobStatus === "rejected" || mappedOfferStatus === "declined";
+  const isJobStarted = OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
   const isNew = status === JOB_STATUSES.new || status === "new";
   const isOffer = status === JOB_STATUSES.offer || status === "offer";
   const isPosted = status === JOB_STATUSES.posted;
@@ -244,7 +246,7 @@ const EngineersActions = ({
     !hasStartPending &&
     !hasJobStarted;
 
-  // Check if proposal already submitted via API
+    // Check if proposal already submitted via API
   const hasSubmittedProposal =
     OfferJobStatus === "applied" ||
     OfferJobStatus === "submitted" ||
@@ -252,8 +254,10 @@ const EngineersActions = ({
     OfferJobStatus === "accepted" ||
     OfferJobStatus === "start_pending_approval" ||
     OfferJobStatus === "started" ||
+    OfferJobStatus === "rejected" ||
     mappedOfferStatus === "initial" ||
-    mappedOfferStatus === "checked-in";
+    mappedOfferStatus === "checked-in" ||
+    mappedOfferStatus === "declined";
 
   // Extracted shared button logic to avoid duplication
   const renderJobActionButtons = () => {
@@ -370,6 +374,27 @@ const EngineersActions = ({
           <div className="flex flex-wrap gap-2 w-fit items-center">
             <icons.checkCircle className="text-green-500 w-6 h-6" />
             <span className="text-lg">Job Applied</span>
+          </div>
+        ) : /* Rejected Status */
+        isRejected ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-red-500 w-6 h-6" />
+            <span className="text-lg text-red-500">Proposal Rejected</span>
+          </div>
+        ) : /* Job Started Status */
+        isJobStarted ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            {OfferJobStatus === "start_pending_approval" ? (
+              <>
+                <icons.pending className="text-yellow-500 w-6 h-6" />
+                <span className="text-lg text-yellow-500">Start Pending Approval</span>
+              </>
+            ) : (
+              <>
+                <icons.checkCircle className="text-green-500 w-6 h-6" />
+                <span className="text-lg text-green-500">Job Started</span>
+              </>
+            )}
           </div>
         ) : /* New/Posted/Offer/Accepted/Assigned Status */
         (isNew || isPosted || isOffer || isProposalAccepted || hasAssignment) &&
