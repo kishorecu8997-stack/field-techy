@@ -27,6 +27,7 @@ import {
   type PostAJobFieldsProps,
   type PostOption,
 } from "../types";
+import { scrollToTop } from "@/utils";
 import BillSummary from "./components/form_sections/BillSummary";
 import PostAJobFields from "./components/PostAJobFields";
 import JobPostDropdown from "./JobPostDropdown";
@@ -363,7 +364,16 @@ const PostJobPage = () => {
 
   return (
     <div className="p-4 bg-white dark:bg-gray-800">
-      <FormContainer methods={formCtx} onSubmit={handleSubmit}>
+      <FormContainer
+        methods={formCtx}
+        onSubmit={handleSubmit}
+        onError={(errors) => {
+          scrollToTop();
+          if (errors.toolEntriesCount) {
+            toast.error("Please add a tool details");
+          }
+        }}
+      >
         <MyJobsHeader
           title={
             currentLocation === CurrentLocation.fullTime

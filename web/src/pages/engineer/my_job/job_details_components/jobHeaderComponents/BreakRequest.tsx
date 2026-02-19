@@ -14,8 +14,8 @@ import { icons } from "@/config/icons";
 import { useWatch } from "react-hook-form";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { useEffect } from "react";
-import { useGetJobs } from "@/shared/apiServices/client/clientService";
 import type { JobLike } from "../../types";
+import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 type BreakType = "Long Term Break" | "Short Term Break" | "";
 interface BreakRequestFormData {
@@ -47,7 +47,7 @@ interface BreakRequestFormData {
  * @returns {JSX.Element} Rendered break request form with status table and calendar
  */
 const BreakRequest = ({ onClose }: { onClose: () => void }) => {
-  const { data: apiJobs } = useGetJobs();
+  const { data: apiJobs } = useEngineerSearchJobs({}, true);
   const methods = useForm<BreakRequestFormData>({
     defaultValues: {
       breakType: "Long Term Break",

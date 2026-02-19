@@ -1,9 +1,4 @@
 import {
-  engineerGetEducation,
-  engineerGetExperience,
-  engineerGetPersonalInfo,
-  engineerGetSkillsAndTools,
-  engineerGetWorkPreference,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
   type AppLoginResponse,
@@ -11,19 +6,21 @@ import {
   type AppRegisterEngineerResponse,
   type EngineerAddEducationResponse,
   type EngineerAddExperienceResponse,
+  type EngineerAddWorkLogResponse,
+  type EngineerApplyJobResponse,
   type EngineerDeleteEducationResponse,
   type EngineerDeleteExperienceResponse,
-  type EngineerGetEducationResponse,
-  type EngineerGetExperienceResponse,
-  type EngineerGetPersonalInfoResponse,
-  type EngineerGetSkillsAndToolsResponse,
-  type EngineerGetWorkPreferenceResponse,
+  type EngineerGetMyJobsData,
+  type EngineerRequestBreakResponse,
+  type EngineerRequestStartResponse,
+  type EngineerSearchJobsData,
+  type EngineerSubmitRevisionResponse,
+  type EngineerSubmitSignOffResponse,
   type EngineerUpdateEducationResponse,
   type EngineerUpdateExperienceResponse,
   type EngineerUpdatePersonalInfoResponse,
   type EngineerUpdateSkillsAndToolsResponse,
   type EngineerUpdateWorkPreferenceResponse,
-  type EngineerGetMyJobsData,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -33,19 +30,28 @@ import {
   appRegisterEngineerMutation,
   engineerAddEducationMutation,
   engineerAddExperienceMutation,
+  engineerAddWorkLogMutation,
+  engineerApplyJobMutation,
   engineerDeleteEducationMutation,
   engineerDeleteExperienceMutation,
   engineerGetEducationOptions,
   engineerGetExperienceOptions,
+  engineerGetMyJobsOptions,
   engineerGetPersonalInfoOptions,
   engineerGetSkillsAndToolsOptions,
   engineerGetWorkPreferenceOptions,
+  engineerMarkProposalFileUploadedMutation,
+  engineerRequestBreakMutation,
+  engineerRequestStartMutation,
+  engineerSearchJobsOptions,
+  engineerSubmitRevisionMutation,
+  engineerSubmitSignOffMutation,
   engineerUpdateEducationMutation,
   engineerUpdateExperienceMutation,
   engineerUpdatePersonalInfoMutation,
   engineerUpdateSkillsAndToolsMutation,
   engineerUpdateWorkPreferenceMutation,
-  engineerGetMyJobsOptions,
+  getJobLogsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
@@ -53,8 +59,19 @@ import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
 import { type EngineerData } from "./engineerTypes";
 
-// RE-EXPORT shared hooks for convenience
-export * from "../commonOpenApiService";
+/**
+ * Re-export shared hooks for convenience (avoiding naming conflicts)
+ */
+export {
+  getDownloadUrl,
+  useAppDownloadProfileFile,
+  useAppUploadProfileFile,
+  useForgotPassword,
+  useLookupData,
+  useResetPassword,
+  useSendOtp,
+  useVerifyOtp,
+} from "../commonOpenApiService";
 
 /**
  * Engineer-specific API services
@@ -411,45 +428,131 @@ export function useAppDeleteProfileFile(options?: {
   });
 }
 
+export function useEngineerSearchJobs(
+  query: NonNullable<EngineerSearchJobsData["query"]>,
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...engineerSearchJobsOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useEngineerApplyJob(options?: {
+  onSuccess?: (data: EngineerApplyJobResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerApplyJobMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerMarkProposalFileUploaded(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    ...engineerMarkProposalFileUploadedMutation({ client: apiClient }),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerRequestStart(options?: {
+  onSuccess?: (data: EngineerRequestStartResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerRequestStartMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerSubmitSignOff(options?: {
+  onSuccess?: (data: EngineerSubmitSignOffResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerSubmitSignOffMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerAddWorkLog(options?: {
+  onSuccess?: (data: EngineerAddWorkLogResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerAddWorkLogMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerSubmitRevision(options?: {
+  onSuccess?: (data: EngineerSubmitRevisionResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerSubmitRevisionMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerRequestBreak(options?: {
+  onSuccess?: (data: EngineerRequestBreakResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerRequestBreakMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
+  return useQuery({
+    ...getJobLogsOptions({
+      client: apiClient,
+      path: { assignmentId },
+    }),
+    enabled: enabled && !!assignmentId,
+  });
+}
+
 /**
- * Raw API functions for use outside of hooks (e.g. in Zustand stores)
+ * Raw API functions for use outside of hooks have been moved to engineerRawApi.ts
+ * to avoid circular dependencies with stores.
  */
-export async function getPersonalInfo() {
-  const response = await engineerGetPersonalInfo({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetPersonalInfoResponse;
-}
-
-export async function getEducation() {
-  const response = await engineerGetEducation({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetEducationResponse;
-}
-
-export async function getExperience() {
-  const response = await engineerGetExperience({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetExperienceResponse;
-}
-
-export async function getSkillsAndTools() {
-  const response = await engineerGetSkillsAndTools({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetSkillsAndToolsResponse;
-}
-
-export async function getWorkPreference() {
-  const response = await engineerGetWorkPreference({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetWorkPreferenceResponse;
-}

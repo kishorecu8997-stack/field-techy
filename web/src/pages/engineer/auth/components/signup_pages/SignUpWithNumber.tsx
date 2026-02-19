@@ -12,7 +12,7 @@ import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import EngineerOTPPage from "../EngineerOTPPage";
-import { useSendPhoneOTP } from "@/shared/apiServices/engineer/engineerService";
+import { useSendOtp } from "@/shared/apiServices/commonOpenApiService";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEffect } from "react";
@@ -58,7 +58,7 @@ const SignUpWithNumber = ({
   });
 
   // Send Phone OTP mutation
-  const { mutate: sendPhoneOTP, isPending: isSendingOTP } = useSendPhoneOTP({
+  const { mutate: sendOtp, isPending: isSendingOTP } = useSendOtp({
     onSuccess: (data) => {
       console.log("OTP sent successfully:", data);
       setIsOpen(true);
@@ -138,14 +138,20 @@ const SignUpWithNumber = ({
 
   const handleResendOTP = () => {
     const phone = method.getValues("phone");
-    sendPhoneOTP(phone);
+    sendOtp({
+      body: { type: "phone", phone: phone } as any,
+      headers: { authorization: "" },
+    });
   };
 
   const termsAccepted = method.watch("terms");
 
   const handleSubmit = (data: LoginFormData) => {
     console.log(data, "data from Login Form");
-    sendPhoneOTP(data.phone);
+    sendOtp({
+      body: { type: "phone", phone: data.phone } as any,
+      headers: { authorization: "" },
+    });
   };
 
   return (

@@ -1,43 +1,38 @@
 export interface JobItem {
   id: string;
+  jobCode?: string;
   clientId: string;
 
   jobTitle: string;
   jobDescription: string;
-  category: string;
+  category: string | number;
 
-  jobType: "CONTRACT" | "FULL_TIME" | "PART_TIME" | string;
-  jobVisibility: "PUBLIC" | "PRIVATE" | string;
-  engagementModel: "ON_SITE" | "REMOTE" | "HYBRID" | string;
+  jobType: "On site" | "Remote" | "Hybrid" | string;
+  engagementModel: number;
 
-  country: string;
-  state: string;
-  city: string;
+  countryId?: number;
+  stateId?: number;
+  cityId?: number;
 
   location: string | null;
 
   startDate: string; // ISO date
-  startTime: string; // HH:mm:ss
+  endDate?: string | null;
 
   numberOfVacancy: number;
-  timePeriodOfJob: string;
 
   experience: string | null | number;
   salary: string | null;
+  budgetType: string | null;
 
-  requirementDeliverable: string;
-  otherDetails: string;
-
-  rateCardRequiredSkill: string;
-  rateCardExperienceLevel: "JUNIOR" | "MID_LEVEL" | "SENIOR" | string;
-
-  projectDeadline: string;
-  milestoneStructure: string;
-
-  status: "NEW" | "ACTIVE" | "CLOSED" | string;
-  featured: boolean;
-
-  budgetType?: "FIXED" | "HOURLY" | "NEGOTIABLE" | string;
+  status:
+    | "Posted"
+    | "In Progress"
+    | "Cancelled"
+    | "Closed"
+    | "Hold"
+    | "Flagged"
+    | string;
 
   skills: string[] | null;
   tools: string[] | null;
@@ -49,12 +44,15 @@ export interface JobItem {
   rating?: number;
   slaLevel?: string;
   client: Client;
+
+  // Additional assignment fields from API
+  assignmentId?: number | null;
+  assignmentType?: "invitation" | "application" | null;
 }
 
 export interface Client {
   id: string;
-  clientType: "HOME" | "COMPANY" | string;
-  businessType: string;
+  clientType: "home" | "corporate" | string;
 
   companyName: string;
   contactPersonName: string;
@@ -67,21 +65,6 @@ export interface Client {
   city: string;
   postalCode: string;
   address: string;
-
-  industry: string;
-
-  isApproved: boolean;
-  enableNotifications: boolean;
-
-  profilePicture: string | null;
-
-  governmentIdProofDocument: string | null;
-  certificationQualificationsDocument: string | null;
-
-  taxDocumentVat: string;
-  vatRegistrationNumber: string;
-
-  password: string | null;
 }
 
 /**

@@ -47,6 +47,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   activeTab,
   isDummyNetworkEngineer,
   showManageProposals = true,
+  jobID,
 }) => {
   const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
   const [rejectedProposals, setRejectedProposals] = useState<string[]>([]);
@@ -205,7 +206,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   return (
     <div>
       {isSendProposal ? (
-        <SendProposal />
+        <SendProposal jobId={Number(jobID)} />
       ) : (
         <TabComponent tabs={tabs} defaultActiveTab={activeTab || defaultTab} />
       )}
