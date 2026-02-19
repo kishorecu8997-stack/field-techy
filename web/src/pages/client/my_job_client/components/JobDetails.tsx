@@ -20,21 +20,44 @@ const JobsDetails: React.FC = () => {
   const [isSendProposal] = useState(false);
   const [isJobAccepted] = useState(false);
   const [activeTab] = useState("Job Information");
+  const [pageHeading, setPageHeading] = useState("Job Details");
+  const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
 
   const filter = () => {
     return sampleJobs.find((job) => {
       return job.id === Number(params.jobId);
     });
   };
+
+  // Build manual breadcrumb segments for client
+  const segments = [
+    "client",
+    "my-jobs",
+    params.jobId ? params.jobId : "",
+    breadcrumbExtra === "chats" ? "Chats" : null,
+  ].filter((v): v is string => typeof v === "string");
+
+  // Update heading when chat is toggled
+  const handleToggleChat = () => {
+    setBreadcrumbExtra("chats");
+    setPageHeading("Chats");
+  };
+  const handleCloseChat = () => {
+    setBreadcrumbExtra(null);
+    setPageHeading("Job Details");
+  };
+
   return (
     <div className="min-h-screen transition-colors duration-200">
       <div className="container  mx-auto px-4 py-6">
         <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
-            title="Job Details"
+            title={pageHeading}
             currentSort={SORT_OPTIONS.NEWEST}
-            isReport
+            isReport={breadcrumbExtra !== "chats"}
+            isShowSort={breadcrumbExtra !== "chats"}
             onSortChange={() => {}}
+            segments={segments}
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -49,7 +72,11 @@ const JobsDetails: React.FC = () => {
                   isJobAccepted={isJobAccepted}
                   activeTab={activeTab}
                   jobID={String(params.jobId)}
+                  onToggleChat={handleToggleChat}
                 />
+                {breadcrumbExtra === "chats" && (
+                  <button className="mt-2 px-4 py-2 bg-gray-200 rounded" onClick={handleCloseChat}>Back to Job</button>
+                )}
               </div>
             </div>
           </div>

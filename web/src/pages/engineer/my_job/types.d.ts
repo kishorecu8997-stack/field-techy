@@ -1,3 +1,4 @@
+  
 import type {
   AssignmentStatus,
   JobStatus as SearchJobStatus,
@@ -56,6 +57,7 @@ export interface MyJobsHeaderProps {
   buttonText?: string;
   onClick?: () => void;
   customLabels?: Record<string, string>;
+  segments?: string[];
 }
 
 /**

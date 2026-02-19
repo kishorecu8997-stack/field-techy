@@ -143,6 +143,7 @@ export type JobTabSectionProps = {
   showManageProposals?: boolean;
   isJobAccepted?: boolean;
   jobID?: string;
+  onToggleChat?: () => void;
 };
 
 export const TIMELINE_CARD_TYPE: {

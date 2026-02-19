@@ -11,6 +11,7 @@
 interface BreadcrumbProps {
   homeLabel?: string;
   customLabels?: Record<string, string>;
+  segments?: string[];
 }
 
 /**

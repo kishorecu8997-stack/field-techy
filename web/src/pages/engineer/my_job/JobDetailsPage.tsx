@@ -35,8 +35,13 @@ const JobDetailsPage = () => {
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
 
-  // <-- Chat visibility toggle
+  // Chat visibility toggle
   const [isChatVisible, setIsChatVisible] = useState(false);
+
+  // Breadcrumb segment state
+  const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
+  // Dynamic heading state
+  const [pageHeading, setPageHeading] = useState<string>("Job Details");
 
   // Always call hooks - pass empty string if jobId is missing or dummy
   // const { data: jobs, isLoading } = useClientGetJobsById(
@@ -149,17 +154,42 @@ const JobDetailsPage = () => {
   const engagementType = isDummyJob ? "ON_SITE" : (job?.jobType as string);
   const jobStatus = isDummyJob ? "New" : (job?.status as JobStatus);
 
+  // Build manual breadcrumb segments
+  const root = window.location.pathname.includes("client")
+    ? "Client"
+    : "Engineer";
+  const segments = [
+    root,
+    "my-jobs",
+    params.jobId ? params.jobId : "",
+    breadcrumbExtra === "chats" ? "Chats" : null,
+  ].filter((v): v is string => typeof v === "string");
+
+  // Update heading when chat is toggled
+  const handleToggleChat = () => {
+    setIsChatVisible(true);
+    setBreadcrumbExtra("chats");
+    setPageHeading("Chats");
+  };
+  // const handleCloseChat = () => {
+  //   setIsChatVisible(false);
+  //   setBreadcrumbExtra(null);
+  //   setPageHeading("Job Details");
+  // };
+
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
-          title="Job Details"
+          title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport
-          customLabels={
-            isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
-          }
+          isReport={!isChatVisible}
+          isShowSort={!isChatVisible}
+          customLabels={{
+            ...(isDummyJob ? { "dummy-j1": "Network Engineer" } : {}),
+          }}
+          segments={segments}
         />
 
         {/* Show Chat if toggled */}
@@ -190,7 +220,7 @@ const JobDetailsPage = () => {
                 activeTab={activeTab}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 onOpenFinalStatement={handleOpenFinalStatement}
-                onToggleChat={() => setIsChatVisible(true)}
+                onToggleChat={handleToggleChat}
               />
 
               <JobTabSection

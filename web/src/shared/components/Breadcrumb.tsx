@@ -15,26 +15,23 @@ import type { BreadcrumbProps } from "./type";
 const Breadcrumb: React.FC<BreadcrumbProps> = ({
   homeLabel = "Home",
   customLabels = {},
+  segments,
 }) => {
   const location = useLocation();
 
-  const isEngineerIndex = location.pathname.includes("client")
-    ? "client"
-    : "engineer";
-
-  // Split current path and remove empty segments
-  const allSegments = location.pathname.split("/").filter(Boolean);
-
-  // Find index of 'engineer' in the path
-  const engineerIndex = allSegments.indexOf(isEngineerIndex);
-
-  // If 'engineer' is not in the path, show nothing or fallback
-  if (engineerIndex === -1) {
-    return null; // or return a default breadcrumb if needed
+  let breadcrumbSegments: string[];
+  let root = location.pathname.includes("client") ? "client" : "engineer";
+  if (segments && segments.length > 0) {
+    breadcrumbSegments = segments.slice(1);
+    root = segments[0].toLowerCase();
+  } else {
+    const allSegments = location.pathname.split("/").filter(Boolean);
+    const engineerIndex = allSegments.indexOf(root);
+    if (engineerIndex === -1) {
+      return null;
+    }
+    breadcrumbSegments = allSegments.slice(engineerIndex + 1);
   }
-
-  // Get segments AFTER /engineer
-  const breadcrumbSegments = allSegments.slice(engineerIndex + 1);
 
   /**
    * Converts kebab-case or snake_case to Title Case
@@ -52,10 +49,10 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       className="text-sm text-gray-500 dark:text-gray-300"
     >
       <ol className="flex items-center space-x-1">
-        {/* Home link points to /engineer */}
+        {/* Home link points to /engineer or /client */}
         <li>
           <NavLink
-            to={`/${isEngineerIndex}`}
+            to={`/${root}`}
             className="hover:text-emerald-600 transition-colors"
           >
             {homeLabel}
@@ -64,9 +61,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
         {breadcrumbSegments.map((value, index) => {
           // Build path: /engineer + segments up to current
-          const to = `/${isEngineerIndex}/${breadcrumbSegments
-            .slice(0, index + 1)
-            .join("/")}`;
+          const to = `/${root}/${breadcrumbSegments.slice(0, index + 1).join("/")}`;
           const isLast = index === breadcrumbSegments.length - 1;
 
           return (

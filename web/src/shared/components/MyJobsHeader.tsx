@@ -25,6 +25,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   buttonText,
   onClick,
   customLabels: propCustomLabels,
+  segments,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
   const location = useLocation();
@@ -72,6 +73,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                       home: "Home",
                       ...propCustomLabels,
                     }}
+                    segments={segments}
                   />
                 )}
                 {description && (
