@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  businessTypes,
-  citiesByCountry,
-  countries,
-  industries,
-  statesByCountry,
-  taxDocuments,
-} from "@/dummy_data/adminClientData";
+import { businessTypes, taxDocuments } from "@/dummy_data/adminClientData";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
@@ -18,13 +11,13 @@ import {
   validateZipcode,
 } from "../Validates";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
-import type { ClientFormData } from "../types";
+import type { ClientAddProps, ClientFormData } from "../types";
 import { useFormContext } from "react-hook-form";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
-
-interface ClientAddProps {
-  isEdit?: boolean;
-}
+import {
+  LookupTable,
+  useAppGetLookupData,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * ClientAdd component renders the form fields for adding or editing the basic information of a client.
@@ -36,25 +29,34 @@ interface ClientAddProps {
  * @component
  * @returns {JSX.Element} The rendered form fields for client's basic information.
  */
-const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false }) => {
-  const { watch } = useFormContext<ClientFormData>();
+const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false, isView = false }) => {
+  const { watch, setValue } = useFormContext<ClientFormData>();
   const clientType = watch("clientType");
   const selectedCountry = watch("country");
+  const selectedState = watch("state");
 
-  const cityOptions = selectedCountry
-    ? citiesByCountry[selectedCountry] || []
-    : [];
-
-  const stateOptions = selectedCountry
-    ? statesByCountry[selectedCountry] || []
-    : [];
+  // Lookup APIs
+  const { data: countries } = useAppGetLookupData(LookupTable.Countries);
+  const { data: states } = useAppGetLookupData(
+    LookupTable.States,
+    selectedCountry,
+    { enabled: !!selectedCountry },
+  );
+  const { data: cities } = useAppGetLookupData(
+    LookupTable.Cities,
+    selectedState,
+    {
+      enabled: !!selectedState,
+    },
+  );
+  const { data: industriesData } = useAppGetLookupData(LookupTable.Industries);
 
   return (
-    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-transparent rounded-md p-4">
+    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-transparent p-4">
       <div className="mb-8">
         <label className="block mb-3 font-medium">Profile Image</label>
         <div className="w-fit">
-          <ImageUploaderField name="profileImage" />
+          <ImageUploaderField name="profileImage" allowUpload={!isView} />
         </div>
       </div>
 
@@ -70,7 +72,7 @@ const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false }) => {
               { label: "Home", value: "home" },
             ]}
             required
-            disabled={isEdit}
+            disabled={isEdit || isView}
           />
 
           {clientType === "corporate" && (
@@ -80,6 +82,7 @@ const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false }) => {
               placeholder="Enter Company Name"
               required
               rules={{ validate: (v: string) => validateCompany(v) }}
+              disabled={isView}
             />
           )}
 
@@ -88,6 +91,7 @@ const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false }) => {
             label="Phone Number"
             placeholder="Enter Phone Number"
             required
+            disabled={isView}
           />
 
           <InputField
@@ -96,56 +100,58 @@ const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false }) => {
             type="text"
             required
             rules={validateEmailRules}
-            disabled={isEdit}
+            disabled={isEdit || isView}
           />
-
-          {clientType === "corporate" && (
-            <SelectField
-              label="Industry"
-              name="industry"
-              placeholder="Select Industry"
-              options={industries}
-              required
-            />
-          )}
-
           <SelectField
             label="Country"
             name="country"
             placeholder="Select Country"
-            options={countries}
+            options={
+              countries?.map((item) => ({
+                value: item.id,
+                label: item.name,
+              })) ?? []
+            }
             required
+            disabled={isView}
+            onChange={() => {
+              setValue("state", "");
+              setValue("city", "");
+            }}
           />
-
+          <SelectField
+            label="State"
+            name="state"
+            placeholder="Select state"
+            options={
+              states?.map((item) => ({
+                value: item.id,
+                label: item.name,
+              })) ?? []
+            }
+            required
+            disabled={!selectedCountry || isView}
+            onChange={() => {
+              setValue("city", "");
+            }}
+          />
           <SelectField
             label="City"
             name="city"
             placeholder="Select city"
-            options={cityOptions}
+            options={
+              cities?.map((item) => ({
+                value: item.id,
+                label: item.name,
+              })) ?? []
+            }
             required
+            disabled={!selectedState || isView}
           />
         </div>
 
         {/* RIGHT COLUMN */}
         <div className="space-y-6">
-          <InputField
-            label="Contact Person Name"
-            name="contactPersonName"
-            placeholder="Enter Contact Person Name"
-            required
-            rules={{ validate: (v: string) => validateName(v) }}
-          />
-
-          {clientType === "corporate" && (
-            <SelectField
-              label="Business Type"
-              name="businessType"
-              placeholder="Select business type"
-              options={businessTypes}
-              required
-            />
-          )}
-
           {clientType === "corporate" && (
             <InputField
               label="Address"
@@ -153,16 +159,9 @@ const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false }) => {
               placeholder="Enter Address"
               required
               rules={{ validate: (v: string) => validateAddress(v) }}
+              disabled={isView}
             />
           )}
-
-          <SelectField
-            label="State"
-            name="state"
-            placeholder="Select state"
-            options={stateOptions}
-            required
-          />
 
           <InputField
             name="postalCode"
@@ -170,11 +169,48 @@ const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false }) => {
             type="text"
             placeholder="Enter Postal Code"
             required
+            disabled={isView}
             rules={{
               validate: (value: string) =>
-                validateZipcode(value, selectedCountry),
+                validateZipcode(
+                  value,
+                  selectedCountry ? String(selectedCountry) : undefined,
+                ),
             }}
           />
+          <InputField
+            label="Contact Person Name"
+            name="contactPersonName"
+            placeholder="Enter Contact Person Name"
+            required
+            rules={{ validate: (v: string) => validateName(v) }}
+            disabled={isView}
+          />
+          {clientType === "corporate" && (
+            <SelectField
+              label="Industry"
+              name="industry"
+              placeholder="Select Industry"
+              options={
+                industriesData?.map((item) => ({
+                  value: item.id,
+                  label: item.name,
+                })) ?? []
+              }
+              required
+              disabled={isView}
+            />
+          )}
+          {clientType === "corporate" && (
+            <SelectField
+              label="Business Type"
+              name="businessType"
+              placeholder="Select business type"
+              options={businessTypes}
+              required
+              disabled={isView}
+            />
+          )}
 
           {clientType === "corporate" && (
             <>
@@ -184,17 +220,18 @@ const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false }) => {
                 required
                 placeholder="Enter VAT registration number"
                 rules={{ validate: (v: string) => validateVatNumber(v) }}
-              />
-
-              <SelectField
-                label="Tax Document (VAT)"
-                name="taxDocument"
-                placeholder="Select tax document"
-                options={taxDocuments}
-                required
+                disabled={isView}
               />
             </>
           )}
+          <SelectField
+            label="Tax Document (VAT)"
+            name="taxDocument"
+            placeholder="Select tax document"
+            options={taxDocuments}
+            required
+            disabled={isView}
+          />
         </div>
       </div>
     </div>

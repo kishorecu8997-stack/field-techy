@@ -2,56 +2,71 @@ import { assetsConfig } from "@/assets";
 import React from "react";
 import { IoClose } from "react-icons/io5";
 import { FiDownload } from "react-icons/fi";
-import {
-  useAppDownloadProfileFile,
-  type ProfileFileType,
-} from "@/shared/apiServices/commonOpenApiService";
+import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { Suspense } from "react";
+import { useAdminGetClientByUserId } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useSearchParams } from "react-router-dom";
 
 const PDFPreview = React.lazy(() => import("@/shared/components/PdfPreview"));
+
 interface ViewFileComponentProps {
   onClose: () => void;
   title?: string;
   fileType: ProfileFileType | null;
+  userId?: string | number;
 }
 
-/**
- * ViewFileComponent Component
- *
- * Renders a modal for viewing and downloading profile files.
- *
- * @component
- * @returns {JSX.Element} The rendered ViewFileComponent component.
- */
 const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   onClose,
   title = "View File",
   fileType,
+  userId: propUserId,
 }) => {
+  const [searchParams] = useSearchParams();
+  const userIdFromUrl = searchParams.get("userId");
+  const userId = propUserId || userIdFromUrl;
+
   const {
-    data: downloadData,
+    data: clientDetail,
     isLoading,
     isError,
-  } = useAppDownloadProfileFile(fileType, !!fileType);
+  } = useAdminGetClientByUserId(userId || "", {
+    enabled: !!userId,
+  });
 
-  const downloadUrl = downloadData?.downloadUrl;
+  const getDownloadUrl = () => {
+    if (!clientDetail) return null;
+    switch (fileType) {
+      case "profilePicture":
+        return clientDetail.profilePicture?.url;
+      case "govIdDoc":
+        return clientDetail.govIdDoc?.url;
+      case "certificateDoc":
+        return clientDetail.certificateDoc?.url;
+      default:
+        return null;
+    }
+  };
+
+  const downloadUrl = getDownloadUrl();
 
   const handleDownload = async () => {
     if (downloadUrl) {
-      const response = await fetch(downloadUrl);
-      const blob = await response.blob();
-
-      const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = fileType || "document";
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      window.URL.revokeObjectURL(blobUrl);
+      try {
+        const response = await fetch(downloadUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = fileType || "document";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        console.error("Download failed:", error);
+      }
     }
   };
 
@@ -83,16 +98,12 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
     if (isPdfByExt) return renderPdfPreview();
     if (isImageByExt) return renderImagePreview();
 
-    if (fileType === "resumeFile") return renderPdfPreview();
-    if (fileType === "profilePicture") return renderImagePreview();
-
-    // Default to PDF for other document types without extension
     return renderPdfPreview();
   };
 
   const renderImagePreview = () => (
     <img
-      src={downloadUrl}
+      src={downloadUrl!}
       alt="Document Preview"
       className="w-full h-full dark:text-white object-contain"
     />
@@ -107,11 +118,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
       }
     >
       <div className="w-full flex items-center justify-center">
-        <PDFPreview
-          key={downloadUrl}
-          url={downloadUrl!}
-          className="h-[300px]"
-        />
+        <PDFPreview key={downloadUrl} url={downloadUrl!} className="h-[300px]" />
       </div>
     </Suspense>
   );

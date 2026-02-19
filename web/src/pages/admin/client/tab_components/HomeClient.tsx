@@ -218,7 +218,7 @@ const HomeClient: React.FC = () => {
         <div className="flex items-center gap-2">
           <div
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.homeClientView}`)
+              navigate(`${absoluteUrls.admin.home.homeClientView}?userId=${row.userId}&id=${row.id}&view=true`)
             }
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
           >
@@ -226,7 +226,7 @@ const HomeClient: React.FC = () => {
           </div>
           <div
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.homeClientEdit}?type=home`)
+              navigate(`${absoluteUrls.admin.home.homeClientEdit}?userId=${row.userId}&id=${row.id}&type=home`)
             }
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
           >
@@ -268,6 +268,7 @@ const HomeClient: React.FC = () => {
         <ViewFileComponent
           onClose={() => setIsOpen(false)}
           fileType={selectedType}
+          userId={activeRowId ? clientData.find(c => c.id === activeRowId)?.userId : undefined}
         />
       </Popup>
     </div>

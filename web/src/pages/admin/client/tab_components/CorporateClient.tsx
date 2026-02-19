@@ -219,14 +219,18 @@ const CorporateClient: React.FC = () => {
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.corporateClientView}`)
+              navigate(
+                `${absoluteUrls.admin.home.corporateClientView}?userId=${row.userId}&id=${row.id}&view=true`,
+              )
             }
           >
             <FiEye className="text-yellow-600 " />
           </div>
           <div
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.corporateClientEdit}?type=corporate`)
+              navigate(
+                `${absoluteUrls.admin.home.corporateClientEdit}?userId=${row.userId}&id=${row.id}&type=corporate`,
+              )
             }
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
           >
@@ -249,31 +253,38 @@ const CorporateClient: React.FC = () => {
         <SearchInput value={search} onChange={setSearch} />
         <Button
           className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-            onClick={() =>
-              navigate(`${absoluteUrls.admin.home.corporateClientAdd}?type=corporate`)
-            }
-          >
-            Add Client
-          </Button>
-        </div>
-        <div className="h-full flex-1 overflow-y-auto ">
-          <CustomTable<ManageClientProps>
-            columns={columns}
-            data={clientData}
-            initialPageSize={limit}
-            totalCount={manageClient?.total || 0}
-            currentPage={page}
-            onPageChange={setPage}
-            onPageSizeChange={setLimit}
-          />
-        </div>
-        <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-          <ViewFileComponent
-            onClose={() => setIsOpen(false)}
-            fileType={selectedType}
-          />
-        </Popup>
+          onClick={() =>
+            navigate(
+              `${absoluteUrls.admin.home.corporateClientAdd}?type=corporate`,
+            )
+          }
+        >
+          Add Client
+        </Button>
       </div>
-    );
-  };
+      <div className="h-full flex-1 overflow-y-auto ">
+        <CustomTable<ManageClientProps>
+          columns={columns}
+          data={clientData}
+          initialPageSize={limit}
+          totalCount={manageClient?.total || 0}
+          currentPage={page}
+          onPageChange={setPage}
+          onPageSizeChange={setLimit}
+        />
+      </div>
+      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+        <ViewFileComponent
+          onClose={() => setIsOpen(false)}
+          fileType={selectedType}
+          userId={
+            activeRowId
+              ? clientData.find((c) => c.id === activeRowId)?.userId
+              : undefined
+          }
+        />
+      </Popup>
+    </div>
+  );
+};
 export default CorporateClient;

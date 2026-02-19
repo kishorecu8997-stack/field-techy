@@ -50,7 +50,11 @@ export const SelectField = ({
   leftIcon,
   multiple = false,
   disabled = false,
-}: SelectFieldProps & { multiple?: boolean }) => {
+  onChange: externalOnChange,
+}: SelectFieldProps & {
+  multiple?: boolean;
+  onChange?: (value: any) => void;
+}) => {
   const { control, trigger } = useFormContext();
   const [search, setSearch] = useState("");
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -153,19 +157,22 @@ export const SelectField = ({
           const handleSelect = (
             selected: SelectOption | SelectOption[] | null,
           ) => {
+            let newValue: any;
             if (multiple) {
               if (Array.isArray(selected)) {
-                onChange(selected.map((s) => s.value));
+                newValue = selected.map((s) => s.value);
               } else {
-                onChange([]); // fallback if null or invalid
+                newValue = [];
               }
             } else {
               if (selected && !Array.isArray(selected)) {
-                onChange(selected.value);
+                newValue = selected.value;
               } else {
-                onChange("");
+                newValue = "";
               }
             }
+            onChange(newValue);
+            externalOnChange?.(newValue);
             void trigger(name);
           };
 

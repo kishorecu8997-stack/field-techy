@@ -22,6 +22,11 @@ import {
   type AdminGetEngineersForManagementData,
   type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
+  type AdminCreateClientData,
+  type AdminCreateClientResponse,
+  type AdminUpdateClientData,
+  type AdminUpdateClientResponse,
+  type AdminGetClientResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -35,6 +40,9 @@ import {
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetEngineersForManagementOptions,
+  adminCreateClientMutation,
+  adminUpdateClientMutation,
+  adminGetClientOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -147,7 +155,9 @@ export type AppGetLookupDataResponse = NonNullable<
 
 export function useAppGetLookupData(
   table: LookupTable,
+  parentId?: string | number,
   options?: {
+    enabled?: boolean;
     onSuccess?: (data: AppGetLookupDataResponse) => void;
     onError?: (error: unknown) => void;
   },
@@ -155,7 +165,10 @@ export function useAppGetLookupData(
   return useQuery({
     ...appGetLookupDataOptions({
       client: apiClient,
-      query: { table },
+      query: {
+        table,
+        ...(parentId && { parentId: String(parentId) }),
+      },
     }),
     ...options,
   });
@@ -208,6 +221,7 @@ export function useAdminManageClients(options?: {
       client: apiClient,
       query: queryParams,
     }),
+    queryKey: [...queryKeys.admin.manageClients, queryParams] as any,
     ...queryOptions,
   });
 }
@@ -290,6 +304,59 @@ export function useAdminGetJobs(
     ...adminGetJobsOptions({
       client: apiClient,
       query,
+    }),
+    ...options,
+  });
+}
+
+export type AdminAddClientResponse = AdminCreateClientResponse;
+export type AdminAddClientBody = AdminCreateClientData["body"];
+
+export function useAdminAddClient(options?: {
+  onSuccess?: (data: AdminAddClientResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateClientMutation({ client: apiClient }),
+    onSuccess: (data: AdminAddClientResponse) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageClients,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminUpdateClientBody = AdminUpdateClientData["body"];
+
+export function useAdminUpdateClient(options?: {
+  onSuccess?: (data: AdminUpdateClientResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateClientMutation({ client: apiClient }),
+    onSuccess: (data: AdminUpdateClientResponse) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageClients,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminGetClientByUserId(userId: string | number, options?: {  
+  enabled?: boolean;
+  onSuccess?: (data: AdminGetClientResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useQuery({
+    ...adminGetClientOptions({  
+      client: apiClient,
+      query: { userId: Number(userId) },
     }),
     ...options,
   });

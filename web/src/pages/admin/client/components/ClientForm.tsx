@@ -4,22 +4,25 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormProvider, useForm } from "react-hook-form";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
-import type { ClientFormData } from "../types";
+import type { ClientFormData, ClientFormProps, ExtendedClientResponse } from "../types";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import ClientAdd from "./ClientAdd";
 import Documents from "./Documents";
-
-interface ClientFormProps {
-  isEdit?: boolean;
-}
+import { useAdminAddClient, useAdminUpdateClient, useAdminGetClientByUserId } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAppMarkProfileFileUploaded } from "@/shared/apiServices/commonOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
+import type { 
+  AdminUpdateClientData, 
+  AdminCreateClientData,
+  AppMarkProfileFileUploadedData
+} from "@/api";
 
 /**
- * ClientForm component renders the form for adding or editing a client.
- * It is designed to be nested within a `FormProvider` from `react-hook-form`.
- * This component includes fields for client type, profile image, company details, contact information, and address.
- * It utilizes custom input components like `InputField`, `SelectField`, `ImageUploaderField`, and `PhoneInputField`,
- * and applies validation rules to them.
+ * ClientForm component serves as the main form for adding, editing, or viewing client details in the admin panel.
+ * It uses a tabbed interface to separate basic information and document uploads.
+ * The form is built using `react-hook-form` for state management and validation.
  */
 const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
   const [activeTab, setActiveTab] = useState("Basic Information");
@@ -28,14 +31,45 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { showPopup } = usePopupStore();
+  const queryClient = useQueryClient();
 
-  const isEdit = propIsEdit ?? location.pathname.includes("edit");
+  const isEdit = propIsEdit || location.pathname.includes("edit") || location.pathname.includes("view");
   const typeParam = searchParams.get("type") as "corporate" | "home" | null;
+  const userIdFromUrl = searchParams.get("userId");
+  const isView = searchParams.get("view") === "true";
+
+  /* ---------- Data Mapping Helper ---------- */
+  const mapClientDetailToFormData = (detail: ExtendedClientResponse): ClientFormData => ({
+    clientType: detail.clientType,
+    profileImage: detail.profilePicture?.url || null,
+    companyName: detail.companyName || "",
+    phoneNumber: detail.phoneNumber,
+    email: detail.email,
+    industry: detail.industryId ?? "",
+    country: detail.countryId ?? "",
+    city: detail.cityId ?? "",
+    taxDocument: detail.documentType || "",
+    contactPersonName: detail.personName || "",
+    businessType: detail.businessTypeId ?? "",
+    address: detail.address || "",
+    state: detail.stateId ?? "",
+    postalCode: detail.postalCode || "",
+    vatRegistrationNumber: detail.vatRegistrationNumber || "",
+    govIdDoc: detail.govIdDoc?.url || null,
+    certificate: detail.certificateDoc?.url || null,
+  });
+
+  const { data: clientDetail, isLoading: isDetailLoading } = useAdminGetClientByUserId(userIdFromUrl || "", {
+    enabled: !!userIdFromUrl,
+  });
+
+  const formValues = clientDetail ? mapClientDetailToFormData(clientDetail as ExtendedClientResponse) : undefined;
 
   const methods = useForm<ClientFormData>({
     mode: "onChange",
+    values: formValues,
     defaultValues: {
-      clientType: typeParam || "corporate",
+      clientType: (typeParam || "corporate") as "corporate" | "home",
       profileImage: null,
       companyName: "",
       phoneNumber: "",
@@ -50,7 +84,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
       state: "",
       postalCode: "",
       vatRegistrationNumber: "",
-      governmentIDProof: null,
+      govIdDoc: null,
       certificate: null,
     },
   });
@@ -58,64 +92,110 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
   const { trigger, getValues, watch, setValue } = methods;
   const clientType = watch("clientType");
 
+  /* ---------- Hooks & Queries ---------- */
+  const { mutateAsync: addClient } = useAdminAddClient();
+  const { mutateAsync: updateClient } = useAdminUpdateClient();
+  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
+
   useEffect(() => {
-    if (typeParam && !isEdit) {
+    if (!clientDetail && typeParam && !isEdit) {
       setValue("clientType", typeParam);
     }
-  }, [typeParam, setValue, isEdit]);
+  }, [clientDetail, typeParam, isEdit, setValue]);
 
   const handleNext = async () => {
     if (activeTab === "Basic Information") {
-      const fieldsToValidate: (keyof ClientFormData)[] = [
-        "clientType",
-        "phoneNumber",
-        "email",
-        "contactPersonName",
-        "country",
-        "city",
-        "state",
-        "postalCode",
+      const basicFields: (keyof ClientFormData)[] = [
+        "clientType", "phoneNumber", "email", "contactPersonName",
+        "country", "city", "state", "postalCode",
       ];
-
       if (clientType === "corporate") {
-        fieldsToValidate.push(
-          "companyName",
-          "industry",
-          "businessType",
-          "address",
-          "vatRegistrationNumber",
-          "taxDocument",
-        );
+        basicFields.push("companyName", "industry", "businessType", "address", "vatRegistrationNumber", "taxDocument");
       }
-
-      const isValid = await trigger(fieldsToValidate);
-      if (isValid) {
-        setActiveTab("Documents");
-      }
+      if (isView || await trigger(basicFields)) setActiveTab("Documents");
     }
   };
 
   const handleSaveConfirmation = async (data: ClientFormData) => {
+    if (isView) return;
     await showPopup({
       title: isEdit ? "Update Client" : "Add Client",
       body: `Are you sure you want to ${isEdit ? "update" : "save"} this details?`,
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        { label: "Cancel", value: null, variant: "outline" },
         {
           label: isEdit ? "Update" : "Save",
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Submitting data:", data);
-            toast.success(
-              `Client information ${isEdit ? "updated" : "saved"} successfully!`,
-            );
-            navigate(absoluteUrls.admin.home.manage_client);
-            close(true);
+            try {
+              const extractFile = (val: string | File | FileList | null | undefined): File | null => 
+                val instanceof File ? val : (val instanceof FileList && val.length > 0 ? val[0] : null);
+
+              const fileMap: Record<string, File | null> = {
+                profilePicture: extractFile(data.profileImage as string | File | null),
+                govIdDoc: extractFile(data.govIdDoc as string | File | FileList | null),
+                certificateDoc: extractFile(data.certificate as string | File | FileList | null),
+              };
+
+              const body: Record<string, unknown> = {
+                ...data,
+                personName: data.contactPersonName,
+                name: data.contactPersonName || data.email?.split("@")[0],
+                countryId: data.country ? Number(data.country) : undefined,
+                stateId: data.state ? Number(data.state) : undefined,
+                cityId: data.city ? Number(data.city) : undefined,
+                industryId: data.industry ? Number(data.industry) : undefined,
+                businessTypeId: data.businessType ? Number(data.businessType) : undefined,
+                documentType: data.taxDocument,
+                userId: userIdFromUrl ? Number(userIdFromUrl) : undefined,
+              };
+
+              // Add metadata for non-null files
+              Object.entries(fileMap).forEach(([key, file]) => {
+                if (file) body[key] = { filename: file.name, size: file.size, mimeType: file.type };
+              });
+
+              const response = isEdit 
+                ? await updateClient({ body: { ...body, userId: Number(userIdFromUrl) } } as AdminUpdateClientData) 
+                : await addClient({ body: body } as AdminCreateClientData);
+
+              // Handle uploads
+              if (response && "uploadUrls" in response && response.uploadUrls) {
+                const urls = response.uploadUrls as Record<string, { uploadUrl: string; fileId: number }>;
+                for (const [key, { uploadUrl, fileId }] of Object.entries(urls)) {
+                  const file = fileMap[key];
+                  if (!file) continue;
+
+                  const uploadRes = await fetch(uploadUrl, {
+                    method: "PUT",
+                    body: file,
+                    headers: { "Content-Type": file.type },
+                  });
+                  
+                  if (uploadRes.ok) {
+                    await markFileUploaded({ 
+                      body: { fileId },
+                      headers: { authorization: "" }
+                    } as AppMarkProfileFileUploadedData);
+                  }
+                }
+              }
+              await queryClient.invalidateQueries({
+                queryKey: queryKeys.admin.manageClients,
+              });
+              await queryClient.invalidateQueries({
+                queryKey: ['adminGetClient'],
+              });
+              
+              toast.success(`Client information ${isEdit ? "updated" : "saved"} successfully!`);
+              navigate(absoluteUrls.admin.home.manage_client);
+              close(true);
+            } catch (error: unknown) {
+              const errorMessage = error instanceof Error ? error.message : "Failed to save client information.";
+              toast.error(errorMessage);
+              close(false);
+            }
           },
         },
       ],
@@ -123,41 +203,17 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
   };
 
   const handleSave = async () => {
-    const isValid = await trigger();
-    if (isValid) {
+    if (await trigger()) {
       setIsSubmitting(true);
       try {
-        const formData = getValues();
-        await handleSaveConfirmation(formData);
-      } catch (error) {
-        console.error("Error saving client information:", error);
-        toast.error("An error occurred while saving client information.");
+        await handleSaveConfirmation(getValues());
       } finally {
         setIsSubmitting(false);
       }
     } else {
       const errors = methods.formState.errors;
-      const basicInfoFields: (keyof ClientFormData)[] = [
-        "clientType",
-        "phoneNumber",
-        "email",
-        "contactPersonName",
-        "country",
-        "city",
-        "state",
-        "postalCode",
-        "companyName",
-        "industry",
-        "businessType",
-        "address",
-        "vatRegistrationNumber",
-        "taxDocument",
-      ];
-
-      const hasBasicInfoError = basicInfoFields.some((field) => errors[field]);
-      if (hasBasicInfoError) {
-        setActiveTab("Basic Information");
-      }
+      const basicFields: (keyof ClientFormData)[] = ["clientType", "phoneNumber", "email", "contactPersonName", "country", "city", "state", "postalCode", "companyName"];
+      if (basicFields.some((f) => errors[f])) setActiveTab("Basic Information");
       toast.error("Please fix the errors in the form before saving.");
     }
   };
@@ -165,58 +221,88 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
   const tabs = [
     {
       label: "Basic Information",
-      content: <ClientAdd isEdit={isEdit} />,
+      content: <ClientAdd isEdit={isEdit} isView={isView} />,
     },
     {
       label: "Documents",
-      content: <Documents />,
+      content: <Documents isView={isView} />,
     },
   ];
 
   return (
-    <div className="w-full h-full flex flex-col p-3 gap-3">
+    <div className="w-full h-full flex flex-col p-3 gap-3 overflow-hidden">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold">
-          {isEdit
-            ? clientType === "corporate"
-              ? "Corporate Client"
-              : "Home Client"
-            : "Add Client"}
+        <h1 className="font-semibold text-xl text-gray-800 dark:text-white">
+          {isView
+            ? "View Client Details"
+            : isEdit
+              ? clientType === "corporate"
+                ? "Edit Corporate Client"
+                : "Edit Home Client"
+              : "Add Client"}
         </h1>
         <Button
           variant="solid"
           onClick={() => navigate(absoluteUrls.admin.home.manage_client)}
+          className="bg-teal-900"
         >
           Back
         </Button>
       </div>
 
-      <FormProvider {...methods}>
-        <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
-          <AdminTabComponent
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-          />
+      {isDetailLoading ? (
+        <div className="flex-1 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg">
+          <div className="flex flex-col items-center gap-2">
+            <svg className="animate-spin h-8 w-8 text-teal-600" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+            <p className="text-gray-500">Loading client details...</p>
+          </div>
+        </div>
+      ) : (
+        <FormProvider {...methods}>
+        <div className="bg-white dark:bg-gray-800  flex flex-col flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden">
+            <AdminTabComponent
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+          </div>
 
-          <div className="flex justify-end mt-6 px-4 pb-4">
+          <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-gray-800/50">
+            {activeTab === "Documents" && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setActiveTab("Basic Information")}
+                disabled={isSubmitting}
+                className="px-6 py-2"
+              >
+                Previous
+              </Button>
+            )}
             <Button
               type="button"
-              onClick={activeTab === "Documents" ? handleSave : handleNext}
+              onClick={activeTab === "Documents" ? (isView ? () => navigate(-1) : handleSave) : handleNext}
               disabled={isSubmitting}
-              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+              className="px-8 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:from-teal-800 hover:to-teal-950 transition-all font-medium min-w-[140px]"
             >
-              {isSubmitting
-                ? "Saving…"
-                : activeTab === "Documents"
-                  ? isEdit
-                    ? "Update"
-                    : "Save"
-                  : "Next"}
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  Processing...
+                </span>
+              ) : activeTab === "Documents" ? (
+                isView ? "Back to List" : (isEdit ? "Update Client" : "Save Client")
+              ) : (
+                "Next Step"
+              )}
             </Button>
           </div>
         </div>
       </FormProvider>
+      )}
     </div>
   );
 };

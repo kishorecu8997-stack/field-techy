@@ -1,3 +1,5 @@
+import type { AdminGetClientResponse } from "@/api";
+
 export interface ManageClientProps {
   id: number;
   userId: number;
@@ -58,6 +60,19 @@ export interface ManageClientProps {
   };
 }
 
+export interface ExtendedClientResponse extends AdminGetClientResponse {
+  vatRegistrationNumber?: string;
+}
+
+export interface ClientFormProps {
+  isEdit?: boolean;
+}
+
+export interface ClientAddProps {
+  isEdit?: boolean;
+  isView?: boolean;
+}
+
 export type DocumentType =
   | "profilePicture"
   | "resumeFile"
@@ -90,18 +105,18 @@ export interface ClientFormData {
   companyName?: string;
   phoneNumber: string;
   email: string;
-  industry?: string;
-  country: string;
-  city: string;
+  industry?: string | number;
+  country: string | number;
+  city: string | number;
   taxDocument?: string;
   contactPersonName: string;
-  businessType?: string;
+  businessType?: string | number;
   address?: string;
-  state: string;
+  state: string | number;
   postalCode: string;
   vatRegistrationNumber?: string;
-  governmentIDProof?: string | File | null;
-  certificate?: string | File | null;
+  govIdDoc?: string | File | FileList | null;
+  certificate?: string | File | FileList | null;
 }
 
 export interface CompanyInfo {
