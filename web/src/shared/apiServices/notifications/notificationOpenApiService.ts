@@ -37,13 +37,22 @@ export function useAppNotifications() {
   };
 }
 
+export const NOTIFICATIONS_QUERY_ID = "appGetNotifications";
+
 // Helper to invalidate notifications reliably using predicate matching
 const invalidateNotifications = (queryClient: ReturnType<typeof useQueryClient>) => {
+  /**
+   * We use a predicate to match the query key because the generated SDK uses
+   * an object containing an `_id` field as the first element of the query key array.
+   * This approach is more robust than matching by a fixed array, as it targets 
+   * all queries for this endpoint regardless of any additional parameters 
+   * (like filter options or search queries) that might be present in the query key.
+   */
   queryClient.invalidateQueries({
     predicate: (query) => {
       const key = query.queryKey[0] as { _id?: string };
       return (
-        key && typeof key === "object" && key._id === "appGetNotifications"
+        key && typeof key === "object" && key._id === NOTIFICATIONS_QUERY_ID
       );
     },
   });

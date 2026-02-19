@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { fcmService } from "@/shared/config/firebaseConfig";
 import { useTokenStore } from "@/shared/store";
 import { useDeviceStore } from "@/shared/store/useDeviceStore";
-import { registerDeviceToken } from "@/shared/apiServices/notifications/notificationOpenApiService";
+import { registerDeviceToken, NOTIFICATIONS_QUERY_ID } from "@/shared/apiServices/notifications/notificationOpenApiService";
 import type { FCMMessage } from "@/shared/store/types";
 import { useQueryClient } from "@tanstack/react-query";
 import type { AppGetNotificationsResponse } from "@/api/types.gen";
@@ -35,7 +35,7 @@ export const FCMHandler = () => {
 
               // Update the cache immediately
               queryClient.setQueryData(
-                [{ _id: "appGetNotifications" }], // Match the query key structure
+                [{ _id: NOTIFICATIONS_QUERY_ID }], // Match the query key structure
                 (oldData: { data: CachedNotification[] } | undefined) => {
                   if (!oldData) return { data: [newNotification as CachedNotification] };
 
@@ -56,12 +56,19 @@ export const FCMHandler = () => {
 
             // Invalidate to eventually sync with server
             queryClient.invalidateQueries({
+              /**
+               * We use a predicate to match the query key because the generated SDK uses
+               * an object containing an `_id` field as the first element of the query key array.
+               * This approach is more robust than matching by a fixed array, as it targets 
+               * all queries for this endpoint regardless of any additional parameters 
+               * (like filter options or search queries) that might be present in the query key.
+               */
               predicate: (query) => {
                 const key = query.queryKey[0] as { _id?: string };
                 return (
                   key &&
                   typeof key === "object" &&
-                  key._id === "appGetNotifications"
+                  key._id === NOTIFICATIONS_QUERY_ID
                 );
               },
             });
