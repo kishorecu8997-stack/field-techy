@@ -189,6 +189,10 @@ const AllTransactionsPage = React.lazy(
   () =>
     import("@/pages/engineer/account_settings/bank_details/AllTransactionsPage"),
 );
+const FeedbackFromEngineer = React.lazy(
+  () =>
+    import("@/pages/client/manage_proposal/components/ViewEngineerFeedbackSidebar"),
+);
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -451,4 +455,5 @@ export const sectionConfig: Record<
     component: EditPOC,
     title: "Edit Point of Contact",
   },
+  engineerFromFeedback: { component: FeedbackFromEngineer, title: "Feedback From Engineers", },
 };

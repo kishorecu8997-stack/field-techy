@@ -1,11 +1,9 @@
+import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import { createPathBuilder } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
-import { icons } from "@/config/icons";
-import { useState } from "react";
-import ViewEngineerFeedbackSidebar from "./ViewEngineerFeedbackSidebar";
-import { DUMMY_ENGINEER_FEEDBACK_LIST } from "@/constants/dummyJobs";
 
 /**
  * ClientActions Component
@@ -21,18 +19,16 @@ const ClientActions = ({
 }) => {
   const navigate = useNavigate();
   const { id, jobId } = useParams();
-  const [showFeedbackSidebar, setShowFeedbackSidebar] = useState(false);
+  const { setActiveKey, setISOpenSidebar } = useDrawerStore()
 
   const makeUrl = createPathBuilder(absoluteUrls.client.home.SelectEngineer);
   const URl = makeUrl({ id: String(id || jobId) });
 
   const handleViewFeedback = () => {
-    setShowFeedbackSidebar(true);
+    setActiveKey("engineerFromFeedback")
+    setISOpenSidebar(true)
   };
 
-  const handleCloseFeedback = () => {
-    setShowFeedbackSidebar(false);
-  };
 
   // Show "View Feedback From Engineers" button only on Timeline tab when all cards are approved
   const showFeedbackButton = activeTab === "Timeline" && allCardsApproved;
@@ -58,12 +54,6 @@ const ClientActions = ({
           Invite to Job
         </Button>
       </div>
-
-      <ViewEngineerFeedbackSidebar
-        isOpen={showFeedbackSidebar}
-        onClose={handleCloseFeedback}
-        feedbackList={DUMMY_ENGINEER_FEEDBACK_LIST}
-      />
     </>
   );
 };
