@@ -1,4 +1,4 @@
-import { TextareaInput } from "@/shared/components/commonUI/inputs";
+import { FileUpload, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import Popup from "@/shared/components/Popup";
@@ -27,7 +27,9 @@ const ReportPage = ({
           </button>
         </div>
         <FormContainer methods={formCtx} className="flex flex-col gap-4">
-          <h1 className="text-xl font-bold text-center">Report a problem</h1>
+          <h1 className="text-xl font-bold text-center dark:text-gray-100 text-gray-800">
+            Report a problem
+          </h1>
 
           <SelectField
             label="Issue Category"
@@ -51,6 +53,14 @@ const ReportPage = ({
             label="Description"
             name="description"
             placeholder="Enter your description"
+          />
+          <FileUpload
+            name="file"
+            label="Attach File (If any)"
+            accept=".pdf, .jpg, .png"
+            placeholder="Attach File"
+            maxPages={5}
+            validatePDF={true}
           />
         </FormContainer>
       </div>
