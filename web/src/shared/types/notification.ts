@@ -12,7 +12,10 @@ export interface NotificationProps {
   | "view"
   | "job_reminder"
   | "withdrawal"
-  | "info";
+  | "info"
+  | "warning"
+  | "error"
+  | "success";
   title: string;
   message: string;
   jobTitle?: string;

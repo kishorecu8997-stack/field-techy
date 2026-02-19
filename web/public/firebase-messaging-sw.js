@@ -30,20 +30,29 @@ self.addEventListener("activate", (event) => {
  */
 async function sendToAllOpenTabs(message) {
     try {
-        // Match all clients including those not controlled yet
         const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
 
+        if (clients.length === 0) {
+            console.warn("FCM: No active window clients found to receive message update.");
+            return false;
+        }
+
+        let sentCount = 0;
         clients.forEach(client => {
-            client.postMessage({
-                type: "FCM_MESSAGE",
-                data: message,
-            });
+            // Defensive check for existence and valid postMessage method
+            if (client && typeof client.postMessage === 'function') {
+                client.postMessage({
+                    type: "FCM_MESSAGE",
+                    data: message,
+                });
+                sentCount++;
+            }
         });
 
-        return clients.length; // Return number of tabs messaged
+        return sentCount > 0;
     } catch (error) {
-        console.error("Failed to send message to open tabs:", error);
-        return 0;
+        console.error("FCM: Failed to broadcast message to tabs:", error);
+        return false;
     }
 }
 

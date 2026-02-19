@@ -5,17 +5,15 @@ import type {
   GroupedNotifications,
 } from "@/shared/types/notification";
 
+import type { AppGetNotificationsResponse } from "@/api/types.gen";
+
 dayjs.extend(relativeTime);
 
-export const mapApiNotification = (notif: {
-  id: number | string;
-  title: string;
-  body: string;
-  createdAt: string;
-  isRead: boolean;
-}): NotificationProps => ({
+export type ApiNotification = AppGetNotificationsResponse["data"][number];
+
+export const mapApiNotification = (notif: ApiNotification): NotificationProps => ({
   id: notif.id,
-  type: "info", // Fallback to info, can be refined if API provides more specific types
+  type: "info",  // Fallback to info, can be refined if API provides more specific types
   title: notif.title,
   message: notif.body,
   timestamp: dayjs(notif.createdAt).fromNow(),

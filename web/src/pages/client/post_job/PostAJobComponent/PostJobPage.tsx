@@ -41,7 +41,7 @@ import JobPostDropdown from "./JobPostDropdown";
 const PostJobPage = () => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
-  const { currentLocation, rate, currencyId, setRateAndCurrency } =
+  const { currentLocation, rate, currencyId, setRateAndCurrency, setAmount, setCurrencySymbol } =
     usePostAJobStore();
   const { refetch: refetchJobs } = useClientGetJobs();
   const billConsentRef = useRef(false);
@@ -49,37 +49,37 @@ const PostJobPage = () => {
 
   const formCtx = useForm<PostAJobFieldsProps>({
     defaultValues: {
-      projectName: "",
-      jobName: "",
-      jobTitle: "",
-      serviceCategory: "",
+      projectName: "Test",
+      jobName: "Test",
+      jobTitle: "Test",
+      serviceCategory: "1",
       locationType: JOB_TYPES.onsite,
-      location: "",
-      engagementModel: "",
-      country: "",
-      state: "",
-      city: "",
-      experienceLevel: "",
-      numberOfVacancy: "",
+      location: "test location",
+      engagementModel: "1",
+      country: "1",
+      state: "1",
+      city: "1",
+      experienceLevel: "1",
+      numberOfVacancy: "1",
       toolBudgetTotal: 0,
       skills: [],
       tools: [],
       safetyWears: [],
       task: "",
-      description: "",
+      description: "Before calling client.postMessage, check if client and client.postMessage exist to avoid runtime errors. If no clients are found, log a warning for easier debugging. Consider returning a boolean or throwing an error if messaging fails, so the caller can handle it.",
       backFills: backFillsType.required,
       budget: "",
       primaryLanguage: "",
       secondaryLanguage: "",
       attachment: null,
-      otherInfo: "",
-      startDate: null,
+      otherInfo: "Before calling client.postMessage, check if client and client.postMessage exist to avoid runtime errors. If no clients are found, log a warning for easier debugging. Consider returning a boolean or throwing an error if messaging fails, so the caller can handle it.",
+      startDate: new Date(),
       startTime: "",
-      endDate: null,
+      endDate: new Date(),
       endTime: "",
       jobDuration: "",
-      tentativeStartDate: null,
-      tentativeEndDate: null,
+      tentativeStartDate: new Date(),
+      tentativeEndDate: new Date(),
       tentativeEndTime: "",
       jobOccurrence: OccurrenceFields.repeat,
       repeatedBy: RepeatByFields.week,
@@ -88,7 +88,7 @@ const PostJobPage = () => {
       repeatedByMonth: "",
       templatesName: "",
       repeatedByYear: "",
-      JobOccurrenceEndDate: null,
+      JobOccurrenceEndDate: new Date(),
       estimatedDuration: "",
       saveAsTemplate: false,
     },
@@ -126,6 +126,8 @@ const PostJobPage = () => {
             `${response.rate}${response.currencySymbol}`,
             response.currencyId,
           );
+          setAmount(String(response.rate));
+          setCurrencySymbol(`${response.currencySymbol}`);
         },
         onError: () => setRateAndCurrency("0", 0),
       },
@@ -137,6 +139,7 @@ const PostJobPage = () => {
     selectedCountry,
     getRateCard,
     setRateAndCurrency,
+    setAmount,
   ]);
 
   const getTemplateData = () => {

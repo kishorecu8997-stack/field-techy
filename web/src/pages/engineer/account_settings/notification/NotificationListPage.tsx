@@ -29,7 +29,6 @@ const NotificationListPage = () => {
   const [tab, setTab] = useState("all");
   const [filter, setFilter] = useState(4);
   const [notification, setNotification] = useState<NotificationProps[]>([]);
-
   const { notifications, isLoading } = useAppNotifications();
 
   const Titles = [
