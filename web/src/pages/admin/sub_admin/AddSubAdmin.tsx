@@ -1,4 +1,4 @@
-import { SubAdminRoles } from "@/dummy_data/admin/manageSubAdmin";
+import { SubAdminRegions } from "@/dummy_data/admin/manageSubAdmin";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -112,7 +112,7 @@ export default function AddSubAdmin() {
                 name="role"
                 label="Select Roles"
                 placeholder="Select Roles"
-                options={SubAdminRoles}
+                options={SubAdminRegions}
                 required
               />
             </div>

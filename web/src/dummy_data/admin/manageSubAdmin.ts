@@ -4,7 +4,7 @@ export interface UserItem {
   email: string;
   phoneNumber: string;
   roleName: string;
-  status: "On" | "Off";
+  status: "Active" | "Disabled";
 }
 
 export const userList: UserItem[] = [
@@ -14,7 +14,7 @@ export const userList: UserItem[] = [
     email: "john@gmail.com",
     phoneNumber: "+91 9861234567",
     roleName: "Manager",
-    status: "Off",
+    status: "Active",
   },
   {
     id: 2,
@@ -22,7 +22,7 @@ export const userList: UserItem[] = [
     email: "alex@gmail.com",
     phoneNumber: "+91 9854728765",
     roleName: "Team Lead",
-    status: "Off",
+    status: "Disabled",
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ export const userList: UserItem[] = [
     email: "david@gmail.com",
     phoneNumber: "+91 9476382565",
     roleName: "Admin",
-    status: "Off",
+    status: "Active",
   },
   {
     id: 4,
@@ -38,7 +38,7 @@ export const userList: UserItem[] = [
     email: "kiran@gmail.com",
     phoneNumber: "+91 9787457811",
     roleName: "Super Admin",
-    status: "On",
+    status: "Active",
   },
 ];
 

@@ -116,8 +116,8 @@ export default function EditSubAdmin() {
 
               <SelectField
                 name="role"
-                label="Select Regions"
-                placeholder="Select Regions"
+                label="Select Region"
+                placeholder="Select Region"
                 options={SubAdminRegions}
                 required
               />

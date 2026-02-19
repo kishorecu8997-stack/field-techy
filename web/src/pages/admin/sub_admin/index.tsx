@@ -77,6 +77,21 @@ export default function ManageSubAdmin() {
       label: "Phone Number",
       renderCell: (row: UserItem) => <span>{row.phoneNumber}</span>,
     },
+      {
+        key: "status",
+        label: "Status",
+        renderCell: (row: UserItem) => (
+          <span
+            className={`px-2 py-1 rounded-full text-xs ${
+              row.status === "Active"
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`} 
+          >
+            {row.status}
+          </span>
+        ),
+      },
     {
       key: "action",
       label: "Action",

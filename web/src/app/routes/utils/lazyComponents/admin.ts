@@ -122,15 +122,6 @@ export const HomeClientView = React.lazy(
   () =>
     import("@/pages/admin/client/components/view_components/HomeClientViewForm"),
 );
-export const AdminEditRolePage = React.lazy(
-  () => import("@/pages/admin/sub_admin/role_pages/PermissionList"),
-);
-export const RoleListPage = React.lazy(
-  () => import("@/pages/admin/sub_admin/role_pages/RolePage"),
-);
-export const AddRolePage = React.lazy(
-  () => import("@/pages/admin/sub_admin/role_pages/PermissionList"),
-);
 export const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView"),
 );
