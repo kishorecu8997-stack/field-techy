@@ -155,6 +155,7 @@ export interface PostAJobFieldsProps {
     budget: string;
     images: { name: string; url: string; file: File }[];
   }[];
+  toolEntriesCount?: number;
 }
 
 export interface PostOption {

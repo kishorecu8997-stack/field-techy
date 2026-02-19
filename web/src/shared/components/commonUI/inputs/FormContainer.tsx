@@ -3,6 +3,7 @@ import {
   type FieldValues,
   type UseFormReturn,
   type SubmitHandler,
+  type SubmitErrorHandler,
 } from "react-hook-form";
 
 /**
@@ -25,6 +26,14 @@ interface FormContainerProps<T extends FieldValues> {
   onSubmit?: (data: T) => void;
 
   /**
+   * Optional callback function called when the form submission fails validation
+   * @param {Object} errors - The form validation errors
+   * @returns {void}
+   * @optional
+   */
+  onError?: SubmitErrorHandler<T>;
+
+  /**
    * React children elements to be rendered inside the form
    * @type {React.ReactNode}
    */
@@ -41,6 +50,7 @@ interface FormContainerProps<T extends FieldValues> {
 export const FormContainer = <T extends FieldValues>({
   methods,
   onSubmit,
+  onError,
   children,
   className,
 }: FormContainerProps<T>) => {
@@ -52,7 +62,10 @@ export const FormContainer = <T extends FieldValues>({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(handleSubmit)} className={className}>
+      <form
+        onSubmit={methods.handleSubmit(handleSubmit, onError)}
+        className={className}
+      >
         {children}
       </form>
     </FormProvider>

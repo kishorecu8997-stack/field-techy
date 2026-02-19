@@ -1,6 +1,6 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
+import { useSendOtp } from "@/shared/apiServices/commonOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -52,7 +52,7 @@ const SignUpWithEmail = ({
   });
 
   // Send Email OTP mutation
-  const { mutate: sendEmailOTP, isPending: isSendingOTP } = useSendEmailOTP({
+  const { mutate: sendOtp, isPending: isSendingOTP } = useSendOtp({
     onSuccess: (data) => {
       console.log("OTP sent successfully:", data);
       setIsOpen(true);
@@ -78,13 +78,19 @@ const SignUpWithEmail = ({
 
   const handleResendOTP = () => {
     const email = methods.getValues("email");
-    sendEmailOTP(email);
+    sendOtp({
+      body: { type: "email", email: email } as any,
+      headers: { authorization: "" },
+    });
   };
 
   const termsAccepted = methods.watch("terms");
 
   const handleSubmit = (data: SignUpFormData) => {
-    sendEmailOTP(data.email);
+    sendOtp({
+      body: { type: "email", email: data.email } as any,
+      headers: { authorization: "" },
+    });
   };
 
   const logo_light = assetsConfig.logos.ftLogo;

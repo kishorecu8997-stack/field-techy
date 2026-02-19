@@ -25,7 +25,7 @@ export const BillSummary = ({
   // Lookup Data
   const { data: countriesData } = useLookupData("countries");
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
-  const { data: experienceLevelsData } = useLookupData("educationLevels");
+  const { data: experienceLevelsData } = useLookupData("experienceLevels");
   const { data: engagementModelsData } = useLookupData("engagementModels");
 
   const countries = useMemo(

@@ -1,10 +1,17 @@
 import {
+  clientGetCompanyInfo,
+  clientGetRateCard,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
   type AppLoginResponse,
   type AppMarkProfileFileUploadedResponse,
   type AppRegisterClientResponse,
+  type AppUploadProfileFileResponse,
+  type ClientCalculateJobPriceData,
+  type ClientGetCompanyInfoResponse,
+  type ClientGetRateCardData,
   type ClientGetRateCardResponse,
+  type ClientInviteEngineerResponse,
   type ClientMarksJobFileUploadedResponses,
   type ClientPostJobResponse,
   type ClientUpdateCompanyInfoResponse,
@@ -30,20 +37,26 @@ import {
   appLoginMutation,
   appMarkProfileFileUploadedMutation,
   appRegisterClientMutation,
+  appUploadProfileFileMutation,
+  clientActionOnAssignmentMutation,
+  clientActionOnBreakMutation,
+  clientActionOnWorkLogMutation,
+  clientCalculateJobPriceOptions,
+  clientCancelJobMutation,
+  clientGetAssignmentDetailsOptions,
   clientGetCompanyInfoOptions,
   clientGetJobsOptions,
+  clientGetJobsQueryKey,
+  clientInviteEngineerMutation,
   clientMarksJobFileUploadedMutation,
   clientPostJobMutation,
   clientUpdateCompanyInfoMutation,
-  clientGetJobsQueryKey,
-  appUploadProfileFileMutation,
+  getJobLogsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
-import { useUploadClientFile } from "./clientService";
-
-export { useUploadClientFile };
+import { type ClientGetAssignmentDetailsData } from "@/api";
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
@@ -187,7 +200,6 @@ export function useClientPostJob(options?: {
   });
 }
 
-// ... existing code ...
 export function useClientGetJobs(enabled: boolean = true) {
   return useQuery({
     ...clientGetJobsOptions({
@@ -226,11 +238,7 @@ export function useClientMarkJobFileUploaded(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  return useMutation<
-    ClientMarksJobFileUploadedResponses[keyof ClientMarksJobFileUploadedResponses],
-    ClientMarksJobFileUploadedError,
-    Options<ClientMarksJobFileUploadedData>
-  >({
+  return useMutation({
     ...clientMarksJobFileUploadedMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
@@ -241,6 +249,142 @@ export function useClientMarkJobFileUploaded(options?: {
     },
     onError: options?.onError,
   });
+}
+
+export function useClientInviteEngineer(options?: {
+  onSuccess?: (data: ClientInviteEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientInviteEngineerMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+// ...
+
+export function useClientGetAssignmentDetails(
+  query: ClientGetAssignmentDetailsData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...clientGetAssignmentDetailsOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useClientActionOnAssignment(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientActionOnAssignmentMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientCancelJob(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientCancelJobMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientCalculateJobPrice(
+  query: ClientCalculateJobPriceData["query"],
+  enabled: boolean = false,
+) {
+  return useQuery({
+    ...clientCalculateJobPriceOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useClientActionOnWorkLog(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientActionOnWorkLogMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientActionOnBreak(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientActionOnBreakMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+import type { ClientFile } from "./clientTypes";
+
+// TODO: Hook needs proper investigation of API endpoint
+export function useClientFiles(_clientId: string | number) {
+  // Use correct API endpoint if available, for now return empty list
+  return {
+    data: [] as ClientFile[],
+    isLoading: false,
+    refetch: () => {},
+  };
+}
+
+export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
+  return useQuery({
+    ...getJobLogsOptions({
+      client: apiClient,
+      path: { assignmentId },
+    }),
+    enabled: enabled && !!assignmentId,
+  });
+}
+
+// TODO: Replace with actual lookup when available
+export function useVatOptions() {
+  return {
+    data: [
+      { label: "VAT", value: "VAT" },
+      { label: "GST", value: "GST" },
+    ],
+    isLoading: false,
+  };
 }
 
 /**

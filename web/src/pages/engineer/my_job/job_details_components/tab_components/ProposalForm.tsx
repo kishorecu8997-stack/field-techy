@@ -11,6 +11,7 @@ import {
 import { IoClose } from "react-icons/io5";
 import type { ProposalFormData } from "../../types.d";
 import type { UseFormReturn } from "react-hook-form";
+import { toast } from "react-toastify";
 
 /**
  * Form component for submitting job proposals with description and file attachments.
@@ -32,6 +33,7 @@ const ProposalForm = ({
   setSendProposal,
   setSelectedTab,
   reviewData,
+  onConfirm,
   isDummyNetworkEngineer = false,
 }: {
   methods: UseFormReturn<ProposalFormData>;
@@ -46,6 +48,7 @@ const ProposalForm = ({
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedTab?: React.Dispatch<React.SetStateAction<string>>;
   reviewData: ProposalFormData | null;
+  onConfirm?: (data: ProposalFormData) => Promise<void>;
   isDummyNetworkEngineer?: boolean;
 }) => (
   <>
@@ -167,18 +170,27 @@ const ProposalForm = ({
             <Button
               variant="no_style"
               type="button"
-              onClick={() => {
-                setShowReview(false);
-                setShowSuccess(true);
-                setTimeout(() => {
-                  setShowSuccess(false);
-                  const data = reviewData || methods.getValues();
-                  if (setSubmittedProposal) setSubmittedProposal(data);
-                  if (setSendProposal) setSendProposal(false);
-                  if (isDummyNetworkEngineer && setSelectedTab)
-                    setSelectedTab(JOB_TAB_LABELS.proposalInfo);
-                  methods.reset();
-                }, JOB_TAB_CONFIG.successDelayMs);
+              onClick={async () => {
+                try {
+                  if (onConfirm) {
+                    const data = reviewData || methods.getValues();
+                    await onConfirm(data);
+                  }
+                  setShowReview(false);
+                  setShowSuccess(true);
+                  setTimeout(() => {
+                    setShowSuccess(false);
+                    const data = reviewData || methods.getValues();
+                    if (setSubmittedProposal) setSubmittedProposal(data);
+                    if (setSendProposal) setSendProposal(false);
+                    if (isDummyNetworkEngineer && setSelectedTab)
+                      setSelectedTab(JOB_TAB_LABELS.proposalInfo);
+                    methods.reset();
+                  }, JOB_TAB_CONFIG.successDelayMs);
+                } catch (error) {
+                  console.error("Error submitting proposal:", error);
+                  toast.error("Failed to submit proposal. Please try again.");
+                }
               }}
               className="px-4 py-1.5 bg-teal-700 text-sm text-white rounded-md hover:bg-teal-800 transition"
             >

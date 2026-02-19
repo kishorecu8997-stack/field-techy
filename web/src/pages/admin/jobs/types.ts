@@ -23,6 +23,11 @@ export interface JobByCategoryProps {
   onClearFilters: () => void;
   showStatusSelect?: boolean;
   currentStatus?: AdminGetJobsQuery["status"] | undefined;
+  page?: number;
+  limit?: number;
+  total?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
 }
 
 export interface JobDataProps {
