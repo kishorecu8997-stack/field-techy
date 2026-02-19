@@ -5,6 +5,7 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import {
+  useEngineerGetMyDocuments,
   useAppDownloadProfileFile,
   getDownloadUrl,
   useAppDeleteProfileFile,
@@ -30,6 +31,8 @@ export interface Document {
   expiryDate?: string;
   status?: "Pending" | "Approved" | "Rejected";
   allowMultiple?: boolean;
+  size?: number | null;
+  sectionHeading?: string;
 }
 
 interface DocumentsListProps {
@@ -51,12 +54,19 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   // Specialized hooks for the 3 profile document types
   // Note: We drive the list from these hooks because the legacy 'engineerFiles' list
   // currently doesn't capture the new profile-based file uploads.
+
+  const { data: docsData, isLoading: isLoadingDocs } =
+    useEngineerGetMyDocuments();
+
   const { data: resumeData, isLoading: isLoadingResume } =
-    useAppDownloadProfileFile("resumeFile");
+    useAppDownloadProfileFile("resumeFile", !!docsData?.resumeFile?.fileName);
   const { data: govIdData, isLoading: isLoadingGovId } =
-    useAppDownloadProfileFile("govIdDoc");
+    useAppDownloadProfileFile("govIdDoc", !!docsData?.govIdDoc?.fileName);
   const { data: certificateData, isLoading: isLoadingCertificate } =
-    useAppDownloadProfileFile("certificateDoc");
+    useAppDownloadProfileFile(
+      "certificateDoc",
+      !!docsData?.certificateDoc?.fileName,
+    );
 
   const { mutateAsync: deleteProfileFile } = useAppDeleteProfileFile();
 
@@ -101,42 +111,66 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
   const documents: Document[] = useMemo(() => {
     const docMeta = [
-      { type: "RESUME", label: "Resume", fileName: "resume.pdf" },
+      {
+        type: "RESUME",
+        label: "Resume",
+        fallbackFileName: "resume.pdf",
+        sectionHeading: "Resume",
+      },
       {
         type: "GOVERNMENT_ID",
         label: "Government ID",
-        fileName: "government_id.pdf",
+        fallbackFileName: "government_id.pdf",
+        sectionHeading: "Government ID",
       },
       {
         type: "CERTIFICATE",
         label: "Certificate",
-        fileName: "certificate.pdf",
+        fallbackFileName: "certificate.pdf",
+        sectionHeading: "Certificate",
       },
     ];
 
-    return docMeta
-      .map((dm, index) => {
-        const fileInfo = previewUrlsMap[dm.type];
-        const previewUrl = fileInfo?.url || manualPreviewUrls[dm.type];
-        if (!previewUrl) return null;
+    const result: Document[] = [];
 
-        return {
-          id: index,
-          fileId: fileInfo?.id,
-          title: dm.label,
-          fileName: dm.fileName,
-          fileType: "PDF" as const,
-          previewUrl,
-          metadata: {
-            originalFileType: dm.type,
-          },
-        };
-      })
-      .filter(Boolean) as Document[];
-  }, [previewUrlsMap, manualPreviewUrls]);
+    docMeta.forEach((dm, index) => {
+      // Get info from the new list endpoint
+      const fileInfoFromApi =
+        dm.type === "RESUME"
+          ? docsData?.resumeFile
+          : dm.type === "GOVERNMENT_ID"
+            ? docsData?.govIdDoc
+            : dm.type === "CERTIFICATE"
+              ? docsData?.certificateDoc
+              : undefined;
+
+      if (!fileInfoFromApi?.fileName) return;
+
+      const previewInfo = previewUrlsMap[dm.type];
+      const previewUrl = previewInfo?.url || manualPreviewUrls[dm.type];
+
+      if (!previewUrl) return;
+
+      result.push({
+        id: index,
+        fileId: previewInfo?.id,
+        title: dm.label,
+        fileName: fileInfoFromApi.fileName || dm.fallbackFileName,
+        fileType: "PDF" as const,
+        previewUrl,
+        size: fileInfoFromApi.size ?? null,
+        sectionHeading: dm.sectionHeading,
+        metadata: {
+          originalFileType: dm.type,
+        },
+      });
+    });
+
+    return result;
+  }, [docsData, previewUrlsMap, manualPreviewUrls]);
 
   const isLoadingFiles =
-    isLoadingResume || isLoadingGovId || isLoadingCertificate;
+    isLoadingDocs || isLoadingResume || isLoadingGovId || isLoadingCertificate;
 
   const handleEdit = (id: number) => {
     onEditDocument?.(id);
@@ -175,12 +209,22 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
               // Clear manual preview URL if it exists
               if (originalType) {
-                setManualPreviewUrls((prev) => {
+                setManualPreviewUrls((prev: Record<string, string>) => {
                   const newState = { ...prev };
                   delete newState[originalType];
                   return newState;
                 });
               }
+
+              // Invalidate profile completion to update percentage
+              queryClient.invalidateQueries({
+                predicate: (query) =>
+                  Array.isArray(query.queryKey) &&
+                  query.queryKey[0] &&
+                  typeof query.queryKey[0] === "object" &&
+                  (query.queryKey[0] as { _id?: string })._id ===
+                    "engineerGetProfileCompletion",
+              });
 
               // Invalidate download queries to refresh the list
               queryClient.invalidateQueries({
@@ -190,6 +234,16 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
                   typeof query.queryKey[0] === "object" &&
                   (query.queryKey[0] as { _id?: string })._id ===
                     "appDownloadProfileFile",
+              });
+
+              // Also refresh new endpoint
+              queryClient.invalidateQueries({
+                predicate: (query) =>
+                  Array.isArray(query.queryKey) &&
+                  query.queryKey[0] &&
+                  typeof query.queryKey[0] === "object" &&
+                  (query.queryKey[0] as { _id?: string })._id ===
+                    "engineerGetMyDocuments",
               });
             } catch (error) {
               toast.error("Failed to delete document.");
@@ -227,7 +281,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
         // Update the manual preview URLs map to refresh UI if needed
         if (originalType) {
-          setManualPreviewUrls((prev) => ({
+          setManualPreviewUrls((prev: Record<string, string>) => ({
             ...prev,
             [originalType]: data.downloadUrl!,
           }));
@@ -274,16 +328,24 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
       <hr className="border-gray-200 mb-4" />
 
       {documents.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {documents.map((doc) => (
-            <DocumentCard
-              key={doc.metadata?.originalFileType || doc.id}
-              document={doc}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onDownload={handleDownload}
-              id={doc.id}
-            />
+            <div key={doc.metadata?.originalFileType || doc.id}>
+              {/* Section Heading */}
+              <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                {doc.sectionHeading}
+              </h3>
+
+              {/* Document Card */}
+              <DocumentCard
+                key={doc.metadata?.originalFileType || doc.id}
+                document={doc}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onDownload={handleDownload}
+                id={doc.id}
+              />
+            </div>
           ))}
         </div>
       ) : (
