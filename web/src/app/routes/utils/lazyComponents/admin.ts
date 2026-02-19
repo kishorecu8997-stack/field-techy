@@ -134,18 +134,3 @@ export const AddRolePage = React.lazy(
 export const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView"),
 );
-export const ManageGroups = React.lazy(
-  () => import("@/pages/admin/manage_groups"),
-);
-export const ManageGroupsAdd = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/AddGroup"),
-);
-export const ManageGroupsEdit = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/EditGroup"),
-);
-export const ManageGroupsView = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/ViewGroup"),
-);
-export const ManageGroupsAddEngineer = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/SelectEngineers"),
-);
