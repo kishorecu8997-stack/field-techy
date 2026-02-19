@@ -1,18 +1,21 @@
-import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
-import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
-import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
+import {
+  JOB_STATUSES,
+  WORKING_TYPES,
+} from "@/pages/engineer/search_result/types";
+
+import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
+import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
+import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
 import Popup from "@/shared/components/Popup";
+import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
+import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
+import { FaBell } from "react-icons/fa";
+import { IoEllipsisVerticalOutline } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
-import { IoEllipsisVerticalOutline } from "react-icons/io5";
-import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
-import { FaBell } from "react-icons/fa";
-import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
-import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -25,13 +28,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   client,
   duration,
   type,
-  status = "NEW",
-  setIsWorkSubmitted,
+  status = JOB_STATUSES.posted,
   setSendProposal,
   isSendProposal,
   setActiveTab,
   OfferJobStatus,
-  setOfferJobStatus,
   hideBreakDetails = false,
   jobLocation,
   numberOfVacancy,
@@ -45,10 +46,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onOpenViewClientFeedback,
   allCardsApproved,
 }) => {
+  const isDummyJob = false;
+
   const location = useLocation();
   const isClient = location.pathname.includes("client");
   const params = useParams();
-  const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -79,7 +81,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     setIsMenuOpen(false);
   };
   const handleConfirmAction = () => {
-    console.log("Confirmed action:", actionType);
     setIsConfirmOpen(false);
   };
   const handleBreakDetails = async () => {
@@ -99,9 +100,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
       <div
         className={`${
           isSendProposal
-            ? isDummyJob
-              ? "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-              : "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+            ? "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
             : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
         } p-5 rounded-xl shadow-md`}
       >
@@ -194,8 +193,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             OfferJobStatus={OfferJobStatus}
             isSendProposal={isSendProposal}
             setActiveTab={setActiveTab}
-            setIsWorkSubmitted={setIsWorkSubmitted}
-            setOfferJobStatus={setOfferJobStatus}
             setOpen={setOpen}
             status={status}
             setSendProposal={setSendProposal}

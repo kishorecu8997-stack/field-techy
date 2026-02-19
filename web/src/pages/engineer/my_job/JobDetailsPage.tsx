@@ -1,23 +1,20 @@
-import {
-  useClientGetById,
-  useClientGetJobsById,
-} from "@/shared/apiServices/client/clientService";
-import { isDummyNetworkEngineerJob, DUMMY_CLIENT_FEEDBACK } from "@/constants/dummyJobs";
+import { DUMMY_CLIENT_FEEDBACK, isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { getDurationString } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
-import type { ProgressUpdate } from "./types.d";
-import ClientInfoCard from "./job_details_components/ClientInfoCard";
-import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
-import JobTabSection from "./job_details_components/JobTabSection";
-import { getDurationString } from "@/utils";
-import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
-import GiveClientFeedbackModal from "./job_details_components/jobHeaderComponents/GiveClientFeedbackModal";
-import ViewClientFeedbackModal from "./job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
 import { toast } from "react-toastify";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
+import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
+import GiveClientFeedbackModal from "./job_details_components/jobHeaderComponents/GiveClientFeedbackModal";
+import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
+import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
+import ViewClientFeedbackModal from "./job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
+import JobTabSection from "./job_details_components/JobTabSection";
+import type { ProgressUpdate } from "./types.d";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -43,15 +40,20 @@ const JobDetailsPage = () => {
   const [showViewClientFeedback, setShowViewClientFeedback] = useState(false);
 
   // Always call hooks - pass empty string if jobId is missing or dummy
-  const { data: jobs, isLoading } = useClientGetJobsById(
-    isDummyJob ? "" : (params.jobId ?? ""),
-  );
-  const { data: client } = useClientGetById(jobs?.clientId ?? "", {
-    enabled: !!jobs?.clientId && !isDummyJob,
+  // const { data: jobs, isLoading } = useClientGetJobsById(
+  //   isDummyJob ? "" : (params.jobId ?? ""),
+  // );
+  // const { data: client } = useClientGetById(jobs?.clientId ?? "", {
+  //   enabled: !!jobs?.clientId && !isDummyJob,
+  // });
+
+  const { data: jobList, isLoading } = useEngineerSearchJobs({
+    jobId: Number(params.jobId),
   });
-  const location = isDummyJob
-    ? "Chennai, Tamil Nadu, India"
-    : [client?.city, client?.country].filter(Boolean).join(", ") || "-";
+
+  const job = jobList?.[0];
+
+  const location = job?.clientDetails?.address;
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
@@ -59,7 +61,7 @@ const JobDetailsPage = () => {
 
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
-    
+
     // Check if a final statement was just submitted
     if (update.title === "Final Statement") {
       setIsFinalStatementSubmitted(true);
@@ -68,10 +70,10 @@ const JobDetailsPage = () => {
 
   const handleOpenFinalStatement = () => setShowFinalStatement(true);
   const handleCloseFinalStatement = () => setShowFinalStatement(false);
-  
+
   const handleOpenGiveClientFeedback = () => setShowGiveClientFeedback(true);
   const handleCloseGiveClientFeedback = () => setShowGiveClientFeedback(false);
-  
+
   const handleSubmitClientFeedback = () => {
     toast.success("Feedback submitted successfully");
     handleCloseGiveClientFeedback();
@@ -88,7 +90,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -113,7 +115,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -125,14 +127,14 @@ const JobDetailsPage = () => {
   }
 
   // Handle case where job data is not found
-  if (!jobs && !isDummyJob) {
+  if (!job && !isDummyJob) {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -149,18 +151,18 @@ const JobDetailsPage = () => {
   }
 
   // Prepare dummy job data
-  const jobTitle = isDummyJob ? "Network Engineer" : (jobs?.jobTitle as string);
-  const clientName = isDummyJob ? "-" : (client?.companyName as string);
+  const jobTitle = isDummyJob ? "Network Engineer" : (job?.jobTitle as string);
+  const clientName = isDummyJob
+    ? "-"
+    : (job?.clientDetails?.companyName as string);
   const duration = isDummyJob
     ? "5 weeks"
     : getDurationString({
-        startDateStr: jobs?.startDate as string,
-        endDateStr: jobs?.projectDeadline as string,
-      });
-  const engagementType = isDummyJob
-    ? "ON_SITE"
-    : (jobs?.engagementModel as string);
-  const jobStatus = isDummyJob ? "NEW" : (jobs?.status as JobStatus);
+      startDateStr: job?.startDate as string,
+      endDateStr: job?.endDate as string,
+    });
+  const engagementType = isDummyJob ? "ON_SITE" : (job?.jobType as string);
+  const jobStatus = isDummyJob ? "New" : (job?.status as JobStatus);
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -168,7 +170,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isReport
           customLabels={
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
@@ -189,8 +191,8 @@ const JobDetailsPage = () => {
               setOfferJobStatus={setOfferJobStatus}
               OfferJobStatus={OfferJobStatus}
               hideBreakDetails={isDummyJob}
-              jobLocation={isDummyJob ? "Chennai, Tamil Nadu, India" : location}
-              numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
+              jobLocation={location ?? ""}
+              numberOfVacancy={job?.vacancies ?? 0}
               numberOfApplicants={isDummyJob ? 20 : undefined}
               hideDurationAndClient={isDummyJob}
               activeTab={activeTab}
@@ -230,11 +232,11 @@ const JobDetailsPage = () => {
           <div className="lg:col-span-1">
             <ClientInfoCard
               name={clientName}
-              memberSince={client?.memberSince as string}
+              memberSince={job?.clientDetails?.companyName as string} // TODO: memberSince not in clientDetails, using companyName as placeholder or fix if available
               location={location as string}
-              rating={client?.rating || 0}
-              reviews={client?.reviewCount ?? 0}
-              verifications={client?.verifications ?? []}
+              rating={0} // client details don't have rating
+              reviews={0} // client details don't have review count
+              verifications={[]} // client details don't have verifications
               onOpenReview={() => setIsReviewOpen(true)}
             />
           </div>
@@ -244,21 +246,21 @@ const JobDetailsPage = () => {
       <ReviewClientModal
         isOpen={isReviewOpen}
         onClose={() => setIsReviewOpen(false)}
-        clientName={(client?.companyName as string) ?? "Client"}
+        clientName={clientName ?? "Client"}
         onSubmit={handleSubmitReview}
       />
-      
+
       <GiveClientFeedbackModal
         isOpen={showGiveClientFeedback}
         onClose={handleCloseGiveClientFeedback}
-        clientName={isDummyJob ? "Kraft and Co" : ((client?.companyName as string) ?? "Client")}
+        clientName={isDummyJob ? "Kraft and Co" : ""}
         onSubmit={handleSubmitClientFeedback}
       />
-      
+
       <ViewClientFeedbackModal
         isOpen={showViewClientFeedback}
         onClose={handleCloseViewClientFeedback}
-        clientName={isDummyJob ? DUMMY_CLIENT_FEEDBACK.clientName : ((client?.companyName as string) ?? "Client")}
+        clientName={isDummyJob ? DUMMY_CLIENT_FEEDBACK.clientName : ""}
         clientImage={isDummyJob ? DUMMY_CLIENT_FEEDBACK.clientImage : undefined}
         rating={isDummyJob ? DUMMY_CLIENT_FEEDBACK.rating : undefined}
         review={isDummyJob ? DUMMY_CLIENT_FEEDBACK.review : undefined}

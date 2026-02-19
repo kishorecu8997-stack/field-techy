@@ -4,6 +4,16 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
+// Utility to hash a string using SHA-256 and return hex
+async function hashOTP(otp: string) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(otp);
+  const hashBuffer = await window.crypto.subtle.digest("SHA-256", data);
+  // Convert buffer to hex string
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
 export interface OTPValues {
   otp: string;
@@ -101,7 +111,7 @@ const OTPPage: React.FC<OTPPageProps> = ({
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
-  const handleSubmit = (data: OTPValues) => {
+  const handleSubmit = async (data: OTPValues) => {
     if (!data.otp || data.otp.length !== 6) {
       method.setError("otp", {
         type: "validate",
@@ -118,7 +128,9 @@ const OTPPage: React.FC<OTPPageProps> = ({
       return;
     }
 
-    onSubmit?.(data);
+    // Hash the OTP before passing it to onSubmit
+    const hashedOtp = await hashOTP(data.otp);
+    onSubmit?.({ ...data, otp: hashedOtp });
   };
 
   const handleResend = () => {

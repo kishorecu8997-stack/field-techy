@@ -32,7 +32,7 @@ export type AppConfigKey = keyof AppConfig;
  * @todo Move hardcoded values to environment variables (.env)
  */
 const rawConfig: AppConfig = {
-  apiUrl: import.meta.env.VITE_API_URL || "",
+  apiUrl: import.meta.env.VITE_API_URL || "http://localhost:3000",
   tokenExpirationDuration: import.meta.env.VITE_TOKEN_EXPIRATION_DURATION
     ? Number(import.meta.env.VITE_TOKEN_EXPIRATION_DURATION)
     : 60 * 60 * 1000, // Default: 1 hour in milliseconds

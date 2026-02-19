@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 export interface Column<T extends object> {
   key?: keyof T | string;
@@ -22,6 +23,10 @@ export interface CustomTableProps<T extends object> {
   showPagination?: boolean;
   loading?: boolean;
   error?: string | null;
+  totalCount?: number;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
 }
 
 /**
@@ -37,6 +42,10 @@ export function CustomTable<T extends object>({
   showPagination = true,
   loading: externalLoading,
   error: externalError,
+  totalCount: externalTotalCount,
+  currentPage: externalCurrentPage,
+  onPageChange: externalOnPageChange,
+  onPageSizeChange: externalOnPageSizeChange,
 }: CustomTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
@@ -48,6 +57,15 @@ export function CustomTable<T extends object>({
   const loading = externalLoading ?? internalLoading;
   const error = externalError ?? internalError;
 
+  const isExternalPagination =
+    !!externalOnPageChange &&
+    externalCurrentPage !== undefined &&
+    externalTotalCount !== undefined;
+  const activePage = isExternalPagination
+    ? (externalCurrentPage ?? 1)
+    : currentPage;
+  const activePageSize = isExternalPagination ? initialPageSize : pageSize;
+
   // ---------- Fetch (Server Pagination) ----------
   useEffect(() => {
     const fetchData = async () => {
@@ -56,8 +74,8 @@ export function CustomTable<T extends object>({
         setInternalLoading(true);
         setInternalError(null);
         const res = await api({
-          page: currentPage,
-          pageSize,
+          page: activePage,
+          pageSize: activePageSize,
           filters: externalFilters,
         });
         setServerData(res.data);
@@ -69,23 +87,38 @@ export function CustomTable<T extends object>({
       }
     };
     fetchData();
-  }, [api, currentPage, pageSize, externalFilters]);
+  }, [api, activePage, activePageSize, externalFilters]);
 
   // ---------- Data Helpers ----------
   const allData = api ? serverData : (data ?? []);
-  const totalCount = api ? total : allData.length;
+  const totalCount = isExternalPagination
+    ? (externalTotalCount ?? allData.length)
+    : api
+      ? total
+      : allData.length;
 
   const paginatedData = useMemo(() => {
     if (api) return allData;
-    const start = (currentPage - 1) * pageSize;
-    return allData.slice(start, start + pageSize);
-  }, [allData, currentPage, pageSize, api]);
+    if (isExternalPagination) return allData;
+    const start = (activePage - 1) * activePageSize;
+    return allData.slice(start, start + activePageSize);
+  }, [allData, activePage, activePageSize, api, isExternalPagination]);
 
-  const handlePageChange = (page: number) => setCurrentPage(page);
+  const handlePageChange = (page: number) => {
+    if (isExternalPagination) {
+      externalOnPageChange?.(page);
+    } else {
+      setCurrentPage(page);
+    }
+  };
 
   const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
-    setCurrentPage(1); // Reset to first page when size changes
+    if (isExternalPagination) {
+      externalOnPageSizeChange?.(size);
+    } else {
+      setPageSize(size);
+      setCurrentPage(1);
+    }
   };
 
   // ---------- Utils ----------
@@ -106,8 +139,8 @@ export function CustomTable<T extends object>({
       <div className="flex flex-col flex-1 shadow overflow-hidden bg-white dark:bg-gray-900">
         <div className="flex-1 overflow-auto min-h-[250px] max-h-[600px]">
           {loading && (
-            <div className="text-center py-10 text-gray-500 dark:text-gray-300">
-              Loading...
+            <div className="flex justify-center items-center py-10 w-full">
+              <LoaderComponent />
             </div>
           )}
 
@@ -230,8 +263,8 @@ export function CustomTable<T extends object>({
           <div className="bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-sm z-20">
             <Pagination
               total={totalCount}
-              pageSize={pageSize}
-              currentPage={currentPage}
+              pageSize={activePageSize}
+              currentPage={activePage}
               onPageChange={handlePageChange}
               onPageSizeChange={handlePageSizeChange}
             />

@@ -4,6 +4,7 @@ import type { ManageEngineerProps } from "@/pages/admin/engineer/types";
 export const manageEngineer: ManageEngineerProps[] = [
   {
     id: 1,
+    userId: 101,
     engineerID: "ENG-1001",
     details: {
       name: "Alice Johnson",
@@ -29,6 +30,7 @@ export const manageEngineer: ManageEngineerProps[] = [
   },
   {
     id: 2,
+    userId: 102,
     engineerID: "ENG-1002",
     details: {
       name: "Brian Lee",
@@ -54,6 +56,7 @@ export const manageEngineer: ManageEngineerProps[] = [
   },
   {
     id: 3,
+    userId: 103,
     engineerID: "ENG-1003",
     details: {
       name: "Chloe Smith",
@@ -79,6 +82,7 @@ export const manageEngineer: ManageEngineerProps[] = [
   },
   {
     id: 4,
+    userId: 104,
     engineerID: "ENG-1004",
     details: {
       name: "Arjun Mehta",
@@ -104,6 +108,7 @@ export const manageEngineer: ManageEngineerProps[] = [
   },
   {
     id: 5,
+    userId: 105,
     engineerID: "ENG-1005",
     details: {
       name: "Arjun Mehta",
@@ -129,6 +134,7 @@ export const manageEngineer: ManageEngineerProps[] = [
   },
   {
     id: 6,
+    userId: 106,
     engineerID: "ENG-1006",
     details: {
       name: "Rohan Kapoor",
@@ -154,6 +160,7 @@ export const manageEngineer: ManageEngineerProps[] = [
   },
   {
     id: 7,
+    userId: 107,
     engineerID: "ENG-1007",
     details: {
       name: "Sneha Iyer",
@@ -179,6 +186,7 @@ export const manageEngineer: ManageEngineerProps[] = [
   },
   {
     id: 8,
+    userId: 108,
     engineerID: "ENG-1008",
     details: {
       name: "Vikram Singh",
@@ -204,6 +212,7 @@ export const manageEngineer: ManageEngineerProps[] = [
   },
   {
     id: 9,
+    userId: 109,
     engineerID: "ENG-1009",
     details: {
       name: "Meera Nair",

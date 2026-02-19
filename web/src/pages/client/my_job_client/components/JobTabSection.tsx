@@ -49,6 +49,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   showManageProposals = true,
   onAllCardsApprovedChange,
   onTabChange,
+  jobID,
 }) => {
   const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
   const [rejectedProposals, setRejectedProposals] = useState<string[]>([]);
@@ -56,8 +57,8 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
 
   const remainingProposals = Math.max(
     networkEngineerProposals.length -
-      acceptedProposals.length -
-      rejectedProposals.length,
+    acceptedProposals.length -
+    rejectedProposals.length,
     0,
   );
 
@@ -183,19 +184,19 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     },
     ...(showManageProposals
       ? [
-          {
-            label: DUMMY_TABS_LABELS.manageProposals,
-            content: (
-              <ManageProposalsTab
-                remainingProposals={remainingProposals}
-                acceptedProposals={acceptedProposals}
-                rejectedProposals={rejectedProposals}
-                onAcceptProposal={handleAcceptProposal}
-                onRejectProposal={handleRejectProposal}
-              />
-            ),
-          },
-        ]
+        {
+          label: DUMMY_TABS_LABELS.manageProposals,
+          content: (
+            <ManageProposalsTab
+              remainingProposals={remainingProposals}
+              acceptedProposals={acceptedProposals}
+              rejectedProposals={rejectedProposals}
+              onAcceptProposal={handleAcceptProposal}
+              onRejectProposal={handleRejectProposal}
+            />
+          ),
+        },
+      ]
       : []),
   ];
 
@@ -207,11 +208,11 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   return (
     <div>
       {isSendProposal ? (
-        <SendProposal />
+        <SendProposal jobId={Number(jobID)} />
       ) : (
-        <TabComponent 
-          tabs={tabs} 
-          defaultActiveTab={activeTab || defaultTab} 
+        <TabComponent
+          tabs={tabs}
+          defaultActiveTab={activeTab || defaultTab}
           onTabChange={onTabChange}
         />
       )}

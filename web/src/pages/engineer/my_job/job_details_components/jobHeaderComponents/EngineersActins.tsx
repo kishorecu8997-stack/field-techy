@@ -2,6 +2,7 @@ import { icons } from "@/config/icons";
 import {
   JOB_STATUSES,
   type JobStatus,
+  type AssignmentStatus,
 } from "@/pages/engineer/search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -10,7 +11,8 @@ import { type Dispatch, type SetStateAction } from "react";
 import { toast } from "react-toastify";
 import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
 import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
-
+// ...
+// ...
 /**
  * EngineersActions Component
  * Renders the actions section for the Manage Proposal page, including a button to invite a new job.
@@ -35,7 +37,7 @@ const EngineersActions = ({
   onOpenViewClientFeedback,
 }: {
   setOfferJobStatus?: Dispatch<
-    SetStateAction<OfferedJobStatusType | undefined>
+    SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>
   >;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
@@ -43,7 +45,8 @@ const EngineersActions = ({
   setActiveTab?: Dispatch<SetStateAction<string>>;
   isSendProposal?: boolean;
   status?: JobStatus | string;
-  OfferJobStatus?: OfferedJobStatusType | undefined;
+  OfferJobStatus?: OfferedJobStatusType | AssignmentStatus | undefined;
+
   activeTab?: string;
   isDummyJob?: boolean;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
@@ -168,7 +171,7 @@ const EngineersActions = ({
   return (
     <div className="mt-4 flex flex-wrap gap-3 h-fit justify-end">
       <span className="flex rounded-md text-sm font-medium h-fit justify-end items-end w-fit">
-        {status === JOB_STATUSES.inprogress ? (
+        {status === JOB_STATUSES.inProgress ? (
           <div className="flex flex-wrap gap-2 w-fit">
             <Button
               className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -219,7 +222,7 @@ const EngineersActions = ({
               </Button>
             ) : (
               <div
-                className="text-white hover:underline cursor-pointer"
+                className=" hover:underline cursor-pointer"
                 onClick={() => handleViewJobPosting()}
               >
                 View Job posting

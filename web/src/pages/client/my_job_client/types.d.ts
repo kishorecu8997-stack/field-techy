@@ -144,6 +144,7 @@ export type JobTabSectionProps = {
   isJobAccepted?: boolean;
   onAllCardsApprovedChange?: (allApproved: boolean) => void;
   onTabChange?: (tabLabel: string) => void;
+  jobID?: string;
 };
 
 export const TIMELINE_CARD_TYPE: {

@@ -9,7 +9,11 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { type JobStatus } from "../search_result/types";
+import {
+  type AssignmentStatus,
+  type JobStatus,
+  type OfferedJobStatusType,
+} from "../../engineer/search_result/types";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -20,11 +24,11 @@ const ClientJobDetails = () => {
   const params = useParams();
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
+  const [allCardsApproved, setAllCardsApproved] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
   const [OfferJobStatus, setOfferJobStatus] = useState<
-    "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
-  >("initial");
-  const [allCardsApproved, setAllCardsApproved] = useState(false);
+    AssignmentStatus | OfferedJobStatusType | undefined
+  >(undefined);
 
   const jobId = Number(params.jobId);
   const id = Number(params.id);
@@ -76,7 +80,7 @@ const ClientJobDetails = () => {
               client={matchedJob?.client as string}
               duration={matchedJob?.duration as string}
               type={matchedJob?.type}
-              status={matchedJob?.status}
+              status={matchedJob?.status as string | undefined}
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
@@ -103,6 +107,7 @@ const ClientJobDetails = () => {
               showManageProposals
               onAllCardsApprovedChange={setAllCardsApproved}
               onTabChange={setActiveTab}
+              jobID={String(jobId)}
             />
           </div>
           <SidebarJobPostWallet earnings={earningsData} />
