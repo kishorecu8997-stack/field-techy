@@ -12,12 +12,12 @@ import { DUMMY_ENGINEER_FEEDBACK_LIST } from "@/constants/dummyJobs";
  * Renders the actions section for the Manage Proposal page, including a button to invite a new job.
  * @returns {JSX.Element} The rendered actions section
  * */
-const ClientActions = ({ 
-  activeTab, 
-  allCardsApproved = false 
-}: { 
-  activeTab?: string; 
-  allCardsApproved?: boolean; 
+const ClientActions = ({
+  activeTab,
+  allCardsApproved = false
+}: {
+  activeTab?: string;
+  allCardsApproved?: boolean;
 }) => {
   const navigate = useNavigate();
   const { id, jobId } = useParams();
@@ -42,7 +42,7 @@ const ClientActions = ({
       <div className="flex flex-wrap gap-4 w-full justify-end">
         {showFeedbackButton && (
           <div
-            className="text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-2 border-white hover:bg-teal-700/40"
+            className="text-white text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white"
             onClick={handleViewFeedback}
           >
             <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
