@@ -2,10 +2,10 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { FaUserCircle } from "react-icons/fa";
-import type { ManageEngineerProps, EngineerStatusType } from "../types";
+import type { ManageEngineerProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 
@@ -36,63 +36,10 @@ export default function SuspendedUser() {
     limit: pageSize,
     status: "suspended",
   });
+  
+  const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
-  // Map API response to table rows
-  const engineersData: ManageEngineerProps[] = (
-    engineersResponse?.data ?? []
-  ).map((e) => {
-    // Get latest suspension entry
-    const suspension = e.statusHistory
-      ?.filter((s) => s.type === "suspension")
-      ?.sort(
-        (a, b) =>
-          new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime(),
-      )[0];
-    return {
-      id: e.id,
-      userId: e.userId,
-      engineerID: e.engineerCode ?? "N/A",
-      details: {
-        name: e.name ?? "N/A",
-        email: e.email ?? "N/A",
-        phone: e.phoneNumber ?? "N/A",
-      },
-      location: e.location ?? "N/A",
-      registrationDate: e.registrationDate
-        ? new Date(e.registrationDate).toLocaleDateString()
-        : "N/A",
-      walletBalance: e.balance?.toString() ?? "0",
-      kycStatus: e.profileStatus as EngineerStatusType,
-      employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
-      avgRating: e.averageRating ?? 0,
-      approvalStatus: e.profileStatus as EngineerStatusType,
-      suspendReason: suspension?.reason ?? "N/A",
-      suspendFrom: suspension?.startDate
-        ? new Date(suspension.startDate).toLocaleDateString()
-        : "N/A",
-      suspendTo: suspension?.endDate
-        ? new Date(suspension.endDate).toLocaleDateString()
-        : "N/A",
-      suspendBy: suspension?.adminName ?? "N/A",
-      suspendOn: suspension?.actionDate
-        ? new Date(suspension.actionDate).toLocaleDateString()
-        : "N/A",
-      currentStatus: suspension?.revokedAt ? "Revoked" : "Suspended",
-    };
-  });
-
-  const filteredData = useMemo(() => {
-    const q = search.toLowerCase();
-    return engineersData.filter(
-      (e) =>
-        e.engineerID.toLowerCase().includes(q) ||
-        e.details.name.toLowerCase().includes(q) ||
-        e.details.email.toLowerCase().includes(q) ||
-        e.location.toLowerCase().includes(q),
-    );
-  }, [engineersData, search]);
-
-  const handleRevoke = async (id: number) => {
+  const handleRevoke = async (engineer: ManageEngineerProps) => {
     await showPopup({
       title: "Revoke",
       body: "Are you sure you want to revoke suspension of this engineer?",
@@ -107,7 +54,7 @@ export default function SuspendedUser() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Revoking engineer:", id);
+            console.log("Revoking engineer:", engineer.id);
             toast.success("Suspension revoked successfully!");
             close(true);
           },
@@ -117,10 +64,22 @@ export default function SuspendedUser() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { label: "Sr.No.", renderCell: (_row: ManageEngineerProps, index: number) => (currentPage - 1) * pageSize + index + 1 },
+    {
+      label: "Sr.No.",
+      renderCell: (_row: ManageEngineerProps, index: number) =>
+        (currentPage - 1) * pageSize + index + 1,
+    },
     {
       key: "engineerID",
       label: "Engineer ID",
+      renderCell: (row: ManageEngineerProps) => {
+        const id = row.engineerCode || "N/A";
+        return (
+          <div className="text-sm font-medium text-gray-900 dark:text-white">
+            {id}
+          </div>
+        );
+      },
     },
     {
       key: "details",
@@ -132,12 +91,12 @@ export default function SuspendedUser() {
               <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
             </div>
             <div>
-              <div className="font-semibold">{row.details.name}</div>
+              <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.phone}
+                {row.phoneNumber}
               </div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.email}
+                {row.email}
               </div>
             </div>
           </div>
@@ -147,24 +106,90 @@ export default function SuspendedUser() {
     {
       key: "suspendReason",
       label: "Reason for Suspension",
+      renderCell: (row: ManageEngineerProps) => {
+        const latestSuspension = row.statusHistory
+          ?.filter((s) => s.type === "suspension")
+          ?.sort(
+            (a, b) =>
+              new Date(b.actionDate).getTime() -
+              new Date(a.actionDate).getTime(),
+          )[0];
+
+        return latestSuspension?.reason || "N/A";
+      },
     },
     {
       key: "suspendFrom",
       label: "Suspend From",
+      renderCell: (row: ManageEngineerProps) => {
+        const latestSuspension = row.statusHistory
+          ?.filter((s) => s.type === "suspension")
+          ?.sort(
+            (a, b) =>
+              new Date(b.actionDate).getTime() -
+              new Date(a.actionDate).getTime(),
+          )[0];
+
+        return latestSuspension?.startDate
+          ? new Date(latestSuspension.startDate).toLocaleDateString()
+          : "N/A";
+      },
     },
-    { key: "suspendTo", label: "Suspend To" },
-    { key: "suspendBy", label: "Suspend By" },
-    { key: "suspendOn", label: "Suspend On" },
-    { key: "currentStatus", label: "Current Status", dataCellAlign: "center" },
+    {
+      key: "suspendTo",
+      label: "Suspend To",
+      renderCell: (row: ManageEngineerProps) => {
+        const latestSuspension = row.statusHistory
+          ?.filter((s) => s.type === "suspension")
+          ?.sort(
+            (a, b) =>
+              new Date(b.actionDate).getTime() -
+              new Date(a.actionDate).getTime(),
+          )[0];
+
+        return latestSuspension?.endDate
+          ? new Date(latestSuspension.endDate).toLocaleDateString()
+          : "N/A";
+      },
+    },
+    {
+      key: "suspendBy",
+      label: "Suspend By",
+      renderCell: (row: ManageEngineerProps) => {
+        const latestSuspension = row.statusHistory
+          ?.filter((s) => s.type === "suspension")
+          ?.sort(
+            (a, b) =>
+              new Date(b.actionDate).getTime() -
+              new Date(a.actionDate).getTime(),
+          )[0];
+
+        return latestSuspension?.adminName || "N/A";
+      },
+    },
+    {
+      key: "suspendOn",
+      label: "Suspend On",
+      renderCell: (row: ManageEngineerProps) => {
+        const latestSuspension = row.statusHistory
+          ?.filter((s) => s.type === "suspension")
+          ?.sort(
+            (a, b) =>
+              new Date(b.actionDate).getTime() -
+              new Date(a.actionDate).getTime(),
+          )[0];
+
+        return latestSuspension?.actionDate
+          ? new Date(latestSuspension.actionDate).toLocaleDateString()
+          : "N/A";
+      },
+    },
     {
       key: "action",
       label: "Actions",
       align: "center",
       renderCell: (row: ManageEngineerProps) => (
-        <div
-          className="mx-auto text-center"
-          onClick={() => handleRevoke(row.id)}
-        >
+        <div className="mx-auto text-center" onClick={() => handleRevoke(row)}>
           <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white">
             Revoke
           </Button>
@@ -182,7 +207,7 @@ export default function SuspendedUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredData}
+            data={engineerData}
             initialPageSize={pageSize}
             currentPage={currentPage}
             loading={isLoading}

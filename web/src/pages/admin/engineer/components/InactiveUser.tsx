@@ -1,17 +1,15 @@
-import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import { IoCloseSharp } from "react-icons/io5";
 import {
+  documentType,
   SUSPEND_ENGINEER_DEFAULT_VALUES,
   type BlockEngineerFormData,
   type ManageEngineerProps,
   type SuspendEngineerFormData,
-  type EngineerStatusType
 } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
@@ -21,6 +19,9 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import BlockEngineer from "./BlockEngineer";
 import ActionsMenu from "./ActionMenu";
 import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
+import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
+import ViewFileComponent from "./ViewFileComponent";
+import SelectMenu from "@/shared/components/SelectMenu";
 
 /**
  * InactiveUser Component
@@ -38,8 +39,12 @@ export default function InactiveUser() {
   });
 
   const { showPopup } = usePopupStore();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
+  const [activeRowId, setActiveRowId] = useState<number | null>(null);
+  const [activeUserId, setActiveUserId] = useState<number | null>(null);
+  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
+    null,
+  );
+  const [isOpen, setIsOpen] = useState(false);
   const [showAction, setShowAction] = useState<number | null>(null);
   const [isSuspendEngineer, setIsSuspendEngineer] = useState<boolean>(false);
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
@@ -55,37 +60,7 @@ export default function InactiveUser() {
         status: "inactive",
       });
       
-      // Map API response to table rows
-      const engineersData: ManageEngineerProps[] = (engineersResponse?.data ?? []).map((e) => ({
-        id: e.userId,
-        userId: e.userId,
-        engineerID: e.engineerCode,
-        details: {
-          name: e.name || "N/A",
-          email: e.email || "N/A",
-          phone: e.phoneNumber || "N/A",
-        },
-        submittedDocuments: e.statusHistory?.map((s) => s.type) ?? [],
-        documents: "View",
-        location: e.location || "N/A",
-        registrationDate: new Date(e.registrationDate).toLocaleDateString(),
-        walletBalance: e.balance?.toString() ?? "0",
-        kycStatus: e.profileStatus as EngineerStatusType,
-        employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
-        avgRating: e.averageRating,
-        approvalStatus: e.profileStatus as EngineerStatusType,
-      }));
-    
-      const filteredData = useMemo(() => {
-        const q = search.toLowerCase();
-        return engineersData.filter(
-          (e) =>
-            e.engineerID.toLowerCase().includes(q) ||
-            e.details.name.toLowerCase().includes(q) ||
-            e.details.email.toLowerCase().includes(q) ||
-            e.location.toLowerCase().includes(q)
-        );
-      }, [engineersData, search]);
+  const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   //Delete confirmation
   const handleDeleteEngineer = async (job: ManageEngineerProps) => {
@@ -117,6 +92,14 @@ export default function InactiveUser() {
     {
       key: "engineerID",
       label: "Engineer ID",
+      renderCell: (row: ManageEngineerProps) => {
+        const id = row.engineerCode || "N/A";
+        return (
+          <div className="text-sm font-medium text-gray-900 dark:text-white">
+            {id}
+          </div>
+        );
+      },
     },
     {
       key: "details",
@@ -128,12 +111,12 @@ export default function InactiveUser() {
               <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
             </div>
             <div>
-              <div className="font-semibold">{row.details.name}</div>
+              <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.phone}
+                {row.phoneNumber}
               </div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.email}
+                {row.email}
               </div>
             </div>
           </div>
@@ -141,55 +124,49 @@ export default function InactiveUser() {
       },
     },
     {
-      key: "documents",
+      key: "documentType",
       label: "View Documents",
-      align: "center",
       renderCell: (row: ManageEngineerProps) => {
-        const name = row.documents || "N/A";
         return (
-          <div className="mx-auto text-center">
-            <Button
-              className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-              onClick={() => {
-                setIsModalOpen(true);
-                setSelectedRowId(row.id);
-              }}
-            >
-              {name}
-            </Button>
-          </div>
+          <SelectMenu
+            placeholder="Select Document"
+            className="w-36"
+            options={
+              documentType?.map((item) => ({
+                value: item.value ?? "",
+                label: item.label ?? "",
+              })) ?? []
+            }
+            value={activeRowId === row.id ? selectedType : null}
+            onChange={(value) => {
+              setActiveRowId(row.id);
+              setActiveUserId(row.userId);
+              setSelectedType(value as ProfileFileType | null);
+              setIsOpen(true);
+            }}
+          />
         );
       },
     },
-    {
-      key: "location",
-      label: "Location",
-    },
+{ key: "location", label: "Location", renderCell: (row) => row.location || "N/A" },
     {
       key: "registrationDate",
       label: "Registration Date",
       dataCellAlign: "center",
+      renderCell: (row) =>
+        row.registrationDate
+          ? new Date(row.registrationDate).toLocaleDateString()
+          : "N/A",
     },
-    {
-      key: "walletBalance",
-      label: "Wallet Balance",
-      dataCellAlign: "center",
-    },
-    {
-      key: "kycStatus",
-      label: "KYC Status",
-      dataCellAlign: "center",
-    },
+    { key: "walletBalance", label: "Wallet Balance", dataCellAlign: "center", renderCell: (row) => row.balance },
+    { key: "kycStatus", label: "KYC Status", dataCellAlign: "center", renderCell: (row) => row.profileStatus || "N/A" },
     {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
+      renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed"),
     },
-    {
-      key: "avgRating",
-      label: "Avg Rating",
-      dataCellAlign: "center",
-    },
+    { key: "avgRating", label: "Avg Rating", dataCellAlign: "center", renderCell: (row) => row.averageRating?.toFixed(1) || "N/A" },
     {
       key: "action",
       label: "Actions",
@@ -271,7 +248,7 @@ export default function InactiveUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredData}
+            data={engineerData}
             loading={isLoading}
             initialPageSize={pageSize}
             currentPage={currentPage}
@@ -281,21 +258,12 @@ export default function InactiveUser() {
           />
         </div>
       </div>
-      <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="p-4">
-          <div className="flex justify-between items-center">
-            <span className="font-bold">View File {selectedRowId}</span>
-            <div
-              className="text-xl font-semibold cursor-pointer"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <IoCloseSharp />
-            </div>
-          </div>
-          <div className="border border-gray-400 h-36 my-6">
-            <img src="https://via.placeholder.com/500" alt="file" />
-          </div>
-        </div>
+      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+        <ViewFileComponent
+          onClose={() => setIsOpen(false)}
+          userId={activeUserId}
+          fileType={selectedType}
+        />
       </Popup>
       <FormContainer methods={methods} onSubmit={onSubmit}>
         {isSuspendEngineer && (

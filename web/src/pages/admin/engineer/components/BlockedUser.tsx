@@ -5,7 +5,7 @@ import { FaUserCircle } from "react-icons/fa";
 import type { ManageEngineerProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 
@@ -37,71 +37,9 @@ export default function BlockedUser() {
       status: "blocked",
     });
 
-    // Map API response to table rows
-    const engineersData: ManageEngineerProps[] = (
-      engineersResponse?.data ?? []
-    ).map((e) => {
-      const latestStatus = e.statusHistory?.sort(
-        (a, b) =>
-          new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime(),
-      )[0];
+  const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
-      return {
-        id: e.id,
-        userId: e.userId,
-        engineerID: e.engineerCode ?? "N/A",
-        details: {
-          name: e.name ?? "N/A",
-          email: e.email ?? "N/A",
-          phone: e.phoneNumber ?? "N/A",
-        },
-        documents: "View",
-        submittedDocuments: e.statusHistory?.map((s) => s.type) ?? [],
-        location: e.location ?? "N/A",
-        registrationDate: e.registrationDate
-          ? new Date(e.registrationDate).toLocaleDateString()
-          : "N/A",
-        walletBalance: e.balance?.toString() ?? "0",
-        kycStatus: e.profileStatus,
-        employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
-        avgRating: e.averageRating ?? 0,
-        approvalStatus: e.profileStatus,
-        suspendReason: latestStatus?.reason ?? "N/A",
-        suspendFrom: latestStatus?.startDate
-          ? new Date(latestStatus.startDate).toLocaleDateString()
-          : "N/A",
-        suspendTo: latestStatus?.endDate
-          ? new Date(latestStatus.endDate).toLocaleDateString()
-          : "N/A",
-        suspendBy: latestStatus?.adminName ?? "N/A",
-        suspendOn: latestStatus?.actionDate
-          ? new Date(latestStatus.actionDate).toLocaleDateString()
-          : "N/A",
-        currentStatus: latestStatus
-          ? latestStatus.revokedAt
-            ? "Revoked"
-            : e.userStatus === "blocked"
-              ? "Blocked"
-              : e.userStatus === "suspended"
-                ? "Suspended"
-                : latestStatus.type.charAt(0).toUpperCase() +
-                  latestStatus.type.slice(1)
-          : "Active",
-      };
-    });
-
-    const filteredData = useMemo(() => {
-      const q = search.toLowerCase();
-      return engineersData.filter(
-        (e) =>
-          e.engineerID.toLowerCase().includes(q) ||
-          e.details.name.toLowerCase().includes(q) ||
-          e.details.email.toLowerCase().includes(q) ||
-          e.location.toLowerCase().includes(q),
-      );
-    }, [engineersData, search]);
-
-  const handleUnblock = async (id: number) => {
+  const handleUnblock = async (engineer: ManageEngineerProps) => {
     await showPopup({
       title: "Unblock",
       body: "Are you sure you want to unblock this engineer?",
@@ -116,7 +54,7 @@ export default function BlockedUser() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Unlocking engineer:", id);
+            console.log("Unlocking engineer:", engineer.id);
             toast.success("Engineer unblocked successfully!");
             close(true);
           },
@@ -126,10 +64,22 @@ export default function BlockedUser() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { label: "Sr.No.", renderCell: (_row: ManageEngineerProps, index: number) => (currentPage - 1) * pageSize + index + 1 },
+    {
+      label: "Sr.No.",
+      renderCell: (_row: ManageEngineerProps, index: number) =>
+        (currentPage - 1) * pageSize + index + 1,
+    },
     {
       key: "engineerID",
       label: "Engineer ID",
+      renderCell: (row: ManageEngineerProps) => {
+        const id = row.engineerID || "N/A";
+        return (
+          <div className="text-sm font-medium text-gray-900 dark:text-white">
+            {id}
+          </div>
+        );
+      },
     },
     {
       key: "details",
@@ -141,12 +91,12 @@ export default function BlockedUser() {
               <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
             </div>
             <div>
-              <div className="font-semibold">{row.details.name}</div>
+              <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.phone}
+                {row.phoneNumber}
               </div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.email}
+                {row.email}
               </div>
             </div>
           </div>
@@ -154,21 +104,62 @@ export default function BlockedUser() {
       },
     },
     {
-      key: "suspendReason",
+      key: "blockReason",
       label: "Reason for Block",
+      renderCell: (row: ManageEngineerProps) => {
+        const latestBlock = row.statusHistory
+          ?.filter((s) => s.type === "block")
+          ?.sort(
+            (a, b) =>
+              new Date(b.actionDate).getTime() -
+              new Date(a.actionDate).getTime(),
+          )[0];
+
+        return latestBlock?.reason || "N/A";
+      },
     },
-    { key: "suspendOn", label: "Blocked On" },
-    { key: "suspendBy", label: "Blocked By", dataCellAlign: "center" },
-    { key: "currentStatus", label: "Current Status", dataCellAlign: "center" },
+    {
+      key: "blockOn",
+      label: "Blocked On",
+      renderCell: (row: ManageEngineerProps) => {
+        const latestBlock = row.statusHistory
+          ?.filter((s) => s.type === "block")
+          ?.sort(
+            (a, b) =>
+              new Date(b.actionDate).getTime() -
+              new Date(a.actionDate).getTime(),
+          )[0];
+        return latestBlock?.actionDate
+          ? new Date(latestBlock.actionDate).toLocaleDateString()
+          : "N/A";
+      },
+    },
+    {
+      key: "blockBy",
+      label: "Blocked By",
+      dataCellAlign: "center",
+      renderCell: (row: ManageEngineerProps) => {
+        const latestBlock = row.statusHistory
+          ?.filter((s) => s.type === "block")
+          ?.sort(
+            (a, b) =>
+              new Date(b.actionDate).getTime() -
+              new Date(a.actionDate).getTime(),
+          )[0];
+        const blockedBy = latestBlock?.adminName || "N/A";
+        return (
+          <div className="text-sm text-gray-900 dark:text-white">
+            {blockedBy}
+          </div>
+        );
+      },
+    },
     {
       key: "action",
       label: "Actions",
       align: "center",
       renderCell: (row: ManageEngineerProps) => (
-        <div
-          className="mx-auto text-center"
-          onClick={() => handleUnblock(row.id)}
-        >
+        <div className="mx-auto text-center" onClick={() => handleUnblock(row)}>
           <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white">
             Unblock
           </Button>
@@ -186,7 +177,7 @@ export default function BlockedUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredData}
+            data={engineerData}
             loading={isLoading}
             initialPageSize={pageSize}
             currentPage={currentPage}
