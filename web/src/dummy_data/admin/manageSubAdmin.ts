@@ -3,7 +3,7 @@ export interface UserItem {
   name: string;
   email: string;
   phoneNumber: string;
-  roleName: string;
+  region?: string;
   status: "Active" | "Disabled";
 }
 
@@ -13,7 +13,7 @@ export const userList: UserItem[] = [
     name: "John Doe",
     email: "john@gmail.com",
     phoneNumber: "+91 9861234567",
-    roleName: "Manager",
+    region: "India",
     status: "Active",
   },
   {
@@ -21,7 +21,7 @@ export const userList: UserItem[] = [
     name: "Alex",
     email: "alex@gmail.com",
     phoneNumber: "+91 9854728765",
-    roleName: "Team Lead",
+    region: "UK",
     status: "Disabled",
   },
   {
@@ -29,7 +29,7 @@ export const userList: UserItem[] = [
     name: "david",
     email: "david@gmail.com",
     phoneNumber: "+91 9476382565",
-    roleName: "Admin",
+    region: "Sri Lanka",
     status: "Active",
   },
   {
@@ -37,7 +37,7 @@ export const userList: UserItem[] = [
     name: "kiran",
     email: "kiran@gmail.com",
     phoneNumber: "+91 9787457811",
-    roleName: "Super Admin",
+    region: "India",
     status: "Active",
   },
 ];

@@ -11,7 +11,7 @@ import type { ServerCategoryProps } from ".";
 import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
- * `EditCategory` component renders a page with a form to edit an existing job category.
+ * `EditCategory` component renders a page with a form to edit an existing Service category.
  * It uses `react-hook-form` for form state management and reuses the `JobCategoryForm`.
  *
  * **Note:** This component currently initializes with empty default values. In a real-world
@@ -56,7 +56,7 @@ export default function EditCategory() {
             console.log("data :", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
-            toast.success("Job category updated successfully!");
+            toast.success("Service category updated successfully!");
             methods.reset();
             navigate(absoluteUrls.admin.home.manage_categories);
             close(true);

@@ -26,7 +26,7 @@ export default function AddSubAdmin() {
       name: "",
       email: "",
       phoneNumber: "",
-      role: "",
+      region: "",
     },
   });
 

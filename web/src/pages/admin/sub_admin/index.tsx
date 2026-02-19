@@ -92,6 +92,11 @@ export default function ManageSubAdmin() {
           </span>
         ),
       },
+      {
+      key: "Region",
+      label: "Region",
+      renderCell: (row: UserItem) => <span>{row.region}</span>,
+      },
     {
       key: "action",
       label: "Action",

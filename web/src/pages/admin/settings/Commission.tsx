@@ -82,6 +82,7 @@ export default function Commission() {
           <Button
             type="submit"
             className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            disabled
           >
             Save
           </Button>

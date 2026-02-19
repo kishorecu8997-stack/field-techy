@@ -28,7 +28,7 @@ const JobDetails = () => {
       value: findJobValue()?.description,
     },
     { label: "Job Type", value: findJobValue()?.jobType },
-    { label: "Job Category", value: findJobValue()?.category },
+    { label: "Service Category", value: findJobValue()?.category },
     { label: "Job Price", value: findJobValue()?.salary },
     { label: "Country", value: findJobValue()?.country },
     { label: "State", value: findJobValue()?.state },
