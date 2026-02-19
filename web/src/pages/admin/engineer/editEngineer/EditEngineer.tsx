@@ -31,35 +31,34 @@ export default function EditEngineer() {
   const { data: engineerData, isLoading } = useAdminGetEngineerById(Number(id), !!id);
 
   // Initialize form
-  const methods = useForm<EngineerFormData>({
-    defaultValues: {
-      name: engineerData?.name || "",
-      email: engineerData?.email || "",
-      phoneNumber: engineerData?.phoneNumber || "",
-      profileImage: null,
-      address: engineerData?.address || "",
-      skills: [],
-      price: engineerData?.hourlyRate || "",
-      serviceCategory: engineerData?.serviceCategoryId?.toString() || "",
-      portfolio: engineerData?.portfolioLink || "",
-      designation: engineerData?.currentDesignation || "",
-      location: "",
-      employer: engineerData?.employer || "",
-      experience: engineerData?.experienceYears?.toString() || "",
-      resume: "",
-      governmentId: "",
-      certificate: "",
-    },
-    mode: "onChange",
-    reValidateMode: "onChange",
-  });
+const methods = useForm<EngineerFormData>({
+  defaultValues: {
+    name: "",
+    email: "",
+    phoneNumber: "",
+    profileImage: null,
+    address: "",
+    skills: [],
+    price: "",
+    serviceCategory: "",
+    portfolio: "",
+    designation: "",
+    location: "",
+    employer: "",
+    experience: "",
+    resume: "",
+    governmentId: "",
+    certificate: "",
+  },
+  mode: "onChange",
+  reValidateMode: "onChange",
+});
 
   // Update defaultValues when data is loaded
 useEffect(() => {
   if (!engineerData) return;
 
   const rawPhone =
-    // engineerData.user?.phone_number ??
     engineerData.phoneNumber ??
     "";
 
