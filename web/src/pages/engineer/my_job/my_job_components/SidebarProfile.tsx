@@ -4,14 +4,14 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import { BOOKMARK_CHANGE_EVENT, getSavedJobs } from "@/utils/bookmarkUtils";
-import { getCurrencyFromStorage } from "@/utils/currency";
 import { getProfileCompletion } from "@/utils/profileCompletion";
 import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import type { EarningsData, SidebarProfileProps } from "../types";
+import type { SidebarProfileProps } from "../types";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
+import { useEngineerBalance } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -23,11 +23,11 @@ import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
  * @example
  * <SidebarProfile user={user} earnings={earnings} />
  */
-const SidebarProfile: React.FC<SidebarProfileProps> = ({ earnings }) => {
+const SidebarProfile: React.FC<SidebarProfileProps> = () => {
   return (
     <div className="space-y-6">
       <ProfileCard />
-      <EarningsCard earnings={earnings} />
+      <EarningsCard />
       <SavedJobsCard />
     </div>
   );
@@ -111,10 +111,10 @@ const ProfileCard = () => {
  *
  * Includes a "View all" link (currently placeholder) for navigating to a full earnings page.
  */
-const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
-  const { balance } = earnings;
+const EarningsCard = () => {
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
   const [showBalance, setShowBalance] = useState<boolean>(false);
+   const { data: balance } = useEngineerBalance();
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -140,8 +140,9 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
           <div className="flex justify-between items-center">
             {showBalance ? (
               <span>
-                {getCurrencyFromStorage()}
-                {balance.toLocaleString("en-US", {
+                {Number(balance?.balance)?.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: balance?.currencyCode || "INR",
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
