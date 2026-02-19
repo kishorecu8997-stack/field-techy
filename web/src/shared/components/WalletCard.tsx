@@ -5,22 +5,18 @@ import Drawer from "./drawer/Drawer";
 import { useState } from "react";
 import { useClientBalance } from "../apiServices/client/clientOpenApiService";
 
-
-
 /**
  * A card component that displays the user's wallet balance and provides
  * actions to add funds or view transactions. These actions open a drawer
  * with the corresponding content.
  *
  * @component
- * @param {WalletCardProps} props - The props for the component.
  * @returns {JSX.Element} The rendered WalletCard component.
  */
 export const WalletCard: React.FC = () => {
   const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
   const [showBalance, setShowBalance] = useState<boolean>(false);
-  const { data: balance, isLoading, error } = useClientBalance();
-  console.log("Balance data:", balance, "Loading:", isLoading, "Error:", error);
+  const { data: balance} = useClientBalance();
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -46,7 +42,7 @@ export const WalletCard: React.FC = () => {
         </p>
         <div className="flex justify-between items-center">
           <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
-            { showBalance
+            {showBalance
               ? Number(balance?.balance).toLocaleString(undefined, {
                   style: "currency",
                   currency: balance?.currencyCode ?? "INR",

@@ -1,12 +1,13 @@
-import { useClientBalance, useClientTransactions } from "@/shared/apiServices/client/clientOpenApiService";
-import type { WalletData, Transaction } from "../types";
-import { sampleWalletData } from "@/dummy_data/sampleWalletData";
+import {
+  useClientBalance,
+  useClientTransactions,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import { useThemeHook } from "@/shared/hooks/useThemeHook";
+import type { Transaction } from "../types";
 import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 
 interface WalletComponentProps {
-  data?: WalletData;
   onMenuItemClick: (key: string) => void;
 }
 
@@ -16,17 +17,28 @@ const WALLET_COMPONENTS = {
 };
 
 const WalletComponent: React.FC<WalletComponentProps> = ({
-  data = sampleWalletData,
   onMenuItemClick,
 }) => {
   const isDarkMode = useThemeHook();
   const [showBalance, setShowBalance] = useState<boolean>(false);
-  const { data: balance} = useClientBalance();
-  const { 
-    data: transactionsRaw, isLoading: txLoading, isError: txError } = useClientTransactions({ limit: 15, sortOrder: "desc" }, // recent first
-    true 
+  const { data: balance } = useClientBalance();
+  const {
+    data: transactionsRaw,
+    isLoading: txLoading,
+    isError: txError,
+  } = useClientTransactions(
+    { limit: 10, sortOrder: "desc" }, // recent first
+    true,
   );
-  console.log("Transactions data:", transactionsRaw, "Loading:", txLoading, "Error:", txError);
+
+  const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => ({
+    id: String(tx.id),
+    date: new Date(tx.timestamp),
+    amount: Number(tx.amount ?? 0),
+    type: tx.type,
+    description: tx.description ?? "Transaction",
+  }));
+
   // Format date to display as "27 Feb, 2024 | 11:54 AM"
   const formatDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = {
@@ -40,15 +52,13 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
   };
 
   // Group transactions by date
-  const groupTransactionsByDate = (transactions: Transaction[]) => {
-    const grouped: { [key: string]: Transaction[] } = {};
+  const groupTransactionsByDate = (txs: Transaction[]) => {
+    const grouped: Record<string, Transaction[]> = {};
 
-    transactions.forEach((transaction) => {
-      const dateKey = transaction.date.toISOString().split("T")[0];
-      if (!grouped[dateKey]) {
-        grouped[dateKey] = [];
-      }
-      grouped[dateKey].push(transaction);
+    txs.forEach((tx) => {
+      const key = tx.date.toLocaleDateString("en-CA");
+      grouped[key] = grouped[key] || [];
+      grouped[key].push(tx);
     });
 
     return grouped;
@@ -56,47 +66,57 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
 
   // Get human readable date label (Today, Yesterday, or actual date)
   const getDateLabel = (date: Date): string => {
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const now = new Date();
 
-    // Normalize dates to compare only day/month/year
-    const normalizeDate = (d: Date) => {
-      const normalized = new Date(d);
-      normalized.setHours(0, 0, 0, 0);
-      return normalized;
-    };
+    const todayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0,
+      0,
+    );
+    const yesterdayStart = new Date(todayStart);
+    yesterdayStart.setDate(yesterdayStart.getDate() - 1);
 
-    const dateOnly = normalizeDate(date);
-    const todayOnly = normalizeDate(today);
-    const yesterdayOnly = normalizeDate(yesterday);
+    const txStart = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      0,
+      0,
+      0,
+      0,
+    );
 
-    if (dateOnly.getTime() === todayOnly.getTime()) {
+    if (txStart.getTime() === todayStart.getTime()) {
       return "TODAY";
-    } else if (dateOnly.getTime() === yesterdayOnly.getTime()) {
-      return "YESTERDAY";
-    } else {
-      return date
-        .toLocaleDateString("en-US", {
-          // weekday: 'long',
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })
-        .toUpperCase();
     }
+    if (txStart.getTime() === yesterdayStart.getTime()) {
+      return "YESTERDAY";
+    }
+
+    return date
+      .toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+      .toUpperCase()
+      .replace(/,/g, "");
   };
 
   // Format currency
   const formatCurrency = (amount: number, currencyCode: string = "USD") => {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: currencyCode,
       minimumFractionDigits: 2,
     }).format(amount);
   };
 
-  const groupedTransactions = groupTransactionsByDate(data.transactions);
+  const groupedTransactions = groupTransactionsByDate(transactions);
 
   // Sort dates in descending order
   const sortedDates = Object.keys(groupedTransactions).sort((a, b) => {
@@ -122,7 +142,10 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
           <div className="flex justify-between items-center">
             <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
               {showBalance
-                ? formatCurrency(Number(balance?.balance),balance?.currencyCode)
+                ? formatCurrency(
+                    Number(balance?.balance),
+                    balance?.currencyCode,
+                  )
                 : "******"}
             </p>
             {!showBalance ? (
@@ -178,87 +201,81 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
             onClick={() =>
               onMenuItemClick(WALLET_COMPONENTS.RECENT_TRANSACTIONS)
             }
-            className="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline"
+            className="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline cursor-pointer"
           >
             View all
           </button>
         </div>
 
         {/* Transaction List */}
-        {sortedDates.map((dateKey) => {
-          const transactionsForDate = groupedTransactions[dateKey];
-          const date = new Date(dateKey);
+        {txLoading ? (
+          <div className="py-8 text-center text-gray-500">
+            Loading transactions...
+          </div>
+        ) : txError ? (
+          <div className="py-8 text-center text-red-600">
+            Could not load transactions
+          </div>
+        ) : sortedDates.length === 0 ? (
+          <div className="py-8 text-center text-gray-500">
+            No transactions yet
+          </div>
+        ) : (
+          sortedDates.map((dateKey) => {
+            const transactionsForDate = groupedTransactions[dateKey];
+            const date = new Date(dateKey);
 
-          return (
-            <div key={dateKey} className="mb-6">
-              {/* Date Header */}
-              <div className="flex gap-1 items-center ">
-                <div>{getDateLabel(date)}</div>
-                <div className="border-b w-full border-gray-200" />
-              </div>
+            return (
+              <div key={dateKey} className="mb-6">
+                {/* Date Header */}
+                <div className="flex gap-1 items-center ">
+                  <div>{getDateLabel(date)}</div>
+                  <div className="border-b w-full border-gray-200" />
+                </div>
 
-              {/* Transactions for this date */}
-              {transactionsForDate.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className={`flex justify-between items-start py-3 `}
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <div className="font-medium">
-                        {transaction.description}
+                {/* Transactions for this date */}
+                {transactionsForDate.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className={`flex justify-between items-start py-3 `}
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <div className="font-medium">
+                          {transaction.description}
+                        </div>
                       </div>
-                      {transaction.status && (
-                        <span
-                          className={`inline-block px-2 py-1 text-xs rounded-full ${
-                            transaction.status === "processing"
-                              ? isDarkMode
-                                ? "bg-yellow-600 text-white"
-                                : "bg-yellow-100 text-yellow-800"
-                              : transaction.status === "completed"
-                                ? isDarkMode
-                                  ? "bg-green-600 text-white"
-                                  : "bg-green-100 text-green-800"
-                                : isDarkMode
-                                  ? "bg-red-600 text-white"
-                                  : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {transaction.status.charAt(0).toUpperCase() +
-                            transaction.status.slice(1)}
-                        </span>
-                      )}
+                      <div
+                        className={`text-xs mt-1 ${
+                          isDarkMode ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {formatDate(transaction.date)}
+                      </div>
                     </div>
                     <div
-                      className={`text-xs mt-1 ${
-                        isDarkMode ? "text-gray-400" : "text-gray-500"
+                      className={`font-medium ${
+                        transaction.type === "credit"
+                          ? isDarkMode
+                            ? "text-green-400"
+                            : "text-green-600"
+                          : isDarkMode
+                            ? "text-red-400"
+                            : "text-red-600"
                       }`}
                     >
-                      {formatDate(transaction.date)}
+                      {transaction.type === "credit" ? "+" : "-"}
+                      {formatCurrency(
+                        Math.abs(transaction.amount),
+                        balance?.currencyCode,
+                      )}
                     </div>
                   </div>
-                  <div
-                    className={`font-medium ${
-                      transaction.type === "credit"
-                        ? isDarkMode
-                          ? "text-green-400"
-                          : "text-green-600"
-                        : isDarkMode
-                          ? "text-red-400"
-                          : "text-red-600"
-                    }`}
-                  >
-                    {transaction.type === "credit" ? "+" : "-"}
-                    {formatCurrency(Math.abs(transaction.amount)).replace(
-                      "$",
-                      "",
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          );
-        })}
+                ))}
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

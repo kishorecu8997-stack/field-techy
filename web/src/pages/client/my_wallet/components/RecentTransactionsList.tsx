@@ -1,44 +1,65 @@
-import { sampleTransactions } from "@/dummy_data/invoiceData";
 import React, { useState } from "react";
 import { HiFilter } from "react-icons/hi";
 import { IoDownload } from "react-icons/io5";
-import type { TransactionInfo } from "../types";
+import type { Transaction } from "../types";
 import Popup from "@/shared/components/Popup";
 import DownloadInvoice from "./DownloadInvoice";
 import Filter from "./Filter";
+import {
+  useClientBalance,
+  useClientTransactions,
+} from "@/shared/apiServices/client/clientOpenApiService";
 
-interface TransactionListProps {
-  transactions: TransactionInfo[];
-}
+const RecentTransactionsList: React.FC = () => {
+  const today = new Date();
+  const startDate = new Date(today);
+  startDate.setMonth(today.getMonth() - 3);
+  startDate.setHours(0, 0, 0, 0);
+  const endDate = today;
+  endDate.setHours(23, 59, 59, 999);
+  const startDateStr = startDate.toISOString();
+  const endDateStr = endDate.toISOString();
+  const { data: balance } = useClientBalance();
+  const {
+    data: transactionsRaw,
+    isLoading,
+    isError,
+  } = useClientTransactions(
+    {
+      sortOrder: "desc",
+      limit: 100,
+    },
+    true,
+  );
+  const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => ({
+    id: String(tx.id),
+    date: new Date(tx.timestamp),
+    amount: Number(tx.amount ?? 0),
+    type: tx.type,
+    description: tx.description ?? "Transaction",
+  }));
 
-const RecentTransactionsList: React.FC<TransactionListProps> = ({
-  transactions = sampleTransactions,
-}) => {
   // Group transactions by date (Today/Yesterday/Other)
-  const groupTransactionsByDate = (transactions: TransactionInfo[] = []) => {
+  const groupTransactionsByDate = (txs: Transaction[]) => {
     const today = new Date();
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setDate(today.getDate() - 1);
     today.setHours(0, 0, 0, 0);
     yesterday.setHours(0, 0, 0, 0);
 
-    const grouped: { [key: string]: TransactionInfo[] } = {
+    const grouped: Record<string, Transaction[]> = {
       Today: [],
       Yesterday: [],
       Other: [],
     };
 
-    transactions.forEach((transaction) => {
-      const transactionDate = new Date(transaction.date);
-      transactionDate.setHours(0, 0, 0, 0);
-
-      if (transactionDate.getTime() === today.getTime()) {
-        grouped.Today.push(transaction);
-      } else if (transactionDate.getTime() === yesterday.getTime()) {
-        grouped.Yesterday.push(transaction);
-      } else {
-        grouped.Other.push(transaction);
-      }
+    txs.forEach((tx) => {
+      const txDate = new Date(tx.date);
+      txDate.setHours(0, 0, 0, 0);
+      if (txDate.getTime() === today.getTime()) grouped.Today.push(tx);
+      else if (txDate.getTime() === yesterday.getTime())
+        grouped.Yesterday.push(tx);
+      else grouped.Other.push(tx);
     });
 
     return grouped;
@@ -49,26 +70,27 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
   const formatAmount = (amount: number) => {
     const formatted = Math.abs(amount).toLocaleString("en-US", {
       style: "currency",
-      currency: "USD",
+      currency: balance?.currencyCode ?? "INR",
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
 
-    return amount >= 0 ? `+${formatted}` : `-${formatted}`;
-  };
+    if (isLoading)
+      return <div className="text-center py-8">Loading transactions...</div>;
+    if (isError)
+      return (
+        <div className="text-center py-8 text-red-600">
+          Failed to load transactions
+        </div>
+      );
+    if (!transactions.length)
+      return (
+        <div className="text-center py-8 text-gray-500">
+          No transactions yet
+        </div>
+      );
 
-  const getStatusColor = (status?: string) => {
-    if (!status) return "";
-    switch (status.toLowerCase()) {
-      case "processing":
-        return "bg-amber-500 text-white";
-      case "completed":
-        return "bg-green-500 text-white";
-      case "failed":
-        return "bg-red-500 text-white";
-      default:
-        return "bg-gray-500 text-white";
-    }
+    return amount >= 0 ? `+${formatted}` : `-${formatted}`;
   };
 
   const getAmountColor = (type: "credit" | "debit") => {
@@ -96,17 +118,8 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h4 className="font-medium text-gray-900 dark:text-white">
-                        {transaction.title}
+                        {transaction.description}
                       </h4>
-                      {transaction.status && (
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
-                            transaction.status,
-                          )}`}
-                        >
-                          {transaction.status}
-                        </span>
-                      )}
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       {new Date(transaction.date).toLocaleDateString()} |{" "}
