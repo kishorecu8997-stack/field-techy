@@ -42,10 +42,10 @@ const JobsDetails: React.FC = () => {
     setBreadcrumbExtra("chats");
     setPageHeading("Chats");
   };
-  const handleCloseChat = () => {
-    setBreadcrumbExtra(null);
-    setPageHeading("Job Details");
-  };
+  // const handleCloseChat = () => {
+  //   setBreadcrumbExtra(null);
+  //   setPageHeading("Job Details");
+  // };
 
   return (
     <div className="min-h-screen transition-colors duration-200">
@@ -74,9 +74,14 @@ const JobsDetails: React.FC = () => {
                   jobID={String(params.jobId)}
                   onToggleChat={handleToggleChat}
                 />
-                {breadcrumbExtra === "chats" && (
-                  <button className="mt-2 px-4 py-2 bg-gray-200 rounded" onClick={handleCloseChat}>Back to Job</button>
-                )}
+                {/* {breadcrumbExtra === "chats" && (
+                  <button
+                    className="mt-2 px-4 py-2 bg-gray-200 rounded"
+                    onClick={handleCloseChat}
+                  >
+                    Back to Job
+                  </button>
+                )} */}
               </div>
             </div>
           </div>
