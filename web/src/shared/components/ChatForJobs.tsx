@@ -3,6 +3,7 @@ import { FaFileAlt, FaImage, FaVideo } from "react-icons/fa";
 import { FiSearch, FiPlus } from "react-icons/fi";
 import { IoSend } from "react-icons/io5";
 import { IoMdCall } from "react-icons/io";
+import { Button } from "./commonUI/Buttons";
 
 interface ChatForJobsProps {
   jobId: string;
@@ -61,6 +62,34 @@ const mockChats = [
     ],
   },
 ];
+
+/**
+ * ChatForJobs Component
+ *
+ * This component renders a chat interface for a specific job.
+ * It includes a left panel with searchable chat participants (groups and others),
+ * a right panel with messages, and an input bar with attachments and send functionality.
+ *
+ * Features:
+ * - Displays a list of chats, grouped into "Groups" and "Others".
+ * - Filters chats based on search input.
+ * - Shows messages for the selected job.
+ * - Allows sending new messages.
+ * - Supports attachments: Photos/Videos and Documents.
+ * - Provides action buttons for video and audio calls.
+ * - Handles clicking outside of the attachment menu to close it.
+ * - Automatically scrolls and manages message input state.
+ *
+ * @component
+ *
+ * @param {Object} props - Component props.
+ * @param {string} props.jobId - The ID of the job to display chat for.
+ *
+ * @example
+ * <ChatForJobs jobId="1" />
+ *
+ * @returns {JSX.Element} The rendered chat interface for the specified job.
+ */
 
 const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
   const [selectedJob, setSelectedJob] = useState(mockChats[0]);
@@ -127,9 +156,9 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
   const others = filteredChats.filter((chat) => !chat.participant.isGroup);
 
   return (
-    <div className="flex h-[80vh] border border-gray-200 rounded-lg overflow-hidden relative">
+    <div className="flex h-[65vh] border border-gray-200 rounded-lg overflow-hidden relative">
       {/* Left Panel */}
-      <div className="w-72 bg-gray-50 border-r border-gray-200 flex flex-col">
+      <div className="w-56 md:w-64 bg-gray-50 border-r border-gray-200 flex flex-col">
         {/* Search */}
         <div className="p-4">
           <div className="relative">
@@ -237,19 +266,20 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
           </div>
 
           <div className="flex items-center gap-4 text-gray-600">
-            <button
+            <Button
+              variant="videoCall"
+              size="icon"
               onClick={() => console.log("Video Call")}
-              className="p-2 rounded-full bg-gray-200 hover:bg-green-200 border border-gray-300 hover:border-green-600 text-teal-700 hover:text-teal-600 transition flex items-center justify-center"
             >
               <FaVideo size={18} />
-            </button>
-
-            <button
+            </Button>
+            <Button
+              variant="audioCall"
+              size="icon"
               onClick={() => console.log("Audio Call")}
-              className="p-2 rounded-full bg-gray-200 hover:bg-green-200 border border-gray-300 hover:border-green-600 text-teal-700 hover:text-teal-600 transition flex items-center justify-center"
             >
               <IoMdCall size={18} />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -283,31 +313,37 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
           <div className="flex items-center flex-1 gap-2 rounded-lg bg-gray-200 p-2">
             {/* Attachment button */}
             <div className="relative" ref={attachmentRef}>
-              <button
+              <Button
+                variant="attachmentPlus"
                 onClick={() => setShowAttachmentMenu((prev) => !prev)}
-                className="p-2 rounded-lg bg-gray-300 hover:bg-gray-400 cursor-pointer"
               >
                 <FiPlus />
-              </button>
+              </Button>
 
               {showAttachmentMenu && (
                 <div className="absolute bottom-12 left-0 w-48 bg-white border border-gray-300 rounded-lg shadow-md p-2 flex flex-col gap-2 z-50">
-                  <button
+                  <Button
+                    variant="photoVideoAttachment"
                     onClick={handleSelectPhotos}
-                    className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 cursor-pointer"
+                    className="justify-start"
                   >
-                    <FaImage className="text-green-500" />
-                    <span className="text-sm text-gray-800">
-                      Photos & Videos
-                    </span>
-                  </button>
-                  <button
+                    <div className="flex items-center gap-2 w-full">
+                      <FaImage size={18} className="text-teal-800" />
+                      <span className="text-sm text-gray-800">
+                        Photos & Videos
+                      </span>
+                    </div>
+                  </Button>
+                  <Button
+                    variant="documentAttachment"
                     onClick={handleSelectDocuments}
-                    className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 cursor-pointer"
+                    className="justify-start"
                   >
-                    <FaFileAlt className="text-green-500" />
-                    <span className="text-sm text-gray-800">Documents</span>
-                  </button>
+                    <div className="flex items-center gap-2 w-full">
+                      <FaFileAlt size={18} className="text-teal-800" />
+                      <span className="text-sm text-gray-800">Documents</span>
+                    </div>
+                  </Button>
                 </div>
               )}
             </div>
@@ -323,12 +359,9 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
             />
 
             {/* Send Button */}
-            <button
-              onClick={handleSend}
-              className="p-3 rounded-full bg-teal-700 text-white hover:bg-teal-600 cursor-pointer"
-            >
+            <Button variant="sendButtonChat" onClick={handleSend} size="icon">
               <IoSend size={18} />
-            </button>
+            </Button>
           </div>
         </div>
       </div>
