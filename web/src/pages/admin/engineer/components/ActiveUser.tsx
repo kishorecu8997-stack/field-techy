@@ -2,7 +2,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
-import {  useState } from "react";
+import { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import {
   documentType,
@@ -51,15 +51,12 @@ export default function ActiveUser() {
   );
   const [isOpen, setIsOpen] = useState(false);
 
-    const {
-      data: engineersResponse,
-      isLoading,
-    } = useAdminManageEngineers({
-      page: currentPage,
-      limit: pageSize,
-      status: "active",
-    });
-    
+  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    status: "active",
+  });
+
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   //Delete confirmation
@@ -154,7 +151,11 @@ export default function ActiveUser() {
         );
       },
     },
-{ key: "location", label: "Location", renderCell: (row) => row.location || "N/A" },
+    {
+      key: "location",
+      label: "Location",
+      renderCell: (row) => row.location || "N/A",
+    },
     {
       key: "registrationDate",
       label: "Registration Date",
@@ -164,15 +165,30 @@ export default function ActiveUser() {
           ? new Date(row.registrationDate).toLocaleDateString()
           : "N/A",
     },
-    { key: "walletBalance", label: "Wallet Balance", dataCellAlign: "center", renderCell: (row) => row.balance },
-    { key: "kycStatus", label: "KYC Status", dataCellAlign: "center", renderCell: (row) => row.profileStatus || "N/A" },
+    {
+      key: "walletBalance",
+      label: "Wallet Balance",
+      dataCellAlign: "center",
+      renderCell: (row) => row.balance,
+    },
+    {
+      key: "kycStatus",
+      label: "KYC Status",
+      dataCellAlign: "center",
+      renderCell: (row) => row.profileStatus || "N/A",
+    },
     {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
       renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed"),
     },
-    { key: "avgRating", label: "Avg Rating", dataCellAlign: "center", renderCell: (row) => row.averageRating?.toFixed(1) || "N/A" },
+    {
+      key: "avgRating",
+      label: "Avg Rating",
+      dataCellAlign: "center",
+      renderCell: (row) => row.averageRating?.toFixed(1) || "N/A",
+    },
     {
       key: "action",
       label: "Actions",

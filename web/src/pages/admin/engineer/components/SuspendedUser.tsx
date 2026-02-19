@@ -36,7 +36,7 @@ export default function SuspendedUser() {
     limit: pageSize,
     status: "suspended",
   });
-  
+
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   const handleRevoke = async (engineer: ManageEngineerProps) => {

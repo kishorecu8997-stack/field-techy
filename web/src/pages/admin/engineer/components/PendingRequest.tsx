@@ -173,7 +173,11 @@ export default function PendingRequest() {
         );
       },
     },
-    { key: "location", label: "Location", renderCell: (row) => row.location || "N/A" },
+    {
+      key: "location",
+      label: "Location",
+      renderCell: (row) => row.location || "N/A",
+    },
     {
       key: "registrationDate",
       label: "Registration Date",
@@ -183,15 +187,30 @@ export default function PendingRequest() {
           ? new Date(row.registrationDate).toLocaleDateString()
           : "N/A",
     },
-    { key: "walletBalance", label: "Wallet Balance", dataCellAlign: "center", renderCell: (row) => row.balance },
-    { key: "kycStatus", label: "KYC Status", dataCellAlign: "center", renderCell: (row) => row.profileStatus || "N/A" },
+    {
+      key: "walletBalance",
+      label: "Wallet Balance",
+      dataCellAlign: "center",
+      renderCell: (row) => row.balance,
+    },
+    {
+      key: "kycStatus",
+      label: "KYC Status",
+      dataCellAlign: "center",
+      renderCell: (row) => row.profileStatus || "N/A",
+    },
     {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
       renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed"),
     },
-    { key: "avgRating", label: "Avg Rating", dataCellAlign: "center", renderCell: (row) => row.averageRating?.toFixed(1) || "N/A" },
+    {
+      key: "avgRating",
+      label: "Avg Rating",
+      dataCellAlign: "center",
+      renderCell: (row) => row.averageRating?.toFixed(1) || "N/A",
+    },
     {
       key: "approvalStatus",
       label: "Approve/Reject",

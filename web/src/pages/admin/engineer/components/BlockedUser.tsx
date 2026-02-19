@@ -31,11 +31,11 @@ export default function BlockedUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-    const { data: engineersResponse, isLoading } = useAdminManageEngineers({
-      page: currentPage,
-      limit: pageSize,
-      status: "blocked",
-    });
+  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    status: "blocked",
+  });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 

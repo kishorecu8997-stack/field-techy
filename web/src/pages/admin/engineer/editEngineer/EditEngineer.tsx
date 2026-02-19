@@ -11,7 +11,7 @@ import Documents from "../addEngineer/Documents";
 import ExperienceDetails from "../addEngineer/ExperienceDetails";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminGetEngineerById } from "@/shared/apiServices/admin/adminOpenApiService"
+import { useAdminGetEngineerById } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
@@ -26,60 +26,62 @@ export default function EditEngineer() {
   const { showPopup } = usePopupStore();
 
   // Fetch engineer data
-  const { data: engineerData, isLoading } = useAdminGetEngineerById(Number(id), !!id);
+  const { data: engineerData, isLoading } = useAdminGetEngineerById(
+    Number(id),
+    !!id,
+  );
 
   // Initialize form
-const methods = useForm<EngineerFormData>({
-  defaultValues: {
-    name: "",
-    email: "",
-    phoneNumber: "",
-    profileImage: null,
-    address: "",
-    skills: [],
-    price: "",
-    serviceCategory: "",
-    portfolio: "",
-    designation: "",
-    location: "",
-    employer: "",
-    experience: "",
-    resume: "",
-    governmentId: "",
-    certificate: "",
-  },
-  mode: "onChange",
-  reValidateMode: "onChange",
-});
+  const methods = useForm<EngineerFormData>({
+    defaultValues: {
+      name: "",
+      email: "",
+      phoneNumber: "",
+      profileImage: null,
+      address: "",
+      skills: [],
+      price: "",
+      serviceCategory: "",
+      portfolio: "",
+      designation: "",
+      location: "",
+      employer: "",
+      experience: "",
+      resume: "",
+      governmentId: "",
+      certificate: "",
+    },
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
 
   // Update defaultValues when data is loaded
-useEffect(() => {
-  if (!engineerData) return;
+  useEffect(() => {
+    if (!engineerData) return;
 
-
-  methods.reset({
-    name: engineerData.name ?? "",
-    email: engineerData.email ?? "",
-    phoneNumber: engineerData.phoneNumber,
-    profileImage: null,
-    address: engineerData.address ?? "",
-    skills: [],
-    price: engineerData.hourlyRate ?? "",
-    serviceCategory: engineerData.serviceCategoryId
-      ? String(engineerData.serviceCategoryId)
-      : "",
-    portfolio: engineerData.portfolioLink ?? "",
-    designation: engineerData.currentDesignation ?? "",
-    location: "",
-    employer: engineerData.employer ?? "",
-    experience: engineerData.experienceYears
-      ? String(engineerData.experienceYears)
-      : "",
-    resume: "",
-    governmentId: "",
-    certificate: "",
-  });
-}, [engineerData, methods]);
+    methods.reset({
+      name: engineerData.name ?? "",
+      email: engineerData.email ?? "",
+      phoneNumber: engineerData.phoneNumber,
+      profileImage: null,
+      address: engineerData.address ?? "",
+      skills: [],
+      price: engineerData.hourlyRate ?? "",
+      serviceCategory: engineerData.serviceCategoryId
+        ? String(engineerData.serviceCategoryId)
+        : "",
+      portfolio: engineerData.portfolioLink ?? "",
+      designation: engineerData.currentDesignation ?? "",
+      location: "",
+      employer: engineerData.employer ?? "",
+      experience: engineerData.experienceYears
+        ? String(engineerData.experienceYears)
+        : "",
+      resume: "",
+      governmentId: "",
+      certificate: "",
+    });
+  }, [engineerData, methods]);
 
   const { trigger, getValues, reset } = methods;
 
@@ -152,7 +154,11 @@ useEffect(() => {
 
   const tabs = [
     { label: "Basic Information", content: <BasicInformation />, hide: false },
-    { label: "Experience Details", content: <ExperienceDetails />, hide: false },
+    {
+      label: "Experience Details",
+      content: <ExperienceDetails />,
+      hide: false,
+    },
     { label: "Documents", content: <Documents />, hide: false },
   ];
 
@@ -164,7 +170,9 @@ useEffect(() => {
     <div className="w-full px-4 h-full mt-6">
       <div className="flex py-3 justify-between gap-4">
         <h2 className="mt-2 mb-4 font-semibold">Edit Engineer</h2>
-        <Button variant="solid" onClick={() => navigate(-1)}>Back</Button>
+        <Button variant="solid" onClick={() => navigate(-1)}>
+          Back
+        </Button>
       </div>
 
       <FormContainer methods={methods}>
@@ -177,7 +185,11 @@ useEffect(() => {
 
           <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">
             {activeTab !== "Basic Information" && (
-              <Button type="button" onClick={handlePrevious} className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90">
+              <Button
+                type="button"
+                onClick={handlePrevious}
+                className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+              >
                 Back
               </Button>
             )}

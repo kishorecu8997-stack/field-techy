@@ -1,4 +1,3 @@
-
 export interface BasicInformation {
   name: string;
   email: string;
@@ -111,10 +110,10 @@ export interface ManageEngineerProps {
   };
 
   // Derived / UI fields
-  engineerID?: string; 
-  details?: DetailsTypes; 
-  walletBalance?: string; 
-  kycStatus?: string; 
+  engineerID?: string;
+  details?: DetailsTypes;
+  walletBalance?: string;
+  kycStatus?: string;
   employmentStatus?: string;
   avgRating?: number;
   approvalStatus?: string;

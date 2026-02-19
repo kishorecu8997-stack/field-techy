@@ -30,17 +30,18 @@ export default function AllUsers() {
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
 
-const filteredData = manageEngineer.filter((e) => {
-  const query = search.toLowerCase();
+  const filteredData = manageEngineer.filter((e) => {
+    const query = search.toLowerCase();
 
-  return (
-    String(e.engineerID ?? "").toLowerCase().includes(query) ||
-    e.details?.name?.toLowerCase().includes(query) ||
-    e.details?.email?.toLowerCase().includes(query) ||
-    e.location?.toLowerCase().includes(query)
-  );
-});
-
+    return (
+      String(e.engineerID ?? "")
+        .toLowerCase()
+        .includes(query) ||
+      e.details?.name?.toLowerCase().includes(query) ||
+      e.details?.email?.toLowerCase().includes(query) ||
+      e.location?.toLowerCase().includes(query)
+    );
+  });
 
   const columns: Column<ManageEngineerProps>[] = [
     { key: "id", label: "Sr.No." },
