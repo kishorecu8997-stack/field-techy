@@ -1,6 +1,6 @@
 import { absoluteUrls } from "@/config/urls";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
-import { Button } from "@/shared/components/commonUI/Buttons";
+// import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import type { ManageEngineerProps, EngineerStatusType } from "../types";
+import { documentType } from "../types";
 import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import {
@@ -23,6 +24,7 @@ import {
   useAdminEngineersByUserIdStatus,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useEngineerStatusChange } from "@/shared/hooks/useEngineerStatusChange";
+import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 
 export default function PendingRequest() {
   const navigate = useNavigate();
@@ -33,9 +35,12 @@ export default function PendingRequest() {
   >({});
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
+  const [selectedRowId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [activeRowId, setActiveRowId] = useState<number | null>(null);
+  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(null);
+
 
   const {
     data: engineersResponse,
@@ -169,18 +174,23 @@ export default function PendingRequest() {
       key: "documents",
       label: "View Documents",
       align: "center",
-      renderCell: (row) => (
-        <div className="mx-auto text-center">
-          <Button
-            className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-            onClick={() => {
-              setIsModalOpen(true);
-              setSelectedRowId(row.id);
-            }}
-          >
-            {row.documents || "N/A"}
-          </Button>
-        </div>
+      renderCell: (row: ManageEngineerProps) => (
+        <SelectMenu
+          placeholder="Select Document"
+          className="w-36"
+          options={documentType.map((item) => ({
+            value: item.value,
+            label: item.label,
+          }))}
+          value={activeRowId === row.id ? selectedType : null}
+          onChange={(value) => {
+            // Track the row and document type
+            setActiveRowId(row.id);
+            setSelectedType(value as ProfileFileType);
+            // Open modal for the selected document
+            setIsModalOpen(true);
+          }}
+        />
       ),
     },
     { key: "location", label: "Location" },
@@ -280,13 +290,24 @@ export default function PendingRequest() {
       </div>
 
       {isModalOpen && (
-        <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <Popup
+          open={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setActiveRowId(null);
+            setSelectedType(null); 
+          }}
+        >
           <div className="p-4">
             <div className="flex justify-between items-center">
               <span className="font-bold">View File {selectedRowId}</span>
               <div
                 className="text-xl font-semibold cursor-pointer"
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => {
+                  setIsModalOpen(false)
+                  setActiveRowId(null);
+                  setSelectedType(null); 
+                }}
               >
                 <IoCloseSharp />
               </div>

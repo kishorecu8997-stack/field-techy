@@ -42,9 +42,8 @@ export const userList: UserItem[] = [
   },
 ];
 
-export const SubAdminRoles = [
-  { value: "Admin", label: "Admin" },
-  { value: "Super Admin", label: "Super Admin" },
-  { value: "Manager", label: "Manager" },
-  { value: "Team Lead", label: "Team Lead" },
+export const SubAdminRegions = [
+  { value: "UK", label: "UK" },
+  { value: "India", label: "India" },
+  { value: "Sri Lanka", label: "Sri Lanka" },
 ];

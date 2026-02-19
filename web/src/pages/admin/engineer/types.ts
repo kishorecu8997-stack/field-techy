@@ -1,3 +1,4 @@
+import type { DocumentOption } from "../client/types";
 import type { adminJobsStatus } from "../jobs/types";
 
 export interface BasicInformation {
@@ -137,3 +138,9 @@ export type EngineerApiResponse = {
   };
   isLoading?: boolean;
 };
+
+export const documentType: DocumentOption[] = [
+  { value: "resumeFile", label: "Resume File" },
+  { value: "govIdDoc", label: "Government Document" },
+  { value: "certificateDoc", label: "Certificate Document" },
+]

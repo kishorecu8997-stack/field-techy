@@ -1,4 +1,4 @@
-import { SubAdminRoles, userList } from "@/dummy_data/admin/manageSubAdmin";
+import { SubAdminRegions, userList } from "@/dummy_data/admin/manageSubAdmin";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -116,9 +116,9 @@ export default function EditSubAdmin() {
 
               <SelectField
                 name="role"
-                label="Select Roles"
-                placeholder="Select Roles"
-                options={SubAdminRoles}
+                label="Select Regions"
+                placeholder="Select Regions"
+                options={SubAdminRegions}
                 required
               />
             </div>

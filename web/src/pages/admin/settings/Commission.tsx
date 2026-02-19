@@ -19,7 +19,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 export default function Commission() {
   const methods = useForm<SettingsFormData>({
     defaultValues: {
-      commission: "",
+      commission: 0,
     },
   });
 
@@ -75,6 +75,7 @@ export default function Commission() {
             required
             allowedCharacters="currency"
             rules={{ validate: (v: string) => CommissionValidation(v) }}
+            disabled
           />
         </div>
         <div className="flex justify-end mt-2">

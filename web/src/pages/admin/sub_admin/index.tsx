@@ -6,9 +6,8 @@ import CustomTable, {
 } from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { FaUserShield } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -20,24 +19,14 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered page component.
  */
 export default function ManageSubAdmin() {
-  const [statuses, setStatuses] = useState<Record<number, "On" | "Off">>({});
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
 
-  const getStatus = (row: UserItem) => {
-    return statuses[row.id] ?? row.status;
-  };
-
-  const toggleStatus = (id: number, current: "On" | "Off") => {
-    const newStatus = current === "On" ? "Off" : "On";
-    setStatuses((prev) => ({ ...prev, [id]: newStatus }));
-  };
-
   //Delete confirmation
-  const handleDeleteJob = async (job: UserItem) => {
+  const handleDisableSubAdmin = async (job: UserItem) => {
     await showPopup({
-      title: "Delete Sub-Admin",
-      body: "Are you sure you want to delete this sub-admin?",
+      title: "Disable Sub-Admin",
+      body: "Are you sure you want to disable this sub-admin?",
       actionButtons: [
         {
           label: "Cancel",
@@ -45,14 +34,14 @@ export default function ManageSubAdmin() {
           variant: "outline",
         },
         {
-          label: "Delete",
-          value: "delete",
+          label: "Disable",
+          value: "disable",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting job:", job.id);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Job deleted successfully!");
+            console.log("Disabling sub-admin:", job.id);
+            // TODO: call your disable API here
+            // await disableSubAdmin(job.id);
+            toast.success("Sub-admin disabled successfully!");
             close(true);
           },
         },
@@ -89,29 +78,6 @@ export default function ManageSubAdmin() {
       renderCell: (row: UserItem) => <span>{row.phoneNumber}</span>,
     },
     {
-      key: "roleName",
-      label: "Role Name",
-      renderCell: (row: UserItem) => <span>{row.roleName}</span>,
-    },
-    {
-      key: "status",
-      label: "Status",
-      renderCell: (row: UserItem) => {
-        const currentStatus = getStatus(row);
-        const isOn = currentStatus === "On";
-        return (
-          <div
-            onClick={() => toggleStatus(row.id, currentStatus)}
-            className={`flex items-center justify-center w-20 px-2 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-              isOn ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-            }`}
-          >
-            {currentStatus}
-          </div>
-        );
-      },
-    },
-    {
       key: "action",
       label: "Action",
       renderCell: (row: UserItem) => (
@@ -128,9 +94,9 @@ export default function ManageSubAdmin() {
           </div>
           <div
             className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteJob(row)}
+            onClick={() => handleDisableSubAdmin(row)}
           >
-            <RiDeleteBin6Line className="text-red-600" />
+            <FaUserShield  className="text-red-600" />
           </div>
         </div>
       ),
@@ -142,12 +108,6 @@ export default function ManageSubAdmin() {
       <div className="flex justify-between">
         <p className="mt-2 mb-6 font-semibold">Manage Sub-Admin</p>
         <div className="flex gap-2">
-          <Button
-            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-            onClick={() => navigate(absoluteUrls.admin.home.roleList)}
-          >
-            Roles
-          </Button>
           <Button
             className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             onClick={() =>
