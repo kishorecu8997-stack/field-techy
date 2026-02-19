@@ -85,21 +85,23 @@ export interface walletViewData {
 }
 
 export interface ClientFormData {
-  profileImage?: string | null;
-  companyName: string;
+  clientType: "corporate" | "home";
+  profileImage?: string | File | null;
+  companyName?: string;
   phoneNumber: string;
-  industry: string;
+  email: string;
+  industry?: string;
   country: string;
   city: string;
-  taxDocument: string;
+  taxDocument?: string;
   contactPersonName: string;
-  businessType: string;
-  address: string;
+  businessType?: string;
+  address?: string;
   state: string;
   postalCode: string;
-  vatRegistrationNumber: string;
-  governmentIDProof: string | null;
-  qualificationCertificate: string | null;
+  vatRegistrationNumber?: string;
+  governmentIDProof?: string | File | null;
+  certificate?: string | File | null;
 }
 
 export interface CompanyInfo {

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   businessTypes,
   citiesByCountry,
@@ -18,8 +18,13 @@ import {
   validateZipcode,
 } from "../Validates";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
+import type { ClientFormData } from "../types";
 import { useFormContext } from "react-hook-form";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+
+interface ClientAddProps {
+  isEdit?: boolean;
+}
 
 /**
  * ClientAdd component renders the form fields for adding or editing the basic information of a client.
@@ -31,16 +36,10 @@ import { validateEmailRules } from "@/shared/components/commonUI/emailValidation
  * @component
  * @returns {JSX.Element} The rendered form fields for client's basic information.
  */
-const ClientAdd: React.FC = () => {
-  const { watch, setValue } = useFormContext();
+const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false }) => {
+  const { watch } = useFormContext<ClientFormData>();
   const clientType = watch("clientType");
   const selectedCountry = watch("country");
-
-  useEffect(() => {
-    if (!clientType) {
-      setValue("clientType", "corporate");
-    }
-  }, [clientType, setValue]);
 
   const cityOptions = selectedCountry
     ? citiesByCountry[selectedCountry] || []
@@ -71,6 +70,7 @@ const ClientAdd: React.FC = () => {
               { label: "Home", value: "home" },
             ]}
             required
+            disabled={isEdit}
           />
 
           {clientType === "corporate" && (
@@ -96,6 +96,7 @@ const ClientAdd: React.FC = () => {
             type="text"
             required
             rules={validateEmailRules}
+            disabled={isEdit}
           />
 
           {clientType === "corporate" && (

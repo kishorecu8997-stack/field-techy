@@ -226,7 +226,7 @@ const CorporateClient: React.FC = () => {
           </div>
           <div
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.corporateClientEdit}`)
+              navigate(`${absoluteUrls.admin.home.corporateClientEdit}?type=corporate`)
             }
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
           >
@@ -249,32 +249,31 @@ const CorporateClient: React.FC = () => {
         <SearchInput value={search} onChange={setSearch} />
         <Button
           className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-          onClick={() =>
-            navigate(`${absoluteUrls.admin.home.corporateClientAdd}`)
-          }
-        >
-          Add Client
-        </Button>
+            onClick={() =>
+              navigate(`${absoluteUrls.admin.home.corporateClientAdd}?type=corporate`)
+            }
+          >
+            Add Client
+          </Button>
+        </div>
+        <div className="h-full flex-1 overflow-y-auto ">
+          <CustomTable<ManageClientProps>
+            columns={columns}
+            data={clientData}
+            initialPageSize={limit}
+            totalCount={manageClient?.total || 0}
+            currentPage={page}
+            onPageChange={setPage}
+            onPageSizeChange={setLimit}
+          />
+        </div>
+        <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+          <ViewFileComponent
+            onClose={() => setIsOpen(false)}
+            fileType={selectedType}
+          />
+        </Popup>
       </div>
-      <div className="h-full flex-1 overflow-y-auto ">
-        <CustomTable<ManageClientProps>
-          columns={columns}
-          data={clientData}
-          initialPageSize={limit}
-          totalCount={manageClient?.total || 0}
-          currentPage={page}
-          onPageChange={setPage}
-          onPageSizeChange={setLimit}
-        />
-      </div>
-      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <ViewFileComponent
-          onClose={() => setIsOpen(false)}
-          fileType={selectedType}
-        />
-      </Popup>
-    </div>
-  );
-};
-
+    );
+  };
 export default CorporateClient;

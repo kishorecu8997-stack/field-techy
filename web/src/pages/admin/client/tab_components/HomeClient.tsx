@@ -226,7 +226,7 @@ const HomeClient: React.FC = () => {
           </div>
           <div
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.homeClientEdit}`)
+              navigate(`${absoluteUrls.admin.home.homeClientEdit}?type=home`)
             }
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
           >
@@ -248,7 +248,7 @@ const HomeClient: React.FC = () => {
         <SearchInput value={search} onChange={setSearch} />
         <Button
           className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-          onClick={() => navigate(`${absoluteUrls.admin.home.homeClientAdd}`)}
+          onClick={() => navigate(`${absoluteUrls.admin.home.homeClientAdd}?type=home`)}
         >
           Add Client
         </Button>
