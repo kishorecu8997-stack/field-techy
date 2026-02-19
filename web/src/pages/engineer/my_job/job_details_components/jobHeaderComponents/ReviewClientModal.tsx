@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { StarRating } from "./StarRating";
+import { StarRating } from "@/shared/components/commonUI/StarRating";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs/TextareaInput";
 type ReviewClientModalProps = {

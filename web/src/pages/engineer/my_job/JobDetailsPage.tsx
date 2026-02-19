@@ -9,7 +9,8 @@ import { toast } from "react-toastify";
 import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
-import GiveClientFeedbackModal from "./job_details_components/jobHeaderComponents/GiveClientFeedbackModal";
+import { usePopupStore } from "@/shared/store/popupStore";
+import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import ViewClientFeedbackModal from "./job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
@@ -36,7 +37,6 @@ const JobDetailsPage = () => {
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
   const [isFinalStatementSubmitted, setIsFinalStatementSubmitted] = useState(false);
-  const [showGiveClientFeedback, setShowGiveClientFeedback] = useState(false);
   const [showViewClientFeedback, setShowViewClientFeedback] = useState(false);
 
   // Always call hooks - pass empty string if jobId is missing or dummy
@@ -71,12 +71,21 @@ const JobDetailsPage = () => {
   const handleOpenFinalStatement = () => setShowFinalStatement(true);
   const handleCloseFinalStatement = () => setShowFinalStatement(false);
 
-  const handleOpenGiveClientFeedback = () => setShowGiveClientFeedback(true);
-  const handleCloseGiveClientFeedback = () => setShowGiveClientFeedback(false);
-
-  const handleSubmitClientFeedback = () => {
-    toast.success("Feedback submitted successfully");
-    handleCloseGiveClientFeedback();
+  const { showPopup } = usePopupStore();
+  const handleOpenGiveClientFeedback = () => {
+    showPopup({
+      title: "Your Rating & Review",
+      body: (
+        <GiveFeedbackModal
+          targetName={isDummyJob ? "Kraft and Co" : ""}
+          placeholder="Share your feedback about your experience with the client..."
+        />
+      ),
+    }).then((payload: unknown) => {
+      if (payload) {
+        toast.success("Feedback submitted successfully");
+      }
+    });
   };
 
   const handleOpenViewClientFeedback = () => setShowViewClientFeedback(true);
@@ -248,13 +257,6 @@ const JobDetailsPage = () => {
         onClose={() => setIsReviewOpen(false)}
         clientName={clientName ?? "Client"}
         onSubmit={handleSubmitReview}
-      />
-
-      <GiveClientFeedbackModal
-        isOpen={showGiveClientFeedback}
-        onClose={handleCloseGiveClientFeedback}
-        clientName={isDummyJob ? "Kraft and Co" : ""}
-        onSubmit={handleSubmitClientFeedback}
       />
 
       <ViewClientFeedbackModal

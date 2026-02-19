@@ -32,11 +32,12 @@ import ConfirmModal from "./ConfirmModal";
 import ShortBreakApprovalModal from "./ShortBreakApprovalModal";
 import ActionRequiredBadge from "./ActionRequiredBadge";
 import TimelineSectionHeader from "./TimelineSectionHeader";
-import GiveEngineerFeedbackModal from "./GiveEngineerFeedbackModal";
+import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import type {
   RevisionFormData,
   RevisionRequestDetails,
 } from "./clientTimelineTypes";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 const clientTimelineCards: TimelineCardData[] = [
   progressUpdateCardDataFromDummy,
@@ -98,7 +99,6 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
   const [showJobRejectConfirm, setShowJobRejectConfirm] = useState(false);
   const [shortBreakNotes, setShortBreakNotes] = useState("");
   const [keepProgressExpanded, setKeepProgressExpanded] = useState(false);
-  const [showEngineerFeedbackModal, setShowEngineerFeedbackModal] = useState(false);
   const [revisionRequestDetails, setRevisionRequestDetails] =
     useState<RevisionRequestDetails | null>(null);
   // State for revision update card data - setter can be used when API integration is added
@@ -111,7 +111,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
       progressStatus === TIMELINE_STATUS.approved &&
       shortBreakStatus === TIMELINE_STATUS.approved &&
       finalStatementStatus === TIMELINE_STATUS.approved;
-    
+
     onAllCardsApprovedChange?.(allApproved);
   }, [jobStatus, progressStatus, shortBreakStatus, finalStatementStatus, onAllCardsApprovedChange]);
 
@@ -416,6 +416,8 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
     jobStatus,
   ]);
 
+  const { showPopup } = usePopupStore();
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       {isSectionCollapsed ? (
@@ -463,9 +465,18 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
                   type="button"
                   className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 transition-opacity hover:opacity-80 underline"
                   aria-label="Give Feedback On Engineer"
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.stopPropagation();
-                    setShowEngineerFeedbackModal(true);
+                    await showPopup({
+                      title: "Your Rating & Review",
+                      body: (
+                        <GiveFeedbackModal
+                          targetName={engineerTimelineData.name}
+                          targetRole={engineerTimelineData.role}
+                          placeholder="The overall experience was good and focused."
+                        />
+                      ),
+                    });
                   }}
                 >
                   <HiStar className="h-5 w-5 text-yellow-500" />
@@ -485,8 +496,17 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
                 type="button"
                 className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 transition-opacity hover:opacity-80 underline"
                 aria-label="Give Feedback On Engineer"
-                onClick={() => {
-                  setShowEngineerFeedbackModal(true);
+                onClick={async () => {
+                  await showPopup({
+                    body: (
+                      <GiveFeedbackModal
+                        targetName={engineerTimelineData.name}
+                        targetRole={engineerTimelineData.role}
+                        placeholder="The overall experience was good and focused."
+                      />
+                    ),
+                    bodyClassName: "h-full",
+                  });
                 }}
               >
                 <HiStar className="h-5 w-5 text-yellow-500" />
@@ -504,60 +524,60 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
           </div>
 
           <div className="px-4 pb-4 space-y-6">
-        {/* Action Required Badge - Always at the top */}
-        <ActionRequiredBadge count={actionRequiredCount} />
+            {/* Action Required Badge - Always at the top */}
+            <ActionRequiredBadge count={actionRequiredCount} />
 
-        {/* Progress Update Card */}
-        <ProgressUpdateCard
-          isCollapsed={isProgressCollapsed}
-          cardData={progressUpdateCardData}
-          progressAccentColor={progressAccentColor}
-          progressStatus={progressStatus}
-          progressStatusNode={progressStatusNode}
-          revisionRequestDetails={revisionRequestDetails}
-          revisionUpdateCardData={revisionUpdateCardData}
-          revisionRequestUpdateCardData={revisionRequestUpdateCardData}
-          revisionUpdateStatus={revisionUpdateStatus}
-          onProgressReject={handleProgressReject}
-          onRequestRevision={handleRequestRevision}
-          onProgressApprove={handleProgressApprove}
-          onRevisionUpdateRequestRevision={handleRevisionUpdateRequestRevision}
-        />
+            {/* Progress Update Card */}
+            <ProgressUpdateCard
+              isCollapsed={isProgressCollapsed}
+              cardData={progressUpdateCardData}
+              progressAccentColor={progressAccentColor}
+              progressStatus={progressStatus}
+              progressStatusNode={progressStatusNode}
+              revisionRequestDetails={revisionRequestDetails}
+              revisionUpdateCardData={revisionUpdateCardData}
+              revisionRequestUpdateCardData={revisionRequestUpdateCardData}
+              revisionUpdateStatus={revisionUpdateStatus}
+              onProgressReject={handleProgressReject}
+              onRequestRevision={handleRequestRevision}
+              onProgressApprove={handleProgressApprove}
+              onRevisionUpdateRequestRevision={handleRevisionUpdateRequestRevision}
+            />
 
-        {/* Short Term Break Card */}
-        <ShortBreakCard
-          isCollapsed={isShortBreakCollapsed}
-          cardData={shortTermBreakCardData}
-          shortBreakAccentColor={shortBreakAccentColor}
-          shortBreakStatus={shortBreakStatus}
-          shortBreakStatusNode={shortBreakStatusNode}
-          onShortBreakReject={handleShortBreakReject}
-          onShortBreakApprove={handleShortBreakApprove}
-        />
+            {/* Short Term Break Card */}
+            <ShortBreakCard
+              isCollapsed={isShortBreakCollapsed}
+              cardData={shortTermBreakCardData}
+              shortBreakAccentColor={shortBreakAccentColor}
+              shortBreakStatus={shortBreakStatus}
+              shortBreakStatusNode={shortBreakStatusNode}
+              onShortBreakReject={handleShortBreakReject}
+              onShortBreakApprove={handleShortBreakApprove}
+            />
 
-        {/* Final Statement Card */}
-        <FinalStatementCard
-          isCollapsed={isFinalStatementCollapsed}
-          cardData={finalStatementCardData}
-          finalStatementAccentColor={finalStatementAccentColor}
-          finalStatementStatus={finalStatementStatus}
-          finalStatementStatusNode={finalStatementStatusNode}
-          onFinalStatementReject={handleFinalStatementReject}
-          onFinalStatementApprove={handleFinalStatementApprove}
-        />
+            {/* Final Statement Card */}
+            <FinalStatementCard
+              isCollapsed={isFinalStatementCollapsed}
+              cardData={finalStatementCardData}
+              finalStatementAccentColor={finalStatementAccentColor}
+              finalStatementStatus={finalStatementStatus}
+              finalStatementStatusNode={finalStatementStatusNode}
+              onFinalStatementReject={handleFinalStatementReject}
+              onFinalStatementApprove={handleFinalStatementApprove}
+            />
 
-        {/* Job Started Card */}
-        <JobStartedCard
-          isCollapsed={isJobCollapsed}
-          cardData={jobStartedCardDataForCard}
-          accentColor={accentColor}
-          jobStatus={jobStatus}
-          statusNode={statusNode}
-          onReject={handleReject}
-          onApprove={handleApprove}
-        />
+            {/* Job Started Card */}
+            <JobStartedCard
+              isCollapsed={isJobCollapsed}
+              cardData={jobStartedCardDataForCard}
+              accentColor={accentColor}
+              jobStatus={jobStatus}
+              statusNode={statusNode}
+              onReject={handleReject}
+              onApprove={handleApprove}
+            />
 
-        <TimelineSectionHeader items={activityTimelineItems} />
+            <TimelineSectionHeader items={activityTimelineItems} />
           </div>
         </>
       )}
@@ -589,14 +609,6 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
         onNotesChange={setShortBreakNotes}
         onCancel={handleShortBreakApprovalCancel}
         onSubmit={handleShortBreakApprovalSubmit}
-      />
-
-      <GiveEngineerFeedbackModal
-        isOpen={showEngineerFeedbackModal}
-        onClose={() => setShowEngineerFeedbackModal(false)}
-        engineerName={engineerTimelineData.name}
-        engineerRole={engineerTimelineData.role}
-        onSubmit={handleEngineerFeedbackSubmit}
       />
     </div>
   );
