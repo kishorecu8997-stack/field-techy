@@ -11,14 +11,15 @@ import {
 } from "@/shared/apiServices/client/clientOpenApiService";
 
 const RecentTransactionsList: React.FC = () => {
-  const today = new Date();
-  const startDate = new Date(today);
-  startDate.setMonth(today.getMonth() - 3);
-  startDate.setHours(0, 0, 0, 0);
-  const endDate = today;
-  endDate.setHours(23, 59, 59, 999);
-  const startDateStr = startDate.toISOString();
-  const endDateStr = endDate.toISOString();
+  // currently i am comment this pr because of the start dart quary param backend api once they correct it iwill uncomment this this show 3 last 3 moths transaction details
+  // const today = new Date();
+  // const startDate = new Date(today);
+  // startDate.setMonth(today.getMonth() - 3);
+  // startDate.setHours(0, 0, 0, 0);
+  // const endDate = today;
+  // endDate.setHours(23, 59, 59, 999);
+  // const startDateStr = startDate.toISOString();
+  // const endDateStr = endDate.toISOString();
   const { data: balance } = useClientBalance();
   const {
     data: transactionsRaw,
