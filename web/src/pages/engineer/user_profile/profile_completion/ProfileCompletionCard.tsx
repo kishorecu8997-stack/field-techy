@@ -128,6 +128,7 @@ const ProfileCompletionCard = () => {
                 {/* Complete Section Button */}
                 <div className="flex justify-between items-center mt-4 text-sm">
                   <Button
+                    className="mt-2 w-200px bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
                     onClick={() => {
                       let navKey = section.section;
 
@@ -140,11 +141,10 @@ const ProfileCompletionCard = () => {
                         "profilecompletion",
                         "profileCompletion",
                       );
-                      setImmediateParentKey("profile");
+                      setImmediateParentKey("profileCompletion");
                       setActiveKey(navKey);
                       setISOpenSidebar(true);
                     }}
-                    className="text-teal-700 font-medium hover:underline"
                   >
                     Complete This Section
                   </Button>
@@ -162,7 +162,9 @@ const ProfileCompletionCard = () => {
         </>
       ) : (
         <div className="border rounded-xl p-6 bg-green-50 dark:bg-green-900/30 text-center">
-          <div className="text-4xl mb-2">🎉</div>
+          <div className="text-4xl mb-2" aria-hidden="true">
+            🎉
+          </div>
           <h3 className="font-semibold text-green-800 dark:text-green-300 mb-1">
             Profile Complete!
           </h3>

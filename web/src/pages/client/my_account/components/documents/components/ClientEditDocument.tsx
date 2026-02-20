@@ -49,8 +49,6 @@ const ClientEditDocument: React.FC<ClientEditDocumentProps> = ({
 
   const getProfileFileType = (docType: ProfileFileType): ProfileFileType => {
     switch (docType) {
-      case "resumeFile":
-        return "resumeFile";
       case "govIdDoc":
         return "govIdDoc";
       case "certificateDoc":

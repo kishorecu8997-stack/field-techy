@@ -158,15 +158,6 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
             (query.queryKey[0] as { _id?: string })._id ===
               "clientGetMyDocuments",
         });
-
-        await queryClient.refetchQueries({
-          predicate: (query) =>
-            Array.isArray(query.queryKey) &&
-            query.queryKey[0] &&
-            typeof query.queryKey[0] === "object" &&
-            (query.queryKey[0] as { _id?: string })._id ===
-              "clientGetMyDocuments",
-        });
       }
 
       // Invalidate the download query to get the fresh URL
