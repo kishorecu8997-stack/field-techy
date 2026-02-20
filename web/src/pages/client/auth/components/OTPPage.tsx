@@ -15,10 +15,6 @@ interface OTPPageProps {
   /**
    * @deprecated Use onSubmit instead.
    */
-  handleNavigate?: () => void;
-  /**
-   * Optional handler that receives the OTP value on submission.
-   */
   onSubmit?: (data: OTPValues) => void;
   buttonText?: string;
   isSuccess?: boolean;
@@ -52,7 +48,6 @@ interface OTPPageProps {
  * @param {string} [props.header] - The main title displayed in the modal.
  * @param {string} [props.description] - A descriptive text shown below the header.
  * @param {() => void} [props.onClose] - Callback function to close the modal.
- * @param {() => void} [props.handleNavigate] - Callback executed on successful OTP submission to proceed (Deprecated, use onSubmit).
  * @param {function} [props.onSubmit] - Optional handler that receives the OTP value on submission.
  * @param {string} [props.buttonText="Submit"] - The text for the submit button.
  * @param {boolean} [props.isSuccess] - If true, hides the OTP input and timer.
@@ -162,7 +157,7 @@ const OTPPage: React.FC<OTPPageProps> = ({
                   {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
                 </span>
 
-                <button
+                <Button
                   type="button"
                   onClick={handleResend}
                   disabled={timeLeft > 0 || resendCount >= maxResendAttempts}
@@ -173,7 +168,7 @@ const OTPPage: React.FC<OTPPageProps> = ({
                   }`}
                 >
                   Resend
-                </button>
+                </Button>
               </div>
             </div>
           )}
