@@ -29,7 +29,7 @@ const MyEarning = () => {
             {showBalance
               ? Number(balance?.balance)?.toLocaleString("en-US", {
                   style: "currency",
-                  currency: balance?.currencyCode|| "INR",
+                  currency: balance?.currencyCode,
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })
