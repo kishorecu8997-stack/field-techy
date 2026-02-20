@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import {
   useAdminManageClients,
   useAdminClientsByUserIdStatus,
+  useAdminDeleteClientMutation,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
 import { documentType, type ManageClientProps } from "../types";
@@ -56,6 +57,7 @@ const CorporateClient: React.FC = () => {
   );
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
+  const { mutateAsync: deleteClient } = useAdminDeleteClientMutation();
 
   const { onStatusChange } = useStatusChange({
     rowStatuses,
@@ -84,7 +86,9 @@ const CorporateClient: React.FC = () => {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting client:", client.id);
+            await deleteClient({
+              body: { userId: client.userId },
+            });
             toast.success("Client deleted successfully");
             close(true);
           },
@@ -277,11 +281,22 @@ const CorporateClient: React.FC = () => {
         <ViewFileComponent
           onClose={() => setIsOpen(false)}
           fileType={selectedType}
-          userId={
-            activeRowId
-              ? clientData.find((c) => c.id === activeRowId)?.userId
-              : undefined
-          }
+          fileUrl={(() => {
+            if (!activeRowId || !selectedType) return null;
+            const client = clientData.find((c) => c.id === activeRowId);
+            if (!client) return null;
+
+            switch (selectedType) {
+              case "govIdDoc":
+                return client.govIdDoc?.url;
+              case "certificateDoc":
+                return client.certificateDoc?.url;
+              case "profilePicture":
+                return client.profilePicture?.url;
+              default:
+                return null;
+            }
+          })()}
         />
       </Popup>
     </div>

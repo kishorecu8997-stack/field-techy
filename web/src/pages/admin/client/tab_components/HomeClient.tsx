@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import {
   useAdminManageClients,
   useAdminClientsByUserIdStatus,
+  useAdminDeleteClientMutation,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
 import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
@@ -55,6 +56,7 @@ const HomeClient: React.FC = () => {
     },
   );
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
+  const { mutateAsync: deleteClient } = useAdminDeleteClientMutation();
 
   const { onStatusChange } = useStatusChange({
     rowStatuses,
@@ -84,7 +86,9 @@ const HomeClient: React.FC = () => {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting client with ID:", client.id);
+            await deleteClient({
+              body: { userId: client.userId },
+            });
             toast.success("Client deleted successfully");
             close(true);
           },
@@ -218,7 +222,9 @@ const HomeClient: React.FC = () => {
         <div className="flex items-center gap-2">
           <div
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.homeClientView}?userId=${row.userId}&id=${row.id}&view=true`)
+              navigate(
+                `${absoluteUrls.admin.home.homeClientView}?userId=${row.userId}&id=${row.id}&view=true`,
+              )
             }
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
           >
@@ -226,7 +232,9 @@ const HomeClient: React.FC = () => {
           </div>
           <div
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.homeClientEdit}?userId=${row.userId}&id=${row.id}&type=home`)
+              navigate(
+                `${absoluteUrls.admin.home.homeClientEdit}?userId=${row.userId}&id=${row.id}&type=home`,
+              )
             }
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
           >
@@ -248,7 +256,9 @@ const HomeClient: React.FC = () => {
         <SearchInput value={search} onChange={setSearch} />
         <Button
           className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-          onClick={() => navigate(`${absoluteUrls.admin.home.homeClientAdd}?type=home`)}
+          onClick={() =>
+            navigate(`${absoluteUrls.admin.home.homeClientAdd}?type=home`)
+          }
         >
           Add Client
         </Button>
@@ -268,7 +278,22 @@ const HomeClient: React.FC = () => {
         <ViewFileComponent
           onClose={() => setIsOpen(false)}
           fileType={selectedType}
-          userId={activeRowId ? clientData.find(c => c.id === activeRowId)?.userId : undefined}
+          fileUrl={(() => {
+            if (!activeRowId || !selectedType) return null;
+            const client = clientData.find((c) => c.id === activeRowId);
+            if (!client) return null;
+
+            switch (selectedType) {
+              case "govIdDoc":
+                return client.govIdDoc?.url;
+              case "certificateDoc":
+                return client.certificateDoc?.url;
+              case "profilePicture":
+                return client.profilePicture?.url;
+              default:
+                return null;
+            }
+          })()}
         />
       </Popup>
     </div>

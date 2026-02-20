@@ -2,54 +2,24 @@ import { assetsConfig } from "@/assets";
 import React from "react";
 import { IoClose } from "react-icons/io5";
 import { FiDownload } from "react-icons/fi";
-import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { Suspense } from "react";
-import { useAdminGetClientByUserId } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useSearchParams } from "react-router-dom";
+import type { ViewFileComponentProps } from "../types";
 
 const PDFPreview = React.lazy(() => import("@/shared/components/PdfPreview"));
 
-interface ViewFileComponentProps {
-  onClose: () => void;
-  title?: string;
-  fileType: ProfileFileType | null;
-  userId?: string | number;
-}
-
+/**
+ * ViewFileComponent component renders a popup that displays a preview of a file.
+ * It supports different file types, including profile pictures, government ID documents,
+ * and certificate documents. The component also includes a close button and a download button.
+ */
 const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   onClose,
   title = "View File",
   fileType,
-  userId: propUserId,
+  fileUrl,
 }) => {
-  const [searchParams] = useSearchParams();
-  const userIdFromUrl = searchParams.get("userId");
-  const userId = propUserId || userIdFromUrl;
-
-  const {
-    data: clientDetail,
-    isLoading,
-    isError,
-  } = useAdminGetClientByUserId(userId || "", {
-    enabled: !!userId,
-  });
-
-  const getDownloadUrl = () => {
-    if (!clientDetail) return null;
-    switch (fileType) {
-      case "profilePicture":
-        return clientDetail.profilePicture?.url;
-      case "govIdDoc":
-        return clientDetail.govIdDoc?.url;
-      case "certificateDoc":
-        return clientDetail.certificateDoc?.url;
-      default:
-        return null;
-    }
-  };
-
-  const downloadUrl = getDownloadUrl();
+  const downloadUrl = fileUrl;
 
   const handleDownload = async () => {
     if (downloadUrl) {
@@ -71,15 +41,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   };
 
   const renderDocumentPreview = () => {
-    if (isLoading) {
-      return (
-        <div className="flex items-center justify-center p-8 min-h-[400px]">
-          <LoaderComponent />
-        </div>
-      );
-    }
-
-    if (isError || !downloadUrl) {
+    if (!downloadUrl) {
       return (
         <div className="text-center p-8 min-h-[400px] flex flex-col items-center justify-center">
           <img
@@ -118,7 +80,11 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
       }
     >
       <div className="w-full flex items-center justify-center">
-        <PDFPreview key={downloadUrl} url={downloadUrl!} className="h-[300px]" />
+        <PDFPreview
+          key={downloadUrl}
+          url={downloadUrl!}
+          className="h-[300px]"
+        />
       </div>
     </Suspense>
   );

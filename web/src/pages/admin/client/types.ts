@@ -1,4 +1,5 @@
 import type { AdminGetClientResponse } from "@/api";
+import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 
 export interface ManageClientProps {
   id: number;
@@ -58,6 +59,21 @@ export interface ManageClientProps {
     id: number;
     name: string;
   };
+  govIdDoc?: {
+    fileId?: number;
+    url?: string;
+    mimeType?: string;
+  };
+  certificateDoc?: {
+    fileId?: number;
+    url?: string;
+    mimeType?: string;
+  };
+  profilePicture?: {
+    fileId?: number;
+    url?: string;
+    mimeType?: string;
+  };
 }
 
 export interface ExtendedClientResponse extends AdminGetClientResponse {
@@ -71,6 +87,13 @@ export interface ClientFormProps {
 export interface ClientAddProps {
   isEdit?: boolean;
   isView?: boolean;
+}
+
+export interface ViewFileComponentProps {
+  onClose: () => void;
+  title?: string;
+  fileType: ProfileFileType | null;
+  fileUrl?: string | null;
 }
 
 export type DocumentType =

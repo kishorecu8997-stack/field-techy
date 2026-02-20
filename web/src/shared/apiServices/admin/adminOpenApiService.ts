@@ -1,6 +1,7 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
+  adminGetClientsForManagement,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -27,6 +28,8 @@ import {
   type AdminUpdateClientData,
   type AdminUpdateClientResponse,
   type AdminGetClientResponse,
+  type AdminGetClientsForManagementError,
+  type AdminDeleteClientResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -36,15 +39,15 @@ import {
   appGetLookupDataOptions,
   appLoginMutation,
   appResetPasswordMutation,
-  adminGetClientsForManagementOptions,
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetEngineersForManagementOptions,
   adminCreateClientMutation,
   adminUpdateClientMutation,
   adminGetClientOptions,
+  adminDeleteClientMutation,
 } from "@/api/@tanstack/react-query.gen";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 
@@ -216,12 +219,22 @@ export function useAdminManageClients(options?: {
     ...(clientType ? { clientType } : {}),
   };
 
-  return useQuery({
-    ...adminGetClientsForManagementOptions({
-      client: apiClient,
-      query: queryParams,
-    }),
-    queryKey: [...queryKeys.admin.manageClients, queryParams] as any,
+  return useQuery<
+    AdminManageClientsResponse,
+    AdminGetClientsForManagementError,
+    AdminManageClientsResponse,
+    QueryKey
+  >({
+    queryKey: [...queryKeys.admin.manageClients, queryParams],
+    queryFn: async ({ signal }) => {
+      const { data } = await adminGetClientsForManagement({
+        client: apiClient,
+        query: queryParams,
+        signal,
+        throwOnError: true,
+      });
+      return data as AdminManageClientsResponse;
+    },
     ...queryOptions,
   });
 }
@@ -320,8 +333,9 @@ export function useAdminAddClient(options?: {
   return useMutation({
     ...adminCreateClientMutation({ client: apiClient }),
     onSuccess: (data: AdminAddClientResponse) => {
-      queryClient.invalidateQueries({
+      queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
+        exact: false,
       });
       options?.onSuccess?.(data);
     },
@@ -339,8 +353,9 @@ export function useAdminUpdateClient(options?: {
   return useMutation({
     ...adminUpdateClientMutation({ client: apiClient }),
     onSuccess: (data: AdminUpdateClientResponse) => {
-      queryClient.invalidateQueries({
+      queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
+        exact: false,
       });
       options?.onSuccess?.(data);
     },
@@ -352,6 +367,8 @@ export function useAdminGetClientByUserId(userId: string | number, options?: {
   enabled?: boolean;
   onSuccess?: (data: AdminGetClientResponse) => void;
   onError?: (error: unknown) => void;
+  refetchOnMount?: boolean | "always";
+  staleTime?: number;
 }) {
   return useQuery({
     ...adminGetClientOptions({  
@@ -359,5 +376,23 @@ export function useAdminGetClientByUserId(userId: string | number, options?: {
       query: { userId: Number(userId) },
     }),
     ...options,
+  });
+}
+
+export function useAdminDeleteClientMutation(options?: {
+  onSuccess?: (data: AdminDeleteClientResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminDeleteClientMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageClients,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
   });
 }

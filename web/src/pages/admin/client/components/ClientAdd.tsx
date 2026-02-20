@@ -29,7 +29,10 @@ import {
  * @component
  * @returns {JSX.Element} The rendered form fields for client's basic information.
  */
-const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false, isView = false }) => {
+const ClientAdd: React.FC<ClientAddProps> = ({
+  isEdit = false,
+  isView = false,
+}) => {
   const { watch, setValue } = useFormContext<ClientFormData>();
   const clientType = watch("clientType");
   const selectedCountry = watch("country");
@@ -224,14 +227,16 @@ const ClientAdd: React.FC<ClientAddProps> = ({ isEdit = false, isView = false })
               />
             </>
           )}
-          <SelectField
-            label="Tax Document (VAT)"
-            name="taxDocument"
-            placeholder="Select tax document"
-            options={taxDocuments}
-            required
-            disabled={isView}
-          />
+          {clientType === "corporate" && (
+            <SelectField
+              label="Tax Document (VAT)"
+              name="taxDocument"
+              placeholder="Select tax document"
+              options={taxDocuments}
+              required
+              disabled={isView}
+            />
+          )}
         </div>
       </div>
     </div>
