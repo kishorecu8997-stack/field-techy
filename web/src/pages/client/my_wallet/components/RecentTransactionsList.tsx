@@ -21,6 +21,7 @@ const RecentTransactionsList: React.FC = () => {
   // const startDateStr = startDate.toISOString();
   // const endDateStr = endDate.toISOString();
   const { data: balance } = useClientBalance();
+  const currencyCode = balance?.currencyCode;
   const {
     data: transactionsRaw,
     isLoading,
@@ -32,13 +33,19 @@ const RecentTransactionsList: React.FC = () => {
     },
     true,
   );
-  const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => ({
-    id: String(tx.id),
-    date: new Date(tx.timestamp),
-    amount: Number(tx.amount ?? 0),
-    type: tx.type,
-    description: tx.description ?? "Transaction",
-  }));
+  const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => {
+    const amountNum = Number(tx.amount);
+    const safeAmount = Number.isNaN(amountNum) ? 0 : amountNum;
+    const txDate = new Date(tx.timestamp);
+    const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
+    return {
+      id: String(tx.id),
+      date: safeDate,
+      amount: safeAmount,
+      type: tx.type,
+      description: tx.description?.trim() ?? "Transaction",
+    };
+  });
 
   // Group transactions by date (Today/Yesterday/Other)
   const groupTransactionsByDate = (txs: Transaction[]) => {
@@ -69,9 +76,10 @@ const RecentTransactionsList: React.FC = () => {
   const groupedTransactions = groupTransactionsByDate(transactions);
 
   const formatAmount = (amount: number) => {
+    if (!currencyCode) return amount.toFixed(2);
     const formatted = Math.abs(amount).toLocaleString("en-US", {
       style: "currency",
-      currency: balance?.currencyCode ?? "INR",
+      currency: currencyCode,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
