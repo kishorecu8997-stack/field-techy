@@ -21,6 +21,7 @@ import {
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { JobByCategoryProps, JobItem } from "./types";
+import { toast } from "react-toastify";
 
 /**
  * Renders the "All Jobs" tab content within the manage jobs page.
@@ -91,7 +92,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
               ...prev,
               [job.id]: status,
             }));
-
+            toast.success(`Job Status has been set to ${status}`)
             console.log("Updating status for job", job.id, "to", status);
             close(true);
           },

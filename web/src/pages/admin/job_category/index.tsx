@@ -4,23 +4,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React, { useState } from "react";
+import React from "react";
 import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 
-const HandleStatus = ({ status: value }: { status: boolean }) => {
-  const [status, setStatus] = useState<boolean>(value);
-  return (
-    <div
-      className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-        status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-      }`}
-      onClick={() => setStatus(!status)}
-    >
-      {status ? "On" : "Off"}
-    </div>
-  );
-};
 
 export interface ServerCategoryProps {
   id: string;
@@ -54,14 +41,6 @@ const ManageJobCategory: React.FC = () => {
     { key: "id", label: "Sr.No." },
     { key: "categoryName", label: "Category" },
     { key: "createdDate", label: "Created Date" },
-    {
-      key: "status",
-      label: "Status",
-      renderCell: (row: ServerCategoryProps) => (
-        <HandleStatus status={row.status} />
-      ),
-    },
-
     {
       key: "action",
       label: "Actions",
