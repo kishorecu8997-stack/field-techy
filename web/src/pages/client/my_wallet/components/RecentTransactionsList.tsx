@@ -11,7 +11,7 @@ import {
 } from "@/shared/apiServices/client/clientOpenApiService";
 
 const RecentTransactionsList: React.FC = () => {
-  // currently i am comment this pr because of the start dart quary param backend api once they correct it iwill uncomment this this show 3 last 3 moths transaction details
+  // TODO: Enable date filtering once backend supports startDate/endDate params
   // const today = new Date();
   // const startDate = new Date(today);
   // startDate.setMonth(today.getMonth() - 3);
@@ -84,20 +84,23 @@ const RecentTransactionsList: React.FC = () => {
       maximumFractionDigits: 2,
     });
 
-    if (isLoading)
+    if (isLoading) {
       return <div className="text-center py-8">Loading transactions...</div>;
-    if (isError)
+    }
+    if (isError) {
       return (
         <div className="text-center py-8 text-red-600">
           Failed to load transactions
         </div>
       );
-    if (!transactions.length)
+    }
+    if (!transactions.length) {
       return (
         <div className="text-center py-8 text-gray-500">
           No transactions yet
         </div>
       );
+    }
 
     return amount >= 0 ? `+${formatted}` : `-${formatted}`;
   };

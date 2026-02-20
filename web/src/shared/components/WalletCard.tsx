@@ -17,7 +17,6 @@ export const WalletCard: React.FC = () => {
   const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
   const [showBalance, setShowBalance] = useState<boolean>(false);
   const { data: balance } = useClientBalance();
-  console.log("balance", balance);
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
