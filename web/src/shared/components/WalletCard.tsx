@@ -43,12 +43,14 @@ export const WalletCard: React.FC = () => {
         <div className="flex justify-between items-center">
           <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
             {showBalance
-              ? Number(balance?.balance).toLocaleString(undefined, {
-                  style: "currency",
-                  currency: balance?.currencyCode ?? "INR",
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })
+              ? balance?.balance != null
+                ? Number(balance.balance).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: balance.currencyCode ?? "INR",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                : "--"
               : "******"}
           </p>
 

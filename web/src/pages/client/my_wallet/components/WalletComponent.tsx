@@ -26,21 +26,18 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
     data: transactionsRaw,
     isLoading: txLoading,
     isError: txError,
-  } = useClientTransactions(
-    { limit: 10, sortOrder: "desc" }, 
-    true,
-  );
+  } = useClientTransactions({ limit: 10, sortOrder: "desc" }, true);
 
   const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => {
     const amountNum = Number(tx.amount);
     const safeAmount = Number.isNaN(amountNum) ? 0 : amountNum;
     const txDate = new Date(tx.timestamp);
-    const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate; 
+    const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
     return {
       id: String(tx.id),
       date: safeDate,
       amount: safeAmount,
-      type: tx.type, 
+      type: tx.type,
       description: tx.description?.trim() ?? "Transaction",
     };
   });
@@ -62,7 +59,10 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
     const grouped: Record<string, Transaction[]> = {};
 
     txs.forEach((tx) => {
-      const key = tx.date.toLocaleDateString("en-CA");
+      const year = tx.date.getFullYear();
+      const month = String(tx.date.getMonth() + 1).padStart(2, "0");
+      const day = String(tx.date.getDate()).padStart(2, "0");
+      const key = `${year}-${month}-${day}T00:00:00`;
       grouped[key] = grouped[key] || [];
       grouped[key].push(tx);
     });
@@ -148,10 +148,12 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
           <div className="flex justify-between items-center">
             <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
               {showBalance
-                ? formatCurrency(
-                    Number(balance?.balance),
-                    balance?.currencyCode,
-                  )
+                ? balance?.balance != null
+                  ? formatCurrency(
+                      Number(balance.balance),
+                      balance.currencyCode,
+                    )
+                  : "--"
                 : "******"}
             </p>
             {!showBalance ? (

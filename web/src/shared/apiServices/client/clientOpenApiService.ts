@@ -392,7 +392,7 @@ export async function getClientCompanyInfo() {
 
 export function useClientBalance(enabled: boolean = true) {
   return useQuery<GetClientBalanceResponse, GetClientBalanceError>({
-    queryKey: [queryKeys.client.all, "balance"],
+    queryKey: [...queryKeys.client.all, "balance"],
     queryFn: async () => {
       const response = await getClientBalance({ client: apiClient });
       if (response.data) {
@@ -411,7 +411,7 @@ export function useClientTransactions(
   enabled = true
 ) {
   return useQuery<GetClientTransactionsResponse, GetClientTransactionsError>({
-    queryKey: [queryKeys.client.all, "transactions", params],
+    queryKey: [...queryKeys.client.all, "transactions", params],
     queryFn: async () => {
       const res = await getClientTransactions({
         client: apiClient,

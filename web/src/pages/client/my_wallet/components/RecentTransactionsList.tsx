@@ -34,14 +34,18 @@ const RecentTransactionsList: React.FC = () => {
     true,
   );
   const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => {
-    const amountNum = Number(tx.amount);
-    const safeAmount = Number.isNaN(amountNum) ? 0 : amountNum;
+    const rawAmount = Number(tx.amount);
+    const amount = Number.isNaN(rawAmount) ? 0 : rawAmount;
+
+    const signedAmount = tx.type === "credit" ? amount : -amount; 
+
     const txDate = new Date(tx.timestamp);
     const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
+
     return {
       id: String(tx.id),
       date: safeDate,
-      amount: safeAmount,
+      amount: signedAmount,
       type: tx.type,
       description: tx.description?.trim() ?? "Transaction",
     };
@@ -75,35 +79,32 @@ const RecentTransactionsList: React.FC = () => {
 
   const groupedTransactions = groupTransactionsByDate(transactions);
 
-  const formatAmount = (amount: number) => {
+  const formatAmount = (amount: number): string => {
     if (!currencyCode) return amount.toFixed(2);
+
     const formatted = Math.abs(amount).toLocaleString("en-US", {
       style: "currency",
       currency: currencyCode,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
-
-    if (isLoading) {
-      return <div className="text-center py-8">Loading transactions...</div>;
-    }
-    if (isError) {
-      return (
-        <div className="text-center py-8 text-red-600">
-          Failed to load transactions
-        </div>
-      );
-    }
-    if (!transactions.length) {
-      return (
-        <div className="text-center py-8 text-gray-500">
-          No transactions yet
-        </div>
-      );
-    }
-
     return amount >= 0 ? `+${formatted}` : `-${formatted}`;
   };
+  if (isLoading) {
+    return <div className="text-center py-8">Loading transactions...</div>;
+  }
+  if (isError) {
+    return (
+      <div className="text-center py-8 text-red-600">
+        Failed to load transactions
+      </div>
+    );
+  }
+  if (!transactions.length) {
+    return (
+      <div className="text-center py-8 text-gray-500">No transactions yet</div>
+    );
+  }
 
   const getAmountColor = (type: "credit" | "debit") => {
     return type === "credit"
