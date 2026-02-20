@@ -118,8 +118,6 @@ const OTPPage: React.FC<OTPPageProps> = ({
       });
       return;
     }
-
-      // Pass the plain OTP value to onSubmit
       onSubmit?.({ ...data, otp: data.otp });
   };
 

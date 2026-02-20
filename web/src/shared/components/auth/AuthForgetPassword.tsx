@@ -111,14 +111,18 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
                   const resetUrl =
                     absoluteUrls.client.auth.reset_password;
 
-                  const otpQuery =
-                    otpData && otpData.otp
-                      ? `&otp=${encodeURIComponent(otpData.otp)}`
-                      : "";
+                  const otp = otpData?.otp ? otpData.otp : "";
 
-                  navigate(
-                    `${resetUrl}?email=${methods.getValues("email")}${otpQuery}`
+                  if (otp) {
+                    sessionStorage.setItem("reset_password_otp", otp);
+                  }
+
+                  sessionStorage.setItem(
+                    "reset_password_email",
+                    methods.getValues("email")
                   );
+
+                  navigate(`${resetUrl}?email=${methods.getValues("email")}`);
                 }}
               />
             ) : (
@@ -130,14 +134,18 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
                   const resetUrl =
                     absoluteUrls.engineer.auth.reset_password;
 
-                  const otpQuery =
-                    otpData && otpData.otp
-                      ? `&otp=${encodeURIComponent(otpData.otp)}`
-                      : "";
+                  const otp = otpData?.otp ? otpData.otp : "";
 
-                  navigate(
-                    `${resetUrl}?email=${methods.getValues("email")}${otpQuery}`
+                  if (otp) {
+                    sessionStorage.setItem("reset_password_otp", otp);
+                  }
+
+                  sessionStorage.setItem(
+                    "reset_password_email",
+                    methods.getValues("email")
                   );
+
+                  navigate(`${resetUrl}?email=${methods.getValues("email")}`);
                 }}
               />
             )}
