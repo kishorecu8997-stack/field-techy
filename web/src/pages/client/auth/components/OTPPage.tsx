@@ -12,9 +12,6 @@ interface OTPPageProps {
   header?: string;
   description?: string;
   onClose?: () => void;
-  /**
-   * @deprecated Use onSubmit instead.
-   */
   onSubmit?: (data: OTPValues) => void;
   buttonText?: string;
   isSuccess?: boolean;
