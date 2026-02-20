@@ -39,7 +39,7 @@ export default function Documents({ isView = false }: DocumentsProps) {
         {/* Government ID Proof */}
         <div className="w-full">
           {isExistingFile(govIdDoc) ? (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 xl:w-96">
               <DocumentCard
                 id={1}
                 document={{
@@ -70,7 +70,7 @@ export default function Documents({ isView = false }: DocumentsProps) {
         {/* Qualification Certificate */}
         <div className="w-full">
           {isExistingFile(certificate) ? (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 xl:w-96">
               <DocumentCard
                 id={2}
                 document={{

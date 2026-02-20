@@ -68,7 +68,7 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
       title: "Delete Client",
-      body: "Are you sure you want to delete this client?",
+      body: `Are you sure you want to delete this client ${client.companyName}?`,
       actionButtons: [
         { label: "Cancel", value: null, variant: "outline" },
         {
