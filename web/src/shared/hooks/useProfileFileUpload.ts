@@ -165,7 +165,7 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
             query.queryKey[0] &&
             typeof query.queryKey[0] === "object" &&
             (query.queryKey[0] as { _id?: string })._id ===
-              "clientGetMyDocuments", 
+              "clientGetMyDocuments",
         });
       }
 
