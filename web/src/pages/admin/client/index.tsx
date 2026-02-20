@@ -62,8 +62,8 @@ const ManageClient: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 overflow-hidden bg-gray-50 dark:bg-gray-900">
       <div className="flex justify-between items-center px-1">
-        <h1 className="text-lg font-semibold text-gray-800 dark:text-white">Manage Clients</h1>
-        <Button 
+        <h1 className="font-semibold text-gray-800 dark:text-white">Manage Clients</h1>
+        <Button
           variant="outline" 
           onClick={() => alert("Export CSV")}
           className="border-teal-700 text-teal-700 hover:bg-teal-50"
