@@ -416,7 +416,7 @@ export function useClientBalance(enabled: boolean = true) {
 
 export function useClientTransactions(
   params: GetClientTransactionsData["query"] = {},
-  enabled = true
+  enabled = true,
 ) {
   return useQuery<GetClientTransactionsResponse, GetClientTransactionsError>({
     queryKey: [...queryKeys.client.all, "transactions", params],
