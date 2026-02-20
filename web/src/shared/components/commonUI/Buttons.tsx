@@ -93,15 +93,15 @@ export const Button: React.FC<ButtonProps> = ({
     warning:
       " bg-yellow-200 text-black border border-gray-500 hover:bg-yellow-300 focus:ring-gray-100",
     videoCall:
-      "p-2 rounded-full bg-gray-200 hover:bg-green-200 border border-gray-300 hover:border-green-600 text-teal-700 hover:text-teal-600 transition flex items-center justify-center",
+      "p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:border-green-600 text-teal-700 hover:text-teal-600 transition flex items-center justify-center",
     audioCall:
-      "p-2 rounded-full bg-gray-200 hover:bg-green-200 border border-gray-300 hover:border-green-600 text-teal-700 hover:text-teal-600 transition flex items-center justify-center",
+      "p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:border-green-600 text-teal-700 hover:text-teal-600 transition flex items-center justify-center",
     attachmentPlus:
-      "p-2 rounded-lg bg-gray-300 hover:bg-gray-400 cursor-pointer",
+      "p-2 rounded-lg bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer",
     photoVideoAttachment:
-      "flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 cursor-pointer",
+      "flex items-center gap-2 px-2 py-1 rounded dark:bg-gray-700 dark:hover:bg-gray-600 cursor-pointer",
     documentAttachment:
-      "flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 cursor-pointer",
+      "flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer",
     sendButtonChat:
       "p-3 rounded-full bg-teal-700 text-white hover:bg-teal-600 cursor-pointer",
   };

@@ -58,6 +58,8 @@ export interface MyJobsHeaderProps {
   onClick?: () => void;
   customLabels?: Record<string, string>;
   segments?: string[];
+  isChatVisible?: boolean;
+  handleCloseChat?: () => void;
 }
 
 /**
@@ -123,7 +125,9 @@ export interface JobHeaderCardProps {
   activeTab?: string;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
+  jobId: string;
   onToggleChat?: (jobId: string) => void;
+  onCloseChat?: () => void;
 }
 
 export interface JobTabsProps {

@@ -26,6 +26,8 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   onClick,
   customLabels: propCustomLabels,
   segments,
+  isChatVisible,
+  handleCloseChat,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
   const location = useLocation();
@@ -38,7 +40,15 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
         <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 md:px-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <div>
-              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+                {isChatVisible && handleCloseChat && (
+                  <button
+                    onClick={handleCloseChat}
+                    className="text-teal-800 dark:text-teal-400 font-bold"
+                  >
+                    &lt;
+                  </button>
+                )}
                 {title}
               </h1>
               {description && (

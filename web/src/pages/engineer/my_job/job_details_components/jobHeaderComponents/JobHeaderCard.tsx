@@ -41,6 +41,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   activeTab,
   onAddProgressUpdate,
   onOpenFinalStatement,
+  jobId,
   onToggleChat,
 }) => {
   const isDummyJob = false;
@@ -135,8 +136,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               <button
                 className="bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors"
                 onClick={() => {
-                  if (!params.jobId) return;
-                  onToggleChat(params.jobId);
+                  onToggleChat?.(jobId);
                 }}
               >
                 <IoChatbubble size={16} />

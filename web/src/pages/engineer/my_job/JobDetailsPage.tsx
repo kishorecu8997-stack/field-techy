@@ -36,7 +36,7 @@ const JobDetailsPage = () => {
   const [showFinalStatement, setShowFinalStatement] = useState(false);
 
   // Chat visibility toggle
-  const [isChatVisible, setIsChatVisible] = useState(false);
+  const [openChatJobId, setOpenChatJobId] = useState<string | null>(null);
 
   // Breadcrumb segment state
   const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
@@ -166,10 +166,20 @@ const JobDetailsPage = () => {
   ].filter((v): v is string => typeof v === "string");
 
   // Update heading when chat is toggled
-  const handleToggleChat = () => {
-    setIsChatVisible(true);
-    setBreadcrumbExtra("chats");
-    setPageHeading("Chats");
+  const handleToggleChat = (jobId: string) => {
+    setOpenChatJobId((prev) => {
+      const isOpening = prev !== jobId;
+
+      if (isOpening) {
+        setBreadcrumbExtra("chats");
+        setPageHeading("Chats");
+        return jobId;
+      } else {
+        setBreadcrumbExtra(null);
+        setPageHeading("Job Details");
+        return null;
+      }
+    });
   };
   // const handleCloseChat = () => {
   //   setIsChatVisible(false);
@@ -184,18 +194,20 @@ const JobDetailsPage = () => {
           title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport={!isChatVisible}
-          isShowSort={!isChatVisible}
+          isReport={!openChatJobId}
+          isShowSort={!openChatJobId}
           customLabels={{
             ...(isDummyJob ? { "dummy-j1": "Network Engineer" } : {}),
           }}
           segments={segments}
+          isChatVisible={!!openChatJobId}
+          handleCloseChat={() => handleToggleChat(params.jobId!)}
         />
 
         {/* Show Chat if toggled */}
-        {isChatVisible && params.jobId ? (
-          <div className="mt-4 h-[calc(100vh-6rem)]">
-            <ChatForJobs jobId={params.jobId} />
+        {openChatJobId ? (
+          <div className="flex-1 overflow-y-auto">
+            <ChatForJobs jobId={openChatJobId} />
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
@@ -221,6 +233,7 @@ const JobDetailsPage = () => {
                 onAddProgressUpdate={handleAddProgressUpdate}
                 onOpenFinalStatement={handleOpenFinalStatement}
                 onToggleChat={handleToggleChat}
+                jobId={params.jobId}
               />
 
               <JobTabSection
