@@ -4,7 +4,6 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import { BOOKMARK_CHANGE_EVENT, getSavedJobs } from "@/utils/bookmarkUtils";
-import { getProfileCompletion } from "@/utils/profileCompletion";
 import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +11,7 @@ import type { SidebarProfileProps } from "../types";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import { useEngineerBalance } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useEngineerGetProfileCompletion } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -42,10 +42,12 @@ export default SidebarProfile;
  * Includes a "Complete Profile" call-to-action button (currently static).
  */
 const ProfileCard = () => {
-  const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource } =
+  const { setActiveKey, setISOpenSidebar, setNavigationSource } =
     useDrawerStore();
-  // Get the overall profile completion percentage with the each field status
-  const profileCompletion = getProfileCompletion(profileData);
+
+  const { data: profileCompletionData } = useEngineerGetProfileCompletion();
+  const profileCompletion = profileCompletionData?.percentage ?? 0;
+
   const engineerProfile = useEngineerProfile();
 
   // Fetch service categories to resolve ID to name
