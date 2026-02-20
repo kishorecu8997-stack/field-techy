@@ -297,7 +297,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         </div>
       )}
 
-     <hr className="border-gray-200 mb-4 dark:text-gray-300" />
+      <hr className="border-gray-200 mb-4 dark:text-gray-300" />
 
       {documents.length > 0 ? (
         <div className="space-y-6">

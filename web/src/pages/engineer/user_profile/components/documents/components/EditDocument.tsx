@@ -145,7 +145,7 @@ const EditDocument = () => {
         <Button
           type="submit"
           disabled={isUploading}
-         className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition rounded-none"
+          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition rounded-none"
         >
           {isUploading ? "Uploading..." : "Save"}
         </Button>
