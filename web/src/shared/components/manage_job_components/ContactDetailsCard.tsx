@@ -7,15 +7,12 @@ interface Contact {
   phone: string;
   avatarUrl?: string; // Optional custom avatar
 }
-
-
 interface ContactDetailsCardProps {
   client?: Contact;
-  engineers?: Contact[]; // Optional — if no engineer assigned yet
+  engineers?: Contact[];
   onEngineerAssign?: (engineerId: string) => void;
   engineersList?: { id: string; name: string }[]; // List for dropdown
 }
-
 
 const ContactDetailsCard: React.FC<ContactDetailsCardProps> = ({
   client,
@@ -61,7 +58,6 @@ const ContactDetailsCard: React.FC<ContactDetailsCardProps> = ({
         </div>
       </div>
 
-      {/* Engineer Details */}
       {/* Engineer Details */}
       <div className="flex-1 space-y-4">
         <h3 className="font-bold text-lg mb-3">Engineer Details</h3>
