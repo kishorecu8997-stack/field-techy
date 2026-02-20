@@ -105,12 +105,11 @@ const ClientEditDocument: React.FC<ClientEditDocumentProps> = ({
   const methods = useForm<EditDocumentFormData>({
     mode: "onSubmit",
     defaultValues: {
-      documentType: "resumeFile",
+      documentType: "govIdDoc",
     },
   });
 
   const documentTypeOptions = [
-    { label: "Resume", value: "resumeFile" },
     { label: "Government ID", value: "govIdDoc" },
     { label: "Certificate", value: "certificateDoc" },
   ];

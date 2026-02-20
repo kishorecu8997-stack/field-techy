@@ -7,8 +7,8 @@ import {
   profilePriorityGuide,
 } from "@/utils/profileStatus";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-
 import { useHeaderTitle } from "@/shared/components/useHeaderTitle";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * ProfileCompletionCard Component
@@ -34,6 +34,11 @@ const ProfileCompletionCard = () => {
   const missingSections = profileCompletionData?.missing ?? [];
 
   const comparisonUI = getComparisonUI(overallCompletion);
+
+  const SectionTitle = ({ section }: { section: string }) => {
+    const title = useHeaderTitle(section);
+    return <>{title}</>;
+  };
 
   return (
     <div className="space-y-6 p-4">
@@ -97,7 +102,7 @@ const ProfileCompletionCard = () => {
                 {/* Section Header */}
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="font-semibold dark:text-gray-300">
-                    {useHeaderTitle(section.section)}
+                    <SectionTitle section={section.section} />
                   </h3>
                   <span className="text-sm font-medium dark:text-gray-300">
                     {completionPercentage}%
@@ -122,7 +127,7 @@ const ProfileCompletionCard = () => {
 
                 {/* Complete Section Button */}
                 <div className="flex justify-between items-center mt-4 text-sm">
-                  <button
+                  <Button
                     onClick={() => {
                       let navKey = section.section;
 
@@ -142,7 +147,7 @@ const ProfileCompletionCard = () => {
                     className="text-teal-700 font-medium hover:underline"
                   >
                     Complete This Section
-                  </button>
+                  </Button>
                   <span className="text-gray-500">
                     ~
                     {estimatedTime && !isNaN(estimatedTime)
