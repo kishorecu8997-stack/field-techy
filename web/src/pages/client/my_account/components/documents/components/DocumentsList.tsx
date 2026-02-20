@@ -132,11 +132,12 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
       const previewUrl = previewInfo?.url || manualPreviewUrls[dm.type];
 
       if (!previewUrl) return;
+      const displayTitle = `${dm.label} (${fileInfoFromApi.fileName})`;
 
       result.push({
         id: index,
         fileId: previewInfo?.id,
-        title: dm.label,
+        title: displayTitle,
         fileName: fileInfoFromApi.fileName || dm.fallbackFileName,
         fileType: "PDF" as const,
         previewUrl,
@@ -296,27 +297,19 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         </div>
       )}
 
-      <hr className="border-gray-200 mb-4" />
+  <hr className="border-gray-200 mb-4 dark:text-gray-300" />
 
       {documents.length > 0 ? (
         <div className="space-y-6">
           {documents.map((doc) => (
-            <div key={doc.metadata?.originalFileType || doc.id}>
-              {/* Section Heading */}
-              <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                {doc.sectionHeading}
-              </h3>
-
-              {/* Document Card */}
-              <DocumentCard
-                key={doc.metadata?.originalFileType || doc.id}
-                document={doc}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onDownload={handleDownload}
-                id={doc.id}
-              />
-            </div>
+            <DocumentCard
+              key={doc.metadata?.originalFileType || doc.id}
+              document={doc}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onDownload={handleDownload}
+              id={doc.id}
+            />
           ))}
         </div>
       ) : (

@@ -25,7 +25,6 @@ export interface Document {
   fileType: "PDF" | "PNG" | "JPEG" | "JPG" | "GIF" | "DOCX" | "XLSX";
   previewUrl?: string;
   fileId?: number;
-  uploadDate?: string;
   description?: string;
   metadata?: Record<string, string>;
   expiryDate?: string;
@@ -50,7 +49,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 }) => {
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
-
   // Specialized hooks for the 3 profile document types
   // Note: We drive the list from these hooks because the legacy 'engineerFiles' list
   // currently doesn't capture the new profile-based file uploads.
@@ -134,7 +132,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     const result: Document[] = [];
 
     docMeta.forEach((dm, index) => {
-      // Get info from the new list endpoint
       const fileInfoFromApi =
         dm.type === "RESUME"
           ? docsData?.resumeFile
@@ -151,10 +148,12 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
       if (!previewUrl) return;
 
+      const displayTitle = `${dm.label} (${fileInfoFromApi.fileName})`;
+
       result.push({
         id: index,
         fileId: previewInfo?.id,
-        title: dm.label,
+        title: displayTitle,
         fileName: fileInfoFromApi.fileName || dm.fallbackFileName,
         fileType: "PDF" as const,
         previewUrl,
@@ -216,7 +215,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
                 });
               }
 
-              // Invalidate profile completion to update percentage
+              // Invalidate queries to refresh lists and profile completion
               queryClient.invalidateQueries({
                 predicate: (query) =>
                   Array.isArray(query.queryKey) &&
@@ -225,7 +224,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
                   (query.queryKey[0] as { _id?: string })._id ===
                     "engineerGetProfileCompletion",
               });
-
               // Invalidate download queries to refresh the list
               queryClient.invalidateQueries({
                 predicate: (query) =>
@@ -236,7 +234,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
                     "appDownloadProfileFile",
               });
 
-              // Also refresh new endpoint
               queryClient.invalidateQueries({
                 predicate: (query) =>
                   Array.isArray(query.queryKey) &&
@@ -325,20 +322,13 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         </div>
       )}
 
-      <hr className="border-gray-200 mb-4" />
+      <hr className="border-gray-200 mb-4 dark:text-gray-300" />
 
       {documents.length > 0 ? (
         <div className="space-y-6">
           {documents.map((doc) => (
             <div key={doc.metadata?.originalFileType || doc.id}>
-              {/* Section Heading */}
-              <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                {doc.sectionHeading}
-              </h3>
-
-              {/* Document Card */}
               <DocumentCard
-                key={doc.metadata?.originalFileType || doc.id}
                 document={doc}
                 onEdit={handleEdit}
                 onDelete={handleDelete}

@@ -8,22 +8,7 @@ import {
 } from "@/utils/profileStatus";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
-const formatSectionName = (section: string): string => {
-  const nameMap: Record<string, string> = {
-    personalInfo: "Personal Information",
-    education: "Education",
-    experience: "experiences",
-    skillsAndTools: "Skills & Tools",
-    workPreference: "Work Preference",
-    documents: "Documents",
-  };
-  return nameMap[section] || section;
-};
-
-const getNavigationKey = (section: string): string => {
-  console.log("Section from API:", section);
-  return section;
-};
+import { useHeaderTitle } from "@/shared/components/useHeaderTitle";
 
 /**
  * ProfileCompletionCard Component
@@ -47,6 +32,7 @@ const ProfileCompletionCard = () => {
 
   const overallCompletion = profileCompletionData?.percentage ?? 0;
   const missingSections = profileCompletionData?.missing ?? [];
+
   const comparisonUI = getComparisonUI(overallCompletion);
 
   return (
@@ -101,7 +87,7 @@ const ProfileCompletionCard = () => {
           <h3 className="text-lg font-semibold">Sections to Complete</h3>
           {missingSections.map((section) => {
             const completionPercentage = 100 - section.percentage;
-            const estimatedTime = Math.ceil(section.percentage / 10); // Rough estimate: 10% = 1 minute
+            const estimatedTime = Math.ceil(section.percentage / 10);
 
             return (
               <div
@@ -111,7 +97,7 @@ const ProfileCompletionCard = () => {
                 {/* Section Header */}
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="font-semibold dark:text-gray-300">
-                    {formatSectionName(section.section)}
+                    {useHeaderTitle(section.section)}
                   </h3>
                   <span className="text-sm font-medium dark:text-gray-300">
                     {completionPercentage}%
@@ -138,12 +124,19 @@ const ProfileCompletionCard = () => {
                 <div className="flex justify-between items-center mt-4 text-sm">
                   <button
                     onClick={() => {
+                      let navKey = section.section;
+
+                      // Fix singular → plural only when needed
+                      if (navKey.toLowerCase().trim() === "experience") {
+                        navKey = "experiences";
+                      }
+
                       setNavigationSource(
                         "profilecompletion",
                         "profileCompletion",
                       );
-                      setImmediateParentKey("profileCompletion");
-                      setActiveKey(getNavigationKey(section.section));
+                      setImmediateParentKey("profile");
+                      setActiveKey(navKey);
                       setISOpenSidebar(true);
                     }}
                     className="text-teal-700 font-medium hover:underline"
@@ -151,7 +144,11 @@ const ProfileCompletionCard = () => {
                     Complete This Section
                   </button>
                   <span className="text-gray-500">
-                    ~{estimatedTime} minutes remaining
+                    ~
+                    {estimatedTime && !isNaN(estimatedTime)
+                      ? estimatedTime
+                      : "—"}{" "}
+                    minutes remaining
                   </span>
                 </div>
               </div>
