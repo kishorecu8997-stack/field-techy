@@ -44,6 +44,7 @@ import {
   clientPostJobMutation,
   clientUpdateCompanyInfoMutation,
   getJobLogsOptions,
+  clientGetMyDocumentsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
@@ -95,6 +96,13 @@ export function useClientGetCompanyInfo(enabled: boolean = true) {
     }),
     enabled: enabled,
     staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useClientGetMyDocuments() {
+  return useQuery({
+    ...clientGetMyDocumentsOptions({ client: apiClient }),
+    staleTime: 0,
   });
 }
 

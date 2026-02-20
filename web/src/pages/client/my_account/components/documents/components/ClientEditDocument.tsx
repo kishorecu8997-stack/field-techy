@@ -49,8 +49,6 @@ const ClientEditDocument: React.FC<ClientEditDocumentProps> = ({
 
   const getProfileFileType = (docType: ProfileFileType): ProfileFileType => {
     switch (docType) {
-      case "resumeFile":
-        return "resumeFile";
       case "govIdDoc":
         return "govIdDoc";
       case "certificateDoc":
@@ -105,12 +103,11 @@ const ClientEditDocument: React.FC<ClientEditDocumentProps> = ({
   const methods = useForm<EditDocumentFormData>({
     mode: "onSubmit",
     defaultValues: {
-      documentType: "resumeFile",
+      documentType: "govIdDoc",
     },
   });
 
   const documentTypeOptions = [
-    { label: "Resume", value: "resumeFile" },
     { label: "Government ID", value: "govIdDoc" },
     { label: "Certificate", value: "certificateDoc" },
   ];
