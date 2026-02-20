@@ -21,12 +21,13 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
 }) => {
   const isDarkMode = useThemeHook();
   const [showBalance, setShowBalance] = useState<boolean>(false);
-  const { data: balance } = useClientBalance();
+  const { data: balanceArr } = useClientBalance();
+  const balance = balanceArr?.[0];
   const {
     data: transactionsRaw,
     isLoading: txLoading,
     isError: txError,
-  } = useClientTransactions({ limit: 10, sortOrder: "desc" }, true);
+  } = useClientTransactions({ limit: 5, sortOrder: "desc" }, true);
 
   const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => {
     const amountNum = Number(tx.amount);

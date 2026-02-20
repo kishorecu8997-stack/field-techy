@@ -9,18 +9,21 @@ import {
   useClientBalance,
   useClientTransactions,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import Pagination from "../../search_result/components/Pagination";
 
 const RecentTransactionsList: React.FC = () => {
-  // TODO: Enable date filtering once backend supports startDate/endDate params
-  // const today = new Date();
-  // const startDate = new Date(today);
-  // startDate.setMonth(today.getMonth() - 3);
-  // startDate.setHours(0, 0, 0, 0);
-  // const endDate = today;
-  // endDate.setHours(23, 59, 59, 999);
-  // const startDateStr = startDate.toISOString();
-  // const endDateStr = endDate.toISOString();
-  const { data: balance } = useClientBalance();
+  const [currentPage, setCurrentPage] = useState(1);
+  const transactionsPerPage = 5;
+  const today = new Date();
+  const startDate = new Date(today);
+  startDate.setMonth(today.getMonth() - 3);
+  startDate.setHours(0, 0, 0, 0);
+  const endDate = today;
+  endDate.setHours(23, 59, 59, 999);
+  const startDateStr = startDate.toISOString();
+  const endDateStr = endDate.toISOString();
+  const { data: balanceArr } = useClientBalance();
+  const balance = balanceArr?.[0];
   const currencyCode = balance?.currencyCode;
   const {
     data: transactionsRaw,
@@ -29,7 +32,8 @@ const RecentTransactionsList: React.FC = () => {
   } = useClientTransactions(
     {
       sortOrder: "desc",
-      limit: 100,
+      startDate: startDateStr,
+      endDate: endDateStr,
     },
     true,
   );
@@ -37,7 +41,7 @@ const RecentTransactionsList: React.FC = () => {
     const rawAmount = Number(tx.amount);
     const amount = Number.isNaN(rawAmount) ? 0 : rawAmount;
 
-    const signedAmount = tx.type === "credit" ? amount : -amount; 
+    const signedAmount = tx.type === "credit" ? amount : -amount;
 
     const txDate = new Date(tx.timestamp);
     const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
@@ -50,6 +54,14 @@ const RecentTransactionsList: React.FC = () => {
       description: tx.description?.trim() ?? "Transaction",
     };
   });
+
+  // Pagination: slice transactions
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const paginatedTransactions = transactions.slice(
+    indexOfFirstTransaction,
+    indexOfLastTransaction,
+  );
 
   // Group transactions by date (Today/Yesterday/Other)
   const groupTransactionsByDate = (txs: Transaction[]) => {
@@ -77,7 +89,7 @@ const RecentTransactionsList: React.FC = () => {
     return grouped;
   };
 
-  const groupedTransactions = groupTransactionsByDate(transactions);
+  const groupedTransactions = groupTransactionsByDate(paginatedTransactions);
 
   const formatAmount = (amount: number): string => {
     if (!currencyCode) return amount.toFixed(2);
@@ -153,6 +165,11 @@ const RecentTransactionsList: React.FC = () => {
           </div>
         );
       })}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={Math.ceil(transactions.length / transactionsPerPage)}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </div>
   );
 };
