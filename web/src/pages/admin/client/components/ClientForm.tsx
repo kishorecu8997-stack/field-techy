@@ -19,6 +19,7 @@ import {
   useAdminGetClientByUserId,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useAppMarkProfileFileUploaded } from "@/shared/apiServices/commonOpenApiService";
+import { extractErrorMessage } from "@/shared/libs/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 import type {
@@ -73,7 +74,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
   });
 
   const { data: clientDetail, isLoading: isDetailLoading } =
-    useAdminGetClientByUserId(userIdFromUrl || "", {
+  useAdminGetClientByUserId(userIdFromUrl || "", {
       enabled: !!userIdFromUrl && (isEdit || isView),
       refetchOnMount: "always",
     });
@@ -170,57 +171,86 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
           variant: "primary",
           action: async (close) => {
             try {
-              const extractFile = (
-                val: string | File | FileList | null | undefined,
-              ): File | null =>
-                val instanceof File
-                  ? val
-                  : val instanceof FileList && val.length > 0
-                    ? val[0]
-                    : null;
-
-              const fileMap: Record<string, File | null> = {
-                profilePicture: extractFile(
-                  data.profileImage as string | File | null,
-                ),
-                govIdDoc: extractFile(
-                  data.govIdDoc as string | File | FileList | null,
-                ),
-                certificateDoc: extractFile(
-                  data.certificate as string | File | FileList | null,
-                ),
+              const extractFile = (val: unknown): File | null => {
+                if (val instanceof File) return val;
+                if (typeof FileList !== "undefined" && val instanceof FileList && val.length > 0) return val[0];
+                return null;
               };
+
+              const fileMap = {
+                profilePicture: extractFile(data.profileImage),
+                govIdDoc: extractFile(data.govIdDoc),
+                certificateDoc: extractFile(data.certificate),
+              };
+
+              const toNum = (val: unknown): number | undefined => {
+                if (val === null || val === undefined || val === "") return undefined;
+                const n = Number(val);
+                return isNaN(n) ? undefined : n;
+              };
+
+              // Map form data to API body, omitting internal/mismatched fields
+              const {
+                contactPersonName,
+                taxDocument,
+                country,
+                state,
+                city,
+                industry,
+                businessType,
+                ...rest
+              } = data;
+
+              // Remove fields that should not be in the base rest spread (sent as strings)
+              const cleanRest = rest as Record<string, unknown>;
+              delete cleanRest.profileImage;
+              delete cleanRest.govIdDoc;
+              delete cleanRest.certificate;
 
               const body: Record<string, unknown> = {
-                ...data,
-                personName: data.contactPersonName,
-                name: data.contactPersonName || data.email?.split("@")[0],
-                countryId: data.country ? Number(data.country) : undefined,
-                stateId: data.state ? Number(data.state) : undefined,
-                cityId: data.city ? Number(data.city) : undefined,
-                industryId: data.industry ? Number(data.industry) : undefined,
-                businessTypeId: data.businessType
-                  ? Number(data.businessType)
-                  : undefined,
-                documentType: data.taxDocument,
-                userId: userIdFromUrl ? Number(userIdFromUrl) : undefined,
+                ...cleanRest,
+                personName: contactPersonName,
+                name: contactPersonName || data.email?.split("@")[0] || "Client",
+                countryId: toNum(country),
+                stateId: toNum(state),
+                cityId: toNum(city),
+                industryId: toNum(industry),
+                businessTypeId: toNum(businessType),
+                documentType: taxDocument,
               };
 
-              // Add metadata for non-null files
-              Object.entries(fileMap).forEach(([key, file]) => {
-                if (file)
-                  body[key] = {
+              // Helper for file metadata
+              const mapFile = (file: File | null, originalValue: unknown) => {
+                if (file) {
+                  return {
                     filename: file.name,
                     size: file.size,
                     mimeType: file.type,
                   };
-              });
+                }
+                return originalValue === null ? null : undefined;
+              };
 
-              const response = isEdit
-                ? await updateClient({
-                    body: { ...body, userId: Number(userIdFromUrl) },
-                  } as AdminUpdateClientData)
-                : await addClient({ body: body } as AdminCreateClientData);
+              const pp = mapFile(fileMap.profilePicture, data.profileImage);
+              if (pp !== undefined) body.profilePicture = pp;
+
+              const gd = mapFile(fileMap.govIdDoc, data.govIdDoc);
+              if (gd !== undefined) body.govIdDoc = gd;
+
+              const cd = mapFile(fileMap.certificateDoc, data.certificate);
+              if (cd !== undefined) body.certificateDoc = cd;
+
+              const finalUserId = toNum(userIdFromUrl);
+
+              let response;
+              if (isEdit) {
+                if (!finalUserId) throw new Error("User ID is missing.");
+                response = await updateClient({
+                  body: { ...body, userId: finalUserId },
+                } as AdminUpdateClientData);
+              } else {
+                response = await addClient({ body: body } as AdminCreateClientData);
+              }
 
               // Handle uploads
               if (response && "uploadUrls" in response && response.uploadUrls) {
@@ -231,7 +261,8 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                 for (const [key, { uploadUrl, fileId }] of Object.entries(
                   urls,
                 )) {
-                  const file = fileMap[key];
+                  const typedKey = key as keyof typeof fileMap;
+                  const file = fileMap[typedKey];
                   if (!file) continue;
 
                   const uploadRes = await fetch(uploadUrl, {
@@ -263,21 +294,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
               navigate(absoluteUrls.admin.home.manage_client);
               close(true);
             } catch (error) {
-              const apiError = error as {
-                body?: { error?: string; message?: string };
-                response?: { data?: { error?: string } };
-                message?: string;
-                error?: string;
-              };
-              const errorMessage =
-                apiError.body?.error ||
-                apiError.body?.message ||
-                apiError.response?.data?.error ||
-                apiError.error ||
-                apiError.message ||
-                "Failed to save client information.";
-
-              toast.error(errorMessage);
+              toast.error(extractErrorMessage(error, "Failed to save client information."));
               close(false);
             }
           },
