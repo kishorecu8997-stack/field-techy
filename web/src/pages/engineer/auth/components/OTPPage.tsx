@@ -4,11 +4,9 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
+import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
 
-
-export interface OTPValues {
-  otp: string;
-}
+export type { OTPValues } from "@/shared/components/commonUI/inputs/types";
 
 interface OTPPageProps {
   header?: string;

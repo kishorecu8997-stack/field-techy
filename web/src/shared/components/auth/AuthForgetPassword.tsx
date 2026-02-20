@@ -13,6 +13,7 @@ import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import EngineerOTPPage from "@/pages/engineer/auth/components/OTPPage";
 import ClientOTPPage from "@/pages/client/auth/components/OTPPage";
+import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
 import type { AppForgotPasswordError } from "@/api";
 
 export type ForgetPasswordFormData = {
@@ -59,6 +60,26 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
     });
   };
 
+  const resetUrl =
+    role === "client"
+      ? absoluteUrls.client.auth.reset_password
+      : absoluteUrls.engineer.auth.reset_password;
+
+  const handleOtpSubmit = (otpData: OTPValues) => {
+    const otp = otpData?.otp ? otpData.otp : "";
+
+    if (otp) {
+      sessionStorage.setItem("reset_password_otp", otp);
+    }
+
+    sessionStorage.setItem(
+      "reset_password_email",
+      methods.getValues("email")
+    );
+
+    navigate(`${resetUrl}?email=${methods.getValues("email")}`);
+  };
+
   return (
     <div className="flex items-center justify-center max-w-lg md:w-lg ">
       <div className="p-10 w-full max-w-lg">
@@ -102,54 +123,22 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
         </FormContainer>
 
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-            {role === "client" ? (
-              <ClientOTPPage
-                header="Enter the OTP"
-                description="We sent you an OTP code"
-                onClose={() => setIsOpen(false)}
-                onSubmit={(otpData) => {
-                  const resetUrl =
-                    absoluteUrls.client.auth.reset_password;
-
-                  const otp = otpData?.otp ? otpData.otp : "";
-
-                  if (otp) {
-                    sessionStorage.setItem("reset_password_otp", otp);
-                  }
-
-                  sessionStorage.setItem(
-                    "reset_password_email",
-                    methods.getValues("email")
-                  );
-
-                  navigate(`${resetUrl}?email=${methods.getValues("email")}`);
-                }}
-              />
-            ) : (
-              <EngineerOTPPage
-                header="Enter the OTP"
-                description="We sent you an OTP code"
-                onClose={() => setIsOpen(false)}
-                onSubmit={(otpData) => {
-                  const resetUrl =
-                    absoluteUrls.engineer.auth.reset_password;
-
-                  const otp = otpData?.otp ? otpData.otp : "";
-
-                  if (otp) {
-                    sessionStorage.setItem("reset_password_otp", otp);
-                  }
-
-                  sessionStorage.setItem(
-                    "reset_password_email",
-                    methods.getValues("email")
-                  );
-
-                  navigate(`${resetUrl}?email=${methods.getValues("email")}`);
-                }}
-              />
-            )}
-          </Popup>
+          {role === "client" ? (
+            <ClientOTPPage
+              header="Enter the OTP"
+              description="We sent you an OTP code"
+              onClose={() => setIsOpen(false)}
+              onSubmit={handleOtpSubmit}
+            />
+          ) : (
+            <EngineerOTPPage
+              header="Enter the OTP"
+              description="We sent you an OTP code"
+              onClose={() => setIsOpen(false)}
+              onSubmit={handleOtpSubmit}
+            />
+          )}
+        </Popup>
       </div>
     </div>
   );
