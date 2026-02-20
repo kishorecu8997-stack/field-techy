@@ -116,7 +116,7 @@ const OTPPage: React.FC<OTPPageProps> = ({
       });
       return;
     }
-      onSubmit?.({ ...data, otp: data.otp });
+    onSubmit?.({ ...data, otp: data.otp });
   };
 
   const handleResend = () => {

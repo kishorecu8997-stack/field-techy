@@ -72,10 +72,7 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
       sessionStorage.setItem("reset_password_otp", otp);
     }
 
-    sessionStorage.setItem(
-      "reset_password_email",
-      methods.getValues("email")
-    );
+    sessionStorage.setItem("reset_password_email", methods.getValues("email"));
 
     navigate(`${resetUrl}?email=${methods.getValues("email")}`);
   };
