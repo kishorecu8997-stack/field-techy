@@ -34,11 +34,11 @@ export default function AllUsers() {
     const query = search.toLowerCase();
 
     return (
-      String(e.engineerID ?? "")
+      String(e.engineerCode ?? "")
         .toLowerCase()
         .includes(query) ||
-      e.details?.name?.toLowerCase().includes(query) ||
-      e.details?.email?.toLowerCase().includes(query) ||
+      e.name?.toLowerCase().includes(query) ||
+      e.email?.toLowerCase().includes(query) ||
       e.location?.toLowerCase().includes(query)
     );
   });

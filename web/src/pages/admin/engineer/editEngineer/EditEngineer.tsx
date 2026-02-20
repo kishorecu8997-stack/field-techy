@@ -66,7 +66,11 @@ export default function EditEngineer() {
       profileImage: null,
       address: engineerData.address ?? "",
       skills: [],
-      price: engineerData.hourlyRate ?? "",
+      price:
+        engineerData.hourlyRate !== undefined &&
+        engineerData.hourlyRate !== null
+          ? String(engineerData.hourlyRate)
+          : "",
       serviceCategory: engineerData.serviceCategoryId
         ? String(engineerData.serviceCategoryId)
         : "",

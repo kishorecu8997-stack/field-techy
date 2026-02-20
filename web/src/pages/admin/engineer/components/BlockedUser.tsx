@@ -2,10 +2,10 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { FaUserCircle } from "react-icons/fa";
-import type { ManageEngineerProps } from "../types";
+import type { ManageEngineerProps, StatusHistoryType } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 
@@ -38,6 +38,29 @@ export default function BlockedUser() {
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const latestBlockMap = useMemo<Record<string, StatusHistoryType | undefined>>(() => {
+  const map: Record<string, StatusHistoryType | undefined> = {};
+
+  engineerData.forEach((engineer) => {
+    // safely handle undefined statusHistory
+    const latestBlock = engineer.statusHistory?.reduce<StatusHistoryType | undefined>(
+      (latest, current) => {
+        if (current.type !== "block") return latest;
+        // pick the one with latest actionDate
+        if (!latest || new Date(current.actionDate) > new Date(latest.actionDate)) {
+          return current;
+        }
+        return latest;
+      },
+      undefined
+    );
+
+    map[engineer.id] = latestBlock;
+  });
+
+  return map;
+}, [engineerData]);
 
   const handleUnblock = async (engineer: ManageEngineerProps) => {
     await showPopup({
@@ -73,7 +96,7 @@ export default function BlockedUser() {
       key: "engineerID",
       label: "Engineer ID",
       renderCell: (row: ManageEngineerProps) => {
-        const id = row.engineerID || "N/A";
+        const id = row.engineerCode || "N/A";
         return (
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             {id}
@@ -106,53 +129,21 @@ export default function BlockedUser() {
     {
       key: "blockReason",
       label: "Reason for Block",
-      renderCell: (row: ManageEngineerProps) => {
-        const latestBlock = row.statusHistory
-          ?.filter((s) => s.type === "block")
-          ?.sort(
-            (a, b) =>
-              new Date(b.actionDate).getTime() -
-              new Date(a.actionDate).getTime(),
-          )[0];
-
-        return latestBlock?.reason || "N/A";
-      },
+      renderCell: (row) => latestBlockMap[row.id]?.reason || "N/A",
     },
     {
       key: "blockOn",
       label: "Blocked On",
-      renderCell: (row: ManageEngineerProps) => {
-        const latestBlock = row.statusHistory
-          ?.filter((s) => s.type === "block")
-          ?.sort(
-            (a, b) =>
-              new Date(b.actionDate).getTime() -
-              new Date(a.actionDate).getTime(),
-          )[0];
-        return latestBlock?.actionDate
-          ? new Date(latestBlock.actionDate).toLocaleDateString()
-          : "N/A";
+      renderCell: (row) => {
+        const date = latestBlockMap[row.id]?.actionDate;
+        return date ? new Date(date).toLocaleDateString() : "N/A";
       },
     },
     {
       key: "blockBy",
       label: "Blocked By",
       dataCellAlign: "center",
-      renderCell: (row: ManageEngineerProps) => {
-        const latestBlock = row.statusHistory
-          ?.filter((s) => s.type === "block")
-          ?.sort(
-            (a, b) =>
-              new Date(b.actionDate).getTime() -
-              new Date(a.actionDate).getTime(),
-          )[0];
-        const blockedBy = latestBlock?.adminName || "N/A";
-        return (
-          <div className="text-sm text-gray-900 dark:text-white">
-            {blockedBy}
-          </div>
-        );
-      },
+      renderCell: (row) => latestBlockMap[row.id]?.adminName || "N/A",
     },
     {
       key: "action",

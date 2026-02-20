@@ -297,11 +297,12 @@ export function useAdminGetJobs(
 }
 
 export function useAdminGetEngineerById(userId: number, enabled = true) {
+    const isValidId = Number.isFinite(userId);
   return useQuery({
     ...adminGetEngineerOptions({
       client: apiClient,
-      path: { userId },
+      path: { userId: isValidId ? userId : 0 },
     }),
-    enabled,
+    enabled: enabled && isValidId,
   });
 }

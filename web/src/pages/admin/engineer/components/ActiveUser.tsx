@@ -75,10 +75,10 @@ export default function ActiveUser() {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting job:", engineer.id);
-            toast.success("Job deleted successfully!");
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
+            console.log("Deleting engineer:", engineer.id);
+            toast.success("Engineer deleted successfully!");
+            // TODO: call your engineer delete API here
+            // await deleteEngineer(engineer.id);
             close(true);
           },
         },

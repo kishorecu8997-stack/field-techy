@@ -2,10 +2,10 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { FaUserCircle } from "react-icons/fa";
-import type { ManageEngineerProps } from "../types";
+import type { ManageEngineerProps, StatusHistoryType } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 
@@ -38,6 +38,31 @@ export default function SuspendedUser() {
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const latestSuspensionMap = useMemo<Record<string, StatusHistoryType | undefined>>(() => {
+  const map: Record<string, StatusHistoryType | undefined> = {};
+
+    engineerData.forEach((engineer) => {
+    // safely reduce over statusHistory
+    const latestSuspension = engineer.statusHistory?.reduce<StatusHistoryType | undefined>(
+      (latest, current) => {
+        if (current.type !== "suspension") return latest;
+
+        // pick the one with the latest actionDate
+        if (!latest || new Date(current.actionDate) > new Date(latest.actionDate)) {
+          return current;
+        }
+
+        return latest;
+      },
+      undefined
+    );
+
+    map[engineer.id] = latestSuspension;
+  });
+
+  return map;
+}, [engineerData]);
 
   const handleRevoke = async (engineer: ManageEngineerProps) => {
     await showPopup({
@@ -106,82 +131,35 @@ export default function SuspendedUser() {
     {
       key: "suspendReason",
       label: "Reason for Suspension",
-      renderCell: (row: ManageEngineerProps) => {
-        const latestSuspension = row.statusHistory
-          ?.filter((s) => s.type === "suspension")
-          ?.sort(
-            (a, b) =>
-              new Date(b.actionDate).getTime() -
-              new Date(a.actionDate).getTime(),
-          )[0];
-
-        return latestSuspension?.reason || "N/A";
-      },
+      renderCell: (row) => latestSuspensionMap[row.id]?.reason || "N/A",
     },
     {
       key: "suspendFrom",
       label: "Suspend From",
-      renderCell: (row: ManageEngineerProps) => {
-        const latestSuspension = row.statusHistory
-          ?.filter((s) => s.type === "suspension")
-          ?.sort(
-            (a, b) =>
-              new Date(b.actionDate).getTime() -
-              new Date(a.actionDate).getTime(),
-          )[0];
-
-        return latestSuspension?.startDate
-          ? new Date(latestSuspension.startDate).toLocaleDateString()
-          : "N/A";
+      renderCell: (row) => {
+        const date = latestSuspensionMap[row.id]?.startDate;
+        return date ? new Date(date).toLocaleDateString() : "N/A";
       },
     },
     {
       key: "suspendTo",
       label: "Suspend To",
-      renderCell: (row: ManageEngineerProps) => {
-        const latestSuspension = row.statusHistory
-          ?.filter((s) => s.type === "suspension")
-          ?.sort(
-            (a, b) =>
-              new Date(b.actionDate).getTime() -
-              new Date(a.actionDate).getTime(),
-          )[0];
-
-        return latestSuspension?.endDate
-          ? new Date(latestSuspension.endDate).toLocaleDateString()
-          : "N/A";
+      renderCell: (row) => {
+        const date = latestSuspensionMap[row.id]?.endDate;
+        return date ? new Date(date).toLocaleDateString() : "N/A";
       },
     },
     {
       key: "suspendBy",
       label: "Suspend By",
-      renderCell: (row: ManageEngineerProps) => {
-        const latestSuspension = row.statusHistory
-          ?.filter((s) => s.type === "suspension")
-          ?.sort(
-            (a, b) =>
-              new Date(b.actionDate).getTime() -
-              new Date(a.actionDate).getTime(),
-          )[0];
-
-        return latestSuspension?.adminName || "N/A";
-      },
+      renderCell: (row) => latestSuspensionMap[row.id]?.adminName || "N/A",
     },
     {
       key: "suspendOn",
       label: "Suspend On",
-      renderCell: (row: ManageEngineerProps) => {
-        const latestSuspension = row.statusHistory
-          ?.filter((s) => s.type === "suspension")
-          ?.sort(
-            (a, b) =>
-              new Date(b.actionDate).getTime() -
-              new Date(a.actionDate).getTime(),
-          )[0];
-
-        return latestSuspension?.actionDate
-          ? new Date(latestSuspension.actionDate).toLocaleDateString()
-          : "N/A";
+      renderCell: (row) => {
+        const date = latestSuspensionMap[row.id]?.actionDate;
+        return date ? new Date(date).toLocaleDateString() : "N/A";
       },
     },
     {
