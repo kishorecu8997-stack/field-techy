@@ -13,6 +13,7 @@ const titleMap: Record<string, string> = {
   addTools: "Add Tools",
   editTools: "Edit Tools",
   experiences: "Experiences",
+  experience: "Experiences",
   addExperiences: "Add Experiences",
   editExperiences: "Edit Experiences",
   workPreference: "Work Preference",

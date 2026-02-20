@@ -1,11 +1,14 @@
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { getProfileCompletion } from "@/utils/profileCompletion";
+import { useEngineerGetProfileCompletion } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import {
   getStatusIcon,
   getStatusColor,
   getComparisonUI,
   profilePriorityGuide,
 } from "@/utils/profileStatus";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { useHeaderTitle } from "@/shared/components/useHeaderTitle";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * ProfileCompletionCard Component
@@ -14,19 +17,50 @@ import {
  */
 const ProfileCompletionCard = () => {
   const {
-    profileData,
     setActiveKey,
     setISOpenSidebar,
     setNavigationSource,
     setImmediateParentKey,
   } = useDrawerStore();
 
-  const overallCompletion = getProfileCompletion(profileData);
+  const { data: profileCompletionData, isLoading } =
+    useEngineerGetProfileCompletion();
+
+  if (isLoading) {
+    return <LoaderComponent />;
+  }
+
+  const overallCompletion = profileCompletionData?.percentage ?? 0;
+  const missingSections = profileCompletionData?.missing ?? [];
+
   const comparisonUI = getComparisonUI(overallCompletion);
+
+  const SectionTitle = ({ section }: { section: string }) => {
+    const title = useHeaderTitle(section);
+    return <>{title}</>;
+  };
 
   return (
     <div className="space-y-6 p-4">
       <h2 className="text-xl font-semibold">Complete Your Profile</h2>
+
+      {/* Overall Completion */}
+      <div className="border rounded-xl p-4 bg-white shadow-sm dark:bg-gray-700">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="font-semibold dark:text-gray-300">
+            Overall Profile Completion
+          </h3>
+          <span className="text-sm font-medium dark:text-gray-300">
+            {overallCompletion}%
+          </span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-teal-600 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${overallCompletion}%` }}
+          />
+        </div>
+      </div>
 
       {/* Priority Guide */}
       <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2 dark:bg-gray-700">
@@ -52,77 +86,93 @@ const ProfileCompletionCard = () => {
         <p className="mt-1 font-medium">{comparisonUI.comparisonText}</p>
       </div>
 
-      {/* Profile Sections */}
-      {profileData.map((section) => {
-        const total = section.fields.length;
-        const completed = section.fields.filter(
-          (f) => f.status === "complete",
-        ).length;
-        const percentage = Math.round((completed / total) * 100);
-        const remaining = total - completed;
-        const estimatedTime = remaining * section.estimatedMinutesPerField;
+      {/* Missing/Incomplete Sections */}
+      {missingSections.length > 0 ? (
+        <>
+          <h3 className="text-lg font-semibold">Sections to Complete</h3>
+          {missingSections.map((section) => {
+            const completionPercentage = 100 - section.percentage;
+            const estimatedTime = Math.ceil(section.percentage / 10);
 
-        return (
-          <div
-            key={section.key}
-            className="border rounded-xl p-4 bg-white shadow-sm dark:bg-gray-700"
-          >
-            {/* Section Header */}
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="font-semibold dark:text-gray-300">
-                {section.title}
-              </h3>
-              <span className="text-sm font-medium dark:text-gray-300">
-                {percentage}%
-              </span>
-            </div>
-
-            {/* Progress Bar Showing Status With Percentage */}
-            <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+            return (
               <div
-                className="bg-teal-600 h-2 rounded-full"
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
+                key={section.section}
+                className="border rounded-xl p-4 bg-white shadow-sm dark:bg-gray-700"
+              >
+                {/* Section Header */}
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-semibold dark:text-gray-300">
+                    <SectionTitle section={section.section} />
+                  </h3>
+                  <span className="text-sm font-medium dark:text-gray-300">
+                    {completionPercentage}%
+                  </span>
+                </div>
 
-            {/* Fields Those are under the specific section with their status*/}
-            <ul className="space-y-1 text-sm">
-              {section.fields.map((field, i) => (
-                <li
-                  key={`${section.key}-${field.label}-${i}`}
-                  className={getStatusColor(field.status)}
-                >
-                  {getStatusIcon(field.status)} {field.label}
-                  {field.status === "pending" && " (Awaiting Approval)"}
-                </li>
-              ))}
-            </ul>
+                {/* Progress Bar */}
+                <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                  <div
+                    className="bg-teal-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${completionPercentage}%` }}
+                  />
+                </div>
 
-            {/* Complete Section Button */}
-            {percentage < 100 && (
-              <div className="flex justify-between items-center mt-4 text-sm">
-                <button
-                  onClick={() => {
-                    setNavigationSource(
-                      "profilecompletion",
-                      "profileCompletion",
-                    );
-                    setImmediateParentKey("profileCompletion");
-                    setActiveKey(section.navigateTo);
-                    setISOpenSidebar(true);
-                  }}
-                  className="text-teal-700 font-medium hover:underline"
-                >
-                  Complete This Section
-                </button>
-                <span className="text-gray-500">
-                  {estimatedTime} minutes remaining
-                </span>
+                {/* Missing Percentage Display */}
+                <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  <span className={getStatusColor("incomplete")}>
+                    {getStatusIcon("incomplete")} {section.percentage}%
+                    incomplete
+                  </span>
+                </div>
+
+                {/* Complete Section Button */}
+                <div className="flex justify-between items-center mt-4 text-sm">
+                  <Button
+                    className="mt-2 w-200px bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+                    onClick={() => {
+                      let navKey = section.section;
+
+                      // Fix singular → plural only when needed
+                      if (navKey.toLowerCase().trim() === "experience") {
+                        navKey = "experiences";
+                      }
+
+                      setNavigationSource(
+                        "profilecompletion",
+                        "profileCompletion",
+                      );
+                      setImmediateParentKey("profileCompletion");
+                      setActiveKey(navKey);
+                      setISOpenSidebar(true);
+                    }}
+                  >
+                    Complete This Section
+                  </Button>
+                  <span className="text-gray-500">
+                    ~
+                    {estimatedTime && !isNaN(estimatedTime)
+                      ? estimatedTime
+                      : "—"}{" "}
+                    minutes remaining
+                  </span>
+                </div>
               </div>
-            )}
+            );
+          })}
+        </>
+      ) : (
+        <div className="border rounded-xl p-6 bg-green-50 dark:bg-green-900/30 text-center">
+          <div className="text-4xl mb-2" aria-hidden="true">
+            🎉
           </div>
-        );
-      })}
+          <h3 className="font-semibold text-green-800 dark:text-green-300 mb-1">
+            Profile Complete!
+          </h3>
+          <p className="text-sm text-green-700 dark:text-green-400">
+            Your profile is 100% complete. Great job!
+          </p>
+        </div>
+      )}
     </div>
   );
 };
