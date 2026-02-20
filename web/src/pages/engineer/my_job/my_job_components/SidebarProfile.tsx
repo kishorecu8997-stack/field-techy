@@ -114,7 +114,8 @@ const ProfileCard = () => {
 const EarningsCard = () => {
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
   const [showBalance, setShowBalance] = useState<boolean>(false);
-   const { data: balance } = useEngineerBalance();
+  const { data: balanceArr } = useEngineerBalance();
+  const balance = balanceArr?.[0];
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -138,18 +139,18 @@ const EarningsCard = () => {
         </div>
         <div className="text-3xl font-bold text-gray-900 dark:text-white">
           <div className="flex justify-between items-center">
-            {showBalance ? (
-              <span>
-                {Number(balance?.balance)?.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: balance?.currencyCode,
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>
-            ) : (
-              "******"
-            )}
+            <span>
+              {showBalance
+                ? balance?.balance != null
+                  ? Number(balance.balance).toLocaleString("en-US", {
+                      style: "currency",
+                      currency: balance.currencyCode ?? "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "00.00"
+                : "******"}
+            </span>
 
             {!showBalance ? (
               <BsEyeFill

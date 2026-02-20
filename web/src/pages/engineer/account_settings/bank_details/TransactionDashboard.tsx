@@ -1,9 +1,11 @@
-import { useTransactionStore } from "@/dummy_data/transactionStore";
+import {
+  useEngineerBalance,
+  useEngineerTransactions,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import { formatCurrency, formatDate } from "@/shared/libs/utils";
-import { getStatusBadge } from "@/utils/statusUtils";
 import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { HiFilter, HiSearch } from "react-icons/hi";
@@ -27,7 +29,9 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
   showAll = false,
   onViewAllClick,
 }) => {
-  const { transactions } = useTransactionStore();
+  const { data: balanceArr } = useEngineerBalance();
+  const balance = balanceArr?.[0];
+  const currencyCode = balance?.currencyCode ?? "USD";
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const methods = useForm<IFormInputs>({
     defaultValues: {
@@ -38,21 +42,42 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
   });
   const { watch, reset } = methods;
   const { searchTerm, filterDateFrom, filterDateTo } = watch();
+  const today = new Date();
+  const startDate3MonthsAgo = new Date(today);
+  startDate3MonthsAgo.setMonth(today.getMonth() - 3);
+  startDate3MonthsAgo.setHours(0, 0, 0, 0);
+
+  const endDateToday = new Date(today);
+  endDateToday.setHours(23, 59, 59, 999);
+
+  const startDateStr = startDate3MonthsAgo.toISOString();
+  const endDateStr = endDateToday.toISOString();
+
+  // --- API Query Params ---
+  const SORT_DESC: `desc` = "desc";
+  const queryParams = showAll
+    ? { sortOrder: SORT_DESC, startDate: startDateStr, endDate: endDateStr }
+    : { sortOrder: SORT_DESC, limit: 10 };
+  const {
+    data: transactionsRaw,
+    isLoading,
+    isError,
+  } = useEngineerTransactions(queryParams, true);
   // Filter out transactions with invalid dates and sort by date descending (newest first).
   // This prevents crashes from invalid date objects and ensures the list is always ordered chronologically.
-  const validAndSortedTransactions = transactions
-    .filter((tx) => !isNaN(new Date(tx.date).getTime()))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const validTransactions = (transactionsRaw || []).filter(
+    (tx) => !isNaN(new Date(tx.timestamp).getTime()),
+  );
 
   const hasActiveFilters = !!(searchTerm || filterDateFrom || filterDateTo);
-  const filteredTransactions = validAndSortedTransactions.filter((tx) => {
+  const filteredTransactions = validTransactions.filter((tx) => {
     if (
       searchTerm &&
-      !tx.description.toLowerCase().includes(searchTerm.toLowerCase())
+      !tx.description?.toLowerCase().includes(searchTerm.toLowerCase())
     ) {
       return false;
     }
-    const txDate = new Date(tx.date);
+    const txDate = new Date(tx.timestamp);
 
     if (filterDateFrom && txDate < filterDateFrom) return false;
     if (filterDateTo && txDate > filterDateTo) return false;
@@ -62,10 +87,6 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
   const clearFilters = () => {
     reset();
   };
-  // Determine which transactions to display: all filtered, or the 10 most recent ones.
-  const transactionsToShow = showAll
-    ? filteredTransactions
-    : filteredTransactions.slice(0, 10);
   const title = showAll ? "All Transactions" : "Last 10 Transactions";
 
   return (
@@ -158,22 +179,16 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
                 >
                   Amount
                 </th>
-                <th
-                  scope="col"
-                  className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                >
-                  Status
-                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {transactionsToShow.map((tx) => {
-                const isCredit = tx.amount > 0;
+              {filteredTransactions.map((tx) => {
+                const txAmount = Number(tx.amount);
+                const isCredit = tx.type === "credit";
                 const amountColor = isCredit
                   ? "text-emerald-600 dark:text-emerald-400"
                   : "text-rose-600 dark:text-rose-400";
                 const sign = isCredit ? "+" : "-";
-                const status = tx.status || "Completed";
 
                 return (
                   <tr key={tx.id}>
@@ -181,22 +196,13 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
                       {tx.description}
                     </td>
                     <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {formatDate(new Date(tx.date).toISOString())}
+                      {formatDate(new Date(tx.timestamp).toISOString())}
                     </td>
                     <td
                       className={`px-8 py-4 whitespace-nowrap text-sm font-semibold ${amountColor}`}
                     >
                       {sign}
-                      {formatCurrency(Math.abs(tx.amount))}
-                    </td>
-                    <td className="px-8 py-4 whitespace-nowrap text-sm">
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(
-                          status,
-                        )}`}
-                      >
-                        {status}
-                      </span>
+                      {formatCurrency(Math.abs(txAmount), currencyCode)}
                     </td>
                   </tr>
                 );
@@ -205,7 +211,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
           </table>
         </div>
 
-        {transactionsToShow.length === 0 && (
+        {!isLoading && !isError && filteredTransactions.length === 0 && (
           <div className="text-center py-10">
             <p className="text-gray-500 dark:text-gray-400">
               {hasActiveFilters
