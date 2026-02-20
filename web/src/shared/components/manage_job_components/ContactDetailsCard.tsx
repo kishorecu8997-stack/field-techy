@@ -8,18 +8,18 @@ interface Contact {
   avatarUrl?: string; // Optional custom avatar
 }
 
+
 interface ContactDetailsCardProps {
   client?: Contact;
-  engineer?: Contact; // Optional — if no engineer assigned yet
+  engineers?: Contact[]; // Optional — if no engineer assigned yet
   onEngineerAssign?: (engineerId: string) => void;
   engineersList?: { id: string; name: string }[]; // List for dropdown
 }
 
+
 const ContactDetailsCard: React.FC<ContactDetailsCardProps> = ({
   client,
-  engineer,
-  onEngineerAssign,
-  engineersList = [],
+  engineers = []
 }) => {
   const defaultAvatar = (
     <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
@@ -62,32 +62,24 @@ const ContactDetailsCard: React.FC<ContactDetailsCardProps> = ({
       </div>
 
       {/* Engineer Details */}
+      {/* Engineer Details */}
       <div className="flex-1 space-y-4">
         <h3 className="font-bold text-lg mb-3">Engineer Details</h3>
-        <div className="flex items-start space-x-3">
-          {defaultAvatar}
-          <div>
-            <p className="text-gray-800 font-medium">{engineer?.name || "-"}</p>
-            <p className="text-gray-600 text-sm">{engineer?.email || "-"}</p>
-            <p className="text-gray-600 text-sm">{engineer?.phone || "-"}</p>
-          </div>
-        </div>
-        <div>
-          <select
-            onChange={(e) => onEngineerAssign?.(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Assign Engineer
-            </option>
-            {engineersList.map((eng) => (
-              <option key={eng.id} value={eng.id}>
-                {eng.name}
-              </option>
-            ))}
-          </select>
-        </div>
+
+        {engineers && engineers.length > 0 ? (
+          engineers.map((engineer, index) => (
+            <div key={index} className="flex items-start space-x-3">
+              {defaultAvatar}
+              <div>
+                <p className="text-gray-800 font-medium">{engineer.name}</p>
+                <p className="text-gray-600 text-sm">{engineer.email}</p>
+                <p className="text-gray-600 text-sm">{engineer.phone}</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500 text-sm">No engineer assigned</p>
+        )}
       </div>
     </div>
   );

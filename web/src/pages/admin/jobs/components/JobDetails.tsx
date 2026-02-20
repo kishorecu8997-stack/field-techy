@@ -15,7 +15,7 @@ import ManageJobDetails from "./ManageJobDetails";
  */
 const JobDetails = () => {
   // const id = useParams();
-  const id = "#Ride001";
+  const id = "#Ride002";
 
   const findJobValue = () => {
     return jobData.find((job) => job.id === String(id));
@@ -33,6 +33,7 @@ const JobDetails = () => {
     { label: "Country", value: findJobValue()?.country },
     { label: "State", value: findJobValue()?.state },
     { label: "City", value: findJobValue()?.city },
+    { label: "No of Engineers", value: findJobValue()?.count },
   ];
 
   const handleStatusChange = () => {
@@ -54,10 +55,11 @@ const JobDetails = () => {
             }
             status={findJobValue()?.status || "completed"}
             onStatusChange={handleStatusChange}
+            
           />
           <ContactDetailsCard
             client={findJobValue()?.clientDetails}
-            engineer={findJobValue()?.engineerDetails}
+            engineers={findJobValue()?.engineerDetails || []}
             onEngineerAssign={handleAssignEngineer}
             engineersList={engineersList}
           />

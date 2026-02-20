@@ -41,7 +41,7 @@ export interface JobDataProps {
     name: string;
     email: string;
     phone: string;
-  };
+  }[];
   company: string;
   title: string;
   description: string;
@@ -55,6 +55,7 @@ export interface JobDataProps {
   city: string;
   createdDate: string;
   status: "completed" | "pending" | "in-progress";
+  count: number;
 }
 
 export interface PaymentListProps {
