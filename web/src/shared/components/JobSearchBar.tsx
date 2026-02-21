@@ -46,7 +46,7 @@ export const JobSearchBar = () => {
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const hasValue = (value: any): boolean => {
+    const hasValue = (value: unknown): boolean => {
     return value !== undefined && value !== null && String(value).trim() !== "";
   };
 
