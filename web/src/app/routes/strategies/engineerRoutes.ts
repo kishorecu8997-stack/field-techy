@@ -118,6 +118,10 @@ export class EngineerRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.EngineerBreakDetails),
           },
           {
+            path: `${urls.engineer.home.my_jobs}/:jobId/report_issues`,
+            element: withSuspense(Components.EngineerReportIssue),
+          },
+          {
             path: `${urls.engineer.home.my_jobs}/:jobId`,
             element: withSuspense(Components.EngineerOfferPages),
           },

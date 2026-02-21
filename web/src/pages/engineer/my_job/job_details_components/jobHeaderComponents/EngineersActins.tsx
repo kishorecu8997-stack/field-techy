@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
 import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
 import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { RiErrorWarningFill } from "react-icons/ri";
 
 /**
  * Maps AssignmentStatus to OfferedJobStatusType for UI compatibility
@@ -58,6 +59,7 @@ const EngineersActions = ({
   setActiveTab,
   OfferJobStatus,
   status,
+  setIsReportOpen,
   onAddProgressUpdate,
   onOpenFinalStatement,
   assignmentId,
@@ -68,6 +70,7 @@ const EngineersActions = ({
   >;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  setIsReportOpen?: Dispatch<SetStateAction<boolean>>;
   setIsWorkSubmitted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
   isSendProposal?: boolean;
@@ -217,8 +220,10 @@ const EngineersActions = ({
     (status === JOB_STATUSES.applied || OfferJobStatus === "applied") &&
     OfferJobStatus !== "accepted" &&
     OfferJobStatus !== "assigned";
-  const isRejected = OfferJobStatus === "rejected" || mappedOfferStatus === "declined";
-  const isJobStarted = OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
+  const isRejected =
+    OfferJobStatus === "rejected" || mappedOfferStatus === "declined";
+  const isJobStarted =
+    OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
   const isNew = status === JOB_STATUSES.new || status === "new";
   const isOffer = status === JOB_STATUSES.offer || status === "offer";
   const isPosted = status === JOB_STATUSES.posted;
@@ -246,7 +251,7 @@ const EngineersActions = ({
     !hasStartPending &&
     !hasJobStarted;
 
-    // Check if proposal already submitted via API
+  // Check if proposal already submitted via API
   const hasSubmittedProposal =
     OfferJobStatus === "applied" ||
     OfferJobStatus === "submitted" ||
@@ -342,7 +347,14 @@ const EngineersActions = ({
   };
 
   return (
-    <div className="mt-4 flex flex-wrap gap-3 h-fit justify-end">
+    <div className="mt-4 flex flex-wrap gap-3 h-fit justify-between">
+      <div
+        className="flex cursor-pointer flex-row items-center gap-1 mt-3 border-b px-3"
+        onClick={() => setIsReportOpen?.(true)}
+      >
+        <RiErrorWarningFill className="text-red-400 text-lg" />
+        <span className="text-md">Report Issue</span>
+      </div>
       <span className="flex rounded-md text-sm font-medium h-fit justify-end items-end w-fit">
         {/* In Progress Status */}
         {hasJobStarted ? (
@@ -387,7 +399,9 @@ const EngineersActions = ({
             {OfferJobStatus === "start_pending_approval" ? (
               <>
                 <icons.pending className="text-yellow-500 w-6 h-6" />
-                <span className="text-lg text-yellow-500">Start Pending Approval</span>
+                <span className="text-lg text-yellow-500">
+                  Start Pending Approval
+                </span>
               </>
             ) : (
               <>

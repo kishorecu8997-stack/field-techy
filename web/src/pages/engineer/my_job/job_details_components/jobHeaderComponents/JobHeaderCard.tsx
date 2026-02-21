@@ -13,6 +13,9 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
+import ReportPage from "@/pages/client/report";
+import { IoIosWarning } from "react-icons/io";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -48,6 +51,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const params = useParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const { closePopup, showPopup } = usePopupStore();
@@ -130,6 +134,25 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
           </div>
           <div className="flex gap-2 items-center">
+            <div
+              onClick={() =>
+                isClient
+                  ? navigate(
+                      `${absoluteUrls.client.home.my_jobs}/${params.jobId}/report_issues`,
+                    )
+                  : navigate(
+                      `${absoluteUrls.engineer.home.my_jobs}/${params.jobId}/report_issues`,
+                    )
+              }
+              className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
+            >
+              <span>Report Updates</span>
+              <div className="relative">
+                <IoIosWarning size={20} />
+                <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
+              </div>
+            </div>
+
             {/* Break Details button - visible unless hideBreakDetails is true */}
             {!hideBreakDetails && (
               <div
@@ -157,18 +180,25 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-20 text-gray-800 dark:text-white">
                     <ul className="py-1">
-                      {["Hold the job", "Cancel the job", "Clone the job"].map(
-                        (item) => (
-                          <li key={item}>
-                            <div
-                              onClick={() => handleMenuAction(item)}
-                              className="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                            >
-                              {item}
-                            </div>
-                          </li>
-                        ),
-                      )}
+                      {[
+                        "Hold the job",
+                        "Cancel the job",
+                        "Clone the job",
+                        "Report Issue",
+                      ].map((item) => (
+                        <li key={item}>
+                          <div
+                            onClick={() =>
+                              item === "Report Issue"
+                                ? setIsReportOpen(true)
+                                : handleMenuAction(item)
+                            }
+                            className="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                          >
+                            {item}
+                          </div>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 )}
@@ -197,6 +227,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             setIsWorkSubmitted={setIsWorkSubmitted}
             setOfferJobStatus={setOfferJobStatus}
             setOpen={setOpen}
+            setIsReportOpen={setIsReportOpen}
             status={status}
             setSendProposal={setSendProposal}
             activeTab={activeTab}
@@ -221,6 +252,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           onClose={() => setIsConfirmOpen(false)}
         />
       </Popup>
+      <ReportPage open={isReportOpen} onClose={() => setIsReportOpen(false)} />
     </>
   );
 };
