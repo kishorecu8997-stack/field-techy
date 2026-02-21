@@ -23,6 +23,8 @@ import {
   type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
   type AdminCreateServiceCategoryResponse,
+  type AdminGetServiceCategoriesData,
+  type AdminGetServiceCategoriesResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -37,6 +39,7 @@ import {
   adminGetJobsOptions,
   adminGetEngineersForManagementOptions,
   adminCreateServiceCategoryMutation,
+  adminGetServiceCategoriesOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -307,6 +310,27 @@ export function useAdminGetJobs(
 ) {
   return useQuery({
     ...adminGetJobsOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
+  });
+}
+
+export type AdminGetServiceCategoriesQuery = NonNullable<
+  AdminGetServiceCategoriesData["query"]
+>;
+
+export function useAdminGetServiceCategories(
+  query?: AdminGetServiceCategoriesQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetServiceCategoriesResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetServiceCategoriesOptions({
       client: apiClient,
       query,
     }),

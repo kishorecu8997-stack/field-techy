@@ -1,12 +1,12 @@
 import { absoluteUrls } from "@/config/urls";
-import { serviceCategoriesData } from "@/dummy_data/admin";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
+import { useAdminGetServiceCategories } from "@/shared/apiServices/admin/adminOpenApiService";
 
 const HandleStatus = ({ status: value }: { status: boolean }) => {
   const [status, setStatus] = useState<boolean>(value);
@@ -49,6 +49,41 @@ export interface ServerCategoryProps {
  */
 const ManageJobCategory: React.FC = () => {
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const {
+    data: categoriesResponse,
+    isLoading,
+    isFetching,
+    error,
+  } = useAdminGetServiceCategories(
+    {
+      page,
+      limit: pageSize,
+      search: search.trim() || undefined,
+    },
+    {
+      enabled: true,
+    },
+  );
+
+  const tableData = useMemo<ServerCategoryProps[]>(
+    () =>
+      (categoriesResponse?.data ?? []).map((item) => ({
+        id: String(item.id),
+        categoryName: item.name,
+        categoryImg: "",
+        createdDate: "-",
+        status: true,
+      })),
+    [categoriesResponse],
+  );
+
+  const totalCount = categoriesResponse?.total ?? 0;
+  const errorMessage =
+    error instanceof Error ? error.message : error ? "Failed to load data." : null;
 
   const columns: Column<ServerCategoryProps>[] = [
     { key: "id", label: "Sr.No." },
@@ -97,13 +132,28 @@ const ManageJobCategory: React.FC = () => {
       </div>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div>
-          <SearchInput />
+          <SearchInput
+            value={search}
+            onChange={(val) => {
+              setSearch(val);
+              setPage(1);
+            }}
+          />
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ServerCategoryProps>
             columns={columns}
-            data={serviceCategoriesData}
-            initialPageSize={10}
+            data={tableData}
+            initialPageSize={pageSize}
+            loading={isLoading || isFetching}
+            error={errorMessage}
+            totalCount={totalCount}
+            currentPage={page}
+            onPageChange={(p) => setPage(p)}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
           />
         </div>
       </div>
