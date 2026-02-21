@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useAdminCreateServiceCategory } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * `AddCategory` component renders a page with a form to add a new Service category.
@@ -25,6 +26,22 @@ export default function AddCategory() {
   const navigate = useNavigate();
 
   const { showPopup } = usePopupStore();
+  const {
+    mutateAsync: createServiceCategory,
+    isPending: isCreatingCategory,
+  } = useAdminCreateServiceCategory({
+    onSuccess: () => {
+      toast.success("Service category added successfully!");
+      methods.reset();
+      navigate(absoluteUrls.admin.home.manage_categories);
+    },
+    onError: (error) => {
+      console.error(error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Create category failed";
+      toast.error(errorMessage);
+    },
+  });
 
   const handleSubmit = async (data: CategoryFormData) => {
     console.log("data :", data);
@@ -43,12 +60,12 @@ export default function AddCategory() {
           variant: "primary",
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
-            console.log("Deleting job:", close);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Service category added successfully!");
-            methods.reset();
-            navigate(absoluteUrls.admin.home.manage_categories);
+            if (isCreatingCategory) return;
+            await createServiceCategory({
+              body: {
+                name: data.categoryName,
+              },
+            });
             close(true);
           },
         },

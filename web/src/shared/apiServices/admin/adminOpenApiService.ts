@@ -22,6 +22,7 @@ import {
   type AdminGetEngineersForManagementData,
   type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
+  type AdminCreateServiceCategoryResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -35,6 +36,7 @@ import {
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetEngineersForManagementOptions,
+  adminCreateServiceCategoryMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -96,6 +98,23 @@ export function useAdminUpdatePersonalInfo(options?: {
     ...adminUpdatePersonalInfoMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminCreateServiceCategory(options?: {
+  onSuccess?: (data: AdminCreateServiceCategoryResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateServiceCategoryMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["lookup", "serviceCategories", "root"],
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

@@ -1,5 +1,4 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
-import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import { validateCategoryName } from "@/utils/validate";
 /**
  * `JobCategoryForm` provides the form fields for creating or editing a job category.
@@ -11,13 +10,10 @@ import { validateCategoryName } from "@/utils/validate";
 export default function JobCategoryForm() {
   return (
     <div>
-      <div className="mb-6 mt-2 w-26">
-        <ImageUploaderField name="profileImage" required />
-      </div>
       <div className="flex md:w-1/2">
         <InputField
           name="categoryName"
-          label="Category Name"
+          label="Service Category Name"
           type="text"
           placeholder="Enter Name"
           required
