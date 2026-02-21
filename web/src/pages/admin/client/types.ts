@@ -94,6 +94,8 @@ export interface ViewFileComponentProps {
   title?: string;
   fileType: ProfileFileType | null;
   fileUrl?: string | null;
+  isShowIcon?: boolean;
+  titleClassName?: string;
 }
 
 export type DocumentType =
@@ -144,6 +146,7 @@ export interface ClientFormData {
 
 export interface CompanyInfo {
   profileImage?: string;
+  clientType?: "corporate" | "home";
   companyName: string;
   businessType: string;
   country: string;

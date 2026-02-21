@@ -21,7 +21,6 @@ export default function Documents({ isView = false }: DocumentsProps) {
   const govIdDoc = watch("govIdDoc");
   const certificate = watch("certificate");
 
-  // Helper to determine if a value is an existing URL string
   const isExistingFile = (value: unknown): value is string =>
     typeof value === "string" && value.startsWith("http");
 
