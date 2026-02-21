@@ -14,10 +14,10 @@ interface ManageProposalsTabProps {
     engineerId: number;
     assignmentStatus: string;
     proposalDetail?: string | null;
-    attachmentUrl?: string;
-    attachmentId?: number;
-    createdAt?: string;
-    updatedAt?: string;
+    proposalAttachmentUrl?: string | null;
+    proposalAttachmentId?: number | null;
+    appliedAt?: string | null;
+    invitedAt?: string | null;
     engineer?: {
       id: number;
       name?: string;
@@ -92,7 +92,8 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
   // Filter proposals that haven't been processed yet
   // Also filter out proposals that are already approved/accepted from the API
   // Also filter out proposals where job has started (start_pending_approval, started, submitted, etc.)
-  const approvedStatuses = [
+  // Also filter out rejected proposals
+  const processedStatuses = [
     "accepted",
     "assigned",
     "approved",
@@ -100,10 +101,11 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
     "started",
     "submit_pending_approval",
     "submitted",
+    "rejected",
   ];
   const remainingProposals = assignments.filter(
     (proposal) =>
-      !approvedStatuses.includes(
+      !processedStatuses.includes(
         proposal.assignmentStatus?.toLowerCase() || "",
       ) &&
       !acceptedProposals.includes(String(proposal.assignmentId)) &&
@@ -149,19 +151,21 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                 Status: {proposal.assignmentStatus}
               </p>
             </div>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              {proposal.createdAt
-                ? `${DUMMY_TABS_LABELS.receivedOn} ${new Date(proposal.createdAt).toLocaleDateString()}`
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+              {proposal.appliedAt || proposal.invitedAt
+                ? `${DUMMY_TABS_LABELS.receivedOn} ${new Date(
+                    proposal.appliedAt || proposal.invitedAt || "",
+                  ).toLocaleDateString()}`
                 : ""}
             </span>
           </div>
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap break-words">
             {proposal.proposalDetail || "No proposal details provided"}
           </p>
-          {(proposal.attachmentUrl || proposal.attachmentId) && (
+          {(proposal.proposalAttachmentUrl || proposal.proposalAttachmentId) && (
             <div className="mb-4">
               <a
-                href={proposal.attachmentUrl || `#`}
+                href={proposal.proposalAttachmentUrl || `#`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all hover:bg-gray-200 dark:hover:bg-gray-600 transition"
