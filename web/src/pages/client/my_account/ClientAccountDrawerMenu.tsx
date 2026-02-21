@@ -131,7 +131,8 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   );
 
   const menuItems: ClientMenuItems[] = [
-    // {
+    //This is commented out because the Manage Proposal feature is planned to be included under the "My Jobs" section.
+    // { 
     //   label: "Manage Proposal",
     //   icon: IoDocumentText,
     //   key: "proposal",
