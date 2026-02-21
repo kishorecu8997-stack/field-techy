@@ -1,14 +1,17 @@
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
-import { serviceCategoriesData } from "@/dummy_data/admin";
-import type { ServerCategoryProps } from ".";
 import { usePopupStore } from "@/shared/store/popupStore";
+import {
+  useAdminGetServiceCategories,
+  useAdminUpdateServiceCategory,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * `EditCategory` component renders a page with a form to edit an existing Service category.
@@ -24,19 +27,47 @@ export default function EditCategory() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Find the category by ID (replace with real API call if needed)
-  const category = serviceCategoriesData.find(
-    (cat: ServerCategoryProps) => cat.id === id,
+  const categoryId = id ? Number(id) : undefined;
+  const { data: categoriesResponse } = useAdminGetServiceCategories({
+    page: 1,
+    limit: 1000,
+  });
+  const category = categoriesResponse?.data?.find(
+    (cat) => cat.id === categoryId,
   );
 
   const methods = useForm<CategoryFormData>({
     defaultValues: {
-      categoryName: category?.categoryName || "",
+      categoryName: category?.name || "",
       categoryImage: null,
     },
   });
 
+  useEffect(() => {
+    if (!category) return;
+    methods.reset({
+      categoryName: category.name || "",
+      categoryImage: null,
+    });
+  }, [category, methods]);
+
   const { showPopup } = usePopupStore();
+  const {
+    mutateAsync: updateServiceCategory,
+    isPending: isUpdatingCategory,
+  } = useAdminUpdateServiceCategory({
+    onSuccess: () => {
+      toast.success("Service category updated successfully!");
+      methods.reset();
+      navigate(absoluteUrls.admin.home.manage_categories);
+    },
+    onError: (error) => {
+      console.error(error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Update category failed";
+      toast.error(errorMessage);
+    },
+  });
 
   const handleSaveConfirmation = async (data: CategoryFormData) => {
     await showPopup({
@@ -53,12 +84,12 @@ export default function EditCategory() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("data :", data);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Service category updated successfully!");
-            methods.reset();
-            navigate(absoluteUrls.admin.home.manage_categories);
+            if (!categoryId) return;
+            if (isUpdatingCategory) return;
+            await updateServiceCategory({
+              path: { id: categoryId },
+              body: { name: data.categoryName },
+            });
             close(true);
           },
         },
@@ -93,7 +124,7 @@ export default function EditCategory() {
               type="submit"
               className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             >
-              Save
+              Update
             </Button>
           </div>
         </FormContainer>
