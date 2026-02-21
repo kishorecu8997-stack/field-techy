@@ -1,3 +1,4 @@
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FileUpload, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
@@ -26,7 +27,7 @@ const ReportPage = ({
             <IoCloseSharp className="w-6 h-6" />
           </button>
         </div>
-        <FormContainer methods={formCtx} className="flex flex-col gap-4">
+        <FormContainer methods={formCtx} className="flex flex-col gap-2">
           <h1 className="text-xl font-bold text-center dark:text-gray-100 text-gray-800">
             Report a problem
           </h1>
@@ -62,6 +63,7 @@ const ReportPage = ({
             maxPages={5}
             validatePDF={true}
           />
+          <Button variant="primary" size="lg">Submit</Button>
         </FormContainer>
       </div>
     </Popup>

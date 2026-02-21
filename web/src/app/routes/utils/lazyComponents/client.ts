@@ -65,6 +65,9 @@ export const ClientJobDetails = React.lazy(
 export const ClientPostJobPage = React.lazy(
   () => import("@/pages/client/post_job/MultiStepPostJob"),
 );
+export const ClientReportIssue = React.lazy(
+  () => import("@/pages/client/job_details/components/ReportDetails"),
+);
 export const ClientSearchResult = React.lazy(
   () => import("@/pages/client/search_result"),
 );
