@@ -17,7 +17,7 @@ export default function DocumentView({
   certificateDoc,
 }: DocumentViewProps) {
   return (
-    <div className="flex p-4 gap-4 bg-white dark:bg-neutral-800 rounded-md shadow-sm">
+    <div className="flex p-4 gap-4 bg-white dark:bg-gray-800 rounded-md shadow-sm">
       <div className="grid md:flex mb-6 mt-2 gap-10">
         <div className="w-96">
           <ViewFileComponent

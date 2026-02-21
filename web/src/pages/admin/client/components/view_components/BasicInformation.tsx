@@ -25,7 +25,7 @@ const BasicInformation: React.FC<CompanyInfo> = ({
   const isCorporate = clientType === "corporate";
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
       {/* Profile Image Section */}
       <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
         Profile Image

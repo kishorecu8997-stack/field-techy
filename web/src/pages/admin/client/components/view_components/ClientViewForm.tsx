@@ -96,7 +96,7 @@ const ClientViewForm: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-3 h-full w-full flex flex-1 overflow-hidden flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-hidden flex-col bg-neutral-100 dark:bg-gray-900  rounded-md gap-2">
         <AdminTabComponent tabs={tabs} defaultActiveTab="Basic Information" />
       </div>
     </div>
