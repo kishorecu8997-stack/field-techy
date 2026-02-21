@@ -1,57 +1,118 @@
-import React from "react";
+import React, { useState } from "react";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
-import PostedJobs from "./PostedJobs";
-import InProgressJobs from "./InProgressJobs";
-import HoldJobs from "./HoldJobs";
-import FlaggedJobs from "./FlaggedJobs";
-import DeclinedJobs from "./DeclinedJobs";
-import CompletedJobs from "./CompletedJobs";
+import {
+  useAdminGetJobs,
+  type AdminGetJobsQuery,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import ClientJobByCategory from "./ClientJobByCategory";
+
+interface JobHistoryProps {
+  clientEmail?: string;
+}
 
 /**
- * JobHistory Component
- *
- * This component displays the job history for a client, organized into different status categories using a tabbed interface.
- * It utilizes the `AdminTabComponent` to render tabs for various job statuses.
- *
- * - The "Posted Jobs" tab displays the `<PostedJobs />` component.
- * - The "In Progress Jobs" tab displays the `<InProgressJobs />` component.
- * - The "Completed Jobs" tab displays the `<CompletedJobs />` component.
- * - The "Hold Jobs" tab displays the `<HoldJobs />` component.
- * - The "Flagged Jobs" tab displays the `<FlaggedJobs />` component.
- * - The "Declined Jobs" tab displays the `<DeclinedJobs />` component.
- * @component
- * @returns {JSX.Element} The rendered JobHistory component with tabbed navigation for different job statuses.
+ * JobHistory Component displays the job history for a client.
+ * Refactored to follow the JobByCategory pattern from Manage Jobs, 
+ * now simplified to only use Search filtering.
  */
-const JobHistory: React.FC = () => {
-  const tabs = [
-    {
-      label: "Posted Jobs",
-      content: <PostedJobs />,
-    },
-    {
-      label: "In Progress Jobs",
-      content: <InProgressJobs />,
-    },
-    {
-      label: "Completed Jobs",
-      content: <CompletedJobs />,
-    },
-    {
-      label: "Hold Jobs",
-      content: <HoldJobs />,
-    },
-    {
-      label: "Flagged Jobs",
-      content: <FlaggedJobs />,
-    },
-    {
-      label: "Declined Jobs",
-      content: <DeclinedJobs />,
-    },
+const JobHistory: React.FC<JobHistoryProps> = ({ clientEmail }) => {
+  const [activeTabLabel, setActiveTabLabel] = useState("Posted Jobs");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  const tabsConfig: Array<{
+    label: string;
+    status: AdminGetJobsQuery["status"] | undefined;
+  }> = [
+    { label: "Posted Jobs", status: "Posted" },
+    { label: "In Progress Jobs", status: "In Progress" },
+    { label: "Completed Jobs", status: "Closed" },
+    { label: "Hold Jobs", status: "Hold" },
+    { label: "Flagged Jobs", status: "Flagged" },
+    { label: "Declined Jobs", status: "Cancelled" },
   ];
+
+  const currentStatus = tabsConfig.find(
+    (t) => t.label === activeTabLabel,
+  )?.status;
+
+  const {
+    data: jobsResponse,
+    isLoading,
+    error,
+  } = useAdminGetJobs({
+    page,
+    limit,
+    status: currentStatus,
+    search: search || undefined,
+  });
+
+  const allJobs = jobsResponse?.data || [];
+
+  // Filter jobs by client email
+  const clientJobs = allJobs.filter((job) => {
+    const emailMatches = clientEmail 
+      ? job.postedBy.email.toLowerCase() === clientEmail.toLowerCase()
+      : true;
+
+    if (!emailMatches) return false;
+
+    let matches = true;
+    if (search) {
+      const query = search.toLowerCase();
+      matches =
+        job.jobTitle.toLowerCase().includes(query) ||
+        job.jobCode.toLowerCase().includes(query) ||
+        (job.jobDescription?.toLowerCase().includes(query) ?? false);
+    }
+
+    return matches;
+  });
+
+  const handleClearFilters = () => {
+    setSearch("");
+    setPage(1);
+  };
+
+  const handleTabChange = (tabLabel: string) => {
+    setActiveTabLabel(tabLabel);
+    handleClearFilters();
+  };
+
+  const handlePageChange = (newPage: number) => setPage(newPage);
+
+  const handlePageSizeChange = (newSize: number) => {
+    setLimit(newSize);
+    setPage(1);
+  };
+
+  const tabs = tabsConfig.map((config) => ({
+    label: config.label,
+    content: (
+      <ClientJobByCategory
+        data={clientJobs}
+        isLoading={isLoading}
+        error={error}
+        search={search}
+        setSearch={setSearch}
+        onClearFilters={handleClearFilters}
+        page={page}
+        limit={limit}
+        total={clientJobs.length}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+      />
+    ),
+  }));
+
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
-      <AdminTabComponent tabs={tabs} defaultActiveTab="Posted Jobs" />
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-2 h-full flex-1">
+      <AdminTabComponent
+        tabs={tabs}
+        activeTab={activeTabLabel}
+        onTabChange={handleTabChange}
+      />
     </div>
   );
 };

@@ -57,7 +57,7 @@ const ClientViewForm: React.FC = () => {
     },
     {
       label: "Job History",
-      content: <JobHistory />,
+      content: <JobHistory clientEmail={clientData?.email} />,
     },
     {
       label: "Wallet",
