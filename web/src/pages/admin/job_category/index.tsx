@@ -65,16 +65,11 @@ const ManageJobCategory: React.FC = () => {
     isLoading,
     isFetching,
     error,
-  } = useAdminGetServiceCategories(
-    {
+  } = useAdminGetServiceCategories({
       page,
       limit: pageSize,
       search: search.trim() || undefined,
-    },
-    {
-      enabled: true,
-    },
-  );
+    });
 
   const {
     mutateAsync: deleteServiceCategory,
@@ -84,7 +79,6 @@ const ManageJobCategory: React.FC = () => {
       toast.success("Service category deleted successfully!");
     },
     onError: (error) => {
-      console.error(error);
       const errorMessage =
         error instanceof Error ? error.message : "Delete category failed";
       toast.error(errorMessage);
@@ -104,7 +98,7 @@ const ManageJobCategory: React.FC = () => {
         {
           label: "Delete",
           value: "delete",
-          variant: "primary",
+          variant: "danger",
           action: async (close) => {
             if (isDeletingCategory) return;
             await deleteServiceCategory({
@@ -156,6 +150,14 @@ const ManageJobCategory: React.FC = () => {
               onClick={() =>
                 navigate(
                   `${absoluteUrls.admin.home.manage_categories_edit}/${row.id}`,
+                  {
+                    state: {
+                      category: {
+                        id: Number(row.id),
+                        name: row.categoryName,
+                      },
+                    },
+                  },
                 )
               }
             />

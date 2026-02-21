@@ -3,10 +3,11 @@ import { validateCategoryName } from "@/utils/validate";
 /**
  * `JobCategoryForm` provides the form fields for creating or editing a job category.
  * It is designed to be used within a `FormContainer` that provides the `react-hook-form` context.
- * This component includes an image uploader for the category image and a text input for the category name.
+ * This component includes a text input for the category name.
  *
  * @returns {JSX.Element} The rendered form fields for a job category.
  */
+
 export default function JobCategoryForm() {
   return (
     <div>

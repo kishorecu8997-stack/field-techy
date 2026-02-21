@@ -3,15 +3,12 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
 import { usePopupStore } from "@/shared/store/popupStore";
-import {
-  useAdminGetServiceCategories,
-  useAdminUpdateServiceCategory,
-} from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminUpdateServiceCategory } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useQueryClient } from "@tanstack/react-query";
 
 /**
@@ -28,15 +25,12 @@ export default function EditCategory() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const location = useLocation();
 
   const categoryId = id ? Number(id) : undefined;
-  const { data: categoriesResponse } = useAdminGetServiceCategories({
-    page: 1,
-    limit: 1000,
-  });
-  const category = categoriesResponse?.data?.find(
-    (cat) => cat.id === categoryId,
-  );
+  const category =
+    (location.state as { category?: { id: number; name: string } } | null)
+      ?.category ?? null;
 
   const methods = useForm<CategoryFormData>({
     defaultValues: {
@@ -51,7 +45,7 @@ export default function EditCategory() {
       categoryName: category.name || "",
       categoryImage: null,
     });
-  }, [category, methods]);
+  }, [category]);
 
   const { showPopup } = usePopupStore();
   const {
@@ -64,7 +58,6 @@ export default function EditCategory() {
       navigate(absoluteUrls.admin.home.manage_categories);
     },
     onError: (error) => {
-      console.error(error);
       const errorMessage =
         error instanceof Error ? error.message : "Update category failed";
       toast.error(errorMessage);

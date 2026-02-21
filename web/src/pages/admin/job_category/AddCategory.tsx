@@ -67,7 +67,6 @@ export default function AddCategory() {
       navigate(absoluteUrls.admin.home.manage_categories);
     },
     onError: (error) => {
-      console.error(error);
       const errorMessage =
         error instanceof Error ? error.message : "Create category failed";
       toast.error(errorMessage);
@@ -75,7 +74,6 @@ export default function AddCategory() {
   });
 
   const handleSubmit = async (data: CategoryFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Category",
       body: "Are you sure you want to save this details?",
@@ -89,8 +87,7 @@ export default function AddCategory() {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
+          action: async (close) => {
             if (isCreatingCategory) return;
             await createServiceCategory({
               body: {
