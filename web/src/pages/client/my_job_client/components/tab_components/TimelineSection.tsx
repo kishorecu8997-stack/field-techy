@@ -35,7 +35,7 @@ import TimelineSectionHeader from "./TimelineSectionHeader";
 import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
 import type {
   RevisionFormData,
-  RevisionRequestDetails,
+  RevisionRequestDetails, 
 } from "./clientTimelineTypes";
 
 
@@ -276,12 +276,6 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
     setShortBreakNotes("");
     setShowShortBreakApprovalModal(false);
     toast.success(TOAST_MESSAGES.shortBreakApproved, { position: "top-right" });
-  };
-
-  const handleEngineerFeedbackSubmit = (payload: { rating: number; review: string }) => {
-    console.log("Engineer feedback submitted:", payload);
-    toast.success("Feedback submitted successfully!", { position: "top-right" });
-    // TODO: Send feedback to API
   };
 
   const handleShortBreakApprovalCancel = () => {

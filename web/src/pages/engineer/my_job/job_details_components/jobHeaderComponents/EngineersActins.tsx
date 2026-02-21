@@ -2,7 +2,6 @@ import { icons } from "@/config/icons";
 import {
   JOB_STATUSES,
   type JobStatus,
-  type AssignmentStatus,
 } from "@/pages/engineer/search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -11,8 +10,7 @@ import { type Dispatch, type SetStateAction } from "react";
 import { toast } from "react-toastify";
 import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
 import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
-// ...
-// ...
+
 /**
  * EngineersActions Component
  * Renders the actions section for the Manage Proposal page, including a button to invite a new job.
@@ -37,7 +35,7 @@ const EngineersActions = ({
   onOpenViewClientFeedback,
 }: {
   setOfferJobStatus?: Dispatch<
-    SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>
+    SetStateAction<OfferedJobStatusType | undefined>
   >;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
@@ -45,8 +43,7 @@ const EngineersActions = ({
   setActiveTab?: Dispatch<SetStateAction<string>>;
   isSendProposal?: boolean;
   status?: JobStatus | string;
-  OfferJobStatus?: OfferedJobStatusType | AssignmentStatus | undefined;
-
+  OfferJobStatus?: OfferedJobStatusType | undefined;
   activeTab?: string;
   isDummyJob?: boolean;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
@@ -55,6 +52,7 @@ const EngineersActions = ({
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
 }) => {
+
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
@@ -222,7 +220,7 @@ const EngineersActions = ({
               </Button>
             ) : (
               <div
-                className=" hover:underline cursor-pointer"
+                className="text-white hover:underline cursor-pointer"
                 onClick={() => handleViewJobPosting()}
               >
                 View Job posting

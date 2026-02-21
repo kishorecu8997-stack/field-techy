@@ -16,6 +16,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -46,11 +47,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onOpenViewClientFeedback,
   allCardsApproved,
 }) => {
-  const isDummyJob = false;
+  const params = useParams();
+  const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
 
   const location = useLocation();
   const isClient = location.pathname.includes("client");
-  const params = useParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -98,11 +99,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   return (
     <>
       <div
-        className={`${
-          isSendProposal
-            ? "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-            : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-        } p-5 rounded-xl shadow-md`}
+        className={`${isSendProposal
+          ? "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+          : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+          } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-start">
           <div>
@@ -114,23 +114,23 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
             {(numberOfVacancy !== undefined ||
               numberOfApplicants !== undefined) && (
-              <p className="text-sm mt-1">
-                {numberOfVacancy !== undefined && (
-                  <span>
-                    {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
-                  </span>
-                )}
-                {numberOfVacancy !== undefined &&
-                  numberOfApplicants !== undefined && (
-                    <span>{JOB_HEADER_COPY.separator}</span>
+                <p className="text-sm mt-1">
+                  {numberOfVacancy !== undefined && (
+                    <span>
+                      {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
+                    </span>
                   )}
-                {numberOfApplicants !== undefined && (
-                  <span>
-                    {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
-                  </span>
-                )}
-              </p>
-            )}
+                  {numberOfVacancy !== undefined &&
+                    numberOfApplicants !== undefined && (
+                      <span>{JOB_HEADER_COPY.separator}</span>
+                    )}
+                  {numberOfApplicants !== undefined && (
+                    <span>
+                      {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
+                    </span>
+                  )}
+                </p>
+              )}
           </div>
           <div className="flex gap-2 items-center">
             {!hideBreakDetails && (
