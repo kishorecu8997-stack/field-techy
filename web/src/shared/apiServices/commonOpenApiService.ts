@@ -10,6 +10,7 @@ import {
   type AppDownloadProfileFileData,
   type AppMarkProfileFileUploadedResponse,
   type AppMarkProfileFileUploadedError,
+  type CreateRateAndReviewAssignmentResponse,
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -20,9 +21,11 @@ import {
   appForgotPasswordMutation,
   appResetPasswordMutation,
   appMarkProfileFileUploadedMutation,
+  createRateAndReviewAssignmentMutation,
+  getUserRatingAndReviewsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
 
 export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
@@ -179,5 +182,27 @@ export function useAppMarkProfileFileUploaded(options?: {
     }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
+  });
+}
+
+export function useCreateRateAndReviewAssignment(options?: {
+  onSuccess?: (data: CreateRateAndReviewAssignmentResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...createRateAndReviewAssignmentMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["getUserRatingAndReviews"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useGetUserRatingAndReviews(enabled: boolean = true) {
+  return useQuery({
+    ...getUserRatingAndReviewsOptions({ client: apiClient }),
+    enabled,
   });
 }

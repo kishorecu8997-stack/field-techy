@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { HiCheckCircle, HiChevronDown, HiStar } from "react-icons/hi";
+import { HiCheckCircle, HiChevronDown } from "react-icons/hi";
 import { HiXMark } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { formatDateTime } from "@/utils/formatDateTime";
@@ -32,12 +32,12 @@ import ConfirmModal from "./ConfirmModal";
 import ShortBreakApprovalModal from "./ShortBreakApprovalModal";
 import ActionRequiredBadge from "./ActionRequiredBadge";
 import TimelineSectionHeader from "./TimelineSectionHeader";
-import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
+import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
 import type {
   RevisionFormData,
   RevisionRequestDetails,
 } from "./clientTimelineTypes";
-import { usePopupStore } from "@/shared/store/popupStore";
+
 
 const clientTimelineCards: TimelineCardData[] = [
   progressUpdateCardDataFromDummy,
@@ -416,8 +416,6 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
     jobStatus,
   ]);
 
-  const { showPopup } = usePopupStore();
-
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       {isSectionCollapsed ? (
@@ -461,26 +459,13 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
             </div>
             <div className="flex items-center gap-2">
               {pendingApprovalsCount === 0 && (
-                <button
-                  type="button"
-                  className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 transition-opacity hover:opacity-80 underline"
-                  aria-label="Give Feedback On Engineer"
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    await showPopup({
-                      body: (
-                        <GiveFeedbackModal
-                          targetName={engineerTimelineData.name}
-                          targetRole={engineerTimelineData.role}
-                          placeholder="The overall experience was good and focused."
-                        />
-                      ),
-                    });
-                  }}
-                >
-                  <HiStar className="h-5 w-5 text-yellow-500" />
-                  <span className="hidden sm:inline">Give Feedback On Engineer</span>
-                </button>
+                <GiveFeedbackButton
+                  targetName={engineerTimelineData.name}
+                  targetRole={engineerTimelineData.role}
+                  assignmentId={engineerTimelineData.assignmentId}
+                  stopPropagation
+                  textClassName="hidden sm:inline cursor-pointer"
+                />
               )}
               <HiChevronDown className="h-5 w-5 text-gray-500" />
             </div>
@@ -491,26 +476,11 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
         <>
           <div className="flex justify-end items-center gap-2 px-4 pt-3">
             {pendingApprovalsCount === 0 && (
-              <button
-                type="button"
-                className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 transition-opacity hover:opacity-80 underline"
-                aria-label="Give Feedback On Engineer"
-                onClick={async () => {
-                  await showPopup({
-                    body: (
-                      <GiveFeedbackModal
-                        targetName={engineerTimelineData.name}
-                        targetRole={engineerTimelineData.role}
-                        placeholder="The overall experience was good and focused."
-                      />
-                    ),
-                    bodyClassName: "h-full",
-                  });
-                }}
-              >
-                <HiStar className="h-5 w-5 text-yellow-500" />
-                <span>Give Feedback On Engineer</span>
-              </button>
+              <GiveFeedbackButton
+                targetName={engineerTimelineData.name}
+                targetRole={engineerTimelineData.role}
+                assignmentId={engineerTimelineData.assignmentId}
+              />
             )}
             <button
               type="button"

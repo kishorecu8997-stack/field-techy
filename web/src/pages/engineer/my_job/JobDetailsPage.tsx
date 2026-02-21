@@ -12,7 +12,6 @@ import FinalStatementForm from "./job_details_components/jobHeaderComponents/Fin
 import { usePopupStore } from "@/shared/store/popupStore";
 import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
-import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import ViewClientFeedbackModal from "./job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
 import JobTabSection from "./job_details_components/JobTabSection";
 import type { ProgressUpdate } from "./types.d";
@@ -27,7 +26,6 @@ const JobDetailsPage = () => {
   const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
-  const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
     isDummyJob ? "Job Overview" : "Job Information",
   );
@@ -54,10 +52,6 @@ const JobDetailsPage = () => {
   const job = jobList?.[0];
 
   const location = job?.clientDetails?.address;
-  const handleSubmitReview = () => {
-    toast.success("Review submitted successfully");
-    setIsReviewOpen(false);
-  };
 
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
@@ -73,11 +67,16 @@ const JobDetailsPage = () => {
 
   const { showPopup } = usePopupStore();
   const handleOpenGiveClientFeedback = () => {
+    if (isDummyJob) {
+      toast.success("Feedback submitted successfully");
+      return;
+    }
     showPopup({
       body: (
         <GiveFeedbackModal
-          targetName={isDummyJob ? "Kraft and Co" : ""}
+          targetName={clientName ?? ""}
           placeholder="Share your feedback about your experience with the client..."
+          assignmentId={job?.assignmentId ?? undefined}
         />
       ),
     }).then((payload: unknown) => {
@@ -245,18 +244,11 @@ const JobDetailsPage = () => {
               rating={0} // client details don't have rating
               reviews={0} // client details don't have review count
               verifications={[]} // client details don't have verifications
-              onOpenReview={() => setIsReviewOpen(true)}
+              onOpenReview={handleOpenGiveClientFeedback}
             />
           </div>
         </div>
       </div>
-
-      <ReviewClientModal
-        isOpen={isReviewOpen}
-        onClose={() => setIsReviewOpen(false)}
-        clientName={clientName ?? "Client"}
-        onSubmit={handleSubmitReview}
-      />
 
       <ViewClientFeedbackModal
         isOpen={showViewClientFeedback}

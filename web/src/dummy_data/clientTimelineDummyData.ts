@@ -71,6 +71,7 @@ export const finalStatementCardData: TimelineCardData = {
 
 // Engineer Timeline Data
 export const engineerTimelineData = {
+  assignmentId: 2,
   engineerNumber: "Engineer 1",
   name: "Ram",
   role: "Network Engineer",

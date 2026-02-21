@@ -1,14 +1,5 @@
-import { DUMMY_ENGINEER_FEEDBACK_LIST } from "@/constants/dummyJobs";
 import { FaStar } from "react-icons/fa";
-
-interface EngineerFeedback {
-  id: string;
-  engineerName: string;
-  engineerImage?: string;
-  rating: number;
-  review: string;
-};
-
+import { useGetUserRatingAndReviews } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * ViewEngineerFeedbackSidebar Component
@@ -17,8 +8,25 @@ interface EngineerFeedback {
  * Shows engineer profiles, ratings, and review messages.
  */
 const ViewEngineerFeedbackSidebar = () => {
+  const { data: feedbackData, isLoading, isError } = useGetUserRatingAndReviews();
 
-  const feedbackList: readonly EngineerFeedback[] = DUMMY_ENGINEER_FEEDBACK_LIST;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center py-8 text-red-500">
+        Failed to load feedback. Please try again later.
+      </div>
+    );
+  }
+
+  const feedbackList = feedbackData || [];
   return (
     <div className="">
       <div className="space-y-6">
@@ -34,23 +42,23 @@ const ViewEngineerFeedbackSidebar = () => {
             >
               {/* Engineer Info */}
               <div className="flex items-start gap-3 mb-3">
-                {feedback.engineerImage && (
+                {feedback.reviewerProfilePictureUrl && (
                   <img
-                    src={feedback.engineerImage}
-                    alt={feedback.engineerName}
+                    src={feedback.reviewerProfilePictureUrl}
+                    alt={feedback.reviewerName}
                     className="w-12 h-12 rounded-full object-cover"
                   />
                 )}
                 <div className="flex-1">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
-                    {feedback.engineerName}
+                    {feedback.reviewerName}
                   </h3>
                   {/* Star Rating */}
                   <div className="flex items-center gap-1">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <FaStar
                         key={i}
-                        className={`w-4 h-4 ${i < feedback.rating
+                        className={`w-4 h-4 ${(feedback.rating ?? 0) > i
                           ? "fill-yellow-400 text-yellow-400"
                           : "text-gray-300 dark:text-gray-600"
                           }`}

@@ -6,6 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Button } from "../commonUI/Buttons";
 import { FormContainer } from "../commonUI/inputs/FormContainer";
 import { toast } from "react-toastify";
+import { useCreateRateAndReviewAssignment } from "@/shared/apiServices/commonOpenApiService";
 
 type GiveFeedbackModalProps = {
     onClose?: (result: unknown) => void;
@@ -13,6 +14,7 @@ type GiveFeedbackModalProps = {
     targetName: string;
     targetRole?: string;
     placeholder?: string;
+    assignmentId?: number;
 };
 
 type FormValues = {
@@ -32,7 +34,19 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
     targetRole,
     placeholder = "Share your feedback...",
     onClose,
+    assignmentId,
 }) => {
+    const { mutate: submitFeedback, isPending } = useCreateRateAndReviewAssignment({
+        onSuccess: () => {
+            toast.success("Feedback submitted successfully!");
+            onClose?.(true);
+        },
+        onError: (error: any) => {
+            const errorMessage = error?.body?.error || "Failed to submit feedback";
+            toast.error(errorMessage);
+        }
+    });
+
     const formCtx = useForm<FormValues>({
         defaultValues: {
             review: "",
@@ -46,12 +60,18 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
     } = formCtx;
 
     const handleSubmit = (data: FormValues) => {
-        const payload = {
-            rating: data.rating,
-            review: (data.review || "").trim()
-        };
-        console.log("Feedback Payload:", payload);
-        toast.success("Feedback submitted successfully!");
+        if (!assignmentId) {
+            toast.error("Assignment ID is missing");
+            return;
+        }
+
+        submitFeedback({
+            body: {
+                assignmentId,
+                rating: data.rating,
+                review: (data.review || "").trim()
+            }
+        });
     };
 
     return (
@@ -129,8 +149,9 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
                     <Button
                         type="submit"
                         className="bg-teal-900 hover:bg-teal-800 text-white px-6"
+                        disabled={isPending}
                     >
-                        Submit
+                        {isPending ? "Submitting..." : "Submit"}
                     </Button>
                 </div>
             </FormContainer>
