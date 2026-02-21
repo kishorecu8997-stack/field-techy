@@ -46,6 +46,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onOpenGiveClientFeedback,
   onOpenViewClientFeedback,
   allCardsApproved,
+  setOfferJobStatus,
 }) => {
   const params = useParams();
   const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
@@ -195,6 +196,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             setActiveTab={setActiveTab}
             setOpen={setOpen}
             status={status}
+            setOfferJobStatus={setOfferJobStatus}
             setSendProposal={setSendProposal}
             activeTab={activeTab}
             isDummyJob={isDummyJob}

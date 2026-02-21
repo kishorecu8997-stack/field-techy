@@ -1,7 +1,10 @@
-import { DUMMY_CLIENT_FEEDBACK, isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { useGetUserRatingAndReviews } from "@/shared/apiServices/commonOpenApiService";
 import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { getDurationString } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -9,8 +12,6 @@ import { toast } from "react-toastify";
 import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
-import { usePopupStore } from "@/shared/store/popupStore";
-import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import ViewClientFeedbackModal from "./job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
 import JobTabSection from "./job_details_components/JobTabSection";
@@ -35,21 +36,17 @@ const JobDetailsPage = () => {
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
   const [isFinalStatementSubmitted, setIsFinalStatementSubmitted] = useState(false);
-  const [showViewClientFeedback, setShowViewClientFeedback] = useState(false);
-
-  // Always call hooks - pass empty string if jobId is missing or dummy
-  // const { data: jobs, isLoading } = useClientGetJobsById(
-  //   isDummyJob ? "" : (params.jobId ?? ""),
-  // );
-  // const { data: client } = useClientGetById(jobs?.clientId ?? "", {
-  //   enabled: !!jobs?.clientId && !isDummyJob,
-  // });
 
   const { data: jobList, isLoading } = useEngineerSearchJobs({
     jobId: Number(params.jobId),
   });
 
   const job = jobList?.[0];
+
+  const { data: reviewsData } = useGetUserRatingAndReviews(!isDummyJob);
+  const clientReview = reviewsData?.find(
+    (r) => r.jobAssignmentId === job?.assignmentId && r.type === "client"
+  );
 
   const location = job?.clientDetails?.address;
 
@@ -65,16 +62,13 @@ const JobDetailsPage = () => {
   const handleOpenFinalStatement = () => setShowFinalStatement(true);
   const handleCloseFinalStatement = () => setShowFinalStatement(false);
 
-  const { showPopup } = usePopupStore();
+  const { showPopup, closePopup } = usePopupStore();
   const handleOpenGiveClientFeedback = () => {
-    if (isDummyJob) {
-      toast.success("Feedback submitted successfully");
-      return;
-    }
     showPopup({
       body: (
         <GiveFeedbackModal
-          targetName={clientName ?? ""}
+          targetName={job?.clientDetails?.companyName ?? "Test Client"}
+          targetRole={job?.clientDetails?.clientType ?? "client"}
           placeholder="Share your feedback about your experience with the client..."
           assignmentId={job?.assignmentId ?? undefined}
         />
@@ -86,8 +80,19 @@ const JobDetailsPage = () => {
     });
   };
 
-  const handleOpenViewClientFeedback = () => setShowViewClientFeedback(true);
-  const handleCloseViewClientFeedback = () => setShowViewClientFeedback(false);
+  const handleOpenViewClientFeedback = () => {
+    showPopup({
+      body: (
+        <ViewClientFeedbackModal
+          onClose={closePopup}
+          clientName={(clientReview?.reviewerName || clientName || "Client")}
+          clientImage={(clientReview?.reviewerProfilePictureUrl ?? undefined)}
+          rating={(clientReview?.rating ?? undefined)}
+          review={(clientReview?.review ?? undefined)}
+        />
+      ),
+    })
+  };
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {
@@ -249,15 +254,6 @@ const JobDetailsPage = () => {
           </div>
         </div>
       </div>
-
-      <ViewClientFeedbackModal
-        isOpen={showViewClientFeedback}
-        onClose={handleCloseViewClientFeedback}
-        clientName={isDummyJob ? DUMMY_CLIENT_FEEDBACK.clientName : ""}
-        clientImage={isDummyJob ? DUMMY_CLIENT_FEEDBACK.clientImage : undefined}
-        rating={isDummyJob ? DUMMY_CLIENT_FEEDBACK.rating : undefined}
-        review={isDummyJob ? DUMMY_CLIENT_FEEDBACK.review : undefined}
-      />
     </div>
   );
 };
