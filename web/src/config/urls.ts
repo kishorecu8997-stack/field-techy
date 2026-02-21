@@ -133,6 +133,7 @@ export const urls = {
       manage_sub_admin_edit: "sub-admins/edit",
       manage_cms: "cms",
       settings: "settings",
+      report_issue: "report-issue",
       profile: "profile",
       received_notification: "received-notification",
       roleList: "sub-admins/roles",
@@ -180,6 +181,7 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.ENGINEER}/dashboard`,
       my_jobs: `${BASE.ENGINEER}/my-jobs`,
+      report_issues: `${BASE.ENGINEER}/:id/report-issues`,
       search_result: `${BASE.ENGINEER}/search-result`,
       search_analytics: `${BASE.ENGINEER}/search-analytics`,
       faq: `${BASE.ENGINEER}/faq`,
@@ -212,6 +214,7 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.CLIENT}/dashboard`,
       my_jobs: `${BASE.CLIENT}/my-jobs`,
+      report_issues: `${BASE.CLIENT}/:id/report-issues`,
       my_projects: `${BASE.CLIENT}/my-projects`,
       create_project: `${BASE.CLIENT}/my-projects/create-project`,
       client_Explore_engineers: `${BASE.CLIENT}/explore-engineers`,
@@ -268,6 +271,7 @@ export const absoluteUrls = {
       manage_sub_admin_edit: `${BASE.ADMIN}/sub-admins/edit`,
       manage_cms: `${BASE.ADMIN}/cms`,
       settings: `${BASE.ADMIN}/settings`,
+      report_issue: `${BASE.ADMIN}/report-issue`,
       profile: `${BASE.ADMIN}/profile`,
       received_notification: `${BASE.ADMIN}/received-notification`,
       edit_role: `${BASE.ADMIN}/edit-role`,
