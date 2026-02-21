@@ -16,7 +16,6 @@ export interface GenericPopupButton {
   | "warning"
   | undefined;
   className?: string;
-
   action?: (close: (result: unknown) => void) => Promise<void> | void;
 }
 
