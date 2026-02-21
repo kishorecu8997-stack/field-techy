@@ -5,8 +5,14 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import React, { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { useAdminGetServiceCategories } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminDeleteServiceCategory,
+  useAdminGetServiceCategories,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { toast } from "react-toastify";
 
 const HandleStatus = ({ status: value }: { status: boolean }) => {
   const [status, setStatus] = useState<boolean>(value);
@@ -49,6 +55,7 @@ export interface ServerCategoryProps {
  */
 const ManageJobCategory: React.FC = () => {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -68,6 +75,47 @@ const ManageJobCategory: React.FC = () => {
       enabled: true,
     },
   );
+
+  const {
+    mutateAsync: deleteServiceCategory,
+    isPending: isDeletingCategory,
+  } = useAdminDeleteServiceCategory({
+    onSuccess: () => {
+      toast.success("Service category deleted successfully!");
+    },
+    onError: (error) => {
+      console.error(error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Delete category failed";
+      toast.error(errorMessage);
+    },
+  });
+
+  const handleDeleteCategory = async (row: ServerCategoryProps) => {
+    await showPopup({
+      title: "Delete Category",
+      body: "Are you sure you want to delete this category?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "primary",
+          action: async (close) => {
+            if (isDeletingCategory) return;
+            await deleteServiceCategory({
+              path: { id: Number(row.id) },
+            });
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const tableData = useMemo<ServerCategoryProps[]>(
     () =>
@@ -101,7 +149,7 @@ const ManageJobCategory: React.FC = () => {
       key: "action",
       label: "Actions",
       renderCell: (row: ServerCategoryProps) => (
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
             <CiEdit
               className="text-blue-600"
@@ -110,6 +158,12 @@ const ManageJobCategory: React.FC = () => {
                   `${absoluteUrls.admin.home.manage_categories_edit}/${row.id}`,
                 )
               }
+            />
+          </div>
+          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+            <RiDeleteBin6Line
+              className="text-red-600"
+              onClick={() => handleDeleteCategory(row)}
             />
           </div>
         </div>

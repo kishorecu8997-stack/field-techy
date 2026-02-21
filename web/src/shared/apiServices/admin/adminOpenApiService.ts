@@ -26,6 +26,7 @@ import {
   type AdminGetServiceCategoriesData,
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
+  type AdminDeleteServiceCategoryResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -42,6 +43,7 @@ import {
   adminCreateServiceCategoryMutation,
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
+  adminDeleteServiceCategoryMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -136,6 +138,31 @@ export function useAdminUpdateServiceCategory(options?: {
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ["lookup", "serviceCategories", "root"],
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminDeleteServiceCategory(options?: {
+  onSuccess?: (data: AdminDeleteServiceCategoryResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminDeleteServiceCategoryMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["lookup", "serviceCategories", "root"],
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id ===
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
