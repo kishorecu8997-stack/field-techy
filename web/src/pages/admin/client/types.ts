@@ -131,13 +131,13 @@ export interface ClientFormData {
   industry?: string | number;
   country: string | number;
   city: string | number;
-  taxDocument?: string;
+  documentType?: string;
   contactPersonName: string;
   businessType?: string | number;
   address?: string;
   state: string | number;
   postalCode: string;
-  vatRegistrationNumber?: string;
+  documentNumber?: string;
   govIdDoc?: string | File | FileList | null;
   certificate?: string | File | FileList | null;
 }
@@ -155,7 +155,7 @@ export interface CompanyInfo {
   phoneNumber: string;
   address: string;
   city: string;
-  vatRegistrationNumber: string;
+  documentNumber: string;
 }
 
 export interface BankCardData {

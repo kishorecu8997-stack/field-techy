@@ -47,7 +47,12 @@ import {
   adminGetClientOptions,
   adminDeleteClientMutation,
 } from "@/api/@tanstack/react-query.gen";
-import { useMutation, useQuery, useQueryClient, type QueryKey } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryKey,
+} from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 
@@ -63,6 +68,7 @@ export const LookupTable = {
   WorkLocations: "workLocations",
   EducationLevels: "educationLevels",
   Courses: "courses",
+  BusinessTypes: "businessTypes",
 } as const;
 
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
@@ -333,7 +339,7 @@ export function useAdminAddClient(options?: {
   return useMutation({
     ...adminCreateClientMutation({ client: apiClient }),
     onSuccess: (data: AdminAddClientResponse) => {
-      queryClient.resetQueries({
+      queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
@@ -363,15 +369,18 @@ export function useAdminUpdateClient(options?: {
   });
 }
 
-export function useAdminGetClientByUserId(userId: string | number, options?: {  
-  enabled?: boolean;
-  onSuccess?: (data: AdminGetClientResponse) => void;
-  onError?: (error: unknown) => void;
-  refetchOnMount?: boolean | "always";
-  staleTime?: number;
-}) {
+export function useAdminGetClientByUserId(
+  userId: string | number,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetClientResponse) => void;
+    onError?: (error: unknown) => void;
+    refetchOnMount?: boolean | "always";
+    staleTime?: number;
+  },
+) {
   return useQuery({
-    ...adminGetClientOptions({  
+    ...adminGetClientOptions({
       client: apiClient,
       query: { userId: Number(userId) },
     }),

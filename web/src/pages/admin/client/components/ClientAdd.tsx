@@ -1,5 +1,5 @@
 import React from "react";
-import { businessTypes, taxDocuments } from "@/dummy_data/adminClientData";
+import { taxDocuments } from "@/dummy_data/adminClientData";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
@@ -39,6 +39,9 @@ const ClientAdd: React.FC<ClientAddProps> = ({
   const selectedState = watch("state");
 
   // Lookup APIs
+  const { data: businessTypes } = useAppGetLookupData(
+    LookupTable.BusinessTypes,
+  );
   const { data: countries } = useAppGetLookupData(LookupTable.Countries);
   const { data: states } = useAppGetLookupData(
     LookupTable.States,
@@ -209,7 +212,12 @@ const ClientAdd: React.FC<ClientAddProps> = ({
               label="Business Type"
               name="businessType"
               placeholder="Select business type"
-              options={businessTypes}
+              options={
+                businessTypes?.map((item) => ({
+                  value: item.id,
+                  label: item.name,
+                })) ?? []
+              }
               required
               disabled={isView}
             />
@@ -219,7 +227,7 @@ const ClientAdd: React.FC<ClientAddProps> = ({
             <>
               <InputField
                 label="Enter VAT registration number"
-                name="vatRegistrationNumber"
+                name="documentNumber"
                 required
                 placeholder="Enter VAT registration number"
                 rules={{ validate: (v: string) => validateVatNumber(v) }}
@@ -230,7 +238,7 @@ const ClientAdd: React.FC<ClientAddProps> = ({
           {clientType === "corporate" && (
             <SelectField
               label="Tax Document (VAT)"
-              name="taxDocument"
+              name="documentType"
               placeholder="Select tax document"
               options={taxDocuments}
               required

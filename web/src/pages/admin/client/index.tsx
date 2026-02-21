@@ -82,7 +82,11 @@ const ManageClient: React.FC = () => {
             onClose={() => setIsPreviewOpen(false)}
             fileType={selectedFile.type}
             fileUrl={getFileUrl()}
-            title={`${selectedFile.client.companyName || selectedFile.client.name}'s`}
+              title={`${
+              selectedFile.client.clientType === "corporate"
+                ? selectedFile.client.companyName || selectedFile.client.name
+                : selectedFile.client.name
+            }'s`}
           />
         )}
       </Popup>

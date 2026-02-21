@@ -35,13 +35,13 @@ const DEFAULT_FORM_VALUES: Partial<ClientFormData> = {
   industry: "",
   country: "",
   city: "",
-  taxDocument: "",
+  documentType: "",
   contactPersonName: "",
   businessType: "",
   address: "",
   state: "",
   postalCode: "",
-  vatRegistrationNumber: "",
+  documentNumber: "",
   profileImage: null,
   govIdDoc: null,
   certificate: null,
@@ -57,13 +57,13 @@ const mapToFormData = (detail: ExtendedClientResponse): ClientFormData => ({
   industry: detail.industryId ?? "",
   country: detail.countryId ?? "",
   city: detail.cityId ?? "",
-  taxDocument: detail.documentType || "",
+  documentType: detail.documentType || "",
   contactPersonName: detail.personName || "",
   businessType: detail.businessTypeId ?? "",
   address: detail.address || "",
   state: detail.stateId ?? "",
   postalCode: detail.postalCode || "",
-  vatRegistrationNumber: detail.vatRegistrationNumber || "",
+  documentNumber: detail.documentNumber || "",
   govIdDoc: detail.govIdDoc?.url || null,
   certificate: detail.certificateDoc?.url || null,
 });
@@ -135,8 +135,8 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
           "industry",
           "businessType",
           "address",
-          "vatRegistrationNumber",
-          "taxDocument",
+          "documentNumber",
+          "documentType",
         ]
       : common;
   };
@@ -177,7 +177,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                 cityId: toNum(data.city),
                 industryId: toNum(data.industry),
                 businessTypeId: toNum(data.businessType),
-                documentType: data.taxDocument,
+                documentType: data.documentType,
               };
 
               [
@@ -249,7 +249,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                 queryKey: queryKeys.admin.manageClients,
               });
               await queryClient.invalidateQueries({
-                queryKey: ["adminGetClient"],
+                queryKey: queryKeys.admin.adminGetClient,
               });
               toast.success(
                 `Client information ${isEdit ? "updated" : "saved"} successfully!`,
