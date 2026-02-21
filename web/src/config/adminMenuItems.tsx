@@ -10,7 +10,7 @@ import {
 } from "react-icons/bs";
 import { RxBackpack } from "react-icons/rx";
 import { LuSettings, LuSettings2, LuWallet } from "react-icons/lu";
-import { RiBankCardLine } from "react-icons/ri";
+import { RiBankCardLine, RiErrorWarningLine } from "react-icons/ri";
 import { BiFile } from "react-icons/bi";
 import { MdCurrencyExchange } from "react-icons/md";
 import { FiUsers } from "react-icons/fi";
@@ -162,5 +162,10 @@ export const menuItems: MenuItem[] = [
         icon: <LuSettings className="text-lg" />,
       },
     ],
+  },
+  {
+    name: "Report Issue",
+    path: absoluteUrls.admin.home.report_issue,
+    icon: <RiErrorWarningLine className="text-lg" />,
   },
 ];
