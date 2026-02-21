@@ -13,15 +13,8 @@ import { FaFile } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 
 /**
- * BreakDetails
- *
- * Displays the break management section including:
- * - BreakStatusTable: Shows the list and status of breaks
- * - BreakCalendar: Shows breaks in a monthly calendar view
- *
- * Layout:
- * - Two-column responsive grid on large screens
- * - Single-column layout on smaller screens
+ * ReportDetailsEngineer
+ * Engineer-facing view: focus on creating/updating/submitting reports
  */
 const ReportDetails: React.FC = () => {
   const { showPopup, closePopup } = usePopupStore();
