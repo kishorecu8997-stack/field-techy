@@ -12,6 +12,7 @@ import {
   useAdminGetServiceCategories,
   useAdminUpdateServiceCategory,
 } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * `EditCategory` component renders a page with a form to edit an existing Service category.
@@ -26,6 +27,7 @@ import {
 export default function EditCategory() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const categoryId = id ? Number(id) : undefined;
   const { data: categoriesResponse } = useAdminGetServiceCategories({
@@ -90,6 +92,34 @@ export default function EditCategory() {
               path: { id: categoryId },
               body: { name: data.categoryName },
             });
+            queryClient.setQueriesData(
+              {
+                predicate: (query) =>
+                  Array.isArray(query.queryKey) &&
+                  query.queryKey[0] &&
+                  typeof query.queryKey[0] === "object" &&
+                  (query.queryKey[0] as { _id?: string })._id ===
+                    "adminGetServiceCategories",
+              },
+              (oldData) => {
+                if (!oldData || typeof oldData !== "object") return oldData;
+                const prev = oldData as {
+                  data?: Array<{ id: number; name: string }>;
+                  total?: number;
+                  page?: number;
+                  limit?: number;
+                };
+                if (!Array.isArray(prev.data)) return oldData;
+                return {
+                  ...prev,
+                  data: prev.data.map((item) =>
+                    item.id === categoryId
+                      ? { ...item, name: data.categoryName }
+                      : item,
+                  ),
+                };
+              },
+            );
             close(true);
           },
         },
