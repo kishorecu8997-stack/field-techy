@@ -55,10 +55,11 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
               {Array.from({ length: 5 }).map((_, i) => (
                 <FaStar
                   key={i}
-                  className={`w-4 h-4 ${i < (rating || 0)
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "text-gray-300 dark:text-gray-600"
-                    }`}
+                  className={`w-4 h-4 ${
+                    i < (rating || 0)
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-300 dark:text-gray-600"
+                  }`}
                 />
               ))}
             </div>

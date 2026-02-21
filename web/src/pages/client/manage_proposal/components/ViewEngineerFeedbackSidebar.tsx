@@ -8,7 +8,11 @@ import { useGetUserRatingAndReviews } from "@/shared/apiServices/commonOpenApiSe
  * Shows engineer profiles, ratings, and review messages.
  */
 const ViewEngineerFeedbackSidebar = () => {
-  const { data: feedbackData, isLoading, isError } = useGetUserRatingAndReviews();
+  const {
+    data: feedbackData,
+    isLoading,
+    isError,
+  } = useGetUserRatingAndReviews();
 
   if (isLoading) {
     return (
@@ -58,10 +62,11 @@ const ViewEngineerFeedbackSidebar = () => {
                     {Array.from({ length: 5 }).map((_, i) => (
                       <FaStar
                         key={i}
-                        className={`w-4 h-4 ${(feedback.rating ?? 0) > i
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "text-gray-300 dark:text-gray-600"
-                          }`}
+                        className={`w-4 h-4 ${
+                          (feedback.rating ?? 0) > i
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-gray-300 dark:text-gray-600"
+                        }`}
                       />
                     ))}
                   </div>

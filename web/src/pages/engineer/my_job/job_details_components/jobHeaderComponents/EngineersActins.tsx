@@ -52,12 +52,8 @@ const EngineersActions = ({
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
 }) => {
-
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
-
-  console.log("isFinalStatementSubmitted", isFinalStatementSubmitted, activeTab, status, OfferJobStatus);
-
 
   const handleConfirmAcceptJob = async () => {
     await showPopup({

@@ -35,7 +35,8 @@ const JobDetailsPage = () => {
   >("initial");
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
-  const [isFinalStatementSubmitted, setIsFinalStatementSubmitted] = useState(false);
+  const [isFinalStatementSubmitted, setIsFinalStatementSubmitted] =
+    useState(false);
 
   const { data: jobList, isLoading } = useEngineerSearchJobs({
     jobId: Number(params.jobId),
@@ -45,7 +46,7 @@ const JobDetailsPage = () => {
 
   const { data: reviewsData } = useGetUserRatingAndReviews(!isDummyJob);
   const clientReview = reviewsData?.find(
-    (r) => r.jobAssignmentId === job?.assignmentId && r.type === "client"
+    (r) => r.jobAssignmentId === job?.assignmentId && r.type === "client",
   );
 
   const location = job?.clientDetails?.address;
@@ -85,13 +86,13 @@ const JobDetailsPage = () => {
       body: (
         <ViewClientFeedbackModal
           onClose={closePopup}
-          clientName={(clientReview?.reviewerName || clientName || "Client")}
-          clientImage={(clientReview?.reviewerProfilePictureUrl ?? undefined)}
-          rating={(clientReview?.rating ?? undefined)}
-          review={(clientReview?.review ?? undefined)}
+          clientName={clientReview?.reviewerName || clientName || "Client"}
+          clientImage={clientReview?.reviewerProfilePictureUrl ?? undefined}
+          rating={clientReview?.rating ?? undefined}
+          review={clientReview?.review ?? undefined}
         />
       ),
-    })
+    });
   };
 
   // Handle missing jobId with a proper error state
@@ -102,7 +103,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -127,7 +128,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -146,7 +147,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -170,9 +171,9 @@ const JobDetailsPage = () => {
   const duration = isDummyJob
     ? "5 weeks"
     : getDurationString({
-      startDateStr: job?.startDate as string,
-      endDateStr: job?.endDate as string,
-    });
+        startDateStr: job?.startDate as string,
+        endDateStr: job?.endDate as string,
+      });
   const engagementType = isDummyJob ? "ON_SITE" : (job?.jobType as string);
   const jobStatus = isDummyJob ? "New" : (job?.status as JobStatus);
 
@@ -182,7 +183,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
           isReport
           customLabels={
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined

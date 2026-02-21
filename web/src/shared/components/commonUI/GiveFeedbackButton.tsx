@@ -1,18 +1,18 @@
-import React from 'react';
-import { HiStar } from 'react-icons/hi';
-import { usePopupStore } from '@/shared/store/popupStore';
-import GiveFeedbackModal from '@/shared/components/modals/GiveFeedbackModal';
+import React from "react";
+import { HiStar } from "react-icons/hi";
+import { usePopupStore } from "@/shared/store/popupStore";
+import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 
 interface GiveFeedbackButtonProps {
-    targetName: string;
-    targetRole?: string;
-    placeholder?: string;
-    label?: string;
-    className?: string;
-    textClassName?: string;
-    stopPropagation?: boolean;
-    bodyClassName?: string;
-    assignmentId?: number;
+  targetName: string;
+  targetRole?: string;
+  placeholder?: string;
+  label?: string;
+  className?: string;
+  textClassName?: string;
+  stopPropagation?: boolean;
+  bodyClassName?: string;
+  assignmentId?: number;
 }
 
 /**
@@ -20,46 +20,42 @@ interface GiveFeedbackButtonProps {
  * Includes a star icon and configurable label/styles.
  */
 const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
-    targetName,
-    targetRole,
-    placeholder = "The overall experience was good and focused.",
-    label = "Give Feedback On Engineer",
-    className = "flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 transition-opacity hover:opacity-80 underline cursor-pointer",
-    textClassName = "",
-    stopPropagation = false,
-    bodyClassName,
-    assignmentId,
+  targetName,
+  targetRole,
+  placeholder = "The overall experience was good and focused.",
+  label = "Give Feedback On Engineer",
+  className = "flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 transition-opacity hover:opacity-80 underline cursor-pointer",
+  textClassName = "",
+  stopPropagation = false,
+  bodyClassName,
+  assignmentId,
 }) => {
-    const { showPopup } = usePopupStore();
+  const { showPopup } = usePopupStore();
 
-    const handleClick = async (e: React.MouseEvent) => {
-        if (stopPropagation) {
-            e.stopPropagation();
-        }
+  const handleClick = async (e: React.MouseEvent) => {
+    if (stopPropagation) {
+      e.stopPropagation();
+    }
 
-        await showPopup({
-            body: (
-                <GiveFeedbackModal
-                    targetName={targetName}
-                    targetRole={targetRole}
-                    placeholder={placeholder}
-                    assignmentId={assignmentId}
-                />
-            ),
-            bodyClassName,
-        });
-    };
+    await showPopup({
+      body: (
+        <GiveFeedbackModal
+          targetName={targetName}
+          targetRole={targetRole}
+          placeholder={placeholder}
+          assignmentId={assignmentId}
+        />
+      ),
+      bodyClassName,
+    });
+  };
 
-    return (
-        <div
-            className={className}
-            aria-label={label}
-            onClick={handleClick}
-        >
-            <HiStar className="h-5 w-5 text-yellow-500" />
-            <span className={textClassName}>{label}</span>
-        </div>
-    );
+  return (
+    <div className={className} aria-label={label} onClick={handleClick}>
+      <HiStar className="h-5 w-5 text-yellow-500" />
+      <span className={textClassName}>{label}</span>
+    </div>
+  );
 };
 
 export default GiveFeedbackButton;

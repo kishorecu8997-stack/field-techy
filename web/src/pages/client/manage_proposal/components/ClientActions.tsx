@@ -12,23 +12,22 @@ import { useNavigate, useParams } from "react-router-dom";
  * */
 const ClientActions = ({
   activeTab,
-  allCardsApproved = false
+  allCardsApproved = false,
 }: {
   activeTab?: string;
   allCardsApproved?: boolean;
 }) => {
   const navigate = useNavigate();
   const { id, jobId } = useParams();
-  const { setActiveKey, setISOpenSidebar } = useDrawerStore()
+  const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   const makeUrl = createPathBuilder(absoluteUrls.client.home.SelectEngineer);
   const URl = makeUrl({ id: String(id || jobId) });
 
   const handleViewFeedback = () => {
-    setActiveKey("engineerFromFeedback")
-    setISOpenSidebar(true)
+    setActiveKey("engineerFromFeedback");
+    setISOpenSidebar(true);
   };
-
 
   // Show "View Feedback From Engineers" button only on Timeline tab when all cards are approved
   const showFeedbackButton = activeTab === "Timeline" && allCardsApproved;

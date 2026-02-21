@@ -35,9 +35,8 @@ import TimelineSectionHeader from "./TimelineSectionHeader";
 import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
 import type {
   RevisionFormData,
-  RevisionRequestDetails, 
+  RevisionRequestDetails,
 } from "./clientTimelineTypes";
-
 
 const clientTimelineCards: TimelineCardData[] = [
   progressUpdateCardDataFromDummy,
@@ -73,7 +72,9 @@ interface TimelineSectionProps {
  * Modal + confirm flows collect revision inputs and short-break notes.
  * Toasts provide immediate feedback on approve/reject/revision actions.
  */
-const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedChange }) => {
+const TimelineSection: React.FC<TimelineSectionProps> = ({
+  onAllCardsApprovedChange,
+}) => {
   const [isSectionCollapsed, setIsSectionCollapsed] = useState(false);
   const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
   const [isShortBreakCollapsed, setIsShortBreakCollapsed] = useState(false);
@@ -113,7 +114,13 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
       finalStatementStatus === TIMELINE_STATUS.approved;
 
     onAllCardsApprovedChange?.(allApproved);
-  }, [jobStatus, progressStatus, shortBreakStatus, finalStatementStatus, onAllCardsApprovedChange]);
+  }, [
+    jobStatus,
+    progressStatus,
+    shortBreakStatus,
+    finalStatementStatus,
+    onAllCardsApprovedChange,
+  ]);
 
   const revisionFormMethods = useForm<RevisionFormData>({
     mode: "onSubmit",
@@ -443,7 +450,8 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
                   </div>
                 ) : (
                   <div className="text-gray-700 dark:text-gray-300">
-                    Status: <span className="font-medium">No pending approvals</span>
+                    Status:{" "}
+                    <span className="font-medium">No pending approvals</span>
                   </div>
                 )}
                 <div className="text-gray-500 dark:text-gray-400">
@@ -504,7 +512,9 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedCha
               onProgressReject={handleProgressReject}
               onRequestRevision={handleRequestRevision}
               onProgressApprove={handleProgressApprove}
-              onRevisionUpdateRequestRevision={handleRevisionUpdateRequestRevision}
+              onRevisionUpdateRequestRevision={
+                handleRevisionUpdateRequestRevision
+              }
             />
 
             {/* Short Term Break Card */}

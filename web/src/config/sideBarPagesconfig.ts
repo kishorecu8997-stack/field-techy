@@ -455,5 +455,8 @@ export const sectionConfig: Record<
     component: EditPOC,
     title: "Edit Point of Contact",
   },
-  engineerFromFeedback: { component: FeedbackFromEngineer, title: "Feedback From Engineers", },
+  engineerFromFeedback: {
+    component: FeedbackFromEngineer,
+    title: "Feedback From Engineers",
+  },
 };
