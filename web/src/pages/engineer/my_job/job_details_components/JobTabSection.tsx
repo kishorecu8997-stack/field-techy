@@ -111,7 +111,8 @@ const JobTabSection = ({
     OfferJobStatus === "start_pending_approval" ||
     OfferJobStatus === "started" ||
     OfferJobStatus === "submit_pending_approval" ||
-    OfferJobStatus === "submitted";
+    OfferJobStatus === "submitted" ||
+    OfferJobStatus === "rejected";
 
   // Show "Job Applied" status instead of "Send Proposal" after submission
   // Priority: API status (persists) > local state (session only)
