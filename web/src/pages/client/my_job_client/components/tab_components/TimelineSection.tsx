@@ -489,11 +489,14 @@ const TimelineSection: React.FC<{
   // Determine card data for JobStartedCard based on status
   const jobStartedCard = useMemo(() => {
     if (hasPendingStartRequest) {
+      // Use current timestamp since API doesn't provide specific timestamp for start_pending_approval
+      const timestamp = new Date().toISOString();
       return {
         ...jobStartedCardDataForCard,
         title: "Job Started",
         description:
           "Engineer has requested to start the job. Please review and approve.",
+        timestamp: formatApiDate(timestamp),
       };
     }
     return jobStartedCardDataForCard;

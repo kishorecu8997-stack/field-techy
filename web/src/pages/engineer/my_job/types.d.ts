@@ -290,13 +290,30 @@ export interface ProposalFormData {
 }
 
 /**
- * Props for the ProposalInfoTab component
- * @interface ProposalInfoTabProps
- * @property {ProposalFormData} submittedProposal - The submitted proposal data to display
+ * API response data for proposal details
+ * @interface ProposalApiData
+ * @property {string | null} proposalDetail - The proposal description from API
+ * @property {string | null} proposalAttachmentUrl - The proposal attachment URL from API
  */
-export interface ProposalInfoTabProps {
-  submittedProposal: ProposalFormData;
+export interface ProposalApiData {
+  proposalDetail: string | null;
+  proposalAttachmentUrl: string | null;
 }
+
+/**
+ * Props for the ProposalInfoTab component - supports both form and API data
+ */
+export type ProposalInfoTabProps = {
+  submittedProposal: {
+    proposalDescription: string;
+    attachments?: never;
+    attachmentUrl?: string | null;
+  } | {
+    proposalDescription: string;
+    attachments: FileList | null;
+    attachmentUrl?: never;
+  };
+};
 
 /**
  * Props for the component used to submit work details.

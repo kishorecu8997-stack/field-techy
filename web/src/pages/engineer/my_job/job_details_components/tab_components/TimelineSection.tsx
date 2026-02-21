@@ -159,6 +159,7 @@ const transformProposalToTimelineItems = (
     statusColor: string;
     accentColor: string;
     details: string | null;
+    attachmentUrl?: string | null;
     sortOrder: number;
   }> = [];
 
@@ -249,13 +250,19 @@ const transformProposalToTimelineItems = (
     ) {
       const submittedTimestamp = job.appliedAt || job.respondedAt;
       if (submittedTimestamp) {
+        // Build details string - include proposal detail if available
+        let proposalDetails = job.proposalDetail
+          ? `\n\nProposal Details: ${job.proposalDetail}`
+          : `\n\nSubmitted proposal for: ${job.jobTitle}`;
+        
         allItems.push({
           title: "Proposal Submitted",
           timestamp: formatApiDate(submittedTimestamp),
           statusText: "",
           statusColor: "#f59e0b",
           accentColor: "#3b82f6",
-          details: `Submitted proposal for: ${job.jobTitle}`,
+          details: proposalDetails.trim(),
+          attachmentUrl: job.proposalAttachmentUrl || undefined,
           sortOrder: 25,
         });
       }
@@ -359,6 +366,7 @@ const TimelineSection: React.FC<{
       statusColor: string;
       accentColor: string;
       details: string | null;
+      attachmentUrl?: string | null;
       sortOrder: number;
     }> = [];
 

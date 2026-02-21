@@ -17,7 +17,7 @@ import type {
   ProgressUpdate,
   JobInfoSectionProps,
 } from "../types.d";
-import { useEngineerApplyJob } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useEngineerApplyJob, useEngineerGetMyJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { toast } from "react-toastify";
 
 /**
@@ -63,6 +63,12 @@ const JobTabSection = ({
       // This would require access to queryClient from parent or passing a callback
     },
   });
+
+  // Fetch engineer jobs from API to get proposal details
+  const { data: engineerJobs } = useEngineerGetMyJobs(!!jobId);
+
+  // Get proposal details from API for the current job
+  const apiProposalData = engineerJobs?.find((job) => job.id === jobId);
   const methods = useForm<ProposalFormData>({
     defaultValues: {
       proposalDescription: "",
@@ -205,10 +211,15 @@ const JobTabSection = ({
             content: (
               <ProposalInfoTab
                 submittedProposal={
-                  submittedProposal || {
-                    proposalDescription: "",
-                    attachments: null,
-                  }
+                  submittedProposal || (apiProposalData?.proposalDetail
+                    ? {
+                        proposalDescription: apiProposalData.proposalDetail,
+                        attachmentUrl: apiProposalData.proposalAttachmentUrl,
+                      }
+                    : {
+                        proposalDescription: "",
+                        attachments: null,
+                      })
                 }
               />
             ),
