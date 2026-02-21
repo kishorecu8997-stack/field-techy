@@ -143,14 +143,21 @@ const EarningsCard = () => {
           <div className="flex justify-between items-center">
             <span>
               {showBalance
-                ? balance?.balance != null
-                  ? Number(balance.balance).toLocaleString("en-US", {
+                ? (() => {
+                    const amount = Number(balance?.balance);
+                    const currency = balance?.currencyCode ?? "USD";
+
+                    if (isNaN(amount)) {
+                      return "00.00";
+                    }
+
+                    return amount.toLocaleString("en-US", {
                       style: "currency",
-                      currency: balance.currencyCode ?? "INR",
+                      currency,
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
-                    })
-                  : "00.00"
+                    });
+                  })()
                 : "******"}
             </span>
 

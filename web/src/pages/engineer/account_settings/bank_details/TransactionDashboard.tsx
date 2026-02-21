@@ -9,6 +9,7 @@ import { formatCurrency, formatDate } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { HiFilter, HiSearch } from "react-icons/hi";
+import Pagination from "../../search_result/components/Pagination";
 
 // Define TypeScript interfaces
 export type { Transaction } from "./types";
@@ -53,10 +54,19 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
   const startDateStr = startDate3MonthsAgo.toISOString();
   const endDateStr = endDateToday.toISOString();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
+  const offset = showAll ? (currentPage - 1) * limit : 0;
   // --- API Query Params ---
   const SORT_DESC: `desc` = "desc";
   const queryParams = showAll
-    ? { sortOrder: SORT_DESC, startDate: startDateStr, endDate: endDateStr }
+    ? {
+        sortOrder: SORT_DESC,
+        startDate: startDateStr,
+        endDate: endDateStr,
+        limit: limit + 1,
+        offset,
+      }
     : { sortOrder: SORT_DESC, limit: 10 };
   const {
     data: transactionsRaw,
@@ -84,8 +94,15 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
 
     return true;
   });
+  // --- Slice for pagination ---
+  const pageTransactions = showAll
+    ? filteredTransactions.slice(0, limit)
+    : filteredTransactions;
+  const hasNextPage = showAll && filteredTransactions.length > limit;
+  const hasPrevPage = showAll && currentPage > 1;
   const clearFilters = () => {
     reset();
+    setCurrentPage(1);
   };
   const title = showAll ? "All Transactions" : "Last 10 Transactions";
 
@@ -182,7 +199,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {filteredTransactions.map((tx) => {
+              {pageTransactions.map((tx) => {
                 const txAmount = Number(tx.amount);
                 const isCredit = tx.type === "credit";
                 const amountColor = isCredit
@@ -211,7 +228,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
           </table>
         </div>
 
-        {!isLoading && !isError && filteredTransactions.length === 0 && (
+        {!isLoading && !isError && pageTransactions.length === 0 && (
           <div className="text-center py-10">
             <p className="text-gray-500 dark:text-gray-400">
               {hasActiveFilters
@@ -219,6 +236,13 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
                 : "No transactions found."}
             </p>
           </div>
+        )}
+        {showAll && (hasNextPage || hasPrevPage) && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={hasNextPage ? currentPage + 1 : currentPage}
+            onPageChange={setCurrentPage}
+          />
         )}
       </div>
     </FormProvider>

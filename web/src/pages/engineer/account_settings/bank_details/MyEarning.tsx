@@ -27,16 +27,25 @@ const MyEarning = () => {
         </p>
         <div className="flex justify-between items-center">
           <p className="text-2xl md:text-3xl items-center font-extrabold text-gray-900 dark:text-white">
-            {showBalance
-              ? balance?.balance != null
-                ? Number(balance.balance).toLocaleString("en-US", {
-                    style: "currency",
-                    currency: balance.currencyCode ?? "INR",
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })
-                : "00.00"
-              : "******"}
+            <span>
+              {showBalance
+                ? (() => {
+                    const amount = Number(balance?.balance);
+                    const currency = balance?.currencyCode ?? "USD";
+
+                    if (isNaN(amount)) {
+                      return "00.00";
+                    }
+
+                    return amount.toLocaleString("en-US", {
+                      style: "currency",
+                      currency,
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    });
+                  })()
+                : "******"}
+            </span>
           </p>
           {!showBalance ? (
             <BsEyeFill
