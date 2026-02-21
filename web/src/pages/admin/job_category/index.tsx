@@ -1,16 +1,12 @@
-import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import { serviceCategoriesData } from "@/dummy_data/admin";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 const HandleStatus = ({ status: value }: { status: boolean }) => {
   const [status, setStatus] = useState<boolean>(value);
@@ -53,44 +49,9 @@ export interface ServerCategoryProps {
  */
 const ManageJobCategory: React.FC = () => {
   const navigate = useNavigate();
-  const { showPopup } = usePopupStore();
-
-  //Delete confirmation
-  const handleDeleteJob = async (job: ServerCategoryProps) => {
-    await showPopup({
-      title: "Job Category",
-      body: "Are you sure you want to delete this job category?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Delete",
-          value: "delete",
-          variant: "danger",
-          action: async (close) => {
-            console.log("Deleting job:", job.id);
-            toast.success("Job category deleted successfully!");
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            close(true);
-          },
-        },
-      ],
-    });
-  };
 
   const columns: Column<ServerCategoryProps>[] = [
     { key: "id", label: "Sr.No." },
-    {
-      key: "categoryImg",
-      label: "Category Image",
-      renderCell: () => (
-        <img src={assetsConfig.placeholder} className="h-6 w-6" alt="img" />
-      ),
-    },
     { key: "categoryName", label: "Category" },
     { key: "createdDate", label: "Created Date" },
     {
@@ -105,7 +66,7 @@ const ManageJobCategory: React.FC = () => {
       key: "action",
       label: "Actions",
       renderCell: (row: ServerCategoryProps) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
             <CiEdit
               className="text-blue-600"
@@ -115,12 +76,6 @@ const ManageJobCategory: React.FC = () => {
                 )
               }
             />
-          </div>
-          <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteJob(row)}
-          >
-            <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
       ),

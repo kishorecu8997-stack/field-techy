@@ -9,7 +9,7 @@ import JobCategoryForm from "./JobCategoryForm";
 import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
- * `AddCategory` component renders a page with a form to add a new job category.
+ * `AddCategory` component renders a page with a form to add a new Service category.
  * It uses `react-hook-form` for form state management and provides UI for creating
  * a new category, including a name and an image.
  *
@@ -46,7 +46,7 @@ export default function AddCategory() {
             console.log("Deleting job:", close);
             // TODO: call your delete API here
             // await deleteJob(job.id);
-            toast.success("Job category added successfully!");
+            toast.success("Service category added successfully!");
             methods.reset();
             navigate(absoluteUrls.admin.home.manage_categories);
             close(true);
