@@ -40,10 +40,6 @@ const JobDetails = () => {
     alert("Job marked as completed!");
   };
 
-  const handleAssignEngineer = (engineerId: string) => {
-    alert(`Engineer ${engineerId} assigned to job #Ride001`);
-  };
-
   return (
     <div className="w-full h-full flex flex-col gap-3 ">
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
@@ -55,12 +51,10 @@ const JobDetails = () => {
             }
             status={findJobValue()?.status || "completed"}
             onStatusChange={handleStatusChange}
-            
           />
           <ContactDetailsCard
             client={findJobValue()?.clientDetails}
             engineers={findJobValue()?.engineerDetails || []}
-            onEngineerAssign={handleAssignEngineer}
             engineersList={engineersList}
           />
           <ManageJobDetails job={infoData} />

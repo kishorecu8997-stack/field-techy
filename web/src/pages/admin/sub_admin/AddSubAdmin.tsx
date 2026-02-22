@@ -16,7 +16,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * `AddSubAdmin` is a page component for adding a new sub-admin user.
- * It provides a form with fields for name, email, phone number, role, and a profile image.
+ * It provides a form with fields for name, email, phone number, region, and a profile image.
  * The form includes validation for each field. On successful submission, it displays a success toast.
  * @returns {JSX.Element} The rendered page component.
  */
@@ -109,9 +109,9 @@ export default function AddSubAdmin() {
               />
 
               <SelectField
-                name="role"
-                label="Select Roles"
-                placeholder="Select Roles"
+                name="region"
+                label="Select Regions"
+                placeholder="Select Region"
                 options={SubAdminRegions}
                 required
               />

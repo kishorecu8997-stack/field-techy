@@ -143,4 +143,4 @@ export const documentType: DocumentOption[] = [
   { value: "resumeFile", label: "Resume File" },
   { value: "govIdDoc", label: "Government Document" },
   { value: "certificateDoc", label: "Certificate Document" },
-]
+];

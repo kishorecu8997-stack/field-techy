@@ -294,7 +294,7 @@ export default function PendingRequest() {
           onClose={() => {
             setIsModalOpen(false);
             setActiveRowId(null);
-            setSelectedType(null); 
+            setSelectedType(null);
           }}
         >
           <div className="p-4">
@@ -305,7 +305,7 @@ export default function PendingRequest() {
                 onClick={() => {
                   setIsModalOpen(false)
                   setActiveRowId(null);
-                  setSelectedType(null); 
+                  setSelectedType(null);
                 }}
               >
                 <IoCloseSharp />
