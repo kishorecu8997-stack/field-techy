@@ -16,6 +16,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   homeLabel = "Home",
   customLabels = {},
   segments,
+  onSegmentClick,
 }) => {
   const location = useLocation();
 
@@ -75,6 +76,9 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
                 <NavLink
                   to={to}
                   className="hover:text-teal-800 dark:hover:text-teal-400 text-gray-700 dark:text-gray-300 transition-colors"
+                  onClick={() => {
+                    if (onSegmentClick) onSegmentClick(value, index); // CALL PARENT HANDLER
+                  }}
                 >
                   {formatLabel(value)}
                 </NavLink>

@@ -27,8 +27,11 @@ const ClientJobDetails = () => {
     AssignmentStatus | OfferedJobStatusType | undefined
   >(undefined);
 
-  const [isChatVisible, setIsChatVisible] = useState(false);
+  const [openChatJobId, setOpenChatJobId] = useState<string | null>(null);
   const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
+
+  // Dynamic heading
+  const [pageHeading, setPageHeading] = useState<string>("Job Details");
 
   const jobId = Number(params.jobId);
   const id = Number(params.id);
@@ -61,18 +64,21 @@ const ClientJobDetails = () => {
     }
   }, [isDummyNetworkEngineer, activeTab]);
 
-  // Chat toggle logic
-  const handleToggleChat = () => {
-    setIsChatVisible((prev) => {
-      const isOpening = !prev;
-      setBreadcrumbExtra(isOpening ? "chats" : null);
-      return isOpening;
-    });
-  };
+  // Chat toggle function
+  const handleToggleChat = (jobId: string) => {
+    setOpenChatJobId((prev) => {
+      const isOpening = prev !== jobId;
 
-  const handleCloseChat = () => {
-    setIsChatVisible(false);
-    setBreadcrumbExtra(null);
+      if (isOpening) {
+        setBreadcrumbExtra("chats");
+        setPageHeading("Chats");
+        return jobId;
+      } else {
+        setBreadcrumbExtra(null);
+        setPageHeading("Job Details");
+        return null;
+      }
+    });
   };
 
   // Breadcrumb segments for MyJobsHeader
@@ -88,20 +94,20 @@ const ClientJobDetails = () => {
       <div className="container mx-auto px-4 py-6 md:px-6">
         <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
-            title={isChatVisible ? "Chats" : "Job Details"}
+            title={pageHeading}
             isShowBreadcrumb
             customLabels={{
               [params.jobId || ""]: matchedJob?.title ?? "Job",
             }}
             segments={segments}
-            isChatVisible={isChatVisible}
-            handleCloseChat={handleCloseChat}
+            isChatVisible={!!openChatJobId}
+            handleCloseChat={() => handleToggleChat(params.jobId!)}
           />
         </div>
 
-        {isChatVisible && jobIdParam ? (
-          <div className="mt-4 h-[calc(100vh-6rem)]">
-            <ChatForJobs jobId={jobIdParam!} currentUser="Client" />
+        {openChatJobId ? (
+          <div className="flex-1 overflow-y-auto">
+            <ChatForJobs jobId={openChatJobId} currentUser="Client" />
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
