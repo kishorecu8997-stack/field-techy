@@ -32,8 +32,8 @@ export const mockChats: Chat[] = [
       isGroup: true,
     },
     messages: [
-      { id: "1", sender: "Helen", message: "Reminder: submission deadline is tomorrow.", time: "2:10 PM", isCurrentUser: false },
-      { id: "2", sender: "Client", message: "Thanks for the update!", time: "2:15 PM", isCurrentUser: true },
+      { id: "1", sender: "Helen", message: "Reminder: submission deadline is tomorrow.", time: "2026-02-21T14:10:00.000Z", isCurrentUser: false },
+      { id: "2", sender: "Client", message: "Thanks for the update!", time: "2026-02-21T14:15:00.000Z", isCurrentUser: true },
     ],
   },
   {
@@ -41,7 +41,7 @@ export const mockChats: Chat[] = [
     jobCode: "JOB-002",
     participant: { id: 3, name: "Michael", status: "Offline", isGroup: false },
     messages: [
-      { id: "1", sender: "Michael", message: "Can we reschedule?", time: "3:09 PM", isCurrentUser: false },
+      { id: "1", sender: "Michael", message: "Can we reschedule?", time: "2026-02-21T15:09:00.000Z", isCurrentUser: false },
     ],
   },
   {
@@ -49,7 +49,7 @@ export const mockChats: Chat[] = [
     jobCode: "JOB-003",
     participant: { id: 4, name: "Team Alpha", status: "Online", isGroup: true },
     messages: [
-      { id: "1", sender: "Team Alpha", message: "Meeting at 5 PM.", time: "1:30 PM", isCurrentUser: false },
+      { id: "1", sender: "Team Alpha", message: "Meeting at 5 PM.", time: "2026-02-21T13:30:00.000Z", isCurrentUser: false },
     ],
   },
 ];

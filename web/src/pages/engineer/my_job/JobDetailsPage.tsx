@@ -4,7 +4,7 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
@@ -22,6 +22,7 @@ import type { ProgressUpdate } from "./types.d";
  */
 const JobDetailsPage = () => {
   const params = useParams();
+  const routerLocation = useLocation();
   const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
@@ -155,7 +156,7 @@ const JobDetailsPage = () => {
   const jobStatus = isDummyJob ? "New" : (job?.status as JobStatus);
 
   // Build manual breadcrumb segments
-  const root = window.location.pathname.includes("client")
+  const root = routerLocation.pathname.includes("client")
     ? "Client"
     : "Engineer";
   const segments = [
@@ -187,11 +188,6 @@ const JobDetailsPage = () => {
     setBreadcrumbExtra(null);
     setPageHeading("Job Details");
   };
-  // const handleCloseChat = () => {
-  //   setIsChatVisible(false);
-  //   setBreadcrumbExtra(null);
-  //   setPageHeading("Job Details");
-  // };
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -213,7 +209,7 @@ const JobDetailsPage = () => {
         {/* Show Chat if toggled */}
         {openChatJobId ? (
           <div className="flex-1 overflow-y-auto">
-            <ChatForJobs jobId={openChatJobId} currentUser="Client"/>
+            <ChatForJobs jobId={openChatJobId} currentUser="Client" />
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">

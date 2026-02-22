@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
 import JobCardDetailsHeader from "./JobCardDetailsHeader";
 import JobTabSection from "./JobTabSection";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 
 /**
  * `JobsDetails` is a page component that displays detailed information about a specific job.
@@ -62,37 +63,35 @@ const JobsDetails: React.FC = () => {
             handleCloseChat={handleCloseChat}
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-              <JobCardDetailsHeader />
-              <div className="space-y-6 pt-2">
-                <JobTabSection
-                  status={filter()?.status as JobStatus}
-                  isWorkSubmitted={isWorkSubmitted}
-                  isSendProposal={isSendProposal}
-                  isJobAccepted={isJobAccepted}
-                  activeTab={activeTab}
-                  jobID={String(params.jobId)}
-                  onToggleChat={handleToggleChat}
-                />
-                {/* {breadcrumbExtra === "chats" && (
-                  <button
-                    className="mt-2 px-4 py-2 bg-gray-200 rounded"
-                    onClick={handleCloseChat}
-                  >
-                    Back to Job
-                  </button>
-                )} */}
+        {breadcrumbExtra === "chats" ? (
+          <div className="flex-1 overflow-y-auto">
+            <ChatForJobs jobId={String(params.jobId)} currentUser="Client" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+                <JobCardDetailsHeader />
+                <div className="space-y-6 pt-2">
+                  <JobTabSection
+                    status={filter()?.status as JobStatus}
+                    isWorkSubmitted={isWorkSubmitted}
+                    isSendProposal={isSendProposal}
+                    isJobAccepted={isJobAccepted}
+                    activeTab={activeTab}
+                    jobID={String(params.jobId)}
+                    onToggleChat={handleToggleChat}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-1">
+              <div className="sticky top-6 pt-2">
+                <SidebarJobPostWallet earnings={earningsData} />
               </div>
             </div>
           </div>
-          <div className="lg:col-span-1">
-            <div className="sticky top-6 pt-2">
-              <SidebarJobPostWallet earnings={earningsData} />
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

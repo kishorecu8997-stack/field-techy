@@ -20,13 +20,20 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
   const [chats, setChats] = useState(mockChats); // <- new state
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
   const attachmentRef = useRef<HTMLDivElement>(null);
+  const photoInputRef = useRef<HTMLInputElement | null>(null);
+  const docInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (!selectedJob) {
-      const job = chats.find((j) => j.jobId === jobId) || null;
-      setSelectedJob(job);
-    }
-  }, [jobId, chats, selectedJob]);
+    const job = chats.find((j) => j.jobId === jobId) || null;
+    setSelectedJob((prev) => {
+      // If no selection yet, set to the job matching jobId
+      if (prev === null) return job;
+      // If the parent requested a different job (jobId prop changed), switch to it
+      if (prev.jobId !== jobId && job) return job;
+      // Otherwise keep the user's current selection (avoid overriding when chats update)
+      return prev;
+    });
+  }, [jobId, chats]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,10 +54,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
       id: uuidv4(),
       sender: currentUser,
       message: input,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      time: new Date().toISOString(),
       isCurrentUser: true,
     };
     setChats((prev) =>
@@ -75,11 +79,42 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
   );
 
   const handleSelectPhotos = () => {
+    // Open system file picker for images and videos
+    photoInputRef.current?.click();
     setShowAttachmentMenu(false);
   };
 
   const handleSelectDocuments = () => {
+    // Open system file picker for documents
+    docInputRef.current?.click();
     setShowAttachmentMenu(false);
+  };
+
+  const handlePhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length) {
+      // Placeholder for future upload API integration
+      console.log("Selected media files:", files);
+    }
+    // reset input so selecting same file again will trigger change
+    e.currentTarget.value = "";
+  };
+
+  const handleDocsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length) {
+      console.log("Selected document files:", files);
+    }
+    e.currentTarget.value = "";
+  };
+
+  const formatTime = (timeStr: string | undefined) => {
+    if (!timeStr) return "";
+    const d = new Date(timeStr);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+    return timeStr;
   };
 
   const group = filteredChats.find((chat) => chat.participant.isGroup);
@@ -97,6 +132,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
             <input
               type="text"
               placeholder="Search"
+              aria-label="Search chats"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-sm focus:outline-none"
@@ -106,7 +142,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
         </div>
 
         {/* Chats */}
-        <div className="flex-1 overflow-y-auto px-4">
+        <div className="flex-1 overflow-y-auto px-4" role="listbox" aria-label="Chats">
           {/* Single Group */}
           {group && (
             <>
@@ -115,6 +151,15 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
               </div>
               <div
                 onClick={() => setSelectedJob(group)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedJob(group);
+                  }
+                }}
+                role="option"
+                tabIndex={0}
+                aria-selected={selectedJob?.jobId === group.jobId}
                 className={`flex items-center p-3 gap-3 cursor-pointer rounded-lg ${
                   selectedJob?.jobId === group.jobId
                     ? "bg-gray-200 dark:bg-gray-700"
@@ -130,7 +175,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
                       {group.participant.name}
                     </span>
                     <span className="text-xs text-gray-500">
-                      {group.messages[group.messages.length - 1]?.time}
+                      {formatTime(group.messages[group.messages.length - 1]?.time)}
                     </span>
                   </div>
                   <div className="text-xs text-gray-500 truncate">
@@ -153,6 +198,15 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
                 <div
                   key={chat.jobId}
                   onClick={() => setSelectedJob(chat)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedJob(chat);
+                    }
+                  }}
+                  role="option"
+                  tabIndex={0}
+                  aria-selected={selectedJob?.jobId === chat.jobId}
                   className={`flex items-center p-3 gap-3 cursor-pointer rounded-lg ${
                     selectedJob?.jobId === chat.jobId
                       ? "bg-gray-200 dark:bg-gray-700"
@@ -168,7 +222,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
                         {chat.participant.name}
                       </span>
                       <span className="text-xs text-gray-500">
-                        {chat.messages[chat.messages.length - 1]?.time}
+                        {formatTime(chat.messages[chat.messages.length - 1]?.time)}
                       </span>
                     </div>
                     <div className="text-xs text-gray-500 truncate">
@@ -245,7 +299,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
                 >
                   {msg.message}
                   <div className="text-xs text-white mt-1 text-right">
-                    {msg.time}
+                    {formatTime(msg.time)}
                   </div>
                 </div>
               </div>
@@ -313,7 +367,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              className="flex-1 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="flex-1 px-4 py-2 rounded-lg bg-transparent text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
 
             {/* Send Button */}
@@ -322,6 +376,23 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
             </Button>
           </div>
         </div>
+        {/* Hidden file inputs for attachments (triggered by menu) */}
+        <input
+          type="file"
+          accept="image/*,video/*"
+          multiple
+          ref={photoInputRef}
+          onChange={handlePhotosChange}
+          className="hidden"
+        />
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,application/*"
+          multiple
+          ref={docInputRef}
+          onChange={handleDocsChange}
+          className="hidden"
+        />
       </div>
     </div>
   );

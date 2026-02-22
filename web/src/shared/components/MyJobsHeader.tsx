@@ -42,12 +42,13 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
             <div>
               <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-white">
                 {isChatVisible && handleCloseChat && (
-                    <button
-                      onClick={handleCloseChat}
-                      className="text-teal-800 dark:text-teal-400 font-bold"
-                    >
-                      {'<'}
-                    </button> 
+                  <button
+                    onClick={handleCloseChat}
+                    className="text-teal-800 dark:text-teal-400 font-bold"
+                    aria-label="Go back to job details"
+                  >
+                    {"<"}
+                  </button>
                 )}
                 {title}
               </h1>
@@ -76,7 +77,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                     onClick={handleCloseChat}
                     className="text-teal-800 dark:text-teal-400 font-bold"
                   >
-                    {'<'}
+                    {"<"}
                   </button>
                 )}
                 {title}
