@@ -10,9 +10,10 @@ import { v4 as uuidv4 } from "uuid";
 
 interface ChatForJobsProps {
   jobId: string;
+  currentUser: string;
 }
 
-const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
+const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
   const [selectedJob, setSelectedJob] = useState<Chat | null>(null);
   const [input, setInput] = useState("");
   const [search, setSearch] = useState("");
@@ -44,7 +45,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
     if (!input.trim()) return;
     const newMessage = {
       id: uuidv4(),
-      sender: "Client",
+      sender: currentUser,
       message: input,
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -84,7 +85,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
   const group = filteredChats.find((chat) => chat.participant.isGroup);
   const others = filteredChats.filter((chat) => !chat.participant.isGroup);
 
-  const isCurrentUser = (sender: string) => sender === "Client"; // placeholder, can be replaced with API role later
+  const isCurrentUser = (sender: string) => sender === currentUser; // placeholder, can be replaced with API role later
 
   return (
     <div className="flex h-[65vh] border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden relative">
@@ -308,6 +309,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
             <input
               type="text"
               placeholder="Type a message"
+              aria-label="Type a message"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}

@@ -16,13 +16,10 @@ import {
   type OfferedJobStatusType,
 } from "../../engineer/search_result/types";
 
-/**
- * Page component displaying detailed information about a specific job.
- *
- * @returns {JSX.Element} Job details page layout.
- */
 const ClientJobDetails = () => {
   const params = useParams();
+  const jobIdParam = params.jobId;
+
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
@@ -31,9 +28,12 @@ const ClientJobDetails = () => {
   >(undefined);
 
   const [isChatVisible, setIsChatVisible] = useState(false);
+  const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
+
   const jobId = Number(params.jobId);
   const id = Number(params.id);
 
+  // Find the relevant job/proposal
   const proposal = ProposalsList.find((job) => job.id === id);
   const data = sampleJobs.find((job) => job.id === jobId);
   const matchedJob = proposal
@@ -41,15 +41,8 @@ const ClientJobDetails = () => {
     : data
       ? sampleJobs.find((job) => job.id === jobId)
       : null;
-  // Check if this is the dummy Network Engineer job
-  const isDummyNetworkEngineer = isDummyNetworkEngineerJob(matchedJob?.id);
 
-  // Set default tab based on job type - moved to useEffect to avoid setState during render
-  useEffect(() => {
-    if (isDummyNetworkEngineer && activeTab === "Job Information") {
-      setActiveTab("Job Overview");
-    }
-  }, [isDummyNetworkEngineer, activeTab]);
+  const isDummyNetworkEngineer = isDummyNetworkEngineerJob(matchedJob?.id);
 
   const numberOfVacancy =
     isDummyNetworkEngineer && matchedJob && "numberOfVacancy" in matchedJob
@@ -61,22 +54,54 @@ const ClientJobDetails = () => {
       ? (matchedJob as { numberOfApplicants?: number }).numberOfApplicants
       : undefined;
 
+  // Default tab for dummy job
+  useEffect(() => {
+    if (isDummyNetworkEngineer && activeTab === "Job Information") {
+      setActiveTab("Job Overview");
+    }
+  }, [isDummyNetworkEngineer, activeTab]);
+
+  // Chat toggle logic
+  const handleToggleChat = () => {
+    setIsChatVisible((prev) => {
+      const isOpening = !prev;
+      setBreadcrumbExtra(isOpening ? "chats" : null);
+      return isOpening;
+    });
+  };
+
+  const handleCloseChat = () => {
+    setIsChatVisible(false);
+    setBreadcrumbExtra(null);
+  };
+
+  // Breadcrumb segments for MyJobsHeader
+  const segments = [
+    "Client",
+    "my-jobs",
+    params.jobId ?? "",
+    breadcrumbExtra === "chats" ? "Chats" : null,
+  ].filter((v): v is string => typeof v === "string");
+
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
-            title="Job Details"
+            title={isChatVisible ? "Chats" : "Job Details"}
             isShowBreadcrumb
             customLabels={{
-              [params.jobId || ""]: matchedJob?.title || "Job",
+              [params.jobId || ""]: matchedJob?.title ?? "Job",
             }}
+            segments={segments}
+            isChatVisible={isChatVisible}
+            handleCloseChat={handleCloseChat}
           />
         </div>
 
-        {isChatVisible && params.jobId ? (
+        {isChatVisible && jobIdParam ? (
           <div className="mt-4 h-[calc(100vh-6rem)]">
-            <ChatForJobs jobId={params.jobId} />
+            <ChatForJobs jobId={jobIdParam!} currentUser="Client" />
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
@@ -100,7 +125,8 @@ const ClientJobDetails = () => {
                 }
                 numberOfVacancy={numberOfVacancy}
                 numberOfApplicants={numberOfApplicants}
-                onToggleChat={() => setIsChatVisible(true)}
+                onToggleChat={handleToggleChat}
+                jobId={jobIdParam!}
               />
 
               <JobTabSection

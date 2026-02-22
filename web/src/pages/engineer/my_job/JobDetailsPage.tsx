@@ -207,7 +207,7 @@ const JobDetailsPage = () => {
         {/* Show Chat if toggled */}
         {openChatJobId ? (
           <div className="flex-1 overflow-y-auto">
-            <ChatForJobs jobId={openChatJobId} />
+            <ChatForJobs jobId={openChatJobId} currentUser="Client"/>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
