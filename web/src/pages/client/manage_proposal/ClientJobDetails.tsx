@@ -68,7 +68,6 @@ const ClientJobDetails = () => {
   const handleToggleChat = (jobId: string) => {
     setOpenChatJobId((prev) => {
       const isOpening = prev !== jobId;
-
       if (isOpening) {
         setBreadcrumbExtra("chats");
         setPageHeading("Chats");
@@ -79,6 +78,13 @@ const ClientJobDetails = () => {
         return null;
       }
     });
+  };
+
+  // Close chat handler
+  const handleCloseChat = () => {
+    setOpenChatJobId(null);
+    setBreadcrumbExtra(null);
+    setPageHeading("Job Details");
   };
 
   // Breadcrumb segments for MyJobsHeader
@@ -101,7 +107,7 @@ const ClientJobDetails = () => {
             }}
             segments={segments}
             isChatVisible={!!openChatJobId}
-            handleCloseChat={() => handleToggleChat(params.jobId!)}
+            handleCloseChat={handleCloseChat}
           />
         </div>
 

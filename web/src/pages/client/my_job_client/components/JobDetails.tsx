@@ -42,10 +42,10 @@ const JobsDetails: React.FC = () => {
     setBreadcrumbExtra("chats");
     setPageHeading("Chats");
   };
-  // const handleCloseChat = () => {
-  //   setBreadcrumbExtra(null);
-  //   setPageHeading("Job Details");
-  // };
+  const handleCloseChat = () => {
+    setBreadcrumbExtra(null);
+    setPageHeading("Job Details");
+  };
 
   return (
     <div className="min-h-screen transition-colors duration-200">
@@ -58,6 +58,8 @@ const JobsDetails: React.FC = () => {
             isShowSort={breadcrumbExtra !== "chats"}
             onSortChange={() => {}}
             segments={segments}
+            isChatVisible={breadcrumbExtra === "chats"}
+            handleCloseChat={handleCloseChat}
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

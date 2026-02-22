@@ -169,7 +169,6 @@ const JobDetailsPage = () => {
   const handleToggleChat = (jobId: string) => {
     setOpenChatJobId((prev) => {
       const isOpening = prev !== jobId;
-
       if (isOpening) {
         setBreadcrumbExtra("chats");
         setPageHeading("Chats");
@@ -180,6 +179,13 @@ const JobDetailsPage = () => {
         return null;
       }
     });
+  };
+
+  // Close chat handler
+  const handleCloseChat = () => {
+    setOpenChatJobId(null);
+    setBreadcrumbExtra(null);
+    setPageHeading("Job Details");
   };
   // const handleCloseChat = () => {
   //   setIsChatVisible(false);
@@ -201,7 +207,7 @@ const JobDetailsPage = () => {
           }}
           segments={segments}
           isChatVisible={!!openChatJobId}
-          handleCloseChat={() => handleToggleChat(params.jobId!)}
+          handleCloseChat={handleCloseChat}
         />
 
         {/* Show Chat if toggled */}
