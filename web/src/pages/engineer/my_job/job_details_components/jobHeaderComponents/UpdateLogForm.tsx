@@ -4,20 +4,19 @@ import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate, UpdateLogFormFields } from "../../types.d";
 import { toast } from "react-toastify";
 import {
   UPDATE_LOG_DEFAULTS,
   UPDATE_LOG_LABELS,
   UPDATE_LOG_MESSAGES,
-  UPDATE_LOG_STATUS,
-  UPDATE_LOG_COLORS,
 } from "@/constants/updateLogConstants";
+import { useEngineerAddWorkLog } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 interface UpdateLogFormProps {
   onClose: () => void;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
+  assignmentId?: number;
 }
 /**
  * UpdateLogForm component for submitting job update logs.
@@ -28,12 +27,25 @@ interface UpdateLogFormProps {
  */
 const UpdateLogForm = ({
   onClose,
-  onAddProgressUpdate,
+  assignmentId,
 }: UpdateLogFormProps) => {
   const formCtx = useForm<UpdateLogFormFields>({
     defaultValues: UPDATE_LOG_DEFAULTS,
   });
   const { showPopup } = usePopupStore();
+
+  // Mutation for adding work log
+  const { mutate: addWorkLog} = useEngineerAddWorkLog({
+    onSuccess: () => {  
+      toast.success("Log submitted successfully!");
+       onClose();
+    },
+    onError: (error) => {
+      console.error("Failed to submit log:", error);
+      toast.error("Failed to submit log. Please try again.");
+    },
+  });
+
   const handleSubmit = async (data: UpdateLogFormFields) => {
     await showPopup({
       title: UPDATE_LOG_LABELS.title,
@@ -49,41 +61,27 @@ const UpdateLogForm = ({
           value: "submit",
           variant: "primary",
           action: async (close) => {
-            const attachmentName = data.attachments?.[0]?.name;
-            const baseUpdate: Omit<
-              ProgressUpdate,
-              "statusText" | "statusColor"
-            > = {
-              title: data.title || UPDATE_LOG_LABELS.title,
-              description: data.notes,
-              attachmentName,
-              timestamp: formatDateTime(),
-              accentColor: UPDATE_LOG_COLORS.accent,
-            };
-
-            toast.success(UPDATE_LOG_MESSAGES.submitSuccess);
-            onAddProgressUpdate?.({
-              ...baseUpdate,
-              description: UPDATE_LOG_MESSAGES.revisionFeedback,
-              statusText: UPDATE_LOG_STATUS.revision,
-              statusColor: UPDATE_LOG_COLORS.revision,
-            });
-            // Approved card shows engineer's submitted notes
-            onAddProgressUpdate?.({
-              ...baseUpdate,
-              description: data.notes,
-              statusText: UPDATE_LOG_STATUS.approved,
-              statusColor: UPDATE_LOG_COLORS.approved,
-            });
-            // Waiting for Approval shows engineer's submitted notes
-            onAddProgressUpdate?.({
-              ...baseUpdate,
-              description: data.notes,
-              statusText: UPDATE_LOG_STATUS.waiting,
-              statusColor: UPDATE_LOG_COLORS.waiting,
-            });
+            // Call the real API to submit the work log
+            if (assignmentId) {
+              const attachment = data.attachments?.[0];
+              addWorkLog({
+                body: {
+                  assignmentId,
+                  logType: "progress_update",
+                  details: data.notes,
+                  attachment: attachment
+                    ? {
+                        filename: attachment.name,
+                        size: attachment.size,
+                        mimeType: attachment.type,
+                      }
+                    : undefined,
+                },
+              });
+            } else {
+              toast.error("No assignment found. Cannot submit log.");
+            }
             close(true);
-            onClose();
           },
         },
       ],

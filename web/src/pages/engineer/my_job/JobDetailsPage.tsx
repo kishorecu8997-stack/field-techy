@@ -1,9 +1,9 @@
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
-import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useEngineerSearchJobs, useGetJobLogs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 // import { toast } from "react-toastify";
 import {
@@ -98,15 +98,16 @@ const JobDetailsPage = () => {
   const params = useParams();
   const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
+  // isWorkSubmitted is intentionally unused but needed for prop interface compatibility
+  void isWorkSubmitted;
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Job Information");
+  const [activeTab, setActiveTab] = useState("Timeline");
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
   const [_offerJobStatus, setOfferJobStatus] = useState<
     OfferedJobStatusType | AssignmentStatus | undefined
   >();
-  const [_isWorkSubmitted] = useState(false);
 
   // Fetch job data from real API using search endpoint with jobId filter
   const { data: jobList, isLoading: isJobsLoading } = useEngineerSearchJobs({
@@ -114,6 +115,80 @@ const JobDetailsPage = () => {
   });
 
   const job = jobList?.[0];
+  const assignmentId = job?.assignmentId ?? undefined;
+
+  // Fetch job logs to get revision requests from client
+  const { data: jobLogs } = useGetJobLogs(assignmentId ?? 0, !!assignmentId);
+
+  // Extract progress updates from job logs for TimelineSection
+  // Note: We don't create separate revision entries - revisions are nested under Progress Update
+  const apiProgressUpdates = useMemo(() => {
+    if (!jobLogs?.logs?.length) return [];
+    
+    const updates: ProgressUpdate[] = [];
+    
+    for (const log of jobLogs.logs) {
+      // Only include progress_update logs (not SUBMISSION which has its own handling)
+      if (log.logType === "progress_update") {
+        // Get original engineer's content
+        const originalContent = log.details || "Engineer submitted a progress update";
+        const originalAttachment = log.attachmentUrl 
+          ? log.attachmentUrl.split("/").pop()?.split("?")[0]
+          : undefined;
+        const originalAttachmentUrl = log.attachmentUrl;
+        
+        // Determine statusText based on log status OR latest revision status
+        // If there's a pending revision, show "Revision Requested"
+        // Use 'any' type cast to handle potential 'pending' status from API
+        const hasPendingRevision = log.revisions && log.revisions.some(
+          (rev: any) => rev.status === "pending"
+        );
+        
+        let statusText: string;
+        if (log.status === "revision_requested" || hasPendingRevision) {
+          statusText = "Revision Requested";
+        } else {
+          statusText = log.status.charAt(0).toUpperCase() + log.status.slice(1).replace(/_/g, " ");
+        }
+        
+        updates.push({
+          title: "Progress Update",
+          description: originalContent,
+          attachmentName: originalAttachment,
+          attachmentUrl: originalAttachmentUrl,
+          timestamp: log.timestamp 
+            ? new Date(log.timestamp).toLocaleString("en-US", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })
+            : "",
+          statusText,
+          statusColor: log.status === "approved" ? "#22c55e" : 
+            log.status === "rejected" ? "#ef4444" : "#f59e0b",
+          accentColor: log.status === "revision_requested" || hasPendingRevision ? "#f59e0b" : "#3b82f6",
+          detailsType: log.status === "revision_requested" || hasPendingRevision ? "revision" : undefined,
+          // Include the log ID for revision update API calls
+          logId: log.id,
+          // Map revisions to include jobLogId as required by type
+          revisions: (log.revisions || []).map((rev: any) => ({
+            ...rev,
+            jobLogId: rev.jobLogId || log.id,
+          })),
+        });
+      }
+    }
+    
+    return updates;
+  }, [jobLogs]);
+
+  // Combine manually added progress updates with API progress updates
+  const allProgressUpdates = useMemo(() => {
+    return [...progressUpdates, ...apiProgressUpdates];
+  }, [progressUpdates, apiProgressUpdates]);
 
   // const location = job?.clientDetails?.address;
   // const handleSubmitReview = () => {
@@ -204,7 +279,6 @@ const JobDetailsPage = () => {
     startDateStr: job?.startDate || "",
     endDateStr: job?.endDate || "",
   });
-  const assignmentId = job?.assignmentId ?? undefined;
 
   const engagementTypeMapping: Record<string, string> = {
     "On site": "ON_SITE",
@@ -264,17 +338,17 @@ const JobDetailsPage = () => {
               onAddProgressUpdate={handleAddProgressUpdate}
               onOpenFinalStatement={handleOpenFinalStatement}
               assignmentId={assignmentId}
+              progressUpdates={allProgressUpdates}
             />
 
             <JobTabSection
               status={jobStatus}
-              isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
               setSendProposal={setIsSendProposal}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               OfferJobStatus={assignmentStatus}
-              progressUpdates={progressUpdates}
+              progressUpdates={allProgressUpdates}
               onAddProgressUpdate={handleAddProgressUpdate}
               assignmentId={assignmentId}
               jobId={Number(params.jobId)}

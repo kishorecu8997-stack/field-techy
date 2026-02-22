@@ -7,14 +7,12 @@ import { icons } from "@/config/icons";
 import { toast } from "react-toastify";
 import type { ProgressUpdate } from "../../types.d";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { formatDateTime } from "@/utils/formatDateTime";
 import {
   FINAL_STATEMENT_DEFAULTS,
   FINAL_STATEMENT_LABELS,
-  FINAL_STATEMENT_STATUS,
-  FINAL_STATEMENT_COLORS,
   FINAL_STATEMENT_MESSAGES,
 } from "@/constants/finalStatementConstants";
+import { useEngineerSubmitSignOff } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 interface FinalStatementFields {
   notes: string;
@@ -31,52 +29,30 @@ interface FinalStatementFields {
  */
 const FinalStatementForm = ({
   onClose,
-  onAddProgressUpdate,
+  assignmentId,
 }: {
   onClose?: () => void;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
+  assignmentId?: number;
 }) => {
   const { showPopup } = usePopupStore();
+  const { mutateAsync: submitSignOff, } = useEngineerSubmitSignOff({
+    onSuccess: () => {
+      toast.success(FINAL_STATEMENT_MESSAGES.submitSuccess);
+      onClose?.();
+    },
+    onError: (error) => {
+      console.error("Failed to submit final statement:", error);
+      toast.error("Failed to submit final statement. Please try again.");
+    },
+  });
   const formCtx = useForm<FinalStatementFields>({
     defaultValues: FINAL_STATEMENT_DEFAULTS,
   });
 
-  const handleSubmit = (data: FinalStatementFields) => {
-    const submitFinalStatement = () => {
-      const taskFileName = data.completedTaskFile?.[0]?.name;
-      const signatureFileName = data.signatureFile?.[0]?.name;
-      const attachmentName = [
-        taskFileName && `Task: ${taskFileName}`,
-        signatureFileName && `Signature: ${signatureFileName}`,
-      ]
-        .filter(Boolean)
-        .join(" | ");
-
-      const baseUpdate: ProgressUpdate = {
-        title: FINAL_STATEMENT_LABELS.title,
-        description: data.notes,
-        attachmentName: attachmentName || undefined,
-        timestamp: formatDateTime(),
-        accentColor: FINAL_STATEMENT_COLORS.accent,
-      };
-
-      onAddProgressUpdate?.({
-        ...baseUpdate,
-        statusText: FINAL_STATEMENT_STATUS.waiting,
-        statusColor: FINAL_STATEMENT_COLORS.waiting,
-      });
-
-      onAddProgressUpdate?.({
-        ...baseUpdate,
-        statusText: FINAL_STATEMENT_STATUS.approved,
-        statusColor: FINAL_STATEMENT_COLORS.approved,
-      });
-
-      toast.success(FINAL_STATEMENT_MESSAGES.submitSuccess);
-      onClose?.();
-    };
-
-    showPopup({
+  const handleSubmit = async (data: FinalStatementFields) => {
+    // Show confirmation modal first
+    await showPopup({
       title: FINAL_STATEMENT_LABELS.title,
       body: FINAL_STATEMENT_MESSAGES.modalBody,
       containerClassName: "sm:max-w-md",
@@ -93,8 +69,57 @@ const FinalStatementForm = ({
           variant: "primary",
           className: "bg-teal-900 hover:bg-teal-800 text-white",
           action: async (close) => {
-            submitFinalStatement();
-            close(true);
+            try {
+              if (!assignmentId) {
+                toast.error("Assignment ID is missing");
+                return;
+              }
+
+              // Get the files from the form
+              const taskFile = data.completedTaskFile?.[0];
+              const signatureFile = data.signatureFile?.[0];
+
+              // Prepare attachment metadata if files exist
+              const workAttachment = taskFile
+                ? {
+                    filename: taskFile.name,
+                    size: taskFile.size,
+                    mimeType: taskFile.type,
+                  }
+                : undefined;
+
+              const signatureAttachment = signatureFile
+                ? {
+                    filename: signatureFile.name,
+                    size: signatureFile.size,
+                    mimeType: signatureFile.type,
+                  }
+                : undefined;
+
+              // Call the API to submit final statement
+              await submitSignOff({
+                body: {
+                  assignmentId: Number(assignmentId),
+                  workAttachment: workAttachment || {
+                    filename: "",
+                    size: 0,
+                    mimeType: "",
+                  },
+                  signatureAttachment: signatureAttachment || {
+                    filename: "",
+                    size: 0,
+                    mimeType: "",
+                  },
+                  comments: data.notes || "",
+                },
+              });
+
+              close(true);
+            } catch (error) {
+              console.error("Failed to submit final statement:", error);
+              toast.error("Failed to submit final statement. Please try again.");
+              close(true);
+            }
           },
         },
       ],

@@ -42,6 +42,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onAddProgressUpdate,
   onOpenFinalStatement,
   assignmentId,
+  progressUpdates,
 }) => {
   const location = useLocation();
   const isClient = location.pathname.includes("client");
@@ -203,6 +204,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             onAddProgressUpdate={onAddProgressUpdate}
             onOpenFinalStatement={onOpenFinalStatement}
             assignmentId={assignmentId}
+            progressUpdates={progressUpdates}
           />
         )}
       </div>
@@ -211,6 +213,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         <UpdateLogForm
           onClose={() => setOpen(false)}
           onAddProgressUpdate={onAddProgressUpdate}
+          assignmentId={assignmentId}
         />
       </Popup>
       {/* Confirmation Modal Popup */}

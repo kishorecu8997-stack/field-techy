@@ -1,5 +1,5 @@
 import type {
-  ActivityTimelineItem,
+  // ActivityTimelineItem,
   TimelineCardData,
 } from "@/pages/client/my_job_client/types";
 
@@ -15,6 +15,8 @@ export const MODAL_TITLES = {
   shortBreakApproval: "Short Term Break Approval",
   jobApproval: "Approve Job Start",
   jobRejection: "Reject Job Start",
+  finalStatementApproval: "Approve Final Statement",
+  finalStatementRejection: "Reject Final Statement",
 } as const;
 
 export const MODAL_MESSAGES = {
@@ -22,6 +24,8 @@ export const MODAL_MESSAGES = {
   shortBreakPlaceholder: "Complete your work, then you may take a break.",
   jobApproveConfirm: "Are you sure you want to approve this job?",
   jobRejectConfirm: "Are you sure you want to reject this job?",
+  finalStatementApproveConfirm: "Are you sure you want to approve this final statement? The job will be marked as completed.",
+  finalStatementRejectConfirm: "Are you sure you want to reject this final statement? The engineer will need to resubmit.",
 } as const;
 
 export const TOAST_MESSAGES = {
@@ -94,15 +98,15 @@ export const jobStartedCardData: TimelineCardData = {
   buttons: ["reject", "approve"],
 };
 
-export const activityTimelineItems: ActivityTimelineItem[] = [
-  {
-    title: "Proposal Accepted",
-    timestamp: "05 Apr 2026, 9:30 AM",
-    accentColor: "#2563eb",
-  },
-  {
-    title: "Proposal Received",
-    timestamp: "05 Apr 2026, 9:20 AM",
-    accentColor: "#2563eb",
-  },
-];
+// export const activityTimelineItems: ActivityTimelineItem[] = [
+//   {
+//     title: "Proposal Accepted",
+//     timestamp: "05 Apr 2026, 9:30 AM",
+//     accentColor: "#2563eb",
+//   },
+//   {
+//     title: "Proposal Received",
+//     timestamp: "05 Apr 2026, 9:20 AM",
+//     accentColor: "#2563eb",
+//   },
+// ];

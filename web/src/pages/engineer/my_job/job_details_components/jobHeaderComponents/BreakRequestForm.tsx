@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -24,6 +24,7 @@ import {
   BREAK_REQUEST_COLORS,
   BREAK_REQUEST_MESSAGES,
 } from "@/dummy_data/breakRequestDummy";
+import { useEngineerRequestBreak } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * BreakRequestForm component for submitting engineer break requests.
@@ -36,10 +37,13 @@ import {
 const BreakRequestForm = ({
   onClose,
   onAddProgressUpdate,
+  assignmentId,
 }: {
   onClose: () => void;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
+  assignmentId?: number;
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const formCtx = useForm<BreakRequestFormFields>({
     defaultValues: BREAK_REQUEST_DEFAULTS,
   });
@@ -51,6 +55,18 @@ const BreakRequestForm = ({
   const endDate = watch("endDate");
   const requestType = watch("requestType");
   const isLongTermBreak = requestType === "Long Term Break";
+
+  // Use the API mutation for submitting break request
+  const breakRequestMutation = useEngineerRequestBreak({
+    onSuccess: () => {
+      toast.success(BREAK_REQUEST_MESSAGES.submitSuccess);
+      onClose();
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Failed to submit break request");
+      setIsSubmitting(false);
+    },
+  });
 
   useEffect(() => {
     if (isLongTermBreak) {
@@ -91,7 +107,41 @@ const BreakRequestForm = ({
     return `${month}/${day}/${year}`;
   };
 
-  const handleSubmit = (data: BreakRequestFormFields) => {
+  const handleSubmit = async (data: BreakRequestFormFields) => {
+    // If assignmentId is provided, use the API
+    if (assignmentId) {
+      setIsSubmitting(true);
+      
+      const breakType = data.requestType === "Long Term Break" ? "long_term" : "short_term";
+      
+      // Format dates for API
+      let startAt: string | null = null;
+      let endAt: string | null = null;
+      
+      if (isLongTermBreak) {
+        startAt = data.startDate ? new Date(data.startDate).toISOString() : null;
+        endAt = data.endDate ? new Date(data.endDate).toISOString() : null;
+      } else {
+        // For short term, use today's date with the time
+        const today = new Date();
+        startAt = data.startTime ? new Date(`${today.toISOString().split('T')[0]}T${data.startTime}`).toISOString() : null;
+        endAt = data.endTime ? new Date(`${today.toISOString().split('T')[0]}T${data.endTime}`).toISOString() : null;
+      }
+      
+      breakRequestMutation.mutate({
+        body: {
+          assignmentId,
+          type: breakType,
+          reason: data.reason || "",
+          startAt,
+          endAt,
+        },
+      });
+      
+      return;
+    }
+    
+    // Fallback to local state update if no assignmentId (legacy behavior)
     const descriptionParts = [] as string[];
     if (data.reason?.trim()) descriptionParts.push(data.reason.trim());
 
@@ -238,14 +288,16 @@ const BreakRequestForm = ({
             className="px-6"
             type="button"
             onClick={onClose}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
           <Button
             className="bg-teal-800 hover:bg-teal-900 text-white px-6"
             type="submit"
+            disabled={isSubmitting}
           >
-            Submit
+            {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </FormContainer>

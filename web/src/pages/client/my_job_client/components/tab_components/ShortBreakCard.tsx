@@ -70,6 +70,16 @@ const ShortBreakCard: React.FC<ShortBreakCardProps> = ({
           <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
             {cardData.description}
           </p>
+          {cardData.approverComment && (
+            <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-700 rounded">
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Approver Comment:
+              </p>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                {cardData.approverComment}
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-end gap-3">
           <div className="flex items-center gap-3">
