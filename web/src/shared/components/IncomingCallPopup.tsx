@@ -107,17 +107,3 @@ const IncomingCallPopup: React.FC<IncomingCallPopupProps> = ({
 };
 
 export default IncomingCallPopup;
-
-/*
-Notes / integration guide (no-backend / readiness):
-- This component is purely presentational and exposes three callbacks: `onAccept`, `onReject`, and optional `onClose`.
-- If you don't yet have a backend or signaling server, use local fallbacks:
-  - Simulate incoming calls by toggling `isVisible` from parent state and calling the handlers.
-  - For audio behavior, you can call `new Audio(...)` with a ringing asset, or play a short loop until accepted/rejected.
-  - To prepare for real implementation, parent should wire these callbacks to the signaling layer (WebSocket, WebRTC signals, or REST hooks).
-  - When integrating with real APIs:
-    - `onAccept` should notify the server (accept event) and begin the call setup (e.g., exchange SDP via signaling + establish WebRTC peer connection).
-    - `onReject` should notify the server (reject/decline event) and stop any ringing locally.
-    - `onClose` can be used to hide the UI without sending network events when appropriate.
-- Keep the component usage simple: parent controls visibility and passes caller metadata and handlers.
-*/
