@@ -32,7 +32,8 @@ export default function EditSubAdmin() {
       name: subAdmin?.name || "",
       email: subAdmin?.email || "",
       phoneNumber: subAdmin?.phoneNumber || "",
-      region: subAdmin?.region || "",},
+      region: subAdmin?.region || "",
+    },
   });
 
   const navigate = useNavigate();

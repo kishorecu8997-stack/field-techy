@@ -53,7 +53,7 @@ export const jobData: JobDataProps[] = [
     city: "Mumbai",
     createdDate: "2024-11-01",
     status: "completed",
-    count: 1
+    count: 1,
   },
   {
     id: "#Ride002",
@@ -77,7 +77,7 @@ export const jobData: JobDataProps[] = [
     city: "Mumbai",
     createdDate: "2024-11-01",
     status: "pending",
-    count: 2
+    count: 2,
   },
   {
     id: "#Ride003",
@@ -101,7 +101,7 @@ export const jobData: JobDataProps[] = [
     city: "Mumbai",
     createdDate: "2024-11-01",
     status: "in-progress",
-    count: 1
+    count: 1,
   },
 ];
 

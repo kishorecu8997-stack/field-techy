@@ -2,11 +2,7 @@ import { TbCash, TbLayoutDashboard, TbLayoutGrid } from "react-icons/tb";
 import { absoluteUrls } from "./urls";
 import { FaRegBell } from "react-icons/fa";
 import { HiOutlineUserGroup } from "react-icons/hi";
-import {
-  BsPersonGear,
-  BsPersonWorkspace,
-  BsSuitcaseLg,
-} from "react-icons/bs";
+import { BsPersonGear, BsPersonWorkspace, BsSuitcaseLg } from "react-icons/bs";
 import { RxBackpack } from "react-icons/rx";
 import { LuSettings, LuSettings2, LuWallet } from "react-icons/lu";
 import { RiBankCardLine } from "react-icons/ri";
@@ -92,7 +88,7 @@ export const menuItems: MenuItem[] = [
         name: "Rate Card",
         path: absoluteUrls.admin.home.manage_rate_card,
         icon: <RiBankCardLine className="text-lg" />,
-      }
+      },
     ],
   },
 

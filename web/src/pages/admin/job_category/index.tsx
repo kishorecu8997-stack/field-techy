@@ -14,7 +14,6 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-
 export interface ServerCategoryProps {
   id: string;
   categoryImg: string;

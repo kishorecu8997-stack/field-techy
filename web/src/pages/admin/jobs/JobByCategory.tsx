@@ -92,7 +92,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
               ...prev,
               [job.id]: status,
             }));
-            toast.success(`Job Status has been set to ${status}`)
+            toast.success(`Job Status has been set to ${status}`);
             console.log("Updating status for job", job.id, "to", status);
             close(true);
           },
@@ -100,7 +100,6 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       ],
     });
   };
-
 
   const columns: Column<JobItem>[] = [
     {

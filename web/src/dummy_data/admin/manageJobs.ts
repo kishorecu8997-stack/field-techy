@@ -120,7 +120,7 @@ export const AllJobStatus = [
     bg: "bg-orange-100 text-orange-700",
     icon: icons.flagged,
   },
-    {
+  {
     value: "Cancel",
     label: "Cancel",
     bg: "bg-red-500 text-red-900",

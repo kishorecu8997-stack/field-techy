@@ -1,4 +1,3 @@
-
 export interface BasicInformation {
   name: string;
   email: string;

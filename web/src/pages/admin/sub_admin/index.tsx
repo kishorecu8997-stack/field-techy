@@ -77,26 +77,26 @@ export default function ManageSubAdmin() {
       label: "Phone Number",
       renderCell: (row: UserItem) => <span>{row.phoneNumber}</span>,
     },
-      {
-        key: "status",
-        label: "Status",
-        renderCell: (row: UserItem) => (
-          <span
-            className={`px-2 py-1 rounded-full text-xs ${
-              row.status === "Active"
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-            }`}
-          >
-            {row.status}
-          </span>
-        ),
-      },
-      {
+    {
+      key: "status",
+      label: "Status",
+      renderCell: (row: UserItem) => (
+        <span
+          className={`px-2 py-1 rounded-full text-xs ${
+            row.status === "Active"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {row.status}
+        </span>
+      ),
+    },
+    {
       key: "Region",
       label: "Region",
       renderCell: (row: UserItem) => <span>{row.region}</span>,
-      },
+    },
     {
       key: "action",
       label: "Action",
@@ -116,7 +116,7 @@ export default function ManageSubAdmin() {
             className="p-2 bg-red-100 rounded-md cursor-pointer"
             onClick={() => handleDisableSubAdmin(row)}
           >
-            <FaUserShield  className="text-red-600" />
+            <FaUserShield className="text-red-600" />
           </div>
         </div>
       ),
