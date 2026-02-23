@@ -161,8 +161,12 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
         </div>
 
         {/* Chats */}
-        <div className="flex-1 overflow-y-auto px-4" role="listbox" aria-label="Chats">
-          {/* Group */}
+        <div
+          className="flex-1 overflow-y-auto px-4"
+          role="listbox"
+          aria-label="Chats"
+        >
+          {/* Single Group */}
           {group && (
             <>
               <div className="text-black dark:text-white text-xs font-bold mb-2">
@@ -196,7 +200,9 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
                       {group.participant.name}
                     </span>
                     <span className="text-xs text-gray-500">
-                      {formatTime(group.messages[group.messages.length - 1]?.time)}
+                      {formatTime(
+                        group.messages[group.messages.length - 1]?.time,
+                      )}
                     </span>
                   </div>
 
@@ -246,7 +252,9 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
                         {chat.participant.name}
                       </span>
                       <span className="text-xs text-gray-500">
-                        {formatTime(chat.messages[chat.messages.length - 1]?.time)}
+                        {formatTime(
+                          chat.messages[chat.messages.length - 1]?.time,
+                        )}
                       </span>
                     </div>
 

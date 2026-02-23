@@ -1,4 +1,3 @@
-  
 import type {
   AssignmentStatus,
   JobStatus as SearchJobStatus,
