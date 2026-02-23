@@ -27,6 +27,7 @@ import type {
   AdminCreateClientData,
   AppMarkProfileFileUploadedData,
 } from "@/api";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 const DEFAULT_FORM_VALUES: Partial<ClientFormData> = {
   companyName: "",
@@ -291,9 +292,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
 
   if (isDetailLoading)
     return (
-      <div className="flex-1 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg">
-        <p className="text-gray-500">Loading client details...</p>
-      </div>
+      <LoaderComponent />
     );
 
   return (

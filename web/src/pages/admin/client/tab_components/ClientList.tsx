@@ -164,25 +164,8 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
       renderCell: (row: ManageClientProps) => `₹${row.balance || 0}`,
     },
     {
-      key: "profileStatus",
-      label: "Profile Status",
-      renderCell: (row: ManageClientProps) => (
-        <span
-          className={`capitalize font-medium ${
-            row.profileStatus === "approved"
-              ? "text-green-600"
-              : row.profileStatus === "pending"
-                ? "text-yellow-600"
-                : "text-red-600"
-          }`}
-        >
-          {row.profileStatus || "N/A"}
-        </span>
-      ),
-    },
-    {
       key: "userStatus",
-      label: "User Status",
+      label: "Profile Status",
       renderCell: (row: ManageClientProps) => (
         <SelectMenu
           placeholder="Select"
