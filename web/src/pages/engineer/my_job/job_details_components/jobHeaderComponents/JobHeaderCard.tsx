@@ -17,7 +17,7 @@ import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
-
+import { IoChatbubble } from "react-icons/io5";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  *
@@ -47,6 +47,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onOpenViewClientFeedback,
   allCardsApproved,
   setOfferJobStatus,
+  jobId,
+  onToggleChat,
 }) => {
   const params = useParams();
   const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
@@ -61,6 +63,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
     "hold",
   );
+
   const handleMenuAction = (action: string) => {
     let type: "hold" | "clone" | "cancel";
 
@@ -100,11 +103,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   return (
     <>
       <div
-        className={`${
-          isSendProposal
-            ? "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-            : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-        } p-5 rounded-xl shadow-md`}
+        className={`${isSendProposal
+          ? "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+          : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+          } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-start">
           <div>
@@ -116,25 +118,38 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
             {(numberOfVacancy !== undefined ||
               numberOfApplicants !== undefined) && (
-              <p className="text-sm mt-1">
-                {numberOfVacancy !== undefined && (
-                  <span>
-                    {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
-                  </span>
-                )}
-                {numberOfVacancy !== undefined &&
-                  numberOfApplicants !== undefined && (
-                    <span>{JOB_HEADER_COPY.separator}</span>
+                <p className="text-sm mt-1">
+                  {numberOfVacancy !== undefined && (
+                    <span>
+                      {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
+                    </span>
                   )}
-                {numberOfApplicants !== undefined && (
-                  <span>
-                    {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
-                  </span>
-                )}
-              </p>
-            )}
+                  {numberOfVacancy !== undefined &&
+                    numberOfApplicants !== undefined && (
+                      <span>{JOB_HEADER_COPY.separator}</span>
+                    )}
+                  {numberOfApplicants !== undefined && (
+                    <span>
+                      {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
+                    </span>
+                  )}
+                </p>
+              )}
           </div>
           <div className="flex gap-2 items-center">
+            {onToggleChat && jobId && (
+              <button
+                className="bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors"
+                onClick={() => onToggleChat(jobId)}
+              >
+                <span className="relative inline-block">
+                  <IoChatbubble size={16} />
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                </span>
+                <span>Chats</span>
+              </button>
+            )}
+
             {!hideBreakDetails && (
               <div
                 className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "

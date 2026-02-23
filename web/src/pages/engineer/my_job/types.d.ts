@@ -56,6 +56,9 @@ export interface MyJobsHeaderProps {
   buttonText?: string;
   onClick?: () => void;
   customLabels?: Record<string, string>;
+  segments?: string[];
+  isChatVisible?: boolean;
+  handleCloseChat?: () => void;
 }
 
 /**
@@ -125,6 +128,9 @@ export interface JobHeaderCardProps {
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
   allCardsApproved?: boolean;
+  jobId: string;
+  onToggleChat?: (jobId: string) => void;
+  onCloseChat?: () => void;
 }
 
 export interface JobTabsProps {
