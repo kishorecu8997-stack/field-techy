@@ -142,8 +142,16 @@ export type JobTabSectionProps = {
   isDummyNetworkEngineer?: boolean;
   showManageProposals?: boolean;
   isJobAccepted?: boolean;
-  jobID?: string;
-  onToggleChat?: () => void;
+  assignmentId?: number;
+  job?: {
+    id: string | number;
+    jobTitle?: string;
+    title?: string;
+    jobDescription?: string | null;
+    status?: string | null;
+    [key: string]: unknown;
+  };
+  onToggleChat?: (jobId: string) => void;
 };
 
 export const TIMELINE_CARD_TYPE: {
