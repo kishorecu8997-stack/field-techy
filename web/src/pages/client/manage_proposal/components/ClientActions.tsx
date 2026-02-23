@@ -38,9 +38,9 @@ const ClientActions = ({
         {showFeedbackButton && (
           <Button
             variant="no_style"
-            className="text-white text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white"
+            className="text-white text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white rounded-none hover:rounded-t-lg hover:bg-white/4"
             onClick={handleViewFeedback}
-            leftIcon={<icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />}
+            leftIcon={<icons.star aria-hidden="true" className="w-5 h-5 fill-yellow-400 text-yellow-400" />}
           >
             <span>View Feedback From Engineers</span>
           </Button>

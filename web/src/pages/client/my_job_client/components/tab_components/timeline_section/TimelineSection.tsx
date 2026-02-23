@@ -144,22 +144,26 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
   const shortBreakAccentColor = TIMELINE_CARD_COLORS.red;
   const finalStatementAccentColor = TIMELINE_CARD_COLORS.green;
 
+  // The revision update card is only visible and actionable when progressStatus
+  // is "revision". Including revisionUpdateStatus unconditionally would inflate
+  // the count even when no revision has ever been requested.
   const actionRequiredCount = [
     progressStatus,
-    revisionUpdateStatus,
     shortBreakStatus,
     finalStatementStatus,
     jobStatus,
+    ...(progressStatus === TIMELINE_STATUS.revision ? [revisionUpdateStatus] : []),
   ].filter((status) => status === TIMELINE_STATUS.pending).length;
 
-  // Includes all 5 cards so the collapsed summary and GiveFeedbackButton
-  // stay in sync with the ActionRequiredBadge shown in the expanded view.
+  // Same conditional logic: revisionUpdateStatus is only relevant when a
+  // revision is in flight, so GiveFeedbackButton and the collapsed summary
+  // use the same count as the ActionRequiredBadge.
   const pendingApprovalsCount = [
     progressStatus,
-    revisionUpdateStatus,
     shortBreakStatus,
     finalStatementStatus,
     jobStatus,
+    ...(progressStatus === TIMELINE_STATUS.revision ? [revisionUpdateStatus] : []),
   ].filter((status) => status === TIMELINE_STATUS.pending).length;
 
   const shortBreakStatusNode =

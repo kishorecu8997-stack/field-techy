@@ -41,26 +41,37 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
           {clientImage ? (
             <img
               src={clientImage}
-              alt={clientName}
+              alt=""
               className="w-14 h-14 rounded-full object-cover"
             />
           ) : (
-            <IoPersonCircleOutline className="w-14 h-14 text-gray-400 dark:text-gray-600" />
+            <IoPersonCircleOutline
+              aria-hidden="true"
+              className="w-14 h-14 text-gray-400 dark:text-gray-500"
+            />
           )}
           <div className="flex-1">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
               {clientName}
             </h3>
-            <div className="flex items-center gap-1">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <FaStar
-                  key={i}
-                  className={`w-4 h-4 ${i < (rating || 0)
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "text-gray-300 dark:text-gray-600"
-                    }`}
-                />
-              ))}
+            <div
+              className="flex items-center gap-1"
+              role="img"
+              aria-label={`Rated ${rating || 0} out of 5 stars`}
+            >
+              {(() => {
+                const safeRating = Math.max(0, Math.min(5, Math.round(rating || 0)));
+                return Array.from({ length: 5 }).map((_, i) => (
+                  <FaStar
+                    key={i}
+                    aria-hidden="true"
+                    className={`w-4 h-4 ${i < safeRating
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-300 dark:text-gray-500"
+                      }`}
+                  />
+                ));
+              })()}
             </div>
           </div>
         </div>

@@ -33,12 +33,12 @@ const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
 }) => {
   const { showPopup } = usePopupStore();
 
-  const handleClick = async (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent) => {
     if (stopPropagation) {
       e.stopPropagation();
     }
 
-    await showPopup({
+    showPopup({
       body: (
         <GiveFeedbackModal
           targetName={targetName}
@@ -52,8 +52,12 @@ const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
   };
 
   return (
-    <Button variant="no_style" className={className} aria-label={label} onClick={handleClick}>
-      <HiStar className="h-5 w-5 text-yellow-500" />
+    <Button
+      variant="no_style"
+      className={className}
+      onClick={handleClick}
+      leftIcon={<HiStar aria-hidden="true" className="h-5 w-5 text-yellow-500" />}
+    >
       <span className={textClassName}>{label}</span>
     </Button>
   );

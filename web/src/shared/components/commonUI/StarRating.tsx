@@ -66,20 +66,19 @@ export const StarRating: React.FC<StarRatingProps> = ({
               aria-disabled={readOnly}
               onClick={() => !readOnly && onChange(idx + 1)}
               onKeyDown={(e) => handleKeyDown(idx, e)}
-              className={`transition-transform ${
-                readOnly ? "cursor-default" : "hover:scale-110"
-              } p-0 outline-none focus:outline-none focus:ring-0 focus:ring-offset-0`}
+              className={`transition-transform ${readOnly ? "cursor-default" : "hover:scale-110"
+                } p-0 outline-none focus:outline-none focus:ring-0 focus:ring-offset-0`}
               role="radio"
               aria-checked={filled}
               aria-label={`Rate ${idx + 1} star${idx + 1 !== 1 ? "s" : ""}`}
               tabIndex={readOnly ? -1 : 0}
             >
               <Star
-                className={`${sizes[size]} ${
-                  filled
-                    ? "text-yellow-400"
-                    : "text-gray-300 dark:text-gray-600"
-                }`}
+                aria-hidden="true"
+                className={`${sizes[size]} ${filled
+                  ? "text-yellow-400"
+                  : "text-gray-300 dark:text-gray-500"
+                  }`}
                 fill={filled ? "currentColor" : "none"}
               />
             </Button>

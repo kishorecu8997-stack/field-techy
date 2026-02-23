@@ -49,7 +49,7 @@ const ViewEngineerFeedbackSidebar = () => {
                 {feedback.reviewerProfilePictureUrl && (
                   <img
                     src={feedback.reviewerProfilePictureUrl}
-                    alt={feedback.reviewerName}
+                    alt=""
                     className="w-12 h-12 rounded-full object-cover"
                   />
                 )}
@@ -58,17 +58,24 @@ const ViewEngineerFeedbackSidebar = () => {
                     {feedback.reviewerName}
                   </h3>
                   {/* Star Rating */}
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <FaStar
-                        key={i}
-                        className={`w-4 h-4 ${
-                          (feedback.rating ?? 0) > i
+                  <div
+                    className="flex items-center gap-1"
+                    role="img"
+                    aria-label={`Rated ${feedback.rating || 0} out of 5 stars`}
+                  >
+                    {(() => {
+                      const safeRating = Math.max(0, Math.min(5, Math.round(feedback.rating ?? 0)));
+                      return Array.from({ length: 5 }).map((_, i) => (
+                        <FaStar
+                          key={i}
+                          aria-hidden="true"
+                          className={`w-4 h-4 ${i < safeRating
                             ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300 dark:text-gray-600"
-                        }`}
-                      />
-                    ))}
+                            : "text-gray-300 dark:text-gray-500"
+                            }`}
+                        />
+                      ));
+                    })()}
                   </div>
                 </div>
               </div>
