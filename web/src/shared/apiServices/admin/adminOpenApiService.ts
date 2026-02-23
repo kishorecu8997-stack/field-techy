@@ -30,6 +30,11 @@ import {
   type AdminGetClientResponse,
   type AdminGetClientsForManagementError,
   type AdminDeleteClientResponse,
+  type AdminCreateServiceCategoryResponse,
+  type AdminGetServiceCategoriesData,
+  type AdminGetServiceCategoriesResponse,
+  type AdminUpdateServiceCategoryResponse,
+  type AdminDeleteServiceCategoryResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -46,6 +51,10 @@ import {
   adminUpdateClientMutation,
   adminGetClientOptions,
   adminDeleteClientMutation,
+  adminCreateServiceCategoryMutation,
+  adminGetServiceCategoriesOptions,
+  adminUpdateServiceCategoryMutation,
+  adminDeleteServiceCategoryMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -113,6 +122,81 @@ export function useAdminUpdatePersonalInfo(options?: {
     ...adminUpdatePersonalInfoMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminCreateServiceCategory(options?: {
+  onSuccess?: (data: AdminCreateServiceCategoryResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateServiceCategoryMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["lookup", "serviceCategories", "root"],
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id ===
+            "adminGetServiceCategories",
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateServiceCategory(options?: {
+  onSuccess?: (data: AdminUpdateServiceCategoryResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateServiceCategoryMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["lookup", "serviceCategories", "root"],
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id ===
+            "adminGetServiceCategories",
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminDeleteServiceCategory(options?: {
+  onSuccess?: (data: AdminDeleteServiceCategoryResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminDeleteServiceCategoryMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["lookup", "serviceCategories", "root"],
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id ===
+            "adminGetServiceCategories",
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -383,6 +467,26 @@ export function useAdminGetClientByUserId(
     ...adminGetClientOptions({
       client: apiClient,
       query: { userId: Number(userId) },
+    }),
+    ...options,
+  });
+}
+export type AdminGetServiceCategoriesQuery = NonNullable<
+  AdminGetServiceCategoriesData["query"]
+>;
+
+export function useAdminGetServiceCategories(
+  query?: AdminGetServiceCategoriesQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetServiceCategoriesResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetServiceCategoriesOptions({
+      client: apiClient,
+      query,
     }),
     ...options,
   });

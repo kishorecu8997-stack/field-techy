@@ -1,15 +1,17 @@
-import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import { serviceCategoriesData } from "@/dummy_data/admin";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { usePopupStore } from "@/shared/store/popupStore";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import {
+  useAdminDeleteServiceCategory,
+  useAdminGetServiceCategories,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 
 const HandleStatus = ({ status: value }: { status: boolean }) => {
@@ -54,12 +56,39 @@ export interface ServerCategoryProps {
 const ManageJobCategory: React.FC = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  //Delete confirmation
-  const handleDeleteJob = async (job: ServerCategoryProps) => {
+  const {
+    data: categoriesResponse,
+    isLoading,
+    isFetching,
+    error,
+  } = useAdminGetServiceCategories({
+      page,
+      limit: pageSize,
+      search: search.trim() || undefined,
+    });
+
+  const {
+    mutateAsync: deleteServiceCategory,
+    isPending: isDeletingCategory,
+  } = useAdminDeleteServiceCategory({
+    onSuccess: () => {
+      toast.success("Service category deleted successfully!");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Delete category failed";
+      toast.error(errorMessage);
+    },
+  });
+
+  const handleDeleteCategory = async (row: ServerCategoryProps) => {
     await showPopup({
-      title: "Job Category",
-      body: "Are you sure you want to delete this job category?",
+      title: "Delete Category",
+      body: "Are you sure you want to delete this category?",
       actionButtons: [
         {
           label: "Cancel",
@@ -71,10 +100,10 @@ const ManageJobCategory: React.FC = () => {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting job:", job.id);
-            toast.success("Job category deleted successfully!");
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
+            if (isDeletingCategory) return;
+            await deleteServiceCategory({
+              path: { id: Number(row.id) },
+            });
             close(true);
           },
         },
@@ -82,15 +111,24 @@ const ManageJobCategory: React.FC = () => {
     });
   };
 
+  const tableData = useMemo<ServerCategoryProps[]>(
+    () =>
+      (categoriesResponse?.data ?? []).map((item) => ({
+        id: String(item.id),
+        categoryName: item.name,
+        categoryImg: "",
+        createdDate: "-",
+        status: true,
+      })),
+    [categoriesResponse],
+  );
+
+  const totalCount = categoriesResponse?.total ?? 0;
+  const errorMessage =
+    error instanceof Error ? error.message : error ? "Failed to load data." : null;
+
   const columns: Column<ServerCategoryProps>[] = [
     { key: "id", label: "Sr.No." },
-    {
-      key: "categoryImg",
-      label: "Category Image",
-      renderCell: () => (
-        <img src={assetsConfig.placeholder} className="h-6 w-6" alt="img" />
-      ),
-    },
     { key: "categoryName", label: "Category" },
     { key: "createdDate", label: "Created Date" },
     {
@@ -112,15 +150,23 @@ const ManageJobCategory: React.FC = () => {
               onClick={() =>
                 navigate(
                   `${absoluteUrls.admin.home.manage_categories_edit}/${row.id}`,
+                  {
+                    state: {
+                      category: {
+                        id: Number(row.id),
+                        name: row.categoryName,
+                      },
+                    },
+                  },
                 )
               }
             />
           </div>
-          <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteJob(row)}
-          >
-            <RiDeleteBin6Line className="text-red-600" />
+          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+            <RiDeleteBin6Line
+              className="text-red-600"
+              onClick={() => handleDeleteCategory(row)}
+            />
           </div>
         </div>
       ),
@@ -142,13 +188,28 @@ const ManageJobCategory: React.FC = () => {
       </div>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div>
-          <SearchInput />
+          <SearchInput
+            value={search}
+            onChange={(val) => {
+              setSearch(val);
+              setPage(1);
+            }}
+          />
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ServerCategoryProps>
             columns={columns}
-            data={serviceCategoriesData}
-            initialPageSize={10}
+            data={tableData}
+            initialPageSize={pageSize}
+            loading={isLoading || isFetching}
+            error={errorMessage}
+            totalCount={totalCount}
+            currentPage={page}
+            onPageChange={(p) => setPage(p)}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
           />
         </div>
       </div>
