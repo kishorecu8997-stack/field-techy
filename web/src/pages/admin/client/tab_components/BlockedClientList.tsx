@@ -69,6 +69,7 @@ const BlockedClientList: React.FC = () => {
   // (In a real scenario, this should ideally be handled by the API)
   const clientData = (manageClient?.data || []) as unknown as ManageClientProps[];
   const blockedClients = clientData.filter(c => c.userStatus === 'blocked');
+  console.log("blockedClients", blockedClients)
 
   const columns: Column<ManageClientProps>[] = [
     {
@@ -81,6 +82,13 @@ const BlockedClientList: React.FC = () => {
       label: "Client ID",
       renderCell: (row: ManageClientProps) => (
         <span className="flex-nowrap text-nowrap">{(row.clientCode || "N/A").toUpperCase()}</span>
+      ),
+    },
+    {
+      key: "clientType",
+      label: "Client Type",
+      renderCell: (row: ManageClientProps) => (
+        <span className="capitalize">{row.clientType}</span>
       ),
     },
     {

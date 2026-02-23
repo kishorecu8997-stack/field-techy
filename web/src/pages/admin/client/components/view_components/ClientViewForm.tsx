@@ -64,11 +64,11 @@ const ClientViewForm: React.FC = () => {
     },
     {
       label: "Job History",
-      content: <JobHistory clientEmail={clientData?.email} />,
+      content: <JobHistory userId={Number(userId)} />,
     },
     {
       label: "Wallet",
-      content: <WalletTab />,
+      content: <WalletTab userId={Number(userId)} walletBalance={clientData?.balance} />,
     },
     {
       label: "Documents",
@@ -107,6 +107,7 @@ const ClientViewForm: React.FC = () => {
 
       <FormContainer methods={blockFormMethods} onSubmit={() => {}}>
         <BlockClient 
+          userId={userId ? Number(userId) : undefined}
           isBlockClient={isBlockPopupOpen} 
           setIsBlockClient={setIsBlockPopupOpen}
           onSuccess={() => {

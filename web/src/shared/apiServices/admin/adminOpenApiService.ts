@@ -35,7 +35,11 @@ import {
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
   type AdminDeleteServiceCategoryResponse,
+  type AdminGetClientHistoryResponse,
+  type AdminGetClientHistoryData,
 } from "@/api";
+
+export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
 import {
   adminGetPersonalInfoOptions,
   adminUpdatePersonalInfoMutation,
@@ -55,6 +59,7 @@ import {
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
+  adminGetClientHistoryOptions,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -507,5 +512,24 @@ export function useAdminDeleteClientMutation(options?: {
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+}
+
+export type AdminGetClientHistoryQuery = NonNullable<AdminGetClientHistoryData["query"]>;
+
+export function useAdminGetClientHistory(
+  query: AdminGetClientHistoryQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetClientHistoryResponse) => void;
+    onError?: (error: unknown) => void;
+  }
+) {
+  return useQuery({
+    ...adminGetClientHistoryOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
   });
 }

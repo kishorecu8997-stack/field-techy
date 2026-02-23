@@ -121,6 +121,7 @@ export type BlockClientForm = {
 };
 
 export interface BlockClientProps {
+  userId?: number;
   isBlockClient: boolean;
   setIsBlockClient: (isOpen: boolean) => void;
   onSuccess?: () => void;

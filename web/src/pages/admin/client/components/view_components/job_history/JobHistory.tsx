@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import {
-  useAdminGetJobs,
-  type AdminGetJobsQuery,
+  useAdminGetClientHistory,
+  type AdminGetClientHistoryQuery,
 } from "@/shared/apiServices/admin/adminOpenApiService";
+import type { JobItem } from "@/pages/admin/jobs/types";
 import ClientJobByCategory from "./ClientJobByCategory";
 
 interface JobHistoryProps {
-  clientEmail?: string;
+  userId: number;
 }
 
 /**
- * JobHistory Component displays the job history for a client.
- * Refactored to follow the JobByCategory pattern from Manage Jobs, 
- * now simplified to only use Search filtering.
+ * JobHistory Component displays the job history for a client using the AdminGetClientHistory API.
  */
-const JobHistory: React.FC<JobHistoryProps> = ({ clientEmail }) => {
+const JobHistory: React.FC<JobHistoryProps> = ({ userId }) => {
   const [activeTabLabel, setActiveTabLabel] = useState("Posted Jobs");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -23,51 +22,43 @@ const JobHistory: React.FC<JobHistoryProps> = ({ clientEmail }) => {
 
   const tabsConfig: Array<{
     label: string;
-    status: AdminGetJobsQuery["status"] | undefined;
+    statusGroup: AdminGetClientHistoryQuery["statusGroup"];
   }> = [
-    { label: "Posted Jobs", status: "Posted" },
-    { label: "In Progress Jobs", status: "In Progress" },
-    { label: "Completed Jobs", status: "Closed" },
-    { label: "Hold Jobs", status: "Hold" },
-    { label: "Flagged Jobs", status: "Flagged" },
-    { label: "Declined Jobs", status: "Cancelled" },
+    { label: "Posted Jobs", statusGroup: "posted" },
+    { label: "In Progress Jobs", statusGroup: "inProgress" },
+    { label: "Completed Jobs", statusGroup: "completed" },
+    { label: "Hold Jobs", statusGroup: "hold" },
+    { label: "Flagged Jobs", statusGroup: "flagged" },
+    { label: "Declined Jobs", statusGroup: "declined" },
   ];
 
-  const currentStatus = tabsConfig.find(
+  const currentStatusGroup = tabsConfig.find(
     (t) => t.label === activeTabLabel,
-  )?.status;
+  )?.statusGroup;
 
   const {
-    data: jobsResponse,
+    data: historyResponse,
     isLoading,
     error,
-  } = useAdminGetJobs({
+  } = useAdminGetClientHistory({
     page,
     limit,
-    status: currentStatus,
-    search: search || undefined,
+    userId,
+    type: "jobs",
+    statusGroup: currentStatusGroup,
   });
 
-  const allJobs = jobsResponse?.data || [];
+  const allJobs = (historyResponse?.data || []) as JobItem[];
 
-  // Filter jobs by client email
+  // Filter jobs by search on client side if search is provided, or rely on API if it supports search
   const clientJobs = allJobs.filter((job) => {
-    const emailMatches = clientEmail 
-      ? job.postedBy.email.toLowerCase() === clientEmail.toLowerCase()
-      : true;
-
-    if (!emailMatches) return false;
-
-    let matches = true;
-    if (search) {
-      const query = search.toLowerCase();
-      matches =
-        job.jobTitle.toLowerCase().includes(query) ||
-        job.jobCode.toLowerCase().includes(query) ||
-        (job.jobDescription?.toLowerCase().includes(query) ?? false);
-    }
-
-    return matches;
+    if (!search) return true;
+    const query = search.toLowerCase();
+    return (
+      job.jobTitle?.toLowerCase().includes(query) ||
+      job.jobCode?.toLowerCase().includes(query) ||
+      (job.jobDescription?.toLowerCase().includes(query) ?? false)
+    );
   });
 
   const handleClearFilters = () => {
@@ -77,7 +68,7 @@ const JobHistory: React.FC<JobHistoryProps> = ({ clientEmail }) => {
 
   const handleTabChange = (tabLabel: string) => {
     setActiveTabLabel(tabLabel);
-    handleClearFilters();
+    setPage(1); // Reset page on tab change
   };
 
   const handlePageChange = (newPage: number) => setPage(newPage);
@@ -99,7 +90,7 @@ const JobHistory: React.FC<JobHistoryProps> = ({ clientEmail }) => {
         onClearFilters={handleClearFilters}
         page={page}
         limit={limit}
-        total={clientJobs.length}
+        total={historyResponse?.total || 0}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
       />
