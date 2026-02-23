@@ -37,14 +37,14 @@ export interface GroupedNotifications {
 
 export interface NotificationItemProps {
   notification: NotificationProps;
-  onDismiss?: (id: string | number) => void;
+  onDismiss?: (id: string | number) => void | Promise<void>;
   onMarkAsRead?: (id: string | number) => void;
   index?: string;
 }
 
 export interface NotificationPanelProps {
   grouped: GroupedNotifications;
-  onDismiss?: (id: string | number) => void;
+  onDismiss?: (id: string | number) => void | Promise<void>;
   onMarkAsRead?: (id: string | number) => void;
   onMarkAllAsRead?: () => void;
   viewAllLink?: string;

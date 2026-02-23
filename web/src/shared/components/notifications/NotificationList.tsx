@@ -1,4 +1,4 @@
-import { useAppMarkNotificationAsRead, useAppMarkAllNotificationsAsRead, useAppNotifications } from "@/shared/apiServices/notifications/notificationOpenApiService";
+import { useAppMarkNotificationAsRead, useAppMarkAllNotificationsAsRead, useAppDeleteNotification, useAppNotifications } from "@/shared/apiServices/notifications/notificationOpenApiService";
 import { groupNotificationsByDate } from "@/shared/apiServices/notifications/notificationAdapter";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -6,7 +6,7 @@ import type { NotificationProps } from "@/shared/types/notification";
 import { useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { RiCloseLine } from "react-icons/ri";
+import { RiCloseLine, RiDeleteBin6Line } from "react-icons/ri";
 
 /**
  * Renders a notification center with categorized views (All, Jobs, Wallet, Unread).
@@ -21,6 +21,7 @@ const NotificationList: React.FC = () => {
     const { notifications, isLoading } = useAppNotifications();
     const { mutateAsync: markAsReadAsync } = useAppMarkNotificationAsRead();
     const { mutateAsync: markAllAsReadAsync } = useAppMarkAllNotificationsAsRead();
+    const { mutateAsync: deleteNotifAsync } = useAppDeleteNotification();
 
     const INITIAL_LIMIT = 5;
 
@@ -62,6 +63,38 @@ const NotificationList: React.FC = () => {
 
     // Whether any visible notification is unread (controls Mark All as Read visibility)
     const hasUnread = filteredNotifications.some((n) => !n.read);
+
+    const handleDelete = async (e: React.MouseEvent, notif: NotificationProps) => {
+        e.stopPropagation();
+        await showPopup({
+            title: "Delete Notification",
+            body: (
+                <div className="px-2 py-1">
+                    <p className="text-gray-700 dark:text-gray-300">
+                        Are you sure you want to delete this notification?
+                    </p>
+                    <p className="text-sm text-gray-500 mt-1 font-medium">"{notif.title}"</p>
+                </div>
+            ),
+            actionButtons: [
+                {
+                    label: "Cancel",
+                    value: "cancel",
+                    variant: "secondary",
+                    action: () => closePopup(),
+                },
+                {
+                    label: "Delete",
+                    value: "delete",
+                    action: async () => {
+                        await deleteNotifAsync({ body: { id: notif.id as number } });
+                        closePopup(true)
+                    },
+                    variant: "danger",
+                },
+            ],
+        });
+    };
 
     const ButtonRender = (notifItem: NotificationProps) => {
         return (
@@ -121,16 +154,20 @@ const NotificationList: React.FC = () => {
                 : "bg-gray-100 border-transparent dark:bg-gray-800 dark:border-gray-700"
                 }`}
         >
-            {/* Timestamp — always pinned to top-right */}
-            <div className="absolute top-3 right-3 text-xs text-gray-500 font-semibold whitespace-nowrap">
-                {notif.timestamp}
+            {/* Delete icon — top-right */}
+            <div
+                className="absolute top-2 right-2 p-1 text-gray-400 hover:text-red-500 transition-colors rounded"
+                title="Delete notification"
+                onClick={(e) => handleDelete(e, notif)}
+            >
+                <RiDeleteBin6Line className="text-lg" />
             </div>
 
             <div className="flex flex-col md:flex-row gap-x-4 w-full">
                 <div className="flex justify-center items-center text-2xl size-10 bg-white rounded-full mb-3 md:mb-0 shrink-0">
                     {notif.icon}
                 </div>
-                <div className="flex flex-col flex-1 w-full pr-16">
+                <div className="flex flex-col flex-1 w-full pr-8">
                     <h1 className="font-bold text-md">{notif.title}</h1>
                     <p className="text-gray-600 dark:text-gray-300 text-md font-medium">
                         {notif.message}
@@ -140,6 +177,10 @@ const NotificationList: React.FC = () => {
                             {ButtonRender(notif)}
                         </div>
                     )}
+                    {/* Timestamp — bottom-right */}
+                    <div className="flex justify-end mt-2">
+                        <span className="text-xs text-gray-500 font-semibold">{notif.timestamp}</span>
+                    </div>
                 </div>
             </div>
         </div>
