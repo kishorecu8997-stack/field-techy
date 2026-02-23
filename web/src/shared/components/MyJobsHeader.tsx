@@ -48,7 +48,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                     className="text-black dark:text-white font-bold"
                     aria-label="Go back to job details"
                   >
-                    <IoChevronBack  size={20} />
+                    <IoChevronBack size={20} />
                   </button>
                 )}
                 {title}
@@ -79,7 +79,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                     className="text-black dark:text-white font-bold"
                     aria-label="Go back to job details"
                   >
-                    <IoChevronBack  size={20} />
+                    <IoChevronBack size={20} />
                   </button>
                 )}
                 {title}
