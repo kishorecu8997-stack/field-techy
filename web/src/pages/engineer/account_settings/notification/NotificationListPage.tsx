@@ -5,7 +5,7 @@ import NotificationList from "@/shared/components/notifications/NotificationList
  * Uses the shared NotificationList component
  */
 const NotificationListPage = () => {
-  return <NotificationList role="engineer" />;
+  return <NotificationList />;
 };
 
 export default NotificationListPage;
