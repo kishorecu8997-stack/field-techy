@@ -85,6 +85,7 @@ const OfferPages = () => {
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
               setActiveTab={setActiveTab}
+              jobId={""}
             />
             <JobTabSection
               status={jobData?.status as JobStatus}

@@ -258,6 +258,7 @@ const JobDetailsPage = () => {
               onAddProgressUpdate={handleAddProgressUpdate}
               onOpenFinalStatement={handleOpenFinalStatement}
               assignmentId={assignmentId}
+              jobId={params.jobId}
             />
 
             <JobTabSection
