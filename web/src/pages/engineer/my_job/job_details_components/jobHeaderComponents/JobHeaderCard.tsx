@@ -16,7 +16,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-
+import { IoChatbubble } from "react-icons/io5";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  *
@@ -41,6 +41,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   activeTab,
   onAddProgressUpdate,
   onOpenFinalStatement,
+  jobId,
+  onToggleChat,
 }) => {
   const isDummyJob = false;
 
@@ -55,6 +57,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
     "hold",
   );
+
   const handleMenuAction = (action: string) => {
     let type: "hold" | "clone" | "cancel";
 
@@ -129,6 +132,19 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
           </div>
           <div className="flex gap-2 items-center">
+            {onToggleChat && jobId && (
+              <button
+                className="bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors"
+                onClick={() => onToggleChat(jobId)}
+              >
+                <span className="relative inline-block">
+                  <IoChatbubble size={16} />
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                </span>
+                <span>Chats</span>
+              </button>
+            )}
+
             {!hideBreakDetails && (
               <div
                 className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "

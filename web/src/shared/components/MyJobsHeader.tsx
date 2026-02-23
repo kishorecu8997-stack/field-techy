@@ -5,6 +5,7 @@ import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "./commonUI/Buttons";
+import { IoChevronBack } from "react-icons/io5";
 
 /**
  * MyJobsHeader Component
@@ -25,6 +26,9 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   buttonText,
   onClick,
   customLabels: propCustomLabels,
+  segments,
+  isChatVisible,
+  handleCloseChat,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
   const location = useLocation();
@@ -37,7 +41,16 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
         <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 md:px-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <div>
-              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+                {isChatVisible && handleCloseChat && (
+                  <button
+                    onClick={handleCloseChat}
+                    className="text-black dark:text-white font-bold"
+                    aria-label="Go back to job details"
+                  >
+                    <IoChevronBack size={20} />
+                  </button>
+                )}
                 {title}
               </h1>
               {description && (
@@ -59,7 +72,16 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
         <header className="sticky top-[80px] z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-4 md:px-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                {isChatVisible && handleCloseChat && (
+                  <button
+                    onClick={handleCloseChat}
+                    className="text-black dark:text-white font-bold"
+                    aria-label="Go back to job details"
+                  >
+                    <IoChevronBack size={20} />
+                  </button>
+                )}
                 {title}
               </h1>
               <div className="mt-1">
@@ -72,6 +94,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                       home: "Home",
                       ...propCustomLabels,
                     }}
+                    segments={segments}
                   />
                 )}
                 {description && (
