@@ -80,7 +80,7 @@ export const menuItems: MenuItem[] = [
     icon: <BsSuitcaseLg className="text-lg" />,
     children: [
       {
-        name: "Job Category",
+        name: "Service Category",
         path: absoluteUrls.admin.home.manage_categories,
         icon: <TbLayoutGrid className="text-lg" />,
       },
@@ -164,3 +164,5 @@ export const menuItems: MenuItem[] = [
     ],
   },
 ];
+
+//this is the sample line for testing the build

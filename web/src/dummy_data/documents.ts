@@ -19,7 +19,6 @@ export const initialDocuments: Document[] = [
     fileName: "Certificate.jpg",
     fileType: "JPEG",
     previewUrl: img8140054,
-    uploadDate: "2022-11-01",
     description: "Scanned document image stored locally in assets/document",
     metadata: {
       Source: "Local assets/document",
@@ -35,7 +34,6 @@ export const initialDocuments: Document[] = [
     fileName: "Government-ID.jpg",
     fileType: "JPEG",
     previewUrl: img8351119,
-    uploadDate: "2022-11-02",
     description: "Scanned document image stored locally in assets/document",
     metadata: {
       Source: "Local assets/document",
@@ -49,7 +47,6 @@ export const initialDocuments: Document[] = [
     fileName: "Government-ID1.jpg",
     fileType: "JPEG",
     previewUrl: imgExampleJpg,
-    uploadDate: "2021-06-15",
     description: "Example JPEG file included in project assets",
     metadata: {
       Size: "~100KB",
@@ -63,7 +60,6 @@ export const initialDocuments: Document[] = [
     fileName: "Resume.pdf",
     fileType: "PDF",
     previewUrl: sampleLocalPdf,
-    uploadDate: "2021-06-16",
     description: "Sample local PDF stored in assets/document",
     metadata: {
       Pages: "2",
