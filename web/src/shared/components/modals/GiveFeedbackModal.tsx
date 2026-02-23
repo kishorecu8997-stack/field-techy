@@ -42,8 +42,9 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
         toast.success("Feedback submitted successfully!");
         onClose?.(true);
       },
-      onError: (error: any) => {
-        const errorMessage = error?.body?.error || "Failed to submit feedback";
+      onError: (error: unknown) => {
+        const err = error as { error?: string; message?: string };
+        const errorMessage = err?.error || err?.message || "Failed to submit feedback";
         toast.error(errorMessage);
       },
     });
