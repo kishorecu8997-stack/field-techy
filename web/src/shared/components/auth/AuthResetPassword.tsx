@@ -4,6 +4,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { useResetPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
@@ -38,13 +39,26 @@ interface AuthResetPasswordProps {
 const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const email = searchParams.get("email") || "";
+  const emailFromStorage = sessionStorage.getItem("reset_password_email") || "";
+  const otpFromStorage = sessionStorage.getItem("reset_password_otp") || "";
+  const email = emailFromStorage || searchParams.get("email") || "";
+  const otp = otpFromStorage || searchParams.get("otp") || "";
   const { success, error: toastError } = useToast();
+
+  useEffect(() => {
+    if (emailFromStorage) {
+      sessionStorage.removeItem("reset_password_email");
+    }
+
+    if (otpFromStorage) {
+      sessionStorage.removeItem("reset_password_otp");
+    }
+  }, [emailFromStorage, otpFromStorage]);
 
   const methods = useForm<ResetPasswordFormData>({
     defaultValues: {
       email: email,
-      otp: "",
+      otp: otp,
       password: "",
       confirmPassword: "",
     },
