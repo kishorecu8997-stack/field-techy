@@ -2,6 +2,7 @@ import React from "react";
 import { HiStar } from "react-icons/hi";
 import { usePopupStore } from "@/shared/store/popupStore";
 import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
+import { Button } from "./Buttons";
 
 interface GiveFeedbackButtonProps {
   targetName: string;
@@ -23,7 +24,7 @@ const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
   targetName,
   targetRole,
   placeholder = "The overall experience was good and focused.",
-  label = "Give Feedback On Engineer",
+  label = "Give Feedback",
   className = "flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 transition-opacity hover:opacity-80 underline cursor-pointer",
   textClassName = "",
   stopPropagation = false,
@@ -51,10 +52,10 @@ const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
   };
 
   return (
-    <div className={className} aria-label={label} onClick={handleClick}>
+    <Button variant="no_style" className={className} aria-label={label} onClick={handleClick}>
       <HiStar className="h-5 w-5 text-yellow-500" />
       <span className={textClassName}>{label}</span>
-    </div>
+    </Button>
   );
 };
 

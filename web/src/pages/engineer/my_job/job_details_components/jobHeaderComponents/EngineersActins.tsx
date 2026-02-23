@@ -127,20 +127,22 @@ const EngineersActions = ({
 
   const postStartActions = isFinalStatementSubmitted ? (
     <div className="flex flex-wrap gap-4 w-fit">
-      <div
-        className="text-white px-2 py-2 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 hover:rounded-t-lg  "
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
         onClick={() => onOpenViewClientFeedback?.()}
+        leftIcon={<icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />}
       >
-        <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
         <span>View Feedback From Client</span>
-      </div>
-      <div
-        className="text-white px-2 py-2 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 hover:rounded-t-lg"
+      </Button>
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
         onClick={() => onOpenGiveClientFeedback?.()}
+        leftIcon={<icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />}
       >
-        <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
         <span>Give Feedback On Client</span>
-      </div>
+      </Button>
     </div>
   ) : (
     <div className="flex flex-wrap gap-2 w-fit">

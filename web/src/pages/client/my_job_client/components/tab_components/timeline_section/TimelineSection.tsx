@@ -152,9 +152,11 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
     jobStatus,
   ].filter((status) => status === TIMELINE_STATUS.pending).length;
 
-  // Calculate pending approvals for the main 4 cards (excluding revision update)
+  // Includes all 5 cards so the collapsed summary and GiveFeedbackButton
+  // stay in sync with the ActionRequiredBadge shown in the expanded view.
   const pendingApprovalsCount = [
     progressStatus,
+    revisionUpdateStatus,
     shortBreakStatus,
     finalStatementStatus,
     jobStatus,
@@ -420,10 +422,17 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       {isSectionCollapsed ? (
-        /* Collapsed View - Engineer Summary */
         <div
           className="p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+          role="button"
+          tabIndex={0}
           onClick={() => setIsSectionCollapsed(false)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setIsSectionCollapsed(false);
+            }
+          }}
         >
           <div className="flex items-start justify-between">
             <div className="flex-1">
@@ -462,6 +471,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
             <div className="flex items-center gap-2">
               {pendingApprovalsCount === 0 && (
                 <GiveFeedbackButton
+                  label="Give Feedback On Engineer"
                   targetName={engineerTimelineData.name}
                   targetRole={engineerTimelineData.role}
                   assignmentId={engineerTimelineData.assignmentId}
@@ -479,8 +489,10 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
           <div className="flex justify-end items-center gap-2 px-4 pt-3">
             {pendingApprovalsCount === 0 && (
               <GiveFeedbackButton
+                label="Give Feedback On Engineer"
                 targetName={engineerTimelineData.name}
                 targetRole={engineerTimelineData.role}
+                stopPropagation
                 assignmentId={engineerTimelineData.assignmentId}
               />
             )}

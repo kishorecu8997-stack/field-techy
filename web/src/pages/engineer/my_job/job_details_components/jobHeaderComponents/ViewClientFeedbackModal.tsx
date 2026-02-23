@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import React from "react";
 import { FaStar } from "react-icons/fa";
 import { IoCloseSharp, IoPersonCircleOutline } from "react-icons/io5";
 
@@ -17,7 +18,6 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
   rating,
   review,
 }) => {
-  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 rounded-lg">
@@ -25,15 +25,15 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           View Feedback From Client
         </h2>
-        <button
-          ref={closeBtnRef}
+        <Button
           type="button"
+          variant="no_style"
           onClick={onClose}
           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
           aria-label="Close"
         >
           <IoCloseSharp className="w-6 h-6" />
-        </button>
+        </Button>
       </div>
 
       <div className="px-6 py-6">
@@ -55,11 +55,10 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
               {Array.from({ length: 5 }).map((_, i) => (
                 <FaStar
                   key={i}
-                  className={`w-4 h-4 ${
-                    i < (rating || 0)
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300 dark:text-gray-600"
-                  }`}
+                  className={`w-4 h-4 ${i < (rating || 0)
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300 dark:text-gray-600"
+                    }`}
                 />
               ))}
             </div>

@@ -86,7 +86,7 @@ const JobDetailsPage = () => {
       body: (
         <ViewClientFeedbackModal
           onClose={closePopup}
-          clientName={clientReview?.reviewerName || clientName || "Client"}
+          clientName={clientReview?.reviewerName || job?.clientDetails?.companyName || "Client"}
           clientImage={clientReview?.reviewerProfilePictureUrl ?? undefined}
           rating={clientReview?.rating ?? undefined}
           review={clientReview?.review ?? undefined}
@@ -103,7 +103,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -128,7 +128,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -147,7 +147,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -171,9 +171,9 @@ const JobDetailsPage = () => {
   const duration = isDummyJob
     ? "5 weeks"
     : getDurationString({
-        startDateStr: job?.startDate as string,
-        endDateStr: job?.endDate as string,
-      });
+      startDateStr: job?.startDate as string,
+      endDateStr: job?.endDate as string,
+    });
   const engagementType = isDummyJob ? "ON_SITE" : (job?.jobType as string);
   const jobStatus = isDummyJob ? "New" : (job?.status as JobStatus);
 
@@ -183,7 +183,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isReport
           customLabels={
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined

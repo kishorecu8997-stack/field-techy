@@ -36,13 +36,14 @@ const ClientActions = ({
     <>
       <div className="flex flex-wrap gap-4 w-full justify-end">
         {showFeedbackButton && (
-          <div
+          <Button
+            variant="no_style"
             className="text-white text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white"
             onClick={handleViewFeedback}
+            leftIcon={<icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />}
           >
-            <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
             <span>View Feedback From Engineers</span>
-          </div>
+          </Button>
         )}
         <Button
           variant="primary"

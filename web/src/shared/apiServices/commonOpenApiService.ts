@@ -23,6 +23,7 @@ import {
   appMarkProfileFileUploadedMutation,
   createRateAndReviewAssignmentMutation,
   getUserRatingAndReviewsOptions,
+  getUserRatingAndReviewsQueryKey,
 } from "@/api/@tanstack/react-query.gen";
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -193,7 +194,7 @@ export function useCreateRateAndReviewAssignment(options?: {
   return useMutation({
     ...createRateAndReviewAssignmentMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["getUserRatingAndReviews"] });
+      queryClient.invalidateQueries({ queryKey: getUserRatingAndReviewsQueryKey({ client: apiClient }) });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

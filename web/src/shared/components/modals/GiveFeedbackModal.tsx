@@ -62,7 +62,7 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
   } = formCtx;
 
   const handleSubmit = (data: FormValues) => {
-    if (!assignmentId) {
+    if (assignmentId === null || assignmentId === undefined) {
       toast.error("Assignment ID is missing");
       return;
     }
