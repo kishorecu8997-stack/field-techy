@@ -3,13 +3,7 @@ import useDrawerStore from "../store/useDrawerStore";
 import { Button } from "./commonUI/Buttons";
 import Drawer from "./drawer/Drawer";
 import { useState } from "react";
-
-interface EarningsData {
-  balance: number;
-}
-interface WalletCardProps {
-  earnings: EarningsData;
-}
+import { useClientBalance } from "../apiServices/client/clientOpenApiService";
 
 /**
  * A card component that displays the user's wallet balance and provides
@@ -17,12 +11,13 @@ interface WalletCardProps {
  * with the corresponding content.
  *
  * @component
- * @param {WalletCardProps} props - The props for the component.
  * @returns {JSX.Element} The rendered WalletCard component.
  */
-export const WalletCard: React.FC<WalletCardProps> = ({ earnings }) => {
+export const WalletCard: React.FC = () => {
   const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
   const [showBalance, setShowBalance] = useState<boolean>(false);
+  const { data: balanceArr } = useClientBalance();
+  const balance = balanceArr?.[0];
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -49,12 +44,14 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings }) => {
         <div className="flex justify-between items-center">
           <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
             {showBalance
-              ? earnings.balance.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })
+              ? balance?.balance != null
+                ? Number(balance.balance).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: balance.currencyCode ?? "INR",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                : "--"
               : "******"}
           </p>
 

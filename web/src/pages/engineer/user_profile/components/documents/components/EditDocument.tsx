@@ -141,7 +141,7 @@ const EditDocument = () => {
         )}
       </div>
 
-      <div className="bg-white p-3 border-t">
+      <div>
         <Button
           type="submit"
           disabled={isUploading}

@@ -15,7 +15,7 @@ import ManageJobDetails from "./ManageJobDetails";
  */
 const JobDetails = () => {
   // const id = useParams();
-  const id = "#Ride001";
+  const id = "#Ride002";
 
   const findJobValue = () => {
     return jobData.find((job) => job.id === String(id));
@@ -28,19 +28,16 @@ const JobDetails = () => {
       value: findJobValue()?.description,
     },
     { label: "Job Type", value: findJobValue()?.jobType },
-    { label: "Job Category", value: findJobValue()?.category },
+    { label: "Service Category", value: findJobValue()?.category },
     { label: "Job Price", value: findJobValue()?.salary },
     { label: "Country", value: findJobValue()?.country },
     { label: "State", value: findJobValue()?.state },
     { label: "City", value: findJobValue()?.city },
+    { label: "No of Engineers", value: findJobValue()?.count },
   ];
 
   const handleStatusChange = () => {
     alert("Job marked as completed!");
-  };
-
-  const handleAssignEngineer = (engineerId: string) => {
-    alert(`Engineer ${engineerId} assigned to job #Ride001`);
   };
 
   return (
@@ -57,8 +54,7 @@ const JobDetails = () => {
           />
           <ContactDetailsCard
             client={findJobValue()?.clientDetails}
-            engineer={findJobValue()?.engineerDetails}
-            onEngineerAssign={handleAssignEngineer}
+            engineers={findJobValue()?.engineerDetails || []}
             engineersList={engineersList}
           />
           <ManageJobDetails job={infoData} />
