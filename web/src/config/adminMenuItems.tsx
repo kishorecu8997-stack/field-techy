@@ -1,19 +1,12 @@
 import { TbCash, TbLayoutDashboard, TbLayoutGrid } from "react-icons/tb";
 import { absoluteUrls } from "./urls";
 import { FaRegBell } from "react-icons/fa";
-import { HiOutlineCreditCard, HiOutlineUserGroup } from "react-icons/hi";
-import {
-  BsListCheck,
-  BsPersonGear,
-  BsPersonWorkspace,
-  BsSuitcaseLg,
-} from "react-icons/bs";
+import { HiOutlineUserGroup } from "react-icons/hi";
+import { BsPersonGear, BsPersonWorkspace, BsSuitcaseLg } from "react-icons/bs";
 import { RxBackpack } from "react-icons/rx";
 import { LuSettings, LuSettings2, LuWallet } from "react-icons/lu";
 import { RiBankCardLine } from "react-icons/ri";
 import { BiFile } from "react-icons/bi";
-import { MdCurrencyExchange } from "react-icons/md";
-import { FiUsers } from "react-icons/fi";
 import { ImLoop } from "react-icons/im";
 
 /**
@@ -68,11 +61,6 @@ export const menuItems: MenuItem[] = [
         path: absoluteUrls.admin.home.manage_client,
         icon: <HiOutlineUserGroup className="text-lg" />,
       },
-      {
-        name: "Groups",
-        path: absoluteUrls.admin.home.manage_groups,
-        icon: <FiUsers className="text-lg" />,
-      },
     ],
   },
   {
@@ -81,7 +69,7 @@ export const menuItems: MenuItem[] = [
     icon: <BsSuitcaseLg className="text-lg" />,
     children: [
       {
-        name: "Job Category",
+        name: "Service Category",
         path: absoluteUrls.admin.home.manage_categories,
         icon: <TbLayoutGrid className="text-lg" />,
       },
@@ -89,11 +77,6 @@ export const menuItems: MenuItem[] = [
         name: "Jobs",
         path: absoluteUrls.admin.home.manage_jobs,
         icon: <RxBackpack className="text-lg" />,
-      },
-      {
-        name: "Projects",
-        path: "project",
-        icon: <BsListCheck className="text-lg" />,
       },
     ],
   },
@@ -106,16 +89,6 @@ export const menuItems: MenuItem[] = [
         name: "Rate Card",
         path: absoluteUrls.admin.home.manage_rate_card,
         icon: <RiBankCardLine className="text-lg" />,
-      },
-      {
-        name: "Payment",
-        path: absoluteUrls.admin.home.manage_payment,
-        icon: <HiOutlineCreditCard className="text-xl" />,
-      },
-      {
-        name: "Transactions",
-        path: absoluteUrls.admin.home.manage_transactions,
-        icon: <MdCurrencyExchange className="text-lg" />,
       },
       {
         name: "Exchange Rates",
@@ -170,3 +143,5 @@ export const menuItems: MenuItem[] = [
     ],
   },
 ];
+
+//this is the sample line for testing the build

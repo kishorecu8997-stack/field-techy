@@ -129,6 +129,46 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
           : queryKeys.client.all;
       queryClient.invalidateQueries({ queryKey: baseKey });
 
+      if (isEngineer) {
+        await queryClient.invalidateQueries({
+          predicate: (query) =>
+            Array.isArray(query.queryKey) &&
+            query.queryKey[0] &&
+            typeof query.queryKey[0] === "object" &&
+            (query.queryKey[0] as { _id?: string })._id ===
+              "engineerGetMyDocuments",
+        });
+
+        await queryClient.refetchQueries({
+          predicate: (query) =>
+            Array.isArray(query.queryKey) &&
+            query.queryKey[0] &&
+            typeof query.queryKey[0] === "object" &&
+            (query.queryKey[0] as { _id?: string })._id ===
+              "engineerGetMyDocuments",
+        });
+      }
+
+      if (!isEngineer && !isAdmin) {
+        await queryClient.invalidateQueries({
+          predicate: (query) =>
+            Array.isArray(query.queryKey) &&
+            query.queryKey[0] &&
+            typeof query.queryKey[0] === "object" &&
+            (query.queryKey[0] as { _id?: string })._id ===
+              "clientGetMyDocuments",
+        });
+
+        await queryClient.refetchQueries({
+          predicate: (query) =>
+            Array.isArray(query.queryKey) &&
+            query.queryKey[0] &&
+            typeof query.queryKey[0] === "object" &&
+            (query.queryKey[0] as { _id?: string })._id ===
+              "clientGetMyDocuments",
+        });
+      }
+
       // Invalidate the download query to get the fresh URL
       queryClient.invalidateQueries({
         predicate: (query) =>
