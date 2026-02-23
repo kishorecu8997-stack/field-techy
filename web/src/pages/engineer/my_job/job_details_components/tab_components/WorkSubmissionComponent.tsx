@@ -15,7 +15,15 @@ import { scrollToTop } from "@/utils";
 import { useEngineerSubmitSignOff } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
- * Form data structure for work submission
+ * Form data structure for work submission component.
+ * This interface defines the shape of data collected when an engineer submits their work,
+ * including task details, attachments, notes, and signature.
+ * 
+ * @interface WorkSubmissionFormData
+ * @property {string} onsiteTask - Indicates whether the task was carried out at the site (Yes/No)
+ * @property {FileList | null} file - The uploaded completed task file (PDF)
+ * @property {string} notes - Additional notes or comments from the technician
+ * @property {string} signature - Base64 encoded signature image data
  */
 interface WorkSubmissionFormData {
   onsiteTask: string;

@@ -5,7 +5,6 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
 import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-// import { toast } from "react-toastify";
 import {
   JOB_STATUSES,
   SORT_OPTIONS,
@@ -30,34 +29,24 @@ import JobTabSection from "./job_details_components/JobTabSection";
 const mapJobToJobInfo = (
   job: EngineerSearchJobsResponse[number],
 ): JobInfoSectionProps => {
-  const termsItems: Array<{ text: string }> = [];
-
-  // Add job description as first term item if available
-  if (job.jobDescription) {
-    termsItems.push({ text: job.jobDescription });
-  }
-
-  // Add start and end dates
-  if (job.startDate) {
-    termsItems.push({
+  // Build termsItems array using conditional elements to reduce repetition
+  const termsItems: Array<{ text: string }> = [
+    // Add job description as first term item if available
+    job.jobDescription && { text: job.jobDescription },
+    // Add start and end dates
+    job.startDate && {
       text: `Start Date: ${new Date(job.startDate).toLocaleDateString()}`,
-    });
-  }
-  if (job.endDate) {
-    termsItems.push({
+    },
+    job.endDate && {
       text: `End Date: ${new Date(job.endDate).toLocaleDateString()}`,
-    });
-  }
-
-  // Add total price if available
-  if (job.totalPrice && job.currencySymbol) {
-    termsItems.push({ text: `Budget: ${job.currencySymbol}${job.totalPrice}` });
-  }
-
-  // Add work location
-  if (job.workLocationName) {
-    termsItems.push({ text: `Location: ${job.workLocationName}` });
-  }
+    },
+    // Add total price if available
+    job.totalPrice && job.currencySymbol && {
+      text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
+    },
+    // Add work location
+    job.workLocationName && { text: `Location: ${job.workLocationName}` },
+  ].filter(Boolean) as Array<{ text: string }>;
 
   // Add job type
   if (job.jobType) {

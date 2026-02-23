@@ -70,15 +70,10 @@ export const transformLogsToTimelineItems = (
     // For progress_update logs:
     // Include ALL progress updates in Activity Timeline (approved, rejected, pending, revision_requested)
     // Revisions are shown nested inside the progress update
+    // NOTE: Show approved progress updates so client/engineer can see the approval in timeline
     if (log.logType === "progress_update" || log.logType === "SUBMISSION") {
-      const hasRevisions = log.revisions && log.revisions.length > 0;
-      
-      // Only skip progress updates that have no revisions AND are approved (no action needed)
-      // All other progress updates should be shown
-      const statusLower = String(log.status).toLowerCase();
-      if (statusLower === "approved" && !hasRevisions) {
-        return null; // Skip approved without revisions
-      }
+      // All progress updates should be shown, including approved ones
+      // This allows client to see their approval in timeline
     }
 
     // Compute effectiveTimestamp for proper sorting:
@@ -87,7 +82,6 @@ export const transformLogsToTimelineItems = (
     // - Else use log.timestamp
     let effectiveTimestamp: string;
     let revisionDetails: string | undefined;
-    const logAny = log as any;
     if ((log.logType === "progress_update" || log.logType === "SUBMISSION") && 
         log.revisions && log.revisions.length > 0) {
       // Find the latest revision by updatedAt
@@ -104,7 +98,7 @@ export const transformLogsToTimelineItems = (
       const latestStatus = latestRevision.status;
       revisionDetails = `${revisionCount} revision${revisionCount > 1 ? 's' : ''} - Latest: ${latestStatus}`;
     } else {
-      effectiveTimestamp = logAny.updatedAt || log.timestamp || new Date().toISOString();
+      effectiveTimestamp = (log as { updatedAt?: string }).updatedAt || log.timestamp || new Date().toISOString();
     }
 
     // Generate proper title based on logType

@@ -114,6 +114,7 @@ const EngineersActions = ({
         toast.success("Job start request submitted successfully");
         // Query invalidation is handled by the mutation hook
         handleUpdateOfferStatus("started");
+        window.location.reload()
       },
       onError: (error) => {
         console.error("Failed to request job start:", error);

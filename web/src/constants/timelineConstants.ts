@@ -98,15 +98,3 @@ export const jobStartedCardData: TimelineCardData = {
   buttons: ["reject", "approve"],
 };
 
-// export const activityTimelineItems: ActivityTimelineItem[] = [
-//   {
-//     title: "Proposal Accepted",
-//     timestamp: "05 Apr 2026, 9:30 AM",
-//     accentColor: "#2563eb",
-//   },
-//   {
-//     title: "Proposal Received",
-//     timestamp: "05 Apr 2026, 9:20 AM",
-//     accentColor: "#2563eb",
-//   },
-// ];
