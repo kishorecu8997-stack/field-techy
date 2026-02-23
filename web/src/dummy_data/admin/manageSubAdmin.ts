@@ -3,8 +3,8 @@ export interface UserItem {
   name: string;
   email: string;
   phoneNumber: string;
-  roleName: string;
-  status: "On" | "Off";
+  region?: string;
+  status: "Active" | "Disabled";
 }
 
 export const userList: UserItem[] = [
@@ -13,38 +13,37 @@ export const userList: UserItem[] = [
     name: "John Doe",
     email: "john@gmail.com",
     phoneNumber: "+91 9861234567",
-    roleName: "Manager",
-    status: "Off",
+    region: "India",
+    status: "Active",
   },
   {
     id: 2,
     name: "Alex",
     email: "alex@gmail.com",
     phoneNumber: "+91 9854728765",
-    roleName: "Team Lead",
-    status: "Off",
+    region: "UK",
+    status: "Disabled",
   },
   {
     id: 3,
     name: "david",
     email: "david@gmail.com",
     phoneNumber: "+91 9476382565",
-    roleName: "Admin",
-    status: "Off",
+    region: "Sri Lanka",
+    status: "Active",
   },
   {
     id: 4,
     name: "kiran",
     email: "kiran@gmail.com",
     phoneNumber: "+91 9787457811",
-    roleName: "Super Admin",
-    status: "On",
+    region: "India",
+    status: "Active",
   },
 ];
 
-export const SubAdminRoles = [
-  { value: "Admin", label: "Admin" },
-  { value: "Super Admin", label: "Super Admin" },
-  { value: "Manager", label: "Manager" },
-  { value: "Team Lead", label: "Team Lead" },
+export const SubAdminRegions = [
+  { value: "UK", label: "UK" },
+  { value: "India", label: "India" },
+  { value: "Sri Lanka", label: "Sri Lanka" },
 ];

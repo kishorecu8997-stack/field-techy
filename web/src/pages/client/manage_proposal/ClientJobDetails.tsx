@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import type { JobStatus } from "../my_job_client/types.d";
 import type { AssignmentStatus } from "../search_result/types";
 import type { OfferedJobStatusType } from "../../engineer/my_job/types.d";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -21,12 +22,20 @@ import type { OfferedJobStatusType } from "../../engineer/my_job/types.d";
  */
 const ClientJobDetails = () => {
   const params = useParams();
+  const jobIdParam = params.jobId;
+
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Timeline");
   const [OfferJobStatus, setOfferJobStatus] = useState<
     OfferedJobStatusType | AssignmentStatus | undefined
   >(undefined);
+
+  const [openChatJobId, setOpenChatJobId] = useState<string | null>(null);
+  const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
+
+  // Dynamic heading
+  const [pageHeading, setPageHeading] = useState<string>("Job Details");
 
   const jobId = Number(params.jobId);
 
@@ -122,52 +131,94 @@ const ClientJobDetails = () => {
   // Get status or default to Posted
   const jobStatus = job.status || "Posted";
 
+  // Chat toggle function
+  const handleToggleChat = (jobId: string) => {
+    setOpenChatJobId((prev) => {
+      const isOpening = prev !== jobId;
+      if (isOpening) {
+        setBreadcrumbExtra("chats");
+        setPageHeading("Chats");
+        return jobId;
+      } else {
+        setBreadcrumbExtra(null);
+        setPageHeading("Job Details");
+        return null;
+      }
+    });
+  };
+
+  // Close chat handler
+  const handleCloseChat = () => {
+    setOpenChatJobId(null);
+    setBreadcrumbExtra(null);
+    setPageHeading("Job Details");
+  };
+
+  // Breadcrumb segments for MyJobsHeader
+  const segments = [
+    "Client",
+    "my-jobs",
+    params.jobId ?? "",
+    breadcrumbExtra === "chats" ? "Chats" : null,
+  ].filter((v): v is string => typeof v === "string");
+
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
-            title="Job Details"
+            title={pageHeading}
             isShowBreadcrumb
             customLabels={{
               [params.jobId || ""]: job.jobTitle || "Job",
             }}
+            segments={segments}
+            isChatVisible={!!openChatJobId}
+            handleCloseChat={handleCloseChat}
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <div className="lg:col-span-2 space-y-6">
-            <JobHeaderCard
-              title={job.jobTitle}
-              client=""
-              duration={durationDisplay}
-              type={job.jobType}
-              status={jobStatus}
-              setIsWorkSubmitted={setIsWorkSubmitted}
-              setSendProposal={setIsSendProposal}
-              isSendProposal={isSendProposal}
-              setActiveTab={setActiveTab}
-              setOfferJobStatus={setOfferJobStatus}
-              OfferJobStatus={OfferJobStatus}
-              hideBreakDetails={isDummyNetworkEngineer}
-              hideDurationAndClient={isDummyNetworkEngineer}
-              jobLocation={undefined}
-              numberOfVacancy={undefined}
-              numberOfApplicants={undefined}
-            />
-            <JobTabSection
-              status={(jobStatus as JobStatus) || "Posted"}
-              isWorkSubmitted={isWorkSubmitted}
-              isSendProposal={isSendProposal}
-              activeTab={activeTab}
-              OfferJobStatus={OfferJobStatus}
-              isDummyNetworkEngineer={isDummyNetworkEngineer}
-              showManageProposals={true}
-              job={job}
-              assignmentId={assignmentId}
-            />
+        {openChatJobId ? (
+          <div className="flex-1 overflow-y-auto">
+            <ChatForJobs jobId={openChatJobId} currentUser="Client" />
           </div>
-          <SidebarJobPostWallet earnings={earningsData} />
-        </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div className="lg:col-span-2 space-y-6">
+              <JobHeaderCard
+                title={job.jobTitle}
+                client=""
+                duration={durationDisplay}
+                type={job.jobType}
+                status={jobStatus}
+                setIsWorkSubmitted={setIsWorkSubmitted}
+                setSendProposal={setIsSendProposal}
+                isSendProposal={isSendProposal}
+                setActiveTab={setActiveTab}
+                setOfferJobStatus={setOfferJobStatus}
+                OfferJobStatus={OfferJobStatus}
+                hideBreakDetails={isDummyNetworkEngineer}
+                hideDurationAndClient={isDummyNetworkEngineer}
+                jobLocation={undefined}
+                numberOfVacancy={undefined}
+                numberOfApplicants={undefined}
+                jobId={jobIdParam!}
+                onToggleChat={handleToggleChat}
+              />
+              <JobTabSection
+                status={(jobStatus as JobStatus) || "Posted"}
+                isWorkSubmitted={isWorkSubmitted}
+                isSendProposal={isSendProposal}
+                activeTab={activeTab}
+                OfferJobStatus={OfferJobStatus}
+                isDummyNetworkEngineer={isDummyNetworkEngineer}
+                showManageProposals={true}
+                job={job}
+                assignmentId={assignmentId}
+              />
+            </div>
+            <SidebarJobPostWallet earnings={earningsData} />
+          </div>
+        )}
       </div>
     </div>
   );

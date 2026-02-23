@@ -4,7 +4,12 @@ import { HiCheckCircle } from "react-icons/hi";
 import { HiXMark } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { formatDateTime } from "@/utils/formatDateTime";
-import type { CardButtonType } from "@/pages/client/my_job_client/types";
+import {
+  formatApiDate,
+  transformLogsToTimelineItems,
+} from "@/utils/timelineUtils";
+// import TimelineList from "@/shared/components/TimelineList";
+import type {  CardButtonType } from "@/pages/client/my_job_client/types";
 import {
   // createRevisionUpdateCardData,
 } from "@/dummy_data/clientTimelineDummyData";
@@ -39,8 +44,7 @@ import {
   useClientActionOnWorkLog,
   useClientActionOnBreak,
 } from "@/shared/apiServices/client/clientOpenApiService";
-import type { GetJobLogsResponse } from "@/api";
-
+// import type { GetJobLogsResponse } from "@/api";
 
 
 const FormMode = {
@@ -49,149 +53,6 @@ const FormMode = {
 } as const;
 
 type FormMode = (typeof FormMode)[keyof typeof FormMode];
-
-/**
- * Format a date string to display format
- */
-const formatApiDate = (dateStr: string | null | undefined): string => {
-  if (!dateStr) return formatDateTime();
-  try {
-    const date = new Date(dateStr);
-    return date.toLocaleString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  } catch {
-    return formatDateTime();
-  }
-};
-
-/**
- * Transform API logs to timeline items with proper labels
- * Uses effectiveTimestamp for proper sorting - latest action first
- * Only includes APPROVED progress updates (for Activity Timeline)
- * Excludes pending/revision_requested progress updates (those go to Action Required)
- */
-const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
-  return logs.map((log) => {
-    // Skip creating separate "Revision Request" entries - revisions should only show as nested items under Progress Update
-    if (log.status === "revision_requested" && log.logType !== "progress_update") {
-      return null;
-    }
-
-    // For progress_update logs:
-    // Include ALL progress updates in Activity Timeline (approved, rejected, pending, revision_requested)
-    // Revisions are shown nested inside the progress update
-    if (log.logType === "progress_update" || log.logType === "SUBMISSION") {
-      const hasRevisions = log.revisions && log.revisions.length > 0;
-      
-      // Only skip progress updates that have no revisions AND are approved (no action needed)
-      // All other progress updates should be shown
-      const statusLower = String(log.status).toLowerCase();
-      if (statusLower === "approved" && !hasRevisions) {
-        return null; // Skip approved without revisions
-      }
-    }
-
-    // Compute effectiveTimestamp for proper sorting:
-    // - For progress_update with revisions: use latest revision.updatedAt
-    // - Else use log.updatedAt
-    // - Else use log.timestamp
-    let effectiveTimestamp: string;
-    let revisionDetails: string | undefined;
-    const logAny = log as any;
-    if ((log.logType === "progress_update" || log.logType === "SUBMISSION") && 
-        log.revisions && log.revisions.length > 0) {
-      // Find the latest revision by updatedAt
-      const latestRevision = log.revisions.reduce((latest, rev) => {
-        if (!latest) return rev;
-        const revDate = rev.updatedAt ? new Date(rev.updatedAt).getTime() : 0;
-        const latestDate = latest.updatedAt ? new Date(latest.updatedAt).getTime() : 0;
-        return revDate > latestDate ? rev : latest;
-      }, log.revisions[0]);
-      effectiveTimestamp = latestRevision.updatedAt || log.timestamp || new Date().toISOString();
-      
-      // Build revision details string
-      const revisionCount = log.revisions.length;
-      const latestStatus = latestRevision.status;
-      revisionDetails = `${revisionCount} revision${revisionCount > 1 ? 's' : ''} - Latest: ${latestStatus}`;
-    } else {
-      effectiveTimestamp = logAny.updatedAt || log.timestamp || new Date().toISOString();
-    }
-
-    // Generate proper title based on logType
-    let title = log.title || log.logType;
-    let details = log.details;
-    
-    // For progress updates with revisions, append revision info to details
-    if (revisionDetails) {
-      details = details ? `${details} | ${revisionDetails}` : revisionDetails;
-    }
-
-    // Customize title based on logType and status
-    if (log.logType === "SUBMISSION") {
-      if (
-        log.status ===
-        ("pending" as
-          | "pending"
-          | "approved"
-          | "rejected"
-          | "revision_requested")
-      ) {
-        title = "Proposal Received";
-        details =
-          details ||
-          "Proposals received. Manage them in the Manage Proposals tab.";
-      } else if (log.status === "approved") {
-        title = "Proposal Accepted";
-        details = details || "Client accepted a proposal";
-      } else if (log.status === "rejected") {
-        title = "Proposal Rejected";
-        details = details || "Client rejected a proposal";
-      }
-    } else if (log.logType === "JOB_POSTED") {
-      title = "Job Posted";
-      details = details || "Client posted a new job";
-    } else if (log.logType === "JOB_STARTED") {
-      title = "Job Started";
-      details = details || "Work has started on this job";
-    } else if (log.logType === "JOB_COMPLETED") {
-      title = "Job Completed";
-      details = details || "Job has been completed";
-    } else if (log.logType === "progress_update") {
-      title = log.title || "Progress Update";
-      if (log.status === "approved") {
-        title = "Progress Update Approved";
-      } else if (log.status === "rejected") {
-        title = "Progress Update Rejected";
-      }
-    }
-
-    return {
-      title,
-      timestamp: formatApiDate(log.timestamp),
-      effectiveTimestamp,
-      statusText:
-        log.status.charAt(0).toUpperCase() +
-        log.status.slice(1).replace(/_/g, " "),
-      statusColor:
-        log.status === "approved"
-          ? "#22c55e"
-          : log.status === "rejected"
-            ? "#ef4444"
-            : "#f59e0b",
-      accentColor: "#3b82f6",
-      details,
-      attachmentUrl: log.attachmentUrl,
-      logType: log.logType,
-      logId: log.id,
-    };
-  }).filter(Boolean);
-};
 
 /**
  * Client timeline tab for progress, revisions, short breaks, final statements, and job approvals.

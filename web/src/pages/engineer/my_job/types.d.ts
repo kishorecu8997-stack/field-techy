@@ -58,6 +58,9 @@ export interface MyJobsHeaderProps {
   buttonText?: string;
   onClick?: () => void;
   customLabels?: Record<string, string>;
+  segments?: string[];
+  isChatVisible?: boolean;
+  handleCloseChat?: () => void;
 }
 
 /**
@@ -125,6 +128,9 @@ export interface JobHeaderCardProps {
   onOpenFinalStatement?: () => void;
   assignmentId?: number;
   progressUpdates?: ProgressUpdate[];
+  jobId: string;
+  onToggleChat?: (jobId: string) => void;
+  onCloseChat?: () => void;
 }
 
 export interface JobTabsProps {
@@ -325,15 +331,17 @@ export interface ProposalApiData {
  * Props for the ProposalInfoTab component - supports both form and API data
  */
 export type ProposalInfoTabProps = {
-  submittedProposal: {
-    proposalDescription: string;
-    attachments?: never;
-    attachmentUrl?: string | null;
-  } | {
-    proposalDescription: string;
-    attachments: FileList | null;
-    attachmentUrl?: never;
-  };
+  submittedProposal:
+    | {
+        proposalDescription: string;
+        attachments?: never;
+        attachmentUrl?: string | null;
+      }
+    | {
+        proposalDescription: string;
+        attachments: FileList | null;
+        attachmentUrl?: never;
+      };
 };
 
 /**

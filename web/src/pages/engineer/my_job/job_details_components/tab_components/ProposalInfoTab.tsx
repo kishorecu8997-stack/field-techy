@@ -7,9 +7,13 @@ import type { ProposalInfoTabProps } from "../../types.d";
  * Type guard to check if the proposal data is from API (has attachmentUrl)
  */
 function isApiProposalData(
-  data: ProposalInfoTabProps['submittedProposal']
-): data is { proposalDescription: string; attachments?: never; attachmentUrl?: string | null } {
-  return 'attachmentUrl' in data;
+  data: ProposalInfoTabProps["submittedProposal"],
+): data is {
+  proposalDescription: string;
+  attachments?: never;
+  attachmentUrl?: string | null;
+} {
+  return "attachmentUrl" in data;
 }
 
 /**
@@ -25,16 +29,44 @@ const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({
 }) => {
   // Check if this is API data or Form data
   const isApiData = isApiProposalData(submittedProposal);
-  const attachmentUrl = isApiData
-    ? submittedProposal.attachmentUrl ?? null
-    : submittedProposal.attachments
-      ? URL.createObjectURL(submittedProposal.attachments[0])
-      : null;
+
+  // State to hold the attachment URL (handles both API URLs and blob URLs)
+  const [attachmentUrl, setAttachmentUrl] = React.useState<string | null>(null);
+
+  // Create/revoke object URL for local file attachments to prevent memory leaks
+  React.useEffect(() => {
+    let objectUrl: string | null = null;
+
+    if (isApiData) {
+      // API data uses the existing attachmentUrl
+      setAttachmentUrl(submittedProposal.attachmentUrl ?? null);
+    } else if (
+      submittedProposal.attachments &&
+      submittedProposal.attachments.length > 0
+    ) {
+      // Create object URL for local file attachments
+      objectUrl = URL.createObjectURL(submittedProposal.attachments[0]);
+      setAttachmentUrl(objectUrl);
+    } else {
+      setAttachmentUrl(null);
+    }
+
+    // Cleanup: revoke the object URL when component unmounts or dependencies change
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [
+    isApiData,
+    submittedProposal.attachmentUrl,
+    submittedProposal.attachments,
+  ]);
 
   const attachmentName = isApiData
     ? "View Document"
     : submittedProposal.attachments
-      ? submittedProposal.attachments[0]?.name ?? null
+      ? (submittedProposal.attachments[0]?.name ?? null)
       : null;
 
   return (
@@ -53,9 +85,9 @@ const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({
 
         {attachmentUrl && attachmentName && (
           <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-            <a 
-              href={attachmentUrl} 
-              target="_blank" 
+            <a
+              href={attachmentUrl}
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 max-w-full break-all hover:bg-gray-200 dark:hover:bg-gray-600"
             >

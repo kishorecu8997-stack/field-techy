@@ -8,6 +8,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { type Dispatch, type SetStateAction } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
 import FinalStatementForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/FinalStatementForm";
@@ -83,6 +84,7 @@ const EngineersActions = ({
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+  const queryClient = useQueryClient();
 
   // Check if there's a pending progress update
   const hasPendingProgressUpdate = progressUpdates?.some((update) => {
@@ -110,7 +112,7 @@ const EngineersActions = ({
     useEngineerRequestStart({
       onSuccess: () => {
         toast.success("Job start request submitted successfully");
-        window.location.reload();
+        // Query invalidation is handled by the mutation hook
         handleUpdateOfferStatus("started");
       },
       onError: (error) => {
@@ -147,7 +149,8 @@ const EngineersActions = ({
             toast.success("Job accepted successfully");
             close(true);
             handleUpdateOfferStatus("accepted");
-            window.location.reload();
+            // Invalidate queries to refetch updated job data
+            queryClient.invalidateQueries({ queryKey: ["engineers"] });
           },
         },
       ],
@@ -265,8 +268,10 @@ const EngineersActions = ({
     (status === JOB_STATUSES.applied || OfferJobStatus === "applied") &&
     OfferJobStatus !== "accepted" &&
     OfferJobStatus !== "assigned";
-  const isRejected = OfferJobStatus === "rejected" || mappedOfferStatus === "declined";
-  const isJobStarted = OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
+  const isRejected =
+    OfferJobStatus === "rejected" || mappedOfferStatus === "declined";
+  const isJobStarted =
+    OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
   const isNew = status === JOB_STATUSES.new || status === "new";
   const isOffer = status === JOB_STATUSES.offer || status === "offer";
   const isPosted = status === JOB_STATUSES.posted;
@@ -294,7 +299,7 @@ const EngineersActions = ({
     !hasStartPending &&
     !hasJobStarted;
 
-    // Check if proposal already submitted via API
+  // Check if proposal already submitted via API
   const hasSubmittedProposal =
     OfferJobStatus === "applied" ||
     OfferJobStatus === "submitted" ||
@@ -310,15 +315,6 @@ const EngineersActions = ({
   // Extracted shared button logic to avoid duplication
   const renderJobActionButtons = () => {
     if (hasJobStarted || hasStartPending) return postStartActions;
-
-    if (hasStartPending) {
-      return (
-        <div className="flex flex-wrap gap-2 w-fit items-center">
-          <icons.checkCircle className="text-yellow-500 w-6 h-6" />
-          <span className="text-lg">Start Pending Approval</span>
-        </div>
-      );
-    }
 
     if (canStartJob) {
       return (
@@ -433,7 +429,9 @@ const EngineersActions = ({
             {OfferJobStatus === "start_pending_approval" ? (
               <>
                 <icons.pending className="text-yellow-500 w-6 h-6" />
-                <span className="text-lg text-yellow-500">Start Pending Approval</span>
+                <span className="text-lg text-yellow-500">
+                  Start Pending Approval
+                </span>
               </>
             ) : (
               <>

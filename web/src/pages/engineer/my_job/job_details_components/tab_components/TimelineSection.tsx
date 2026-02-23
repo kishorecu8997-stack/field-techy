@@ -1,7 +1,14 @@
 import React, { useState, useMemo } from "react";
 import TimelineSectionHeader from "@/pages/client/my_job_client/components/tab_components/TimelineSectionHeader";
 import ActionRequiredBadge from "@/pages/client/my_job_client/components/tab_components/ActionRequiredBadge";
-import { formatNow } from "@/utils/formatDateTime";
+// import TimelineList from "@/shared/components/TimelineList";
+import {
+  formatApiDate,
+  transformLogsToTimelineItems,
+  transformBreakRequestsToItems,
+  transformSignOffsToItems,
+} from "@/utils/timelineUtils";
+// import { formatNow } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
 import Popup from "@/shared/components/Popup";
 import RevisionRequestUpdateForm from "../jobHeaderComponents/RevisionRequestUpdateForm";
@@ -14,230 +21,7 @@ import {
   useGetJobLogs,
   useEngineerGetMyJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import type { GetJobLogsResponse, EngineerGetMyJobsResponse } from "@/api";
-
-/**
- * Format a date string to display format
- */
-const formatApiDate = (dateStr: string | null | undefined): string => {
-  if (!dateStr) return formatNow();
-  try {
-    const date = new Date(dateStr);
-    return date.toLocaleString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  } catch {
-    return formatNow();
-  }
-};
-
-/**
- * Transform API logs to timeline items with proper labels
- * Uses effectiveTimestamp for proper sorting - latest action first
- */
-const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
-  const items = logs.map((log) => {
-    // Skip creating separate "Revision Request" entries - revisions should only show as nested items under Progress Update
-    if (log.status === "revision_requested" && log.logType !== "progress_update") {
-      return null;
-    }
-
-    // Compute effectiveTimestamp for proper sorting:
-    // - For progress_update with revisions: use latest revision.updatedAt
-    // - Else use log.updatedAt
-    // - Else use log.timestamp
-    let effectiveTimestamp: string;
-    const logAny = log as any; // Cast to any to handle optional properties
-    if (log.logType === "progress_update" && log.revisions && log.revisions.length > 0) {
-      // Find the latest revision by updatedAt
-      const latestRevision = log.revisions.reduce((latest, rev) => {
-        if (!latest) return rev;
-        const revDate = rev.updatedAt ? new Date(rev.updatedAt).getTime() : 0;
-        const latestDate = latest.updatedAt ? new Date(latest.updatedAt).getTime() : 0;
-        return revDate > latestDate ? rev : latest;
-      }, log.revisions[0]);
-      effectiveTimestamp = latestRevision.updatedAt || log.timestamp || new Date().toISOString();
-    } else {
-      effectiveTimestamp = logAny.updatedAt || log.timestamp || new Date().toISOString();
-    }
-
-    // Generate proper title based on logType
-    let title = log.title || log.logType;
-    let details = log.details;
-    let detailsType: string | undefined;
-    let statusText: string | undefined;
-    let statusColor: string | undefined;
-
-    // Customize title based on logType and status
-    if (log.logType === "SUBMISSION") {
-      if (
-        log.status ===
-        ("pending" as
-          | "pending"
-          | "approved"
-          | "rejected"
-          | "revision_requested")
-      ) {
-        title = "Proposal Submitted";
-        details = details || "Engineer submitted a proposal for this job";
-      } else if (log.status === "approved") {
-        title = "Proposal Accepted";
-        details = details || "Client accepted the proposal";
-      } else if (log.status === "rejected") {
-        title = "Proposal Rejected";
-        details = details || "Client rejected the proposal";
-      }
-    } else if (log.logType === "JOB_POSTED") {
-      title = "Job Posted";
-      details = details || "Client posted a new job";
-    } else if (log.logType === "JOB_STARTED") {
-      title = "Job Started";
-      details = details || "Work has started on this job";
-    } else if (log.logType === "JOB_COMPLETED") {
-      title = "Job Completed";
-      details = details || "Job has been completed";
-    } else if (log.logType === "progress_update") {
-      title = "Progress Update";
-      // Keep original progress update content - don't overwrite with revision comments
-      const originalDetails = log.details || "Engineer submitted a progress update";
-      
-      // Check if client requested revisions - keep "Progress Update" title but mark detailsType for rendering
-      if (log.status === "revision_requested") {
-        detailsType = "revision";
-        // Use original progress update content, NOT the client comment
-        details = originalDetails;
-      } else {
-        details = originalDetails;
-      }
-      // Check for pending status
-      if ((log.status as string) === "pending") {
-        statusText = "Pending";
-        statusColor = "#f59e0b";
-      }
-    }
-
-    // Use custom statusText if set (e.g., for progress_update with pending status), otherwise generate from log.status
-    const finalStatusText = statusText ||
-      (log.status.charAt(0).toUpperCase() + log.status.slice(1).replace(/_/g, " "));
-    
-    // Use custom statusColor if set, otherwise determine from log.status
-    const finalStatusColor = statusColor ||
-      (log.status === "approved"
-        ? "#22c55e"
-        : log.status === "rejected"
-          ? "#ef4444"
-          : "#f59e0b");
-
-    // Extract attachment name from URL if available
-    const attachmentName = log.attachmentUrl
-      ? log.attachmentUrl.split("/").pop()?.split("?")[0]
-      : undefined;
-
-    // Only show description for progress_update logs, not for other log types
-    const showDescription = log.logType === "progress_update";
-
-    return {
-      title,
-      timestamp: formatApiDate(effectiveTimestamp), // Use effectiveTimestamp for display
-      effectiveTimestamp, // Store for sorting
-      statusText: finalStatusText,
-      statusColor: finalStatusColor,
-      accentColor: detailsType === "revision" ? "#f59e0b" : "#3b82f6",
-      description: showDescription ? (details ?? null) : undefined,
-      details: showDescription ? (details ?? null) : null,
-      detailsType,
-      attachmentUrl: log.attachmentUrl,
-      attachmentName,
-      revisions: log.revisions || [],
-      logId: log.id, // Add logId for matching with revisions
-      logType: log.logType, // Add logType for identifying progress updates
-    };
-  });
-
-  // Filter out null entries
-  const filteredItems = items.filter((item): item is NonNullable<typeof item> => item !== null);
-  
-  // Sort by effectiveTimestamp descending (newest first)
-  return filteredItems.sort((a, b) => {
-    const dateA = new Date(a.effectiveTimestamp).getTime();
-    const dateB = new Date(b.effectiveTimestamp).getTime();
-    return dateB - dateA;
-  });
-};
-
-/**
- * Transform break requests to timeline items
- * Uses createdAt as effectiveTimestamp for proper sorting
- */
-const transformBreakRequestsToItems = (
-  breakRequests: GetJobLogsResponse["breakRequests"],
-) => {
-  return breakRequests.map((br) => ({
-    title: `${br.type === "short_term" ? "Short Term" : "Long Term"} Break`,
-    timestamp: formatApiDate(br.createdAt),
-    effectiveTimestamp: br.createdAt,
-    statusText: br.status.charAt(0).toUpperCase() + br.status.slice(1),
-    statusColor:
-      br.status === "approved"
-        ? "#22c55e"
-        : br.status === "rejected"
-          ? "#ef4444"
-          : "#f59e0b",
-    accentColor: "#8b5cf6",
-    details: br.reason,
-    startDate: br.startAt,
-    endDate: br.endAt,
-    approverComment: br.approverComment || undefined,
-  }));
-};
-
-/**
- * Transform sign-off sheets to timeline items
- */
-const transformSignOffsToItems = (
-  signOffs: GetJobLogsResponse["signOffSheets"],
-) => {
-  if (!signOffs) return [];
-  return signOffs.map((so) => {
-    // Build attachments array from attachmentUrl and signatureAttachmentUrl if available
-    const attachments: Array<{ name: string; url: string }> = [];
-    
-    if (so.attachmentUrl) {
-      attachments.push({
-        name: so.attachmentUrl.split("/").pop()?.split("?")[0] || "Work Attachment",
-        url: so.attachmentUrl,
-      });
-    }
-    
-    if (so.signatureAttachmentUrl) {
-      attachments.push({
-        name: so.signatureAttachmentUrl.split("/").pop()?.split("?")[0] || "Signature Attachment",
-        url: so.signatureAttachmentUrl,
-      });
-    }
-
-    return {
-      title: "Final Statement",
-      timestamp: formatApiDate(so.createdAt),
-      effectiveTimestamp: so.createdAt,
-      statusText: so.status.charAt(0).toUpperCase() + so.status.slice(1),
-      statusColor:
-        so.status === "approved"
-          ? "#22c55e"
-          : so.status === "rejected"
-            ? "#ef4444"
-            : "#f59e0b",
-      accentColor: "#10b981",
-      details: so.details,
-      attachments: attachments.length > 0 ? attachments : undefined,
-    };
-  });
-};
+import type {  EngineerGetMyJobsResponse } from "@/api";
 
 /**
  * Transform engineer's job/proposal data to timeline items
@@ -352,13 +136,18 @@ const transformProposalToTimelineItems = (
     ) {
       const submittedTimestamp = job.appliedAt || job.respondedAt;
       if (submittedTimestamp) {
+        // Build details string - include proposal detail if available
+        let proposalDetails = job.proposalDetail
+          ? `\n\nProposal Details: ${job.proposalDetail}`
+          : `\n\nSubmitted proposal for: ${job.jobTitle}`;
+
         allItems.push({
           title: "Proposal Submitted",
           timestamp: formatApiDate(submittedTimestamp),
           statusText: "",
           statusColor: "#f59e0b",
           accentColor: "#3b82f6",
-          details: "",
+          details: proposalDetails,
           sortOrder: 25,
         });
       }
