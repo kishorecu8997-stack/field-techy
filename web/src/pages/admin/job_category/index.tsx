@@ -53,24 +53,22 @@ const ManageJobCategory: React.FC = () => {
     isFetching,
     error,
   } = useAdminGetServiceCategories({
-      page,
-      limit: pageSize,
-      search: search.trim() || undefined,
-    });
-
-  const {
-    mutateAsync: deleteServiceCategory,
-    isPending: isDeletingCategory,
-  } = useAdminDeleteServiceCategory({
-    onSuccess: () => {
-      toast.success("Service category deleted successfully!");
-    },
-    onError: (error) => {
-      const errorMessage =
-        error instanceof Error ? error.message : "Delete category failed";
-      toast.error(errorMessage);
-    },
+    page,
+    limit: pageSize,
+    search: search.trim() || undefined,
   });
+
+  const { mutateAsync: deleteServiceCategory, isPending: isDeletingCategory } =
+    useAdminDeleteServiceCategory({
+      onSuccess: () => {
+        toast.success("Service category deleted successfully!");
+      },
+      onError: (error) => {
+        const errorMessage =
+          error instanceof Error ? error.message : "Delete category failed";
+        toast.error(errorMessage);
+      },
+    });
 
   const handleDeleteCategory = async (row: ServerCategoryProps) => {
     await showPopup({
@@ -112,7 +110,11 @@ const ManageJobCategory: React.FC = () => {
 
   const totalCount = categoriesResponse?.total ?? 0;
   const errorMessage =
-    error instanceof Error ? error.message : error ? "Failed to load data." : null;
+    error instanceof Error
+      ? error.message
+      : error
+        ? "Failed to load data."
+        : null;
 
   const columns: Column<ServerCategoryProps>[] = [
     { key: "id", label: "Sr.No." },
