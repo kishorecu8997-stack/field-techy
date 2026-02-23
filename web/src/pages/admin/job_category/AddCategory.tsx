@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useAdminCreateServiceCategory } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * `AddCategory` component renders a page with a form to add a new Service category.
@@ -23,11 +25,55 @@ export default function AddCategory() {
     },
   });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { showPopup } = usePopupStore();
+  const {
+    mutateAsync: createServiceCategory,
+    isPending: isCreatingCategory,
+  } = useAdminCreateServiceCategory({
+    onSuccess: (data) => {
+      queryClient.setQueriesData(
+        {
+          predicate: (query) =>
+            Array.isArray(query.queryKey) &&
+            query.queryKey[0] &&
+            typeof query.queryKey[0] === "object" &&
+            (query.queryKey[0] as { _id?: string })._id ===
+              "adminGetServiceCategories",
+        },
+        (oldData) => {
+          if (!oldData || typeof oldData !== "object") return oldData;
+          const prev = oldData as {
+            data?: Array<{ id: number; name: string }>;
+            total?: number;
+            page?: number;
+            limit?: number;
+          };
+          if (!Array.isArray(prev.data)) return oldData;
+          const newItem = {
+            id: data?.id ?? Date.now(),
+            name: methods.getValues("categoryName"),
+          };
+          return {
+            ...prev,
+            data: [newItem, ...prev.data],
+            total: typeof prev.total === "number" ? prev.total + 1 : prev.total,
+          };
+        },
+      );
+      toast.success("Service category added successfully!");
+      methods.reset();
+      navigate(absoluteUrls.admin.home.manage_categories);
+    },
+    onError: (error) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Create category failed";
+      toast.error(errorMessage);
+    },
+  });
 
   const handleSubmit = async (data: CategoryFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Category",
       body: "Are you sure you want to save this details?",
@@ -41,14 +87,13 @@ export default function AddCategory() {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Service category added successfully!");
-            methods.reset();
-            navigate(absoluteUrls.admin.home.manage_categories);
+          action: async (close) => {
+            if (isCreatingCategory) return;
+            await createServiceCategory({
+              body: {
+                name: data.categoryName,
+              },
+            });
             close(true);
           },
         },
