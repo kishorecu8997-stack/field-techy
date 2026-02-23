@@ -151,27 +151,27 @@ const JobsDetails: React.FC = () => {
             handleCloseChat={handleCloseChat}
           />
         </div>
-         {breadcrumbExtra === "chats" ? (
+        {breadcrumbExtra === "chats" ? (
           <div className="flex-1 overflow-y-auto">
             <ChatForJobs jobId={String(params.jobId)} currentUser="Client" />
           </div>
         ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-              <JobCardDetailsHeader job={formattedJob} />
-              <div className="space-y-6 pt-2">
-                <JobTabSection
-                  status={formattedJob.status}
-                  activeTab={activeTab}
-                  job={job}
-                  assignmentId={
-                    job.assignmentIds?.[0]
-                      ? Number(job.assignmentIds[0])
-                      : Number(jobId)
-                  }
-                  onToggleChat={handleToggleChat}
-                />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+                <JobCardDetailsHeader job={formattedJob} />
+                <div className="space-y-6 pt-2">
+                  <JobTabSection
+                    status={formattedJob.status}
+                    activeTab={activeTab}
+                    job={job}
+                    assignmentId={
+                      job.assignmentIds?.[0]
+                        ? Number(job.assignmentIds[0])
+                        : Number(jobId)
+                    }
+                    onToggleChat={handleToggleChat}
+                  />
                 </div>
               </div>
             </div>

@@ -177,47 +177,45 @@ const ClientJobDetails = () => {
             handleCloseChat={handleCloseChat}
           />
         </div>
-         {openChatJobId ? (
+        {openChatJobId ? (
           <div className="flex-1 overflow-y-auto">
             <ChatForJobs jobId={openChatJobId} currentUser="Client" />
-
           </div>
         ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <div className="lg:col-span-2 space-y-6">
-            <JobHeaderCard
-              title={job.jobTitle}
-              client=""
-              duration={durationDisplay}
-              type={job.jobType}
-              status={jobStatus}
-              setIsWorkSubmitted={setIsWorkSubmitted}
-              setSendProposal={setIsSendProposal}
-              isSendProposal={isSendProposal}
-              setActiveTab={setActiveTab}
-              setOfferJobStatus={setOfferJobStatus}
-              OfferJobStatus={OfferJobStatus}
-              hideBreakDetails={isDummyNetworkEngineer}
-              hideDurationAndClient={isDummyNetworkEngineer}
-              jobLocation={undefined}
-              numberOfVacancy={undefined}
-              numberOfApplicants={undefined}
-              jobId={jobIdParam!}
-              onToggleChat={handleToggleChat}
-              
-            />
-            <JobTabSection
-              status={(jobStatus as JobStatus) || "Posted"}
-              isWorkSubmitted={isWorkSubmitted}
-              isSendProposal={isSendProposal}
-              activeTab={activeTab}
-              OfferJobStatus={OfferJobStatus}
-              isDummyNetworkEngineer={isDummyNetworkEngineer}
-              showManageProposals={true}
-              job={job}
-              assignmentId={assignmentId}
-            />
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div className="lg:col-span-2 space-y-6">
+              <JobHeaderCard
+                title={job.jobTitle}
+                client=""
+                duration={durationDisplay}
+                type={job.jobType}
+                status={jobStatus}
+                setIsWorkSubmitted={setIsWorkSubmitted}
+                setSendProposal={setIsSendProposal}
+                isSendProposal={isSendProposal}
+                setActiveTab={setActiveTab}
+                setOfferJobStatus={setOfferJobStatus}
+                OfferJobStatus={OfferJobStatus}
+                hideBreakDetails={isDummyNetworkEngineer}
+                hideDurationAndClient={isDummyNetworkEngineer}
+                jobLocation={undefined}
+                numberOfVacancy={undefined}
+                numberOfApplicants={undefined}
+                jobId={jobIdParam!}
+                onToggleChat={handleToggleChat}
+              />
+              <JobTabSection
+                status={(jobStatus as JobStatus) || "Posted"}
+                isWorkSubmitted={isWorkSubmitted}
+                isSendProposal={isSendProposal}
+                activeTab={activeTab}
+                OfferJobStatus={OfferJobStatus}
+                isDummyNetworkEngineer={isDummyNetworkEngineer}
+                showManageProposals={true}
+                job={job}
+                assignmentId={assignmentId}
+              />
+            </div>
             <SidebarJobPostWallet earnings={earningsData} />
           </div>
         )}

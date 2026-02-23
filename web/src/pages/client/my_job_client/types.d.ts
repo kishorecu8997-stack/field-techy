@@ -151,7 +151,7 @@ export type JobTabSectionProps = {
     status?: string | null;
     [key: string]: unknown;
   };
-   onToggleChat?:  (jobId: string) => void;
+  onToggleChat?: (jobId: string) => void;
 };
 
 export const TIMELINE_CARD_TYPE: {
