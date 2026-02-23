@@ -17,6 +17,18 @@ type FormValues = {
   exchangeRate: string;
 };
 
+/**
+ * EditCurrencyRates
+ *
+ * Form page used to edit an existing currency exchange rate.
+ * Retrieves row data from router state or fallback dummy data,
+ * allows updating the exchange rate, and confirms the action
+ * through a popup before saving.
+ *
+ * @component
+ * @returns {JSX.Element} Edit currency exchange rate form UI
+ */
+
 const EditCurrencyRates: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();

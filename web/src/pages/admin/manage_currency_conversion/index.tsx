@@ -9,20 +9,9 @@ import { useNavigate } from "react-router-dom";
 import type { CurrencyConversionRow } from "./types";
 
 /**
- * ManageRateCards Component
- *
- * Displays a searchable and interactive table of rate cards. Allows administrators to:
- * - View rate card details
- * - Toggle status (active/inactive)
- * - Edit or delete specific rate cards
- *
- * @component
- * @example
- * return (
- *   <ManageRateCards />
- * );
- *
- * @returns {JSX.Element} The rendered ManageRateCards component.
+ * Displays currency exchange rates in a searchable table
+ * with navigation to edit individual rates.
+ * @returns {JSX.Element}
  */
 
 const ManageCurrencyConversion: React.FC = () => {
