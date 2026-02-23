@@ -91,7 +91,7 @@ const ReportDetails: React.FC = () => {
                 <span>
                   <h1 className="text-2xl font-semibold">{data.name}</h1>
                   <h1 className="text-md text-gray-500 dark:text-gray-400">
-                    Designer
+                    {data.position}
                   </h1>
                 </span>
               </div>
@@ -126,11 +126,9 @@ const ReportDetails: React.FC = () => {
                 <span className="flex gap-x-2 items-center p-2 mt-2 border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 w-fit rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                   <FaFile className="text-3xl text-blue-500 dark:text-blue-400" />
                   <span className="flex flex-col">
-                    <h1 className="text-sm font-semibold">
-                      Button Description
-                    </h1>
+                    <h1 className="text-sm font-semibold">{data.file}</h1>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400 uppercase">
-                      XLSX 4.49KB
+                      {data.size}
                     </p>
                   </span>
                 </span>
@@ -174,7 +172,7 @@ const ReportDetails: React.FC = () => {
   return (
     <>
       <MyJobsHeader
-        title="Client Report Update"
+        title="Client Report Updates"
         isReport={false}
         isShowSort={false}
         isShowBreadcrumb

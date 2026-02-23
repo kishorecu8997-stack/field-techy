@@ -164,7 +164,7 @@ export const menuItems: MenuItem[] = [
     ],
   },
   {
-    name: "Report Issue",
+    name: "Reported Issue",
     path: absoluteUrls.admin.home.report_issue,
     icon: <RiErrorWarningLine className="text-lg" />,
   },

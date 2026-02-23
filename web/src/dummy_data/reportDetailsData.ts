@@ -4,6 +4,9 @@ export interface ReportIssue {
   issue: string; // e.g. issue title or short name
   category: string; // e.g. Bug, UI/UX, Performance, Security, Feature Request
   level: string; // e.g. Critical, High, Medium, Low
+  file: string;
+  size: string;
+  position: string;
 }
 
 export const sampleReportsIssue: ReportIssue[] = [
@@ -13,6 +16,9 @@ export const sampleReportsIssue: ReportIssue[] = [
     issue: "Login button not responding on mobile",
     category: "UI/UX",
     level: "Level-1",
+    file: "mobile_screenshot.png",
+    size: "1.2MB",
+    position: "Frontend Developer",
   },
   {
     id: 2,
@@ -20,6 +26,9 @@ export const sampleReportsIssue: ReportIssue[] = [
     issue: "500 Internal Server Error on payment endpoint",
     category: "Backend",
     level: "Level-2",
+    file: "server_logs.txt",
+    size: "45KB",
+    position: "QA Automation Engineer",
   },
   {
     id: 3,
@@ -27,6 +36,9 @@ export const sampleReportsIssue: ReportIssue[] = [
     issue: "Dashboard charts not loading after 10s idle",
     category: "Performance",
     level: "Level-3",
+    file: "network_profile.json",
+    size: "2.5MB",
+    position: "Performance Engineer",
   },
   {
     id: 4,
@@ -34,6 +46,9 @@ export const sampleReportsIssue: ReportIssue[] = [
     issue: "Dark mode text contrast fails WCAG AA",
     category: "Accessibility",
     level: "Level-2",
+    file: "contrast_report.pdf",
+    size: "850KB",
+    position: "UI/UX Designer",
   },
   {
     id: 5,
@@ -41,6 +56,9 @@ export const sampleReportsIssue: ReportIssue[] = [
     issue: "JWT token refresh fails intermittently",
     category: "Authentication",
     level: "Level-3",
+    file: "auth_trace.log",
+    size: "120KB",
+    position: "Backend Developer",
   },
   {
     id: 6,
@@ -48,5 +66,8 @@ export const sampleReportsIssue: ReportIssue[] = [
     issue: "Add 'Export to CSV' button on reports page",
     category: "Feature Request",
     level: "Level-1",
+    file: "mockup_v1.fig",
+    size: "4.1MB",
+    position: "Product Manager",
   },
 ];
