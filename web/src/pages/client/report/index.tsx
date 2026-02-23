@@ -126,7 +126,6 @@ const ReportPage = ({
             label="Attach File (If any)"
             accept=".pdf, .jpg, .png"
             placeholder="Attach File"
-            required
             maxPages={5}
             validatePDF={true}
           />

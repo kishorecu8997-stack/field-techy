@@ -11,6 +11,7 @@ export interface AdminReportIssue {
   size: string;
   file: string;
   position: string;
+  user: string;
   solved: boolean;
 }
 
@@ -28,6 +29,7 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     size: "1.2MB",
     file: "mobile_screenshot.png",
     position: "Frontend Developer",
+    user: "Client",
     solved: false,
   },
   {
@@ -43,6 +45,7 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     size: "45KB",
     file: "server_logs.txt",
     position: "QA Automation Engineer",
+    user: "Engineer",
     solved: false,
   },
   {
@@ -58,6 +61,7 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     size: "2.5MB",
     file: "network_profile.json",
     position: "Performance Engineer",
+    user: "Engineer",
     solved: false,
   },
   {
@@ -73,6 +77,7 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     size: "850KB",
     file: "contrast_report.pdf",
     position: "UI/UX Designer",
+    user: "Client",
     solved: false,
   },
   {
@@ -88,6 +93,7 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     size: "120KB",
     file: "auth_trace.log",
     position: "Backend Developer",
+    user: "Client",
     solved: false,
   },
   {
@@ -103,6 +109,7 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     size: "4.1MB",
     file: "mockup_v1.fig",
     position: "Product Manager",
+    user: "Engineer",
     solved: false,
   },
 ];

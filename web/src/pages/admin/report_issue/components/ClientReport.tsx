@@ -57,7 +57,7 @@ export default function ClientReport() {
           {/* Name Text */}
           <div className="flex flex-col dark:text-white text-md group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
             {row.name}
-            <span className="text-xs"> {row.position}</span>
+             <span className="text-xs"> {row.user}</span>
           </div>
         </div>
       ),

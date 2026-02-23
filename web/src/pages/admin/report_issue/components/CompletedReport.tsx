@@ -57,7 +57,7 @@ export default function CompletedReport() {
           {/* Name Text */}
           <div className="flex flex-col dark:text-white text-md group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
             {row.name}
-            <span className="text-xs"> {row.position}</span>
+            <span className="text-xs"> {row.user}</span>
           </div>
         </div>
       ),
@@ -118,7 +118,7 @@ export default function CompletedReport() {
                 <span>
                   <h1 className="text-2xl font-semibold">{data.name}</h1>
                   <h1 className="text-md text-gray-500 dark:text-gray-400">
-                  {data.position}
+                    {data.position}
                   </h1>
                 </span>
               </div>
