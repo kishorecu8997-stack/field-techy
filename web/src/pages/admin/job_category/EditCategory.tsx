@@ -48,21 +48,19 @@ export default function EditCategory() {
   }, [category]);
 
   const { showPopup } = usePopupStore();
-  const {
-    mutateAsync: updateServiceCategory,
-    isPending: isUpdatingCategory,
-  } = useAdminUpdateServiceCategory({
-    onSuccess: () => {
-      toast.success("Service category updated successfully!");
-      methods.reset();
-      navigate(absoluteUrls.admin.home.manage_categories);
-    },
-    onError: (error) => {
-      const errorMessage =
-        error instanceof Error ? error.message : "Update category failed";
-      toast.error(errorMessage);
-    },
-  });
+  const { mutateAsync: updateServiceCategory, isPending: isUpdatingCategory } =
+    useAdminUpdateServiceCategory({
+      onSuccess: () => {
+        toast.success("Service category updated successfully!");
+        methods.reset();
+        navigate(absoluteUrls.admin.home.manage_categories);
+      },
+      onError: (error) => {
+        const errorMessage =
+          error instanceof Error ? error.message : "Update category failed";
+        toast.error(errorMessage);
+      },
+    });
 
   const handleSaveConfirmation = async (data: CategoryFormData) => {
     await showPopup({

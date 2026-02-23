@@ -40,6 +40,7 @@ import {
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetEngineersForManagementOptions,
+  adminGetEngineerOptions,
   adminCreateServiceCategoryMutation,
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
@@ -379,6 +380,16 @@ export function useAdminGetJobs(
   });
 }
 
+export function useAdminGetEngineerById(userId: number, enabled = true) {
+  const isValidId = Number.isFinite(userId);
+  return useQuery({
+    ...adminGetEngineerOptions({
+      client: apiClient,
+      path: { userId: isValidId ? userId : 0 },
+    }),
+    enabled: enabled && isValidId,
+  });
+}
 export type AdminGetServiceCategoriesQuery = NonNullable<
   AdminGetServiceCategoriesData["query"]
 >;
