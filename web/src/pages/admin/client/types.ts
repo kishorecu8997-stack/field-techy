@@ -115,6 +115,18 @@ export const documentType: DocumentOption[] = [
   { value: "govIdDoc", label: "Government Document" },
   { value: "certificateDoc", label: "Certificate Document" },
 ];
+
+export type BlockClientForm = {
+  reason: string;
+};
+
+export interface BlockClientProps {
+  isBlockClient: boolean;
+  setIsBlockClient: (isOpen: boolean) => void;
+  onSuccess?: () => void;
+}
+
+
 export interface walletViewData {
   id: number;
   dateTime: string;

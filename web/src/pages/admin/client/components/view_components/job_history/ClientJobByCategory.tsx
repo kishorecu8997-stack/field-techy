@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
@@ -10,6 +10,11 @@ import dayjs from "dayjs";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import type { JobItem } from "@/pages/admin/jobs/types";
+import GeneralChart from "@/shared/components/AdminChart";
+import SelectMenu from "@/shared/components/SelectMenu";
+import { days } from "@/dummy_data/adminDashboard";
+import CustomTooltip from "@/shared/components/ChartCustomTooltip";
+import { chartData } from "@/dummy_data/chart";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];
@@ -133,6 +138,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
     },
   ];
 
+  const [selectedDay, setSelectedDay] = useState<string | null>();
   const hasSelectedFilters = Boolean(search);
 
   return (
@@ -145,7 +151,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
           </Button>
         )}
       </div>
-      <div className="h-full flex-1 overflow-y-auto my-4">
+      <div className="h-full flex-1 overflow-y-auto mt-4">
         <CustomTable<JobItem>
           columns={columns}
           data={data}
@@ -157,6 +163,40 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
           onPageChange={onPageChange}
           onPageSizeChange={onPageSizeChange}
         />
+
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                Total Jobs Completed
+              </h3>
+              <SelectMenu
+                placeholder="Select Filter"
+                className="w-32"
+                options={days}
+                value={selectedDay}
+                onChange={setSelectedDay}
+              />
+            </div>
+
+            <GeneralChart
+              data={chartData}
+              chartType="line"
+              xAxisDataKey="name"
+              aspectRatio={2}
+              series={[
+                {
+                  dataKey: "jobs",
+                  name: "Jobs",
+                  fill: "#0f766e",
+                },
+              ]}
+              customTooltip={CustomTooltip}
+              height={400}
+              showLegend={false}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

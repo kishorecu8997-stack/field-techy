@@ -7,9 +7,11 @@ import BasicInformation from "./BasicInformation";
 import WalletTab from "./WalletTab";
 import DocumentView from "./DocumentView";
 import JobHistory from "./job_history/JobHistory";
-import { toast } from "react-toastify";
 import { useAdminGetClientByUserId } from "@/shared/apiServices/admin/adminOpenApiService";
-import type { CompanyInfo } from "../../types";
+import { useForm } from "react-hook-form";
+import BlockClient from "../BlockClient";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import type { BlockClientForm, CompanyInfo } from "../../types";
 
 /**
  * ClientViewForm component displays detailed information about a client (Corporate or Home).
@@ -19,6 +21,11 @@ const ClientViewForm: React.FC = () => {
   const [searchParams] = useSearchParams();
   const userId = searchParams.get("userId");
   const navigate = useNavigate();
+  const [isBlockPopupOpen, setIsBlockPopupOpen] = React.useState(false);
+
+  const blockFormMethods = useForm<BlockClientForm>({
+    defaultValues: { reason: "" },
+  });
 
   const { data: clientData, isLoading } = useAdminGetClientByUserId(userId || "", {
     enabled: !!userId,
@@ -80,9 +87,7 @@ const ClientViewForm: React.FC = () => {
           <Button
             variant="primary"
             className="w-fit bg-gradient-to-r from-teal-800 to-teal-900 text-white py-1 rounded-md hover:opacity-90 transition shadow-sm"
-            onClick={() =>
-              toast.success("Client has been blocked successfully!")
-            }
+            onClick={() => setIsBlockPopupOpen(true)}
           >
             Block Client
           </Button>
@@ -99,6 +104,17 @@ const ClientViewForm: React.FC = () => {
       <div className="p-3 h-full w-full flex flex-1 overflow-hidden flex-col bg-neutral-100 dark:bg-gray-900  rounded-md gap-2">
         <AdminTabComponent tabs={tabs} defaultActiveTab="Basic Information" />
       </div>
+
+      <FormContainer methods={blockFormMethods} onSubmit={() => {}}>
+        <BlockClient 
+          isBlockClient={isBlockPopupOpen} 
+          setIsBlockClient={setIsBlockPopupOpen}
+          onSuccess={() => {
+            // Refetch or redirect if needed
+            navigate(absoluteUrls.admin.home.manage_client);
+          }}
+        />
+      </FormContainer>
     </div>
   );
 };
