@@ -109,22 +109,22 @@ export const manageJobs: ManageJobProps[] = [
 
 export const AllJobStatus = [
   {
-    value: "approve",
-    label: "Approve",
-    bg: "bg-green-100 text-green-700",
-    icon: icons.check,
+    value: "Hold",
+    label: "Hold",
+    bg: "bg-blue-100 text-blue-700",
+    icon: icons.hold,
   },
   {
-    value: "pending",
-    label: "Pending",
-    bg: "bg-yellow-100 text-yellow-700",
-    icon: icons.pending,
+    value: "Flag",
+    label: "Flag",
+    bg: "bg-orange-100 text-orange-700",
+    icon: icons.flagged,
   },
   {
-    value: "reject",
-    label: "Reject",
-    bg: "bg-red-100 text-red-700",
-    icon: icons.close,
+    value: "Cancel",
+    label: "Cancel",
+    bg: "bg-red-500 text-red-900",
+    icon: icons.cancel,
   },
 ];
 
