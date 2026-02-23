@@ -176,7 +176,7 @@ export class ClientRouteStrategy implements RouteStrategy {
           },
           {
             path: urls.client.home.notifications,
-            element: withSuspense(Components.ClientNotificationPage),
+            element: withSuspense(Components.CommonNotificationPage),
           },
         ],
       },
