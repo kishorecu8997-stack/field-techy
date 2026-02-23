@@ -7,7 +7,7 @@ import HoldJob from "./HoldJob";
 import InprogressJob from "./InprogressJob";
 
 /**
- * EngineerJobCatagory
+ * EngineerJobCategory
  *
  * Top-level tabbed view that groups different job lists for a single engineer.
  * Each tab renders a table or list representing a particular job state:
@@ -30,7 +30,7 @@ import InprogressJob from "./InprogressJob";
  * @component
  * @returns {JSX.Element} A tabbed container of job category views for an engineer
  */
-export default function EngineerJobCatagory() {
+export default function EngineerJobCategory() {
   const tabs = [
     {
       label: "Applied Jobs",

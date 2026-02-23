@@ -5,7 +5,6 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import React, { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import {
   useAdminDeleteServiceCategory,
@@ -13,20 +12,7 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-
-const HandleStatus = ({ status: value }: { status: boolean }) => {
-  const [status, setStatus] = useState<boolean>(value);
-  return (
-    <div
-      className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-        status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-      }`}
-      onClick={() => setStatus(!status)}
-    >
-      {status ? "On" : "Off"}
-    </div>
-  );
-};
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export interface ServerCategoryProps {
   id: string;
@@ -134,18 +120,10 @@ const ManageJobCategory: React.FC = () => {
     { key: "categoryName", label: "Category" },
     { key: "createdDate", label: "Created Date" },
     {
-      key: "status",
-      label: "Status",
-      renderCell: (row: ServerCategoryProps) => (
-        <HandleStatus status={row.status} />
-      ),
-    },
-
-    {
       key: "action",
       label: "Actions",
       renderCell: (row: ServerCategoryProps) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
             <CiEdit
               className="text-blue-600"
