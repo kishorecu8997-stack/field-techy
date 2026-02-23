@@ -39,30 +39,34 @@ export default function SuspendedUser() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
-  const latestSuspensionMap = useMemo<Record<string, StatusHistoryType | undefined>>(() => {
-  const map: Record<string, StatusHistoryType | undefined> = {};
+  const latestSuspensionMap = useMemo<
+    Record<string, StatusHistoryType | undefined>
+  >(() => {
+    const map: Record<string, StatusHistoryType | undefined> = {};
 
     engineerData.forEach((engineer) => {
-    // safely reduce over statusHistory
-    const latestSuspension = engineer.statusHistory?.reduce<StatusHistoryType | undefined>(
-      (latest, current) => {
+      // safely reduce over statusHistory
+      const latestSuspension = engineer.statusHistory?.reduce<
+        StatusHistoryType | undefined
+      >((latest, current) => {
         if (current.type !== "suspension") return latest;
 
         // pick the one with the latest actionDate
-        if (!latest || new Date(current.actionDate) > new Date(latest.actionDate)) {
+        if (
+          !latest ||
+          new Date(current.actionDate) > new Date(latest.actionDate)
+        ) {
           return current;
         }
 
         return latest;
-      },
-      undefined
-    );
+      }, undefined);
 
-    map[engineer.id] = latestSuspension;
-  });
+      map[engineer.id] = latestSuspension;
+    });
 
-  return map;
-}, [engineerData]);
+    return map;
+  }, [engineerData]);
 
   const handleRevoke = async (engineer: ManageEngineerProps) => {
     await showPopup({

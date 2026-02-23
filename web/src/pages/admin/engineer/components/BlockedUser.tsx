@@ -39,28 +39,32 @@ export default function BlockedUser() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
-  const latestBlockMap = useMemo<Record<string, StatusHistoryType | undefined>>(() => {
-  const map: Record<string, StatusHistoryType | undefined> = {};
+  const latestBlockMap = useMemo<
+    Record<string, StatusHistoryType | undefined>
+  >(() => {
+    const map: Record<string, StatusHistoryType | undefined> = {};
 
-  engineerData.forEach((engineer) => {
-    // safely handle undefined statusHistory
-    const latestBlock = engineer.statusHistory?.reduce<StatusHistoryType | undefined>(
-      (latest, current) => {
+    engineerData.forEach((engineer) => {
+      // safely handle undefined statusHistory
+      const latestBlock = engineer.statusHistory?.reduce<
+        StatusHistoryType | undefined
+      >((latest, current) => {
         if (current.type !== "block") return latest;
         // pick the one with latest actionDate
-        if (!latest || new Date(current.actionDate) > new Date(latest.actionDate)) {
+        if (
+          !latest ||
+          new Date(current.actionDate) > new Date(latest.actionDate)
+        ) {
           return current;
         }
         return latest;
-      },
-      undefined
-    );
+      }, undefined);
 
-    map[engineer.id] = latestBlock;
-  });
+      map[engineer.id] = latestBlock;
+    });
 
-  return map;
-}, [engineerData]);
+    return map;
+  }, [engineerData]);
 
   const handleUnblock = async (engineer: ManageEngineerProps) => {
     await showPopup({
