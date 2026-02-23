@@ -137,7 +137,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 className="bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors"
                 onClick={() => onToggleChat(jobId)}
               >
-                <IoChatbubble size={16} />
+                <span className="relative inline-block">
+                  <IoChatbubble size={16} />
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                </span>
                 <span>Chats</span>
               </button>
             )}

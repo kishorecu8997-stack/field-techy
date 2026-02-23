@@ -5,6 +5,7 @@ import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "./commonUI/Buttons";
+import { IoChevronBack } from "react-icons/io5";
 
 /**
  * MyJobsHeader Component
@@ -44,10 +45,10 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                 {isChatVisible && handleCloseChat && (
                   <button
                     onClick={handleCloseChat}
-                    className="text-teal-800 dark:text-teal-400 font-bold"
+                    className="text-black dark:text-white font-bold"
                     aria-label="Go back to job details"
                   >
-                    {"<"}
+                    <IoChevronBack  size={20} />
                   </button>
                 )}
                 {title}
@@ -75,9 +76,10 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                 {isChatVisible && handleCloseChat && (
                   <button
                     onClick={handleCloseChat}
-                    className="text-teal-800 dark:text-teal-400 font-bold"
+                    className="text-black dark:text-white font-bold"
+                    aria-label="Go back to job details"
                   >
-                    {"<"}
+                    <IoChevronBack  size={20} />
                   </button>
                 )}
                 {title}
