@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import Draggable from "react-draggable";
-import { FaPhoneSlash, FaTimes, FaUser, FaVideoSlash, FaMicrophoneSlash } from "react-icons/fa";
+import { FaTimes, FaUser, FaVideoSlash, FaMicrophoneSlash } from "react-icons/fa";
+import { MdCallEnd } from "react-icons/md";
 import { assetsConfig } from "@/assets";
 
 interface OutgoingCallPopupProps {
@@ -50,15 +51,15 @@ const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({ contactName, onCl
           <div className="flex items-center gap-3">
             <button
               aria-label="Toggle Video"
-              className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
+              className="w-20 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
             >
-              <FaVideoSlash />
+              <FaVideoSlash size={25} />
             </button>
             <button
               aria-label="Toggle Mute"
-              className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
+              className="w-20 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
             >
-              <FaMicrophoneSlash />
+              <FaMicrophoneSlash size={25} />
             </button>
           </div>
 
@@ -66,9 +67,9 @@ const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({ contactName, onCl
             <button
               aria-label="End Call"
               onClick={onClose}
-              className="ml-2 bg-red-600 hover:bg-red-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-md"
+              className="ml-2 bg-red-600 hover:bg-red-700 text-white w-20 h-14 rounded-full flex items-center justify-center shadow-md"
             >
-              <FaPhoneSlash />
+              <MdCallEnd size="25" />
             </button>
           </div>
         </div>

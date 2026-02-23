@@ -102,7 +102,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                 )}
               </div>
             </div>
-            <>
+            {!isChatVisible && (
               <div className="flex flex-row flex-shrink-0 justify-end items-center gap-4">
                 {action}
                 {isReport && (
@@ -130,7 +130,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                   </Button>
                 )}
               </div>
-            </>
+            )}
           </div>
         </header>
         <ReportPage
