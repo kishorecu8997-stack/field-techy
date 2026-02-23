@@ -27,7 +27,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import LogComponent from "./tab_components/LogComponent";
-import TimelineSection from "./tab_components/TimelineSection";
+import TimelineSection from "./tab_components/timeline_section/TimelineSection";
 import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
 import ManageProposalsTab from "./tab_components/ManageProposalsTab";
 import { toast } from "react-toastify";
@@ -57,8 +57,8 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
 
   const remainingProposals = Math.max(
     networkEngineerProposals.length -
-      acceptedProposals.length -
-      rejectedProposals.length,
+    acceptedProposals.length -
+    rejectedProposals.length,
     0,
   );
 
@@ -189,19 +189,19 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     },
     ...(showManageProposals
       ? [
-          {
-            label: DUMMY_TABS_LABELS.manageProposals,
-            content: (
-              <ManageProposalsTab
-                remainingProposals={remainingProposals}
-                acceptedProposals={acceptedProposals}
-                rejectedProposals={rejectedProposals}
-                onAcceptProposal={handleAcceptProposal}
-                onRejectProposal={handleRejectProposal}
-              />
-            ),
-          },
-        ]
+        {
+          label: DUMMY_TABS_LABELS.manageProposals,
+          content: (
+            <ManageProposalsTab
+              remainingProposals={remainingProposals}
+              acceptedProposals={acceptedProposals}
+              rejectedProposals={rejectedProposals}
+              onAcceptProposal={handleAcceptProposal}
+              onRejectProposal={handleRejectProposal}
+            />
+          ),
+        },
+      ]
       : []),
   ];
 
