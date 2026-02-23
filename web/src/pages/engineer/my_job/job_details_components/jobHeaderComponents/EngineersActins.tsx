@@ -220,8 +220,10 @@ const EngineersActions = ({
     (status === JOB_STATUSES.applied || OfferJobStatus === "applied") &&
     OfferJobStatus !== "accepted" &&
     OfferJobStatus !== "assigned";
-  const isRejected = OfferJobStatus === "rejected" || mappedOfferStatus === "declined";
-  const isJobStarted = OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
+  const isRejected =
+    OfferJobStatus === "rejected" || mappedOfferStatus === "declined";
+  const isJobStarted =
+    OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
   const isNew = status === JOB_STATUSES.new || status === "new";
   const isOffer = status === JOB_STATUSES.offer || status === "offer";
   const isPosted = status === JOB_STATUSES.posted;
@@ -249,7 +251,7 @@ const EngineersActions = ({
     !hasStartPending &&
     !hasJobStarted;
 
-    // Check if proposal already submitted via API
+  // Check if proposal already submitted via API
   const hasSubmittedProposal =
     OfferJobStatus === "applied" ||
     OfferJobStatus === "submitted" ||
@@ -381,7 +383,9 @@ const EngineersActions = ({
             {OfferJobStatus === "start_pending_approval" ? (
               <>
                 <icons.pending className="text-yellow-500 w-6 h-6" />
-                <span className="text-lg text-yellow-500">Start Pending Approval</span>
+                <span className="text-lg text-yellow-500">
+                  Start Pending Approval
+                </span>
               </>
             ) : (
               <>

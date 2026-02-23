@@ -50,12 +50,14 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       queryClient.invalidateQueries({
         queryKey: clientGetAssignmentDetailsQueryKey(),
         predicate: (query): boolean =>
-          !!(query.queryKey[0] &&
-          typeof query.queryKey[0] === "object" &&
-          "_id" in query.queryKey[0] &&
-          query.queryKey[0]._id === "clientGetAssignmentDetails"),
+          !!(
+            query.queryKey[0] &&
+            typeof query.queryKey[0] === "object" &&
+            "_id" in query.queryKey[0] &&
+            query.queryKey[0]._id === "clientGetAssignmentDetails"
+          ),
       });
-      window.location.reload()
+      window.location.reload();
     },
     onError: (error) => {
       console.error("Failed to action on proposal:", error);
@@ -157,7 +159,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                 Status: {proposal.assignmentStatus}
               </p>
             </div>
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
               {proposal.appliedAt || proposal.invitedAt
                 ? `${DUMMY_TABS_LABELS.receivedOn} ${new Date(
                     proposal.appliedAt || proposal.invitedAt || "",
@@ -168,7 +170,8 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap break-words">
             {proposal.proposalDetail || "No proposal details provided"}
           </p>
-          {(proposal.proposalAttachmentUrl || proposal.proposalAttachmentId) && (
+          {(proposal.proposalAttachmentUrl ||
+            proposal.proposalAttachmentId) && (
             <div className="mb-4">
               <a
                 href={proposal.proposalAttachmentUrl || `#`}

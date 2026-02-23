@@ -115,7 +115,6 @@ const JobsDetails: React.FC = () => {
     status: job.status || "Posted",
   };
 
-
   return (
     <div className="min-h-screen transition-colors duration-200">
       <div className="container mx-auto px-4 py-6">

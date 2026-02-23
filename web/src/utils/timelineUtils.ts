@@ -56,9 +56,7 @@ export const transformLogsToTimelineItems = (
       // (API may return pending even though type definition doesn't include it)
       if ((log.status as string) === "pending") {
         // Client sees "Proposal Received", Engineer sees "Proposal Submitted"
-        title = isClientView
-          ? "Proposal Received"
-          : "Proposal Submitted";
+        title = isClientView ? "Proposal Received" : "Proposal Submitted";
         details =
           details ||
           (isClientView

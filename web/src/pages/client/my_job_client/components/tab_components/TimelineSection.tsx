@@ -4,7 +4,10 @@ import { HiCheckCircle } from "react-icons/hi";
 import { HiXMark } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { formatDateTime } from "@/utils/formatDateTime";
-import { formatApiDate, transformLogsToTimelineItems } from "@/utils/timelineUtils";
+import {
+  formatApiDate,
+  transformLogsToTimelineItems,
+} from "@/utils/timelineUtils";
 import TimelineList from "@/shared/components/TimelineList";
 import type { TimelineCardData } from "@/pages/client/my_job_client/types";
 import {

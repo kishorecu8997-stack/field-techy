@@ -19,7 +19,10 @@ import type {
   ProgressUpdate,
   JobInfoSectionProps,
 } from "../types.d";
-import { useEngineerApplyJob, useEngineerGetMyJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useEngineerApplyJob,
+  useEngineerGetMyJobs,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { toast } from "react-toastify";
 
 /**
@@ -168,7 +171,9 @@ const JobTabSection = ({
         });
 
         if (!uploadResponse.ok) {
-          throw new Error(`File upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
+          throw new Error(
+            `File upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`,
+          );
         }
       }
 
@@ -218,7 +223,8 @@ const JobTabSection = ({
             content: (
               <ProposalInfoTab
                 submittedProposal={
-                  submittedProposal || (apiProposalData?.proposalDetail
+                  submittedProposal ||
+                  (apiProposalData?.proposalDetail
                     ? {
                         proposalDescription: apiProposalData.proposalDetail,
                         attachmentUrl: apiProposalData.proposalAttachmentUrl,

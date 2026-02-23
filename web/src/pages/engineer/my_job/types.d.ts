@@ -304,15 +304,17 @@ export interface ProposalApiData {
  * Props for the ProposalInfoTab component - supports both form and API data
  */
 export type ProposalInfoTabProps = {
-  submittedProposal: {
-    proposalDescription: string;
-    attachments?: never;
-    attachmentUrl?: string | null;
-  } | {
-    proposalDescription: string;
-    attachments: FileList | null;
-    attachmentUrl?: never;
-  };
+  submittedProposal:
+    | {
+        proposalDescription: string;
+        attachments?: never;
+        attachmentUrl?: string | null;
+      }
+    | {
+        proposalDescription: string;
+        attachments: FileList | null;
+        attachmentUrl?: never;
+      };
 };
 
 /**

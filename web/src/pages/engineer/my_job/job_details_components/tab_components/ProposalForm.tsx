@@ -29,7 +29,7 @@ const ProposalForm = ({
   showReview,
   setShowReview,
   setShowSuccess,
-  setSubmittedProposal,
+  // setSubmittedProposal,
   setSendProposal,
   setSelectedTab,
   setHasApplied,

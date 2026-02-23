@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from "react";
 import TimelineList from "@/shared/components/TimelineList";
-import { formatApiDate, transformLogsToTimelineItems } from "@/utils/timelineUtils";
+import {
+  formatApiDate,
+  transformLogsToTimelineItems,
+} from "@/utils/timelineUtils";
 import type { ProgressUpdate } from "../../types.d";
 import Popup from "@/shared/components/Popup";
 import RevisionRequestUpdateForm from "../jobHeaderComponents/RevisionRequestUpdateForm";
@@ -176,7 +179,7 @@ const transformProposalToTimelineItems = (
         let proposalDetails = job.proposalDetail
           ? `\n\nProposal Details: ${job.proposalDetail}`
           : `\n\nSubmitted proposal for: ${job.jobTitle}`;
-        
+
         allItems.push({
           title: "Proposal Submitted",
           timestamp: formatApiDate(submittedTimestamp),

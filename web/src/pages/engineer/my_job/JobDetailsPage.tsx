@@ -115,7 +115,6 @@ const JobDetailsPage = () => {
 
   const job = jobList?.[0];
 
-
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
   };
