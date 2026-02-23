@@ -115,11 +115,6 @@ const JobDetailsPage = () => {
 
   const job = jobList?.[0];
 
-  // const location = job?.clientDetails?.address;
-  // const handleSubmitReview = () => {
-  //   toast.success("Review submitted successfully");
-  //   setIsReviewOpen(false);
-  // };
 
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);

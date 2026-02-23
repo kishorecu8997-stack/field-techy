@@ -3,6 +3,7 @@ import { IoAttach } from "react-icons/io5";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { DUMMY_TABS_LABELS } from "@/dummy_data/jobTabs/jobsectiondata";
 import { useClientActionOnAssignment } from "@/shared/apiServices/client/clientOpenApiService";
+import { clientGetAssignmentDetailsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
@@ -47,7 +48,12 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       toast.success("Proposal action completed successfully");
       // Invalidate assignment queries to refresh timeline
       queryClient.invalidateQueries({
-        queryKey: ["clientGetAssignmentDetails"],
+        queryKey: clientGetAssignmentDetailsQueryKey(),
+        predicate: (query): boolean =>
+          !!(query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          "_id" in query.queryKey[0] &&
+          query.queryKey[0]._id === "clientGetAssignmentDetails"),
       });
       window.location.reload()
     },

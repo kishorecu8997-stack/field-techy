@@ -115,10 +115,6 @@ const JobsDetails: React.FC = () => {
     status: job.status || "Posted",
   };
 
-  console.log(
-    "formattedJob being passed to JobCardDetailsHeader:",
-    formattedJob,
-  );
 
   return (
     <div className="min-h-screen transition-colors duration-200">

@@ -25,11 +25,32 @@ const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({
 }) => {
   // Check if this is API data or Form data
   const isApiData = isApiProposalData(submittedProposal);
-  const attachmentUrl = isApiData
-    ? submittedProposal.attachmentUrl ?? null
-    : submittedProposal.attachments
-      ? URL.createObjectURL(submittedProposal.attachments[0])
-      : null;
+
+  // State to hold the attachment URL (handles both API URLs and blob URLs)
+  const [attachmentUrl, setAttachmentUrl] = React.useState<string | null>(null);
+
+  // Create/revoke object URL for local file attachments to prevent memory leaks
+  React.useEffect(() => {
+    let objectUrl: string | null = null;
+
+    if (isApiData) {
+      // API data uses the existing attachmentUrl
+      setAttachmentUrl(submittedProposal.attachmentUrl ?? null);
+    } else if (submittedProposal.attachments && submittedProposal.attachments.length > 0) {
+      // Create object URL for local file attachments
+      objectUrl = URL.createObjectURL(submittedProposal.attachments[0]);
+      setAttachmentUrl(objectUrl);
+    } else {
+      setAttachmentUrl(null);
+    }
+
+    // Cleanup: revoke the object URL when component unmounts or dependencies change
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [isApiData, submittedProposal.attachmentUrl, submittedProposal.attachments]);
 
   const attachmentName = isApiData
     ? "View Document"

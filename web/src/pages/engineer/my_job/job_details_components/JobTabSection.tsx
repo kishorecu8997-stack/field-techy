@@ -1,4 +1,6 @@
 ﻿import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
 import {
   type AssignmentStatus,
   type JobStatus,
@@ -55,12 +57,15 @@ const JobTabSection = ({
   jobId?: number;
   isWorkSubmitted?: boolean;
 }) => {
+  const queryClient = useQueryClient();
+
   const { mutateAsync: applyJob } = useEngineerApplyJob({
     onSuccess: () => {
       // After successful submission, set hasApplied to true to show Proposal Info tab
       setHasApplied(true);
-      // TODO: Invalidate job queries to refetch assignmentId
-      // This would require access to queryClient from parent or passing a callback
+      // Invalidate engineer queries to trigger a refetch and get updated assignmentId
+      // This ensures the job data is refreshed without requiring a full page reload
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
     },
   });
 
@@ -154,19 +159,20 @@ const JobTabSection = ({
 
       // If there's a file and we got an upload URL, upload the file
       if (file && response.uploadUrl) {
-        await fetch(response.uploadUrl, {
+        const uploadResponse = await fetch(response.uploadUrl, {
           method: "PUT",
           body: file,
           headers: {
             "Content-Type": file.type,
           },
         });
+
+        if (!uploadResponse.ok) {
+          throw new Error(`File upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
+        }
       }
 
       toast.success("Proposal submitted successfully!");
-      
-      // Refresh the page immediately after successful submission
-      window.location.reload();
     } catch (error) {
       console.error("Failed to submit proposal:", error);
       toast.error("Failed to submit proposal. Please try again.");

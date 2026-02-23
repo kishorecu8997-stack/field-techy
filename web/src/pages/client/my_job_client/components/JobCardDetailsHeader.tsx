@@ -17,7 +17,7 @@ interface JobCardDetailsHeaderProps {
     title: string;
     duration: string;
     client: string;
-    type: "On site" | "Remote" | "Hybrid";
+    type: string;
     status: string;
   };
 }

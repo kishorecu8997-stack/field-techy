@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import TimelineList from "@/shared/components/TimelineList";
-import { formatNow } from "@/utils/formatDateTime";
+import { formatApiDate, transformLogsToTimelineItems } from "@/utils/timelineUtils";
 import type { ProgressUpdate } from "../../types.d";
 import Popup from "@/shared/components/Popup";
 import RevisionRequestUpdateForm from "../jobHeaderComponents/RevisionRequestUpdateForm";
@@ -14,84 +14,6 @@ import {
   useEngineerGetMyJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import type { GetJobLogsResponse, EngineerGetMyJobsResponse } from "@/api";
-
-/**
- * Format a date string to display format
- */
-const formatApiDate = (dateStr: string | null | undefined): string => {
-  if (!dateStr) return formatNow();
-  try {
-    const date = new Date(dateStr);
-    return date.toLocaleString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  } catch {
-    return formatNow();
-  }
-};
-
-/**
- * Transform API logs to timeline items with proper labels
- */
-const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
-  return logs.map((log) => {
-    // Generate proper title based on logType
-    let title = log.title || log.logType;
-    let details = log.details;
-
-    // Customize title based on logType and status
-    if (log.logType === "SUBMISSION") {
-      if (
-        log.status ===
-        ("pending" as
-          | "pending"
-          | "approved"
-          | "rejected"
-          | "revision_requested")
-      ) {
-        title = "Proposal Submitted";
-        details = details || "Engineer submitted a proposal for this job";
-      } else if (log.status === "approved") {
-        title = "Proposal Accepted";
-        details = details || "Client accepted the proposal";
-      } else if (log.status === "rejected") {
-        title = "Proposal Rejected";
-        details = details || "Client rejected the proposal";
-      }
-    } else if (log.logType === "JOB_POSTED") {
-      title = "Job Posted";
-      details = details || "Client posted a new job";
-    } else if (log.logType === "JOB_STARTED") {
-      title = "Job Started";
-      details = details || "Work has started on this job";
-    } else if (log.logType === "JOB_COMPLETED") {
-      title = "Job Completed";
-      details = details || "Job has been completed";
-    }
-
-    return {
-      title,
-      timestamp: formatApiDate(log.timestamp),
-      statusText:
-        log.status.charAt(0).toUpperCase() +
-        log.status.slice(1).replace(/_/g, " "),
-      statusColor:
-        log.status === "approved"
-          ? "#22c55e"
-          : log.status === "rejected"
-            ? "#ef4444"
-            : "#f59e0b",
-      accentColor: "#3b82f6",
-      details,
-      attachmentUrl: log.attachmentUrl,
-    };
-  });
-};
 
 /**
  * Transform break requests to timeline items
@@ -342,7 +264,7 @@ const TimelineSection: React.FC<{
   const apiTimelineItems = useMemo(() => {
     if (!jobLogs) return [];
 
-    const logItems = transformLogsToTimelineItems(jobLogs.logs || []);
+    const logItems = transformLogsToTimelineItems(jobLogs.logs || [], false);
     const breakItems = transformBreakRequestsToItems(
       jobLogs.breakRequests || [],
     );

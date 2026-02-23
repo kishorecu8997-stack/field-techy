@@ -8,6 +8,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { type Dispatch, type SetStateAction } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
 import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
@@ -81,13 +82,14 @@ const EngineersActions = ({
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+  const queryClient = useQueryClient();
 
   // Hook for requesting to start a job
   const { mutateAsync: requestStartJob, isPending: isStartingJob } =
     useEngineerRequestStart({
       onSuccess: () => {
         toast.success("Job start request submitted successfully");
-        window.location.reload();
+        // Query invalidation is handled by the mutation hook
         handleUpdateOfferStatus("started");
       },
       onError: (error) => {
@@ -124,7 +126,8 @@ const EngineersActions = ({
             toast.success("Job accepted successfully");
             close(true);
             handleUpdateOfferStatus("accepted");
-            window.location.reload();
+            // Invalidate queries to refetch updated job data
+            queryClient.invalidateQueries({ queryKey: ["engineers"] });
           },
         },
       ],
@@ -262,15 +265,6 @@ const EngineersActions = ({
   // Extracted shared button logic to avoid duplication
   const renderJobActionButtons = () => {
     if (hasJobStarted || hasStartPending) return postStartActions;
-
-    if (hasStartPending) {
-      return (
-        <div className="flex flex-wrap gap-2 w-fit items-center">
-          <icons.checkCircle className="text-yellow-500 w-6 h-6" />
-          <span className="text-lg">Start Pending Approval</span>
-        </div>
-      );
-    }
 
     if (canStartJob) {
       return (
