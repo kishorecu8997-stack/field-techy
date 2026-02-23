@@ -153,6 +153,8 @@ export const urls = {
       manage_groups_edit: "manage-groups/edit",
       manage_groups_view: "manage-groups/view",
       manage_groups_addEngineer: "manage-groups/add-engineer",
+      manage_currency_conversion: "conversion",
+      edit_exchange_rate: "conversion/edit"
     },
   },
   ft_landing: { landing: "/landing" },
@@ -257,6 +259,8 @@ export const absoluteUrls = {
       manage_rate_card: `${BASE.ADMIN}/rate-card`,
       manage_payment: `${BASE.ADMIN}/revenue`,
       manage_transactions: `${BASE.ADMIN}/transaction`,
+      manage_currency_conversion: `${BASE.ADMIN}/conversion`,
+      edit_exchange_rate: `${BASE.ADMIN}/conversion/edit`,
       wallet_overview: `${BASE.ADMIN}/wallet-overview`,
       wallet_overview_view: `${BASE.ADMIN}/wallet-overview/view`,
       wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,

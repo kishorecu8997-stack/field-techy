@@ -14,6 +14,7 @@ import { RiBankCardLine } from "react-icons/ri";
 import { BiFile } from "react-icons/bi";
 import { MdCurrencyExchange } from "react-icons/md";
 import { FiUsers } from "react-icons/fi";
+import { ImLoop } from "react-icons/im";
 
 /**
  * Represents a single item in the admin navigation menu.
@@ -115,6 +116,11 @@ export const menuItems: MenuItem[] = [
         name: "Transactions",
         path: absoluteUrls.admin.home.manage_transactions,
         icon: <MdCurrencyExchange className="text-lg" />,
+      },
+      {
+        name: "Exchange Rates",
+        path: absoluteUrls.admin.home.manage_currency_conversion,
+        icon: <ImLoop className="text-lg" />,
       },
     ],
   },

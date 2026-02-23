@@ -66,6 +66,13 @@ export const AdminManagePayment = React.lazy(
 export const AdminManageTransactions = React.lazy(
   () => import("@/pages/admin/transactions"),
 );
+export const AdminManageCurrencyConversion = React.lazy(
+  () => import("@/pages/admin/manage_currency_conversion"),
+);
+export const AdminEditExchangeRate = React.lazy(
+  () =>
+    import("@/pages/admin/manage_currency_conversion/components/EditCurrencyRates"),
+);
 export const WalletOverview = React.lazy(
   () => import("@/pages/admin/wallet_management/wallet_overview"),
 );
