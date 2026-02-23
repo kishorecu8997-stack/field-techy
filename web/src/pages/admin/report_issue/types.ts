@@ -8,6 +8,9 @@ export interface AdminReportIssue {
   level: string; // e.g. Critical, High, Medium, Low
   date: string;
   phone: string;
+  size: string;
+  file: string;
+  position: string;
   solved: boolean;
 }
 
@@ -22,6 +25,9 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     level: "Level-1",
     date: "2025-02-12",
     phone: "0112345632",
+    size: "1.2MB",
+    file: "mobile_screenshot.png",
+    position: "Frontend Developer",
     solved: false,
   },
   {
@@ -34,6 +40,9 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     level: "Level-2",
     date: "2025-02-14",
     phone: "021234563",
+    size: "45KB",
+    file: "server_logs.txt",
+    position: "QA Automation Engineer",
     solved: false,
   },
   {
@@ -46,6 +55,9 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     level: "Level-3",
     date: "2025-02-15",
     phone: "023234533",
+    size: "2.5MB",
+    file: "network_profile.json",
+    position: "Performance Engineer",
     solved: false,
   },
   {
@@ -58,6 +70,9 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     level: "Level-1",
     date: "2025-02-16",
     phone: "0112342336",
+    size: "850KB",
+    file: "contrast_report.pdf",
+    position: "UI/UX Designer",
     solved: false,
   },
   {
@@ -70,6 +85,9 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     level: "Level-3",
     date: "2025-02-17",
     phone: "0212315643",
+    size: "120KB",
+    file: "auth_trace.log",
+    position: "Backend Developer",
     solved: false,
   },
   {
@@ -82,6 +100,9 @@ export const sampleReportsIssue: AdminReportIssue[] = [
     level: "Level-2",
     date: "2025-02-18",
     phone: "0212315643",
+    size: "4.1MB",
+    file: "mockup_v1.fig",
+    position: "Product Manager",
     solved: false,
   },
 ];

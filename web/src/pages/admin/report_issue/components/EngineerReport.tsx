@@ -55,8 +55,9 @@ export default function EngineerReport() {
           </span>
 
           {/* Name Text */}
-          <div className=" dark:text-white text-md group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
+          <div className="flex flex-col dark:text-white text-md group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
             {row.name}
+            <span className="text-xs"> {row.position}</span>
           </div>
         </div>
       ),
@@ -77,10 +78,8 @@ export default function EngineerReport() {
     {
       key: "status",
       label: "Status",
-      renderCell: (row: AdminReportIssue) => (
-        <div className=" flex items-center gap-2 cursor-pointer">
-          {row.solved && <span>Active</span>}
-        </div>
+      renderCell: () => (
+        <div className=" flex items-center gap-2 cursor-pointer">Active</div>
       ),
     },
     {
@@ -92,8 +91,10 @@ export default function EngineerReport() {
           onClick={() => handleGetReport(row)}
         >
           <IoEye className="text-xl text-green-950 dark:text-neutral-400" />
-          {row.solved && (
+          {row.solved ? (
             <IoIosCheckmarkCircle className="text-green-700 text-2xl" />
+          ) : (
+            <IoIosCheckmarkCircle className="text-gray-400 text-2xl" />
           )}
         </div>
       ),
@@ -117,7 +118,7 @@ export default function EngineerReport() {
                 <span>
                   <h1 className="text-2xl font-semibold">{data.name}</h1>
                   <h1 className="text-md text-gray-500 dark:text-gray-400">
-                    Designer
+                    {data.position}
                   </h1>
                 </span>
               </div>
@@ -167,11 +168,9 @@ export default function EngineerReport() {
                 <span className="flex gap-x-2 items-center p-2 mt-2 border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 w-fit rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                   <FaFile className="text-3xl text-blue-500 dark:text-blue-400" />
                   <span className="flex flex-col">
-                    <h1 className="text-sm font-semibold">
-                      Button Description
-                    </h1>
+                    <h1 className="text-sm font-semibold">{data.file}</h1>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400 uppercase">
-                      XLSX 4.49KB
+                      {data.size}
                     </p>
                   </span>
                 </span>

@@ -3,8 +3,17 @@ import { FileUpload, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import Popup from "@/shared/components/Popup";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
+import { toast } from "react-toastify";
+
+type PostReportProps = {
+  category: string;
+  priority: string;
+  description: string;
+  file: FileList | null;
+};
 
 const ReportPage = ({
   open,
@@ -13,12 +22,51 @@ const ReportPage = ({
   open: boolean;
   onClose: () => void;
 }) => {
+  const { showPopup } = usePopupStore();
+
   const formCtx = useForm({
-    defaultValues: {},
+    defaultValues: {
+      category: "",
+      priority: "",
+      description: "",
+      file: null,
+    },
   });
+  const { reset } = formCtx;
+
+  const handleReportSubmit = async (data: PostReportProps) => {
+    await showPopup({
+      title: "Report a Problem",
+      body: "are you sure you want to upload this report ?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Confirm",
+          value: "submit",
+          variant: "primary",
+          action: async (close) => {
+            try {
+              console.log("Submitting Report Data:", data);
+              toast.success("Report submitted successfully!");
+              reset();
+              close(true);
+              onClose();
+            } catch {
+              toast.error("Failed to submit report.");
+            }
+          },
+        },
+      ],
+    });
+  };
+
   return (
     <Popup onClose={onClose} open={open}>
-      <div className="flex flex-col p-6">
+      <div className="flex flex-col p-6 overflow-y-auto h-full">
         <div className="flex justify-end">
           <button
             className="cursor-pointer text-gray-500 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
@@ -27,32 +75,50 @@ const ReportPage = ({
             <IoCloseSharp className="w-6 h-6" />
           </button>
         </div>
-        <FormContainer methods={formCtx} className="flex flex-col gap-2">
+        <FormContainer
+          methods={formCtx}
+          onSubmit={handleReportSubmit}
+          className="flex flex-col gap-2"
+        >
           <h1 className="text-xl font-bold text-center dark:text-gray-100 text-gray-800">
             Report a problem
           </h1>
 
           <SelectField
             label="Issue Category"
-            name="name"
+            name="category"
             placeholder="Enter your name"
+            required
+            rules={{ required: "Category is required" }}
             options={[
-              { value: "1", label: "categories1" },
-              { value: "2", label: "categories2" },
+              { value: "1", label: "Backend" },
+              { value: "2", label: "Performance" },
+              { value: "3", label: "Accessibility" },
             ]}
           />
           <SelectField
             label="Priority Level"
-            name="name"
+            name="priority"
+            required
+            rules={{ required: "Priority level is required" }}
             placeholder="select a priority"
             options={[
-              { value: "1", label: "levels1" },
-              { value: "2", label: "levels2" },
+              { value: "1", label: "Level 1" },
+              { value: "2", label: "Level 2" },
+              { value: "3", label: "Level 3" },
             ]}
           />
           <TextareaInput
             label="Description"
             name="description"
+            required
+            rules={{
+              required: "Description is required",
+              minLength: {
+                value: 10,
+                message: "Minimum 10 characters required",
+              },
+            }}
             placeholder="Enter your description"
           />
           <FileUpload
@@ -60,10 +126,13 @@ const ReportPage = ({
             label="Attach File (If any)"
             accept=".pdf, .jpg, .png"
             placeholder="Attach File"
+            required
             maxPages={5}
             validatePDF={true}
           />
-          <Button variant="primary" size="lg">Submit</Button>
+          <Button type="submit" variant="primary" size="lg">
+            Submit
+          </Button>
         </FormContainer>
       </div>
     </Popup>
