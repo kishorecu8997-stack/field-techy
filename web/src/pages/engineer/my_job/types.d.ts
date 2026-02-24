@@ -1,8 +1,10 @@
+import type React from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type {
-  AssignmentStatus,
   JobStatus as SearchJobStatus,
   SortOption,
   WorkingType as SearchWorkingType,
+  AssignmentStatus,
 } from "../search_result/types";
 export type { OfferedJobStatusType } from "../search_result/types";
 
@@ -105,7 +107,7 @@ export interface JobHeaderCardProps {
   client: string;
   duration: string;
   type?: WorkingType | string;
-  status?: JobStatus | string;
+  status?: JobStatus | AssignmentStatus | string;
   setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   isSendProposal?: boolean;
@@ -114,16 +116,16 @@ export interface JobHeaderCardProps {
   setOfferJobStatus?: Dispatch<
     SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>
   >;
-  OfferJobStatus?: OfferedJobStatusType | AssignmentStatus | undefined;
+  OfferJobStatus?: AssignmentStatus | OfferedJobStatusType | undefined;
   hideBreakDetails?: boolean;
   jobLocation?: string;
   numberOfVacancy?: number;
   numberOfApplicants?: number;
   hideDurationAndClient?: boolean;
-  assignmentId?: number;
   activeTab?: string;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
+  assignmentId?: number;
   jobId: string;
   onToggleChat?: (jobId: string) => void;
   onCloseChat?: () => void;
@@ -294,13 +296,32 @@ export interface ProposalFormData {
 }
 
 /**
- * Props for the ProposalInfoTab component
- * @interface ProposalInfoTabProps
- * @property {ProposalFormData} submittedProposal - The submitted proposal data to display
+ * API response data for proposal details
+ * @interface ProposalApiData
+ * @property {string | null} proposalDetail - The proposal description from API
+ * @property {string | null} proposalAttachmentUrl - The proposal attachment URL from API
  */
-export interface ProposalInfoTabProps {
-  submittedProposal: ProposalFormData;
+export interface ProposalApiData {
+  proposalDetail: string | null;
+  proposalAttachmentUrl: string | null;
 }
+
+/**
+ * Props for the ProposalInfoTab component - supports both form and API data
+ */
+export type ProposalInfoTabProps = {
+  submittedProposal:
+    | {
+        proposalDescription: string;
+        attachments?: never;
+        attachmentUrl?: string | null;
+      }
+    | {
+        proposalDescription: string;
+        attachments: FileList | null;
+        attachmentUrl?: never;
+      };
+};
 
 /**
  * Props for the component used to submit work details.

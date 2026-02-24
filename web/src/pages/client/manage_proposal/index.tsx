@@ -26,8 +26,6 @@ const ManageProposal = () => {
     error,
   } = useClientGetAssignmentDetails();
 
-  console.log(assignments);
-
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -76,6 +74,18 @@ const ManageProposal = () => {
                     payType="N/A"
                     rating="N/A"
                     reviews="0"
+                    attachmentUrl={proposal.proposalAttachmentUrl || null}
+                    receivedOn={
+                      proposal.appliedAt || proposal.invitedAt
+                        ? new Date(
+                            proposal.appliedAt || proposal.invitedAt || "",
+                          ).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })
+                        : null
+                    }
                     onClick={() =>
                       navigate(
                         `${absoluteUrls.client.home.manage_proposal}/${proposal.assignmentId}`,
