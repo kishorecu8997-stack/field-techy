@@ -76,7 +76,7 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            await deleteClient({ body: { userId: client.userId } });
+            await deleteClient({ path: { userId: client.userId } });
             toast.success("Client deleted successfully");
             close(true);
           },

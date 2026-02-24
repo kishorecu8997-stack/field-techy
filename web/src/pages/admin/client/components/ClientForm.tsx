@@ -213,11 +213,9 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
 
               const res = isEdit
                 ? await updateClient({
-                    body: {
-                      ...body,
-                      userId: toNum(userIdFromUrl),
-                    } as AdminUpdateClientData["body"],
-                  } as AdminUpdateClientData)
+                    path: { userId: toNum(userIdFromUrl)! },
+                    body: body as AdminUpdateClientData["body"],
+                  })
                 : await addClient({ body } as AdminCreateClientData);
 
               if (res && "uploadUrls" in res && res.uploadUrls) {

@@ -467,11 +467,12 @@ export function useAdminGetClientByUserId(
   return useQuery({
     ...adminGetClientOptions({
       client: apiClient,
-      query: { userId: Number(userId) },
+      path: { userId: Number(userId) },
     }),
     ...options,
   });
 }
+
 export function useAdminGetEngineerById(userId: number, enabled = true) {
   const isValidId = Number.isFinite(userId);
   return useQuery({
