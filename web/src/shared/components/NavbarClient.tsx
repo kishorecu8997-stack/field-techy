@@ -94,7 +94,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           />
         </span>
 
-        <NavLink
+        {/* <NavLink
           onClick={scrollToTop}
           to={absoluteUrls.client.home.my_projects}
           className={`${
@@ -104,7 +104,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Projects
-        </NavLink>
+        </NavLink> */}
         <NavLink
           onClick={scrollToTop}
           to={absoluteUrls.client.home.my_jobs}
