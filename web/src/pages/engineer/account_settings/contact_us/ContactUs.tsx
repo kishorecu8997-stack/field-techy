@@ -1,12 +1,13 @@
 import { icons } from "@/config/icons";
 import Accordion from "./Accordion";
 import ContactCard from "./ContactCard";
+import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * Contact page featuring a header with a message icon and two expandable sections (Contact Us & Support)
  * using an Accordion. Each section displays contact details via the ContactCard component.
  */
-const contactDetails = [
+const dummyContactDetails = [
   {
     id: "1",
     label: "Call",
@@ -36,11 +37,55 @@ const supportDetails = [
 ];
 
 const ContactUs = () => {
+  const {
+    data: contactData,
+    isLoading: contactLoading,
+    error: contactError,
+  } = useGetCmsContent("contact-info");
+
+  let contactDetails = dummyContactDetails;
+
+  if (
+    !contactLoading &&
+    !contactError &&
+    contactData &&
+    "type" in contactData &&
+    contactData.type === "contact-info" &&
+    contactData.data
+  ) {
+    contactDetails = [
+      {
+        id: "1",
+        label: "Call",
+        value: contactData.data.phone || "+91 12345 67890",
+        icon: <icons.phone className="text-white" />,
+      },
+      {
+        id: "2",
+        label: "Email",
+        value: contactData.data.email || "support@field-techy.com",
+        icon: <icons.email className="text-white" />,
+      },
+    ];
+  }
+
   const sections = [
     {
       id: "1",
       label: "Contact Us",
-      content: <ContactCard items={contactDetails} />,
+      content: contactLoading ? (
+        <div className="flex items-center justify-center p-4">
+          <p className="text-gray-500">Loading contact details...</p>
+        </div>
+      ) : contactError ? (
+        <div className="flex items-center justify-center p-4">
+          <p className="text-red-500">
+            Failed to load contact details. Using default.
+          </p>
+        </div>
+      ) : (
+        <ContactCard items={contactDetails} />
+      ),
       icon: <icons.phone />,
     },
     {

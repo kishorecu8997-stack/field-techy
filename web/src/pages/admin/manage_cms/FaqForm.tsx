@@ -7,6 +7,7 @@ import { IoCloseSharp } from "react-icons/io5";
 interface AddFaqProps {
   faqMode: string;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+  isLoading?: boolean;
 }
 
 /**
@@ -15,7 +16,11 @@ interface AddFaqProps {
  * @param {AddFaqProps} props - The props for the component.
  * @returns {JSX.Element} The rendered Add/Edit FAQ form.
  */
-export default function FaqForm({ faqMode, setIsModalOpen }: AddFaqProps) {
+export default function FaqForm({
+  faqMode,
+  setIsModalOpen,
+  isLoading,
+}: AddFaqProps) {
   return (
     <div>
       <div className="p-4">
@@ -24,14 +29,14 @@ export default function FaqForm({ faqMode, setIsModalOpen }: AddFaqProps) {
             {faqMode === "Add" ? "Add" : "Edit"} FAQ
           </p>
           <div
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => !isLoading && setIsModalOpen(false)}
             className="cursor-pointer text-xl"
           >
             <IoCloseSharp />
           </div>
         </div>
 
-        <div className="grid w-full">
+        <div className="grid w-full gap-4">
           <InputField
             name="question"
             label="Question"
@@ -41,6 +46,7 @@ export default function FaqForm({ faqMode, setIsModalOpen }: AddFaqProps) {
               required: "Question is required",
               validate: validateQuestion,
             }}
+            disabled={isLoading}
           />
 
           <TextareaInput
@@ -55,6 +61,24 @@ export default function FaqForm({ faqMode, setIsModalOpen }: AddFaqProps) {
                   required: true,
                 }),
             }}
+            disabled={isLoading}
+          />
+
+          <InputField
+            name="sortOrder"
+            label="Sort Order"
+            type="number"
+            required
+            rules={{
+              required: "Sort order is required",
+              min: {
+                value: 0,
+                message: "Sort order must be 0 or greater",
+              },
+              valueAsNumber: true,
+            }}
+            placeholder="0"
+            disabled={isLoading}
           />
         </div>
 
@@ -62,8 +86,9 @@ export default function FaqForm({ faqMode, setIsModalOpen }: AddFaqProps) {
           <Button
             type="submit"
             className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            disabled={isLoading}
           >
-            Submit
+            {isLoading ? "Saving..." : "Submit"}
           </Button>
         </div>
       </div>
