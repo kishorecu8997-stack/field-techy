@@ -9,7 +9,6 @@ export interface Transaction {
   status?: TransactionStatus;
 }
 
-
 export interface BankDetails {
   bank: string;
   amount: string;

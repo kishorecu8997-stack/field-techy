@@ -11,7 +11,6 @@ import { FormProvider, useForm } from "react-hook-form";
 import { HiFilter, HiSearch } from "react-icons/hi";
 import Pagination from "../../search_result/components/Pagination";
 
-
 interface TransactionDashboardProps {
   showAll?: boolean;
   onViewAllClick?: () => void;
@@ -55,7 +54,6 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
   const startDateStr = startDate3MonthsAgo.toISOString();
   const endDateStr = endDateToday.toISOString();
 
-
   const {
     data: transactionsRaw,
     isLoading,
@@ -80,7 +78,6 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
       </div>
     );
 
- 
   const validTransactions = (transactionsRaw || []).filter(
     (tx) => !isNaN(new Date(tx.timestamp).getTime()),
   );

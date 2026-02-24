@@ -23,7 +23,7 @@ import { formatCurrency } from "@/shared/libs/utils";
  * @example
  * <SidebarProfile user={user} earnings={earnings} />
  */
-const SidebarProfile: React.FC= () => {
+const SidebarProfile: React.FC = () => {
   return (
     <div className="space-y-6">
       <ProfileCard />
@@ -119,12 +119,12 @@ const EarningsCard = () => {
   const { data: balanceArr } = useEngineerBalance();
   const balance = balanceArr?.[0];
   const formattedBalance = showBalance
-  ? (() => {
-      const amount = Number(balance?.balance);
-      const currency = balance?.currencyCode ?? "USD";
-      return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
-    })()
-  : "******";
+    ? (() => {
+        const amount = Number(balance?.balance);
+        const currency = balance?.currencyCode ?? "USD";
+        return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+      })()
+    : "******";
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -148,9 +148,7 @@ const EarningsCard = () => {
         </div>
         <div className="text-3xl font-bold text-gray-900 dark:text-white">
           <div className="flex justify-between items-center">
-            <span>
-              {formattedBalance}
-            </span>
+            <span>{formattedBalance}</span>
 
             {!showBalance ? (
               <BsEyeFill

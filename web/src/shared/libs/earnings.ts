@@ -1,6 +1,5 @@
 import type { Transaction } from "@/pages/engineer/account_settings/bank_details/types";
 
-
 export const getMonthEarnings = (
   transactions: Transaction[],
   month: number,
