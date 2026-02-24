@@ -27,34 +27,32 @@ export default function ContactSupport() {
   const { showPopup } = usePopupStore();
 
   const { refetch } = useGetCmsPages({
-    onError: (error: any) => {
-      console.error("Error fetching CMS pages:", error);
-      toast.error("Failed to load existing content");
+    onError: () => {
+      toast.error("Failed to load existing contact support content");
     },
   });
 
   const mutation = useAddAndUpdateContactSupport({
     onSuccess: async (data) => {
-      toast.success(data.message || "Contact Support updated successfully!");
-
+      toast.success(data.message || "Contact support updated successfully!");
       methods.reset();
-
       await refetch();
     },
 
-    onError: (error: any) => {
-      toast.error(error?.message || "Failed to update contact support");
+    onError: (error: unknown) => {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to update contact support";
 
-      console.error("Error updating contact support:", error);
+      toast.error(errorMessage);
     },
   });
 
   const handleSaveConfirmation = async (data: ContactSupportFormData) => {
     await showPopup({
       title: "Add Contact Support",
-
       body: "Are you sure you want to save these details?",
-
       actionButtons: [
         {
           label: "Cancel",
@@ -65,7 +63,7 @@ export default function ContactSupport() {
           label: "Save",
           value: "save",
           variant: "primary",
-          action: async (close: any) => {
+          action: async (close) => {
             try {
               await mutation.mutateAsync({
                 body: {
@@ -73,11 +71,8 @@ export default function ContactSupport() {
                   phone: data.phoneNumber,
                 },
               });
-
               close(true);
-            } catch (error) {
-              console.error("Error saving contact support:", error);
-            }
+            } catch {}
           },
         },
       ],

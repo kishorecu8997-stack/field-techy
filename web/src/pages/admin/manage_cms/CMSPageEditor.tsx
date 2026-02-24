@@ -9,6 +9,7 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { CreateOrUpdatePageData } from "@/api/types.gen";
 import { useQueryClient } from "@tanstack/react-query";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 interface CMSPageEditorProps {
   slug: NonNullable<CreateOrUpdatePageData["body"]>["slug"];
@@ -16,7 +17,25 @@ interface CMSPageEditorProps {
   initialTitle?: string;
   pageLabel: string;
 }
-
+/**
+ * Editor component for creating or updating CMS pages using Quill rich text editor.
+ *
+ * Features:
+ * - Loads existing page content by slug if available
+ * - Title input field
+ * - Rich text editing with Quill
+ * - Confirmation popup before saving
+ * - React Query mutation + cache invalidation
+ * - Loading state with LoaderComponent
+ *
+ * @component
+ * @example
+ * <CMSPageEditor
+ *   slug="about-us"
+ *   pageLabel="About Us Page"
+ *   initialTitle="Welcome to Our Company"
+ * />
+ */
 export default function CMSPageEditor({
   slug,
   initialContent = "",
@@ -35,8 +54,7 @@ export default function CMSPageEditor({
     isLoading: isFetchingPages,
     refetch,
   } = useGetCmsPages({
-    onError: (error: any) => {
-      console.error("Error fetching CMS pages:", error);
+    onError: () => {
       toast.error("Failed to load existing content");
     },
   });
@@ -58,19 +76,16 @@ export default function CMSPageEditor({
 
       await refetch();
 
-      queryClient.invalidateQueries({
-        queryKey: ["cms-content", slug],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["cms-content"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["cms-content", slug] });
+      queryClient.invalidateQueries({ queryKey: ["cms-content"] });
     },
-    onError: (error: any) => {
-      toast.error(
-        error?.message || `Failed to update ${pageLabel.toLowerCase()}`,
-      );
-      console.error(`Error updating ${pageLabel}:`, error);
+    onError: (error: unknown) => {
+      const message =
+        error instanceof Error
+          ? error.message
+          : `Failed to update ${pageLabel.toLowerCase()}`;
+
+      toast.error(message);
     },
   });
 
@@ -92,7 +107,7 @@ export default function CMSPageEditor({
           label: "Save",
           value: "save",
           variant: "primary",
-          action: async (close: any) => {
+          action: async (close) => {
             try {
               await mutation.mutateAsync({
                 body: {
@@ -102,19 +117,19 @@ export default function CMSPageEditor({
                 },
               });
               close(true);
-            } catch (error) {
-              console.error(`Error saving ${pageLabel}:`, error);
-            }
+            } catch {}
           },
         },
       ],
     });
   };
 
-  if (isLoading || isFetchingPages) {
+  if (isLoading) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+      <div className="bg-white rounded-lg p-8">
+        <div className="flex items-center justify-center">
+          <LoaderComponent />
+        </div>
       </div>
     );
   }

@@ -2,12 +2,12 @@ import { icons } from "@/config/icons";
 import Accordion from "./Accordion";
 import ContactCard from "./ContactCard";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
- * Contact page featuring a header with a message icon and two expandable sections (Contact Us)
- * using an Accordion. Each section displays contact details via the ContactCard component.
+ * Contact page featuring a header with a message icon and an expandable "Contact Us" section
+ * using an Accordion. The section displays contact details via the ContactCard component.
  */
-
 const ContactUs = () => {
   const {
     data: contactData,
@@ -56,13 +56,15 @@ const ContactUs = () => {
       id: "1",
       label: "Contact Us",
       content: contactLoading ? (
-        <div className="flex items-center justify-center p-4">
-          <p className="text-gray-500">Loading contact details...</p>
+        <div className="flex items-center justify-center min-h-[120px] py-8">
+          <LoaderComponent />
         </div>
       ) : contactError ? (
-        <div className="flex items-center justify-center p-4">
-          <p className="text-red-500">
-            Failed to load contact details. Using default.
+        <div className="flex items-center justify-center p-6 text-center">
+          <p className="text-red-600 font-medium">
+            Failed to load contact information.
+            <br />
+            Showing default values.
           </p>
         </div>
       ) : (
@@ -73,23 +75,26 @@ const ContactUs = () => {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto ">
-      <div className="flex flex-col justify-center items-center py-5 gap-4">
-        <div className="p-4 bg-teal-900 rounded-full">
-          <icons.message className="h-8 w-8 text-gray-100" />
+    <div className="max-w-2xl mx-auto px-4 sm:px-0">
+      <div className="flex flex-col justify-center items-center py-8 gap-5">
+        <div className="p-5 bg-teal-900 rounded-full shadow-md">
+          <icons.message className="h-10 w-10 text-gray-100" />
         </div>
-        <h1 className="text-2xl font-bold">Contact Us</h1>
-        <div className="text-center">
-          We’re here to support your job posting and hiring experience. How can
-          we assist you today?
-        </div>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+          Contact Us
+        </h1>
+        <p className="text-center text-gray-600 dark:text-gray-300 max-w-lg">
+          We’re here to support your job posting and hiring experience.
+          <br />
+          How can we assist you today?
+        </p>
       </div>
 
       <Accordion
         items={sections}
-        className="border border-gray-300 rounded-lg overflow-hidden shadow-sm"
-        titleClassName="text-gray-800"
-        contentClassName="text-gray-600"
+        className="border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800"
+        titleClassName="text-gray-800 dark:text-gray-200 font-medium"
+        contentClassName="text-gray-600 dark:text-gray-300"
         iconPosition="right"
       />
     </div>

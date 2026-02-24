@@ -8,10 +8,21 @@ interface FAQItem {
   title: string;
   description: string;
 }
-
 /**
- * FAQ page displaying FAQs fetched from CMS
- * Uses UI + Search + Expand functionality
+ * FAQ page component that displays frequently asked questions fetched from CMS.
+ *
+ * Features:
+ * - Scrolls to top on mount
+ * - Fetches FAQ content using CMS API (slug: "faq")
+ * - Search/filter functionality across questions and answers
+ * - Accordion-style expandable answers
+ * - Sanitizes HTML content with DOMPurify to prevent XSS
+ * - Handles loading and error states
+ * - Responsive design with dark mode support
+ *
+ * @component
+ * @example
+ * <FAQ />
  */
 const FAQ = () => {
   useEffect(() => {
@@ -23,9 +34,6 @@ const FAQ = () => {
   const [search, setSearch] = useState("");
   const [expandedIndex, setExpandedIndex] = useState<string | null>(null);
 
-  /**
-   * Convert API response → FAQ structure
-   */
   const faqData: FAQItem[] = useMemo(() => {
     if (!cmsData || !("type" in cmsData) || cmsData.type !== "faq") {
       return [];
@@ -39,9 +47,6 @@ const FAQ = () => {
       }));
   }, [cmsData]);
 
-  /**
-   * Search filter
-   */
   const filteredData = useMemo(() => {
     const searchText = search.toLowerCase();
 
