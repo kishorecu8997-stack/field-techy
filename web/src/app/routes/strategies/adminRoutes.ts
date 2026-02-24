@@ -123,6 +123,14 @@ export class AdminRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.AdminManageTransactions),
           },
           {
+            path: urls.admin.home.manage_currency_conversion,
+            element: withSuspense(Components.AdminManageCurrencyConversion),
+          },
+          {
+            path: `${urls.admin.home.edit_exchange_rate}/:id?`,
+            element: withSuspense(Components.AdminEditExchangeRate),
+          },
+          {
             path: urls.admin.home.wallet_overview,
             element: withSuspense(Components.WalletOverview),
           },
@@ -165,6 +173,10 @@ export class AdminRouteStrategy implements RouteStrategy {
           {
             path: urls.admin.home.settings,
             element: withSuspense(Components.Settings),
+          },
+          {
+            path: urls.admin.home.report_issue,
+            element: withSuspense(Components.AdminReportIssue),
           },
           {
             path: urls.admin.home.profile,

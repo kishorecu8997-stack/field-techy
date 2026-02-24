@@ -1,11 +1,12 @@
 import { useForm } from "react-hook-form";
-import { FaMapMarkerAlt, FaSearch, FaChartBar } from "react-icons/fa";
+import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
+// import { FaChartBar } from "react-icons/fa";
 import { InputField } from "./commonUI/inputs";
 import { FormContainer } from "./commonUI/inputs/FormContainer";
-import { absoluteUrls } from "@/config/urls";
-import { Button } from "./commonUI/Buttons";
-import { useNavigate } from "react-router-dom";
-import { scrollToTop } from "@/utils";
+// import { absoluteUrls } from "@/config/urls";
+// import { Button } from "./commonUI/Buttons";
+// import { useNavigate } from "react-router-dom";
+// import { scrollToTop } from "@/utils";
 
 /**
  * JobSearchBar component provides a dual-input search form for jobs and location.
@@ -18,7 +19,7 @@ import { scrollToTop } from "@/utils";
  */
 export const JobSearchBarClient = () => {
   const methods = useForm({});
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <FormContainer
@@ -31,12 +32,12 @@ export const JobSearchBarClient = () => {
           name="searchQuery"
           placeholder="Search Jobs.."
           leftIcon={<FaSearch className="text-gray-400" />}
-          containerClassName="flex-1 py-0"
-          inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none py-2"
+          containerClassName="flex-1 py-0 border-r border-gray-200 dark:border-gray-600"
+          inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-300 pr-3 focus:outline-none py-2"
         />
 
         {/* Analytics Button/Icon */}
-        <Button
+        {/* <Button
           type="button"
           onClick={() => {
             scrollToTop();
@@ -47,7 +48,7 @@ export const JobSearchBarClient = () => {
           aria-label="View Search Analytics"
         >
           <FaChartBar size={20} />
-        </Button>
+        </Button> */}
 
         <InputField
           name="location"

@@ -142,6 +142,10 @@ export type JobTabSectionProps = {
   isDummyNetworkEngineer?: boolean;
   showManageProposals?: boolean;
   isJobAccepted?: boolean;
+  onAllCardsApprovedChange?: (allApproved: boolean) => void;
+  onTabChange?: (tabLabel: string) => void;
+  jobID?: string;
+  onToggleChat?: () => void;
   assignmentId?: number;
   job?: {
     id: string | number;

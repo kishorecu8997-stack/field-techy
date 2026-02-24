@@ -1,3 +1,6 @@
+import type { AdminGetClientResponse } from "@/api";
+import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
+
 export interface ManageClientProps {
   id: number;
   userId: number;
@@ -56,6 +59,41 @@ export interface ManageClientProps {
     id: number;
     name: string;
   };
+  govIdDoc?: {
+    fileId?: number;
+    url?: string;
+    mimeType?: string;
+  };
+  certificateDoc?: {
+    fileId?: number;
+    url?: string;
+    mimeType?: string;
+  };
+  profilePicture?: {
+    fileId?: number;
+    url?: string;
+    mimeType?: string;
+  };
+}
+
+export interface ExtendedClientResponse extends AdminGetClientResponse {
+  vatRegistrationNumber?: string;
+}
+
+export interface ClientFormProps {
+  isEdit?: boolean;
+}
+
+export interface ClientAddProps {
+  isEdit?: boolean;
+  isView?: boolean;
+}
+
+export interface ViewFileComponentProps {
+  onClose: () => void;
+  title?: string;
+  fileType: ProfileFileType | null;
+  fileUrl?: string | null;
 }
 
 export type DocumentType =
@@ -72,7 +110,6 @@ export interface DocumentOption {
 }
 
 export const documentType: DocumentOption[] = [
-  { value: "resumeFile", label: "Resume File" },
   { value: "govIdDoc", label: "Government Document" },
   { value: "certificateDoc", label: "Certificate Document" },
 ];
@@ -86,21 +123,23 @@ export interface walletViewData {
 }
 
 export interface ClientFormData {
-  profileImage?: string | null;
-  companyName: string;
+  clientType: "corporate" | "home";
+  profileImage?: string | File | null;
+  companyName?: string;
   phoneNumber: string;
-  industry: string;
-  country: string;
-  city: string;
-  taxDocument: string;
+  email: string;
+  industry?: string | number;
+  country: string | number;
+  city: string | number;
+  documentType?: string;
   contactPersonName: string;
-  businessType: string;
-  address: string;
-  state: string;
+  businessType?: string | number;
+  address?: string;
+  state: string | number;
   postalCode: string;
-  vatRegistrationNumber: string;
-  governmentIDProof: string | null;
-  qualificationCertificate: string | null;
+  documentNumber?: string;
+  govIdDoc?: string | File | FileList | null;
+  certificate?: string | File | FileList | null;
 }
 
 export interface CompanyInfo {
@@ -116,7 +155,7 @@ export interface CompanyInfo {
   phoneNumber: string;
   address: string;
   city: string;
-  vatRegistrationNumber: string;
+  documentNumber: string;
 }
 
 export interface BankCardData {

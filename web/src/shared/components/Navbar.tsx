@@ -16,6 +16,8 @@ import {
 } from "../store/useEngineerStore";
 import IconWithTheme from "./IconWithTheme";
 
+import { useAppNotifications } from "@/shared/apiServices/notifications/notificationOpenApiService";
+
 /**
  * Header component with navigation, search bar, and user profile.
  * Features responsive design with mobile menu, dark mode support, and notification badges.
@@ -38,7 +40,9 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { setActiveKey } = useDrawerStore();
   const navigate = useNavigate();
-  const notificationCount = 20;
+
+  const { notifications } = useAppNotifications();
+  const notificationCount = notifications.filter((n) => !n.read).length;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -168,9 +172,11 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                     Notifications
                   </div>
 
-                  <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    3
-                  </span>
+                  {notificationCount > 0 && (
+                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {notificationCount}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -221,9 +227,11 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             className="text-gray-600 dark:text-gray-300 hover:text-teal-800 dark:hover:text-teal-800"
             size={20}
           />
-          <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-            {notificationCount}
-          </span>
+          {notificationCount > 0 && (
+            <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+              {notificationCount}
+            </span>
+          )}
         </div>
         <div
           onClick={() => {
