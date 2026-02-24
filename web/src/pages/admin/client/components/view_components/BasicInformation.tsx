@@ -36,7 +36,7 @@ const BasicInformation: React.FC<CompanyInfo> = ({
   phoneNumber,
   address,
   city,
-  vatRegistrationNumber,
+  documentNumber,
 }) => {
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
@@ -166,7 +166,7 @@ const BasicInformation: React.FC<CompanyInfo> = ({
               VAT Registration Number
             </div>
             <div className="font-semibold text-gray-800 dark:text-white">
-              {vatRegistrationNumber}
+              {documentNumber}
             </div>
           </div>
         </div>
