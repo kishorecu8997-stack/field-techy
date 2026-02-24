@@ -373,6 +373,7 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
       path: { assignmentId },
     }),
     enabled: enabled && !!assignmentId,
+    retry: 1,
   });
 }
 
