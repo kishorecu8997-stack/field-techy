@@ -31,7 +31,7 @@ const ReportDetails: React.FC = () => {
           </span>
 
           {/* Name Text */}
-          <div className=" dark:text-white text-md group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
+          <div className="dark:text-white text-md group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
             {row.name}
           </div>
         </div>
@@ -43,7 +43,7 @@ const ReportDetails: React.FC = () => {
       key: "level",
       label: "Priority level",
       renderCell: (row: ReportIssue) => (
-        <div className=" flex items-center gap-2 cursor-pointer">
+        <div className="flex items-center gap-2 cursor-pointer">
           {levelUI(row.level)}
           {row.level}
         </div>
@@ -54,11 +54,11 @@ const ReportDetails: React.FC = () => {
       label: "Action",
       renderCell: (row: ReportIssue) => (
         <div
-          className=" flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer"
           onClick={() => handleGetReport(row)}
         >
           <IoEye className="text-lg text-green-950 dark:text-neutral-400" />
-          <div className=" dark:text-white  text-md">View Report</div>
+          <div className="dark:text-white  text-md">View Report</div>
         </div>
       ),
     },
