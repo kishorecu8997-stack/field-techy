@@ -200,7 +200,7 @@ export default function CompletedReport() {
   const solvedConfirmation = async (data: AdminReportIssue) => {
     await showPopup({
       title: "Problem Solved",
-      body: "Are you sure the problem solved ?",
+      body: "Are you sure the problem is solved?",
       actionButtons: [
         {
           label: "Cancel",
