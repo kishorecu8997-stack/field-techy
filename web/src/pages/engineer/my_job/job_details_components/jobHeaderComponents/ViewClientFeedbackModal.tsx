@@ -11,6 +11,15 @@ type ViewClientFeedbackModalProps = {
   review?: string;
 };
 
+/**
+ * View Client Feedback Modal
+ * 
+ * This component is used to display the feedback given by the client to the engineer.
+ * 
+ * @param param0 
+ * @returns 
+ */
+
 const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
   onClose,
   clientName,

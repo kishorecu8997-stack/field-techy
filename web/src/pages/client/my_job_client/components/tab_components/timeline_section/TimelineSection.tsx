@@ -114,23 +114,6 @@ const TimelineSection: React.FC<{
   const [revisionUpdateCardData] = useState(createRevisionUpdateCardData());
   const [isSectionCollapsed, setIsSectionCollapsed] = useState(false);
 
-  // // Notify parent when all cards are approved
-  // useEffect(() => {
-  //   const allApproved =
-  //     jobStatus === TIMELINE_STATUS.approved &&
-  //     progressStatus === TIMELINE_STATUS.approved &&
-  //     shortBreakStatus === TIMELINE_STATUS.approved &&
-  //     finalStatementStatus === TIMELINE_STATUS.approved;
-
-  //   onAllCardsApprovedChange?.(allApproved);
-  // }, [
-  //   jobStatus,
-  //   progressStatus,
-  //   shortBreakStatus,
-  //   finalStatementStatus,
-  //   onAllCardsApprovedChange,
-  // ]);
-
   const revisionFormMethods = useForm<RevisionFormData>({
     mode: "onSubmit",
     defaultValues: {
@@ -641,7 +624,6 @@ const TimelineSection: React.FC<{
   };
 
   const handleJobApproveConfirmSubmit = () => {
-    // Call API to approve start job request
     if (assignmentId) {
       actionOnAssignment({
         body: {
@@ -666,7 +648,6 @@ const TimelineSection: React.FC<{
   };
 
   const handleJobRejectConfirmSubmit = () => {
-    // Call API to reject start job request
     if (assignmentId) {
       actionOnAssignment({
         body: {
@@ -716,7 +697,6 @@ const TimelineSection: React.FC<{
     },
   ];
 
-  // Auto-collapse cards once a decision is made
   useEffect(() => {
     if (
       progressStatus === TIMELINE_STATUS.approved ||
@@ -827,7 +807,6 @@ const TimelineSection: React.FC<{
           </div>
         </div>
       ) : (
-        /* Expanded View - Full Timeline */
         <>
           <div className="flex justify-end items-center gap-2 px-4 pt-3">
             {actionRequiredCount === 0 && (
@@ -839,14 +818,13 @@ const TimelineSection: React.FC<{
                 assignmentId={engineerTimelineData.assignmentId}
               />
             )}
-            <button
-              type="button"
+            <div
               className="p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors"
               aria-label="Collapse engineer section"
               onClick={() => setIsSectionCollapsed(true)}
             >
               <HiChevronDown className="h-5 w-5 rotate-180" />
-            </button>
+            </div>
           </div>
 
           <div className="px-4 pb-4 space-y-6">
