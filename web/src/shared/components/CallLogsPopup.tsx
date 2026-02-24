@@ -3,6 +3,7 @@ import { IoMdCall } from "react-icons/io";
 import { FaUser, FaUsers, FaVideo } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
 import Draggable from "react-draggable";
+import { Button } from "./commonUI/Buttons";
 
 export interface CallLog {
   id: string;
@@ -106,13 +107,13 @@ const CallLogsPopup: React.FC<CallLogsPopupProps> = ({
           {/* Header */}
           <div className="modal-header flex items-center justify-between p-4 border-b border-gray-200 cursor-move">
             <h2 className="text-lg font-bold text-gray-800">Call Logs</h2>
-            <button
+            <Button
               onClick={onClose}
-              className="p-1 text-gray-500 hover:text-gray-700 transition-colors"
+              variant="close"
               aria-label="Close"
             >
               <FiX size={20} />
-            </button>
+            </Button>
           </div>
 
           {/* Call Log Entries */}

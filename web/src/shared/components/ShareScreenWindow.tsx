@@ -13,9 +13,9 @@ import { assetsConfig } from "@/assets";
 interface ShareScreenWindowProps {
   isVisible: boolean;
   callerName?: string;
-  onClose: () => void;         // top-right X
-  onStopSharing: () => void;   // "Stop Sharing" button (and optionally screen-share toggle)
-  onEndCall: () => void;       // red end call button
+  onClose: () => void;         
+  onStopSharing: () => void;   
+  onEndCall: () => void;     
 }
 
 const ShareScreenWindow: React.FC<ShareScreenWindowProps> = ({

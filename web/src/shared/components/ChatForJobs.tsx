@@ -160,13 +160,14 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
               />
               <FiSearch className="absolute top-2.5 left-3 text-gray-500" />
             </div>
-            <button
+            <Button
               onClick={() => setShowCallLogs(true)}
-              className="p-2 w-9 h-9 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+              variant="callLogs"
               aria-label="Call Logs"
+              className="h-[38px]"
             >
               <HiPhoneArrowUpRight className="text-gray-600 dark:text-gray-300" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -366,6 +367,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
               Simulate Incoming
             </button>
 
+            {/*this for testig, this can be removed once the API integration is done*/}
             <button
               title="Simulate incoming group call"
               onClick={() => setShowGroupVideoCall(true)}

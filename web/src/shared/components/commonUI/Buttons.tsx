@@ -27,8 +27,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "attachmentPlus"
     | "photoVideoAttachment"
     | "documentAttachment"
-    | "sendButtonChat";
-  size?: "sm" | "md" | "lg" | "icon";
+    | "sendButtonChat"
+    | "chats"
+    | "close"
+    | "callLogs"
+    | "rejectCall"
+    | "acceptCall";
+  size?: "sm" | "md" | "lg" | "icon" | "chip";
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
@@ -104,6 +109,16 @@ export const Button: React.FC<ButtonProps> = ({
       "flex items-center gap-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer",
     sendButtonChat:
       "rounded-full bg-teal-700 text-white hover:bg-teal-600 cursor-pointer",
+      chats:
+      "bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors",
+      close:
+      "p-1 text-gray-500 hover:text-gray-700 transition-colors",
+      callLogs:
+      "py-2 px-2.5 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center",
+      rejectCall:
+      "bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg shadow-sm flex items-center gap-2",
+      acceptCall:
+      "bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-lg shadow-sm flex items-center gap-2",
   };
 
   const sizeStyles: Record<string, string> = {
@@ -111,6 +126,7 @@ export const Button: React.FC<ButtonProps> = ({
     md: "h-11 px-4 text-sm",
     lg: "h-12 px-6 text-base",
     icon: "h-11 w-11",
+    chip: "h-9 px-3 py-1.5 text-sm",
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {

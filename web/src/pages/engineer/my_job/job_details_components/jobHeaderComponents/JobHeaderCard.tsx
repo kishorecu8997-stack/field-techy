@@ -17,6 +17,7 @@ import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
 import { IoChatbubble } from "react-icons/io5";
+import { Button } from "@/shared/components/commonUI/Buttons";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  *
@@ -133,13 +134,14 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           </div>
           <div className="flex gap-2 items-center">
             {onToggleChat && jobId && (
-              <button
-                className="bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors"
+              <Button
+                variant="chats"
+                size="chip"
+                leftIcon={<IoChatbubble size={18} />}
                 onClick={() => onToggleChat(jobId)}
               >
-                <IoChatbubble size={16} />
-                <span>Chats</span>
-              </button>
+                Chats
+              </Button>
             )}
 
             {!hideBreakDetails && (

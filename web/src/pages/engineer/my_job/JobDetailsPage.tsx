@@ -55,9 +55,6 @@ const JobDetailsPage = () => {
   const { data: jobList, isLoading } = useEngineerSearchJobs({
     jobId: Number(params.jobId),
   });
-  // const location = isDummyJob
-  //   ? "Chennai, Tamil Nadu, India"
-  //   : [client?.city, client?.country].filter(Boolean).join(", ") || "-";
 
   const job = jobList?.[0];
   const location = job?.clientDetails?.address;
