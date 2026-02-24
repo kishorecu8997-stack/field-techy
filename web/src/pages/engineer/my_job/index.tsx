@@ -1,4 +1,3 @@
-import { earningsData, userData } from "@/dummy_data/jobDetails";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { SORT_OPTIONS, JOB_FILTERS } from "../search_result/types";
 import type { JobFilter } from "../search_result/types";
@@ -111,7 +110,7 @@ const MyJobsPage = () => {
           <JobList jobs={jobs || []} isLoading={isLoading} isError={isError} />
           <div className="lg:col-span-1">
             <div className="sticky top-6">
-              <SidebarProfile user={userData} earnings={earningsData} />
+              <SidebarProfile />
             </div>
           </div>
         </div>

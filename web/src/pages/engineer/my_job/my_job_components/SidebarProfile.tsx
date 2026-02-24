@@ -7,7 +7,6 @@ import { BOOKMARK_CHANGE_EVENT, getSavedJobs } from "@/utils/bookmarkUtils";
 import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import type { SidebarProfileProps } from "../types";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import { useEngineerBalance } from "@/shared/apiServices/engineer/engineerOpenApiService";
@@ -24,7 +23,7 @@ import { formatCurrency } from "@/shared/libs/utils";
  * @example
  * <SidebarProfile user={user} earnings={earnings} />
  */
-const SidebarProfile: React.FC<SidebarProfileProps> = () => {
+const SidebarProfile: React.FC= () => {
   return (
     <div className="space-y-6">
       <ProfileCard />
@@ -119,6 +118,13 @@ const EarningsCard = () => {
   const [showBalance, setShowBalance] = useState<boolean>(false);
   const { data: balanceArr } = useEngineerBalance();
   const balance = balanceArr?.[0];
+  const formattedBalance = showBalance
+  ? (() => {
+      const amount = Number(balance?.balance);
+      const currency = balance?.currencyCode ?? "USD";
+      return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+    })()
+  : "******";
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -143,18 +149,7 @@ const EarningsCard = () => {
         <div className="text-3xl font-bold text-gray-900 dark:text-white">
           <div className="flex justify-between items-center">
             <span>
-              {showBalance
-                ? (() => {
-                    const amount = Number(balance?.balance);
-                    const currency = balance?.currencyCode ?? "USD";
-
-                    if (isNaN(amount)) {
-                      return "$0.00";
-                    }
-
-                    return formatCurrency(amount, currency);
-                  })()
-                : "******"}
+              {formattedBalance}
             </span>
 
             {!showBalance ? (

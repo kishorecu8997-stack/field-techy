@@ -604,8 +604,12 @@ export function useEngineerTransactions(
   params: GetEngineerTransactionsData["query"] = {},
   enabled = true,
 ) {
-  return useQuery<GetEngineerTransactionsResponse, GetEngineerTransactionsError>({
-    queryKey: [...queryKeys.engineer.all, "transactions", params],
+  const paramsKey = params ? JSON.stringify(params) : "";
+  return useQuery<
+    GetEngineerTransactionsResponse,
+    GetEngineerTransactionsError
+  >({
+    queryKey: [...queryKeys.engineer.all, "transactions", paramsKey],
     queryFn: async () => {
       const res = await getEngineerTransactions({
         client: apiClient,

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   useEngineerBalance,
   useEngineerTransactions,
@@ -6,109 +7,118 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import { formatCurrency, formatDate } from "@/shared/libs/utils";
-import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { HiFilter, HiSearch } from "react-icons/hi";
 import Pagination from "../../search_result/components/Pagination";
 
-// Define TypeScript interfaces
-export type { Transaction } from "./types";
 
 interface TransactionDashboardProps {
   showAll?: boolean;
   onViewAllClick?: () => void;
 }
+
 interface IFormInputs {
   searchTerm: string;
   filterDateFrom: Date | null;
   filterDateTo: Date | null;
 }
-/**
- * Displays a table of transactions. Can show all or the last 10.
- */
+
 const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
   showAll = false,
   onViewAllClick,
 }) => {
+  // --- Engineer balance ---
   const { data: balanceArr } = useEngineerBalance();
   const balance = balanceArr?.[0];
   const currencyCode = balance?.currencyCode ?? "USD";
+
+  // --- Form state ---
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const methods = useForm<IFormInputs>({
-    defaultValues: {
-      searchTerm: "",
-      filterDateFrom: null,
-      filterDateTo: null,
-    },
+    defaultValues: { searchTerm: "", filterDateFrom: null, filterDateTo: null },
   });
   const { watch, reset } = methods;
   const { searchTerm, filterDateFrom, filterDateTo } = watch();
+
+  // --- Pagination state ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10; // items per page
+
+  // --- Date range for last 3 months ---
   const today = new Date();
   const startDate3MonthsAgo = new Date(today);
   startDate3MonthsAgo.setMonth(today.getMonth() - 3);
   startDate3MonthsAgo.setHours(0, 0, 0, 0);
-
   const endDateToday = new Date(today);
   endDateToday.setHours(23, 59, 59, 999);
 
   const startDateStr = startDate3MonthsAgo.toISOString();
   const endDateStr = endDateToday.toISOString();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const limit = 10;
-  const offset = showAll ? (currentPage - 1) * limit : 0;
-  // --- API Query Params ---
-  const SORT_DESC: `desc` = "desc";
-  const queryParams = showAll
-    ? {
-        sortOrder: SORT_DESC,
-        startDate: startDateStr,
-        endDate: endDateStr,
-        limit: limit + 1, // Fetch `limit + 1` records to determine if there is a next page.
-        offset,
-      }
-    : { sortOrder: SORT_DESC, limit: 10 };
+
   const {
     data: transactionsRaw,
     isLoading,
     isError,
-  } = useEngineerTransactions(queryParams, true);
-  // Filter out transactions with invalid dates and sort by date descending (newest first).
-  // This prevents crashes from invalid date objects and ensures the list is always ordered chronologically.
+  } = useEngineerTransactions(
+    { sortOrder: "desc", startDate: startDateStr, endDate: endDateStr },
+    true,
+  );
+
+  // --- Loading & error states ---
+  if (isLoading)
+    return (
+      <div className="w-full py-8 text-center text-gray-500">
+        Loading transactions...
+      </div>
+    );
+
+  if (isError)
+    return (
+      <div className="w-full py-8 text-center text-red-500">
+        An error occurred while loading transactions. Please try again later.
+      </div>
+    );
+
+ 
   const validTransactions = (transactionsRaw || []).filter(
     (tx) => !isNaN(new Date(tx.timestamp).getTime()),
   );
 
   const hasActiveFilters = !!(searchTerm || filterDateFrom || filterDateTo);
+
   const filteredTransactions = validTransactions.filter((tx) => {
     if (
       searchTerm &&
       !tx.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    ) {
+    )
       return false;
-    }
-    const txDate = new Date(tx.timestamp);
 
+    const txDate = new Date(tx.timestamp);
     if (filterDateFrom && txDate < filterDateFrom) return false;
     if (filterDateTo && txDate > filterDateTo) return false;
 
     return true;
   });
-  // --- Slice for pagination ---
-  const pageTransactions = showAll
-    ? filteredTransactions.slice(0, limit)
-    : filteredTransactions;
-  const hasNextPage = showAll && filteredTransactions.length > limit;
-  const hasPrevPage = showAll && currentPage > 1;
+
+  // --- Client-side pagination ---
+  const totalPages = Math.ceil(filteredTransactions.length / limit);
+  const pageTransactions = filteredTransactions.slice(
+    (currentPage - 1) * limit,
+    currentPage * limit,
+  );
+
   const clearFilters = () => {
     reset();
     setCurrentPage(1);
   };
+
   const title = showAll ? "All Transactions" : "Last 10 Transactions";
 
   return (
     <FormProvider {...methods}>
       <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+        {/* Header */}
         <div className="mb-4 flex justify-between items-center">
           <h2 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
             {title}
@@ -124,21 +134,23 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
           )}
         </div>
 
+        {/* Filters */}
         {showAll && (
           <div className="mb-6 space-y-4">
-            <div className="flex items-center  gap-2">
+            <div className="flex items-center gap-2">
               <div className="relative w-80">
                 <InputField
                   name="searchTerm"
                   placeholder="Search by description..."
                   leftIcon={<HiSearch className="text-gray-400 text-lg" />}
                   isShowLabel={false}
-                  inputClassName=" h-[42px] pl-8 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm leading-none focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
+                  inputClassName="h-[42px] pl-8 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
                 />
               </div>
+
               <div
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className={`h-[42px] px-4 rounded-lg border flex items-center gap-2 text-sm font-medium leading-none transition-colors ${
+                className={`h-[42px] px-4 rounded-lg border flex items-center gap-2 text-sm font-medium transition-colors ${
                   isFilterOpen
                     ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
                     : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
@@ -159,9 +171,8 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
             </div>
 
             {isFilterOpen && (
-              <div className="grid grid-cols-1  gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
                 <DatePickerInput name="filterDateFrom" label="From Date" />
-
                 <DatePickerInput
                   name="filterDateTo"
                   label="To Date"
@@ -174,26 +185,18 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
           </div>
         )}
 
+        {/* Transactions Table */}
         <div className="overflow-x-auto">
           <table className="min-w-full">
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th
-                  scope="col"
-                  className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                >
+                <th className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Description
                 </th>
-                <th
-                  scope="col"
-                  className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                >
+                <th className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Date
                 </th>
-                <th
-                  scope="col"
-                  className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                >
+                <th className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Amount
                 </th>
               </tr>
@@ -228,6 +231,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
           </table>
         </div>
 
+        {/* Empty state */}
         {!isLoading && !isError && pageTransactions.length === 0 && (
           <div className="text-center py-10">
             <p className="text-gray-500 dark:text-gray-400">
@@ -237,10 +241,12 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
             </p>
           </div>
         )}
-        {showAll && (hasNextPage || hasPrevPage) && (
+
+        {/* Pagination */}
+        {showAll && totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
-            totalPages={hasNextPage ? currentPage + 1 : currentPage}
+            totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
         )}
