@@ -149,7 +149,7 @@ export const urls = {
       manage_jobs_view: "jobs/view",
       jobOffer: "job-offer",
       manage_currency_conversion: "exchange-rates",
-      edit_exchange_rate: "exchange-rates/edit"
+      edit_exchange_rate: "exchange-rates/edit",
     },
   },
   ft_landing: { landing: "/landing" },

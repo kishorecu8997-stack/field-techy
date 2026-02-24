@@ -29,4 +29,3 @@ export const CurrencyConversionData: CurrencyConversionRow[] = [
     lastUpdatedBy: "Admin",
   },
 ];
-

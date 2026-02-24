@@ -20,7 +20,6 @@ const ManageCurrencyConversion: React.FC = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
-
   const columns: Column<CurrencyConversionRow>[] = [
     {
       key: "id",
