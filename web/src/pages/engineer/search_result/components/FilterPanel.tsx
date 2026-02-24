@@ -32,14 +32,9 @@ const FilterPanel: React.FC<{
   const [selectedCategory, setSelectedCategory] = useState<string[]>(
     currentFilters.category || [],
   );
-  const [selectedRating, setSelectedRating] = useState<number[]>(
-    currentFilters.rating || [],
-  );
+
   const [experience, setExperience] = useState<number>(
     currentFilters.experience || 0,
-  );
-  const [budgetType, setBudgetType] = useState<"hourly" | "fixed" | null>(
-    currentFilters.budgetType || null,
   );
   const [selectedSkills, setSelectedSkills] = useState<string[]>(
     currentFilters.skills || [],
@@ -49,15 +44,9 @@ const FilterPanel: React.FC<{
   useEffect(() => {
     setSelectedLocationType(currentFilters.locationType || []);
     setSelectedCategory(currentFilters.category || []);
-    setSelectedRating(currentFilters.rating || []);
     setExperience(currentFilters.experience || 0);
-    setBudgetType(currentFilters.budgetType || null);
     setSelectedSkills(currentFilters.skills || []);
   }, [currentFilters]);
-
-  // Available filter options
-  const ratingOptions = [1, 2, 3, 4, 5];
-  const budgetOptions = ["Hourly Price", "Fixed Price"];
 
   /**
    * Handle toggle of filter options
@@ -87,25 +76,6 @@ const FilterPanel: React.FC<{
   };
 
   /**
-   * Handle toggle of rating filter
-   * @param {number} rating - Rating to toggle
-   */
-  const toggleRating = (rating: number) => {
-    const newRatings = [...selectedRating];
-    const index = newRatings.indexOf(rating);
-    if (index > -1) {
-      newRatings.splice(index, 1);
-    } else {
-      newRatings.push(rating);
-    }
-    setSelectedRating(newRatings);
-    updateFilters({
-      ...currentFilters,
-      rating: newRatings,
-    });
-  };
-
-  /**
    * Update filters state
    * @param {Filters} newFilters - New filter state
    */
@@ -119,9 +89,7 @@ const FilterPanel: React.FC<{
   const handleClearAll = () => {
     setSelectedLocationType([]);
     setSelectedCategory([]);
-    setSelectedRating([]);
     setExperience(0);
-    setBudgetType(null);
     setSelectedSkills([]);
     onClearAll();
   };
@@ -239,28 +207,6 @@ const FilterPanel: React.FC<{
         </div>
       </div>
 
-      {/* Rating Filter */}
-      <div className="mb-5">
-        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Rating
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {ratingOptions.map((rating) => (
-            <button
-              key={rating}
-              onClick={() => toggleRating(rating)}
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                selectedRating.includes(rating)
-                  ? "bg-green-700 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-              }`}
-            >
-              {rating} Star
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Experience Filter */}
       <div className="mb-5">
         <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">
@@ -290,38 +236,6 @@ const FilterPanel: React.FC<{
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 bg-green-700 text-white px-2 py-1 rounded-full text-xs whitespace-nowrap">
             {experience} Years
           </div>
-        </div>
-      </div>
-
-      {/* Budget Filter */}
-      <div className="mb-5">
-        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Budget
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {budgetOptions.map((option) => (
-            <button
-              key={option}
-              onClick={() => {
-                const type = option.toLowerCase().includes("hourly")
-                  ? "hourly"
-                  : "fixed";
-                setBudgetType(type);
-                updateFilters({
-                  ...currentFilters,
-                  budgetType: type,
-                });
-              }}
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                budgetType ===
-                (option.toLowerCase().includes("hourly") ? "hourly" : "fixed")
-                  ? "bg-green-700 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-              }`}
-            >
-              {option}
-            </button>
-          ))}
         </div>
       </div>
 
