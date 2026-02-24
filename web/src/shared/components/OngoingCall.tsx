@@ -35,17 +35,16 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
   const [secondsElapsed, setSecondsElapsed] = useState(0);
 
   // toggles
-  const [isVideoOn, setIsVideoOn] = useState(false); // slashed initially
+  const [isVideoOn, setIsVideoOn] = useState(false);
   const [isMicOn, setIsMicOn] = useState(true);
-  const [isScreenShareOn, setIsScreenShareOn] = useState(true);
+  const [isScreenShareOn, setIsScreenShareOn] = useState(false);
 
   // modals/screens
   const [showSwitchModal, setShowSwitchModal] = useState(false);
   const [showShareScreen, setShowShareScreen] = useState(false);
   const [showShareScreenWindow, setShowShareScreenWindow] = useState(false);
 
-  // ✅ MISSING STATE (this is the main error)
-  const [showVideoCall, setShowVideoCall] = useState(false);
+  const [showVideoCall, setShowVideoCall] = useState(false); 
 
   useEffect(() => {
     if (!isVisible) return;
@@ -70,7 +69,7 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-opacity-30" />
+      <div className="absolute inset-0 bg-black/30" />
 
       <Draggable nodeRef={nodeRef} handle=".drag-handle">
         <div
@@ -183,28 +182,27 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
                 className={`w-20 h-12 rounded-full flex items-center justify-center shadow-sm transition-all ${
                   isScreenShareOn
                     ? "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    : "bg-gray-200 dark:bg-gray-600 opacity-60 hover:opacity-80"
+                    : "bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500"
                 }`}
               >
                 {isScreenShareOn ? (
                   <MdScreenShare
-                    className="text-gray-600 dark:text-gray-300"
+                    className="text-gray-700 dark:text-gray-200"
                     size={25}
                   />
                 ) : (
                   <MdStopScreenShare
-                    className="text-gray-400 dark:text-gray-500"
+                    className="text-gray-700 dark:text-gray-200"
                     size={25}
                   />
                 )}
               </button>
             </div>
 
-            {/* ✅ safer onClick */}
             <button
               aria-label="End Call"
               onClick={() => (onEndCall ? onEndCall() : onClose?.())}
-              className="w-20 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-red-700 transition-colors"
+              className="w-20 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-red-700 transition-colors cursor-pointer"
               style={{ backgroundColor: "#dc2626" }}
             >
               <MdCallEnd size={24} className="text-white" />
@@ -239,11 +237,11 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
         callerName={callerName}
         onClose={() => setShowShareScreenWindow(false)}
         onStopSharing={() => {
-          setIsScreenShareOn(true);
+          setIsScreenShareOn(false);
           setShowShareScreenWindow(false);
         }}
         onEndCall={() => {
-          setIsScreenShareOn(true);
+          setIsScreenShareOn(false); 
           setShowShareScreenWindow(false);
           (onEndCall || onClose)?.();
         }}

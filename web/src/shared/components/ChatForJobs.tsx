@@ -380,23 +380,27 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
               onClose={() => setIncomingCall(null)}
             />
 
-            {/* Dev buttons */}
-            <button
-              title="Simulate incoming call"
-              onClick={() => ws.simulateIncomingCall()}
-              className="text-xs text-gray-400 hover:text-gray-600"
-            >
-              Simulate Incoming
-            </button>
+            {/* Dev buttons - only show in development */}
+            {import.meta.env.DEV && (
+              <>
+                <button
+                  title="Simulate incoming call"
+                  onClick={() => ws.simulateIncomingCall()}
+                  className="text-xs text-gray-400 hover:text-gray-600"
+                >
+                  Simulate Incoming
+                </button>
 
-            {/*this for testig, this can be removed once the API integration is done*/}
-            <button
-              title="Simulate incoming group call"
-              onClick={() => setShowGroupVideoCall(true)}
-              className="text-xs text-gray-400 hover:text-gray-600"
-            >
-              Simulate group incoming call
-            </button>
+                {/*this for testing, this can be removed once the API integration is done*/}
+                <button
+                  title="Simulate incoming group call"
+                  onClick={() => setShowGroupVideoCall(true)}
+                  className="text-xs text-gray-400 hover:text-gray-600"
+                >
+                  Simulate group incoming call
+                </button>
+              </>
+            )}
           </div>
         </div>
 

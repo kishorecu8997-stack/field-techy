@@ -17,9 +17,11 @@ const SwitchToVideoCallModal: React.FC<SwitchToVideoCallModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop overlay */}
-      <div 
-        className="absolute inset-0 bg-opacity-40"
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/40 cursor-default"
         onClick={onCancel}
+        aria-label="Close modal"
       />
 
       {/* Modal content */}
@@ -38,13 +40,13 @@ const SwitchToVideoCallModal: React.FC<SwitchToVideoCallModalProps> = ({
         <div className="flex items-center justify-end gap-3">
           <Button
             onClick={onCancel}
-            variant="Cancel"
+            variant="cancel"
           >
             Cancel
           </Button>
           <Button
             onClick={onConfirm}
-            variant="Accept"
+            variant="accept"
           >
             Switch
           </Button>

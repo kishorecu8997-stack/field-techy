@@ -79,7 +79,7 @@ const ShareScreenWindow: React.FC<ShareScreenWindowProps> = ({
 
       {/* Main share preview area */}
       <div className="relative h-[calc(100vh-64px-88px)] bg-black">
-        {/* Fake dark preview (match screenshot – no real stream yet) */}
+        {/* Fake dark preview (no real stream yet) */}
         <div className="absolute inset-0 bg-black/80" />
 
         {/* Center overlay text + button */}

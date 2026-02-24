@@ -88,9 +88,11 @@ const CallLogsPopup: React.FC<CallLogsPopupProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50"
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/50 cursor-default"
         onClick={onClose}
+        aria-label="Close"
       />
 
       {/* Draggable Modal */}

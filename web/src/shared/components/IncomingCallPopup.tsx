@@ -22,7 +22,7 @@ import { Button } from "./commonUI/Buttons";
 interface IncomingCallPopupProps {
   isVisible?: boolean;
   callerName?: string;
-  callType?: string; // e.g., "Voice Call"
+  callType?: string;
   onAccept: () => void;
   onReject: () => void;
   onClose?: () => void;
@@ -115,7 +115,7 @@ const IncomingCallPopup: React.FC<IncomingCallPopupProps> = ({
       {/* Ongoing Call Popup - shown when call is accepted */}
       <OngoingCall
         isVisible={showOngoingCall}
-        callerName="Helen"
+        callerName={callerName}
         onClose={handleCloseOngoingCall}
         onEndCall={handleEndCall}
       />

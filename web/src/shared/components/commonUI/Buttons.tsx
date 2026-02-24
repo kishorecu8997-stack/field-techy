@@ -33,8 +33,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "callLogs"
     | "rejectCall"
     | "acceptCall"
-    | "Cancel"
-    | "Accept";
+    | "cancel"
+    | "accept";
   size?: "sm" | "md" | "lg" | "icon" | "chip";
   disabled?: boolean;
   loading?: boolean;
@@ -121,9 +121,9 @@ export const Button: React.FC<ButtonProps> = ({
       "bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg shadow-sm flex items-center gap-2",
       acceptCall:
       "bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-lg shadow-sm flex items-center gap-2",
-      Cancel:
+      cancel:
       "px-4 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors font-medium",
-      Accept:
+      accept:
       "px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium"
   };
 
@@ -147,7 +147,7 @@ export const Button: React.FC<ButtonProps> = ({
       className={cn(
         baseStyles,
         variantStyles[variant],
-        variant !== "dropdown" && sizeStyles[size],
+        variant !== "dropdown" && !["callLogs", "rejectCall", "acceptCall", "cancel", "accept", "close"].includes(variant) && sizeStyles[size],
         fullWidth && "w-full",
         className,
       )}
