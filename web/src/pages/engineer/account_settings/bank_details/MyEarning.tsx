@@ -1,5 +1,4 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { getCurrencyFromStorage } from "@/utils/currency";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import TransactionDashboard from "./TransactionDashboard";
 import BestPayingJobs from "./BestPayingJobs";
@@ -8,6 +7,8 @@ import EarningHistoryChart from "./EarningHistoryChart";
 import MonthlyComparison from "./MonthlyComparison";
 import { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
+import { useEngineerBalance } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { formatCurrency } from "@/shared/libs/utils";
 
 /**
  * Displays the user's current balance with quick actions (Bank Details, Withdraw) and a transaction history dashboard.
@@ -15,8 +16,16 @@ import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
  */
 const MyEarning = () => {
   const { setActiveKey } = useDrawerStore();
-  const currentBalance = 1000;
   const [showBalance, setShowBalance] = useState<boolean>(false);
+  const { data: balanceArr } = useEngineerBalance();
+  const balance = balanceArr?.[0];
+  const formattedBalance = showBalance
+    ? (() => {
+        const amount = Number(balance?.balance);
+        const currency = balance?.currencyCode ?? "USD";
+        return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+      })()
+    : "******";
 
   const BankSection = () => {
     return (
@@ -26,14 +35,7 @@ const MyEarning = () => {
         </p>
         <div className="flex justify-between items-center">
           <p className="text-2xl md:text-3xl items-center font-extrabold text-gray-900 dark:text-white">
-            {showBalance ? (
-              <>
-                {getCurrencyFromStorage()}
-                {currentBalance.toFixed(2)}
-              </>
-            ) : (
-              "******"
-            )}
+            <span>{formattedBalance}</span>
           </p>
           {!showBalance ? (
             <BsEyeFill

@@ -43,4 +43,8 @@ export const queryKeys = {
         ["admin", "notifications", String(id)] as const,
     },
   },
+  notifications: {
+    all: ["notifications"] as const,
+    unread: () => [...queryKeys.notifications.all, "unread"] as const,
+  },
 } as const;

@@ -16,14 +16,16 @@ export interface GenericPopupButton {
     | "warning"
     | undefined;
   className?: string;
-
   action?: (close: (result: unknown) => void) => Promise<void> | void;
 }
 
 export interface GenericPopupProps {
-  title: string | React.ReactNode;
-  body: string | React.ReactNode;
-  actionButtons: GenericPopupButton[];
+  title?: string | React.ReactNode;
+  body:
+    | string
+    | React.ReactNode
+    | ((onClose: (value: unknown) => void) => React.ReactNode);
+  actionButtons?: GenericPopupButton[];
   onClose: (value: unknown) => void;
   bodyClassName?: string;
   containerClassName?: string;
@@ -49,6 +51,24 @@ export function GenericPopup(props: GenericPopupProps) {
     }
   };
 
+  const renderBody = () => {
+    if (typeof props.body === "string") {
+      return <p>{props.body}</p>;
+    }
+    if (typeof props.body === "function") {
+      return props.body(props.onClose);
+    }
+    if (React.isValidElement(props.body)) {
+      return React.cloneElement(
+        props.body as React.ReactElement<{
+          onClose?: (value: unknown) => void;
+        }>,
+        { onClose: props.onClose },
+      );
+    }
+    return props.body;
+  };
+
   return (
     <div className="flex flex-col h-full rounded-lg overflow-hidden">
       <div className="p-4 bg-white dark:bg-neutral-800">
@@ -62,11 +82,11 @@ export function GenericPopup(props: GenericPopupProps) {
           props.bodyClassName ?? "overflow-y-auto"
         }`}
       >
-        {typeof props.body === "string" ? <p>{props.body}</p> : props.body}
+        {renderBody()}
       </div>
 
       <div className="p-4 bg-white dark:bg-neutral-800 flex gap-2 justify-end">
-        {props.actionButtons.map((button, idx) => {
+        {props.actionButtons?.map((button, idx) => {
           const isLoading = loadingIndex === idx;
           return (
             <Button
