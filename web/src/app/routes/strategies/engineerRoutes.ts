@@ -129,10 +129,11 @@ export class EngineerRouteStrategy implements RouteStrategy {
             path: urls.engineer.home.search_result,
             element: withSuspense(Components.EngineerSearchResult),
           },
-          {
-            path: urls.engineer.home.search_analytics,
-            element: withSuspense(Components.EngineerSearchAnalyticsPage),
-          },
+          //Planned to remove search analytics feature.
+          // {
+          //   path: urls.engineer.home.search_analytics,
+          //   element: withSuspense(Components.EngineerSearchAnalyticsPage),
+          // },
           {
             path: urls.engineer.home.privacy_policy,
             element: withSuspense(Components.EngineerPrivacyPolicy),
