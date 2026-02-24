@@ -212,7 +212,7 @@ const ExploreSavedJobs = () => {
           </div>
 
           {/* RIGHT SIDE (Filters) */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 sticky top-20 h-fit">
             <FilterPanel
               onFilterChange={handleFilterChange}
               onClearAll={handleClearAllFilters}
