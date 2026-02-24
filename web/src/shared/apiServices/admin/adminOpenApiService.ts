@@ -19,6 +19,8 @@ import {
   type AdminUpdatePersonalInfoResponse,
   type AdminGetJobsData,
   type AdminGetJobsResponse,
+  type AdminGetJobDetailsData,
+  type AdminGetJobDetailsResponse,
   type AdminGetEngineersForManagementData,
   type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
@@ -41,6 +43,7 @@ import {
   adminGetClientsForManagementOptions,
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
+  adminGetJobDetailsOptions,
   adminGetEngineersForManagementOptions,
   adminGetEngineerOptions,
   adminCreateServiceCategoryMutation,
@@ -387,7 +390,7 @@ export async function updateAdminPersonalInfo(body: AdminPersonalInfoBody) {
   return response.data as AdminUpdatePersonalInfoResponse;
 }
 
-export type { AdminGetJobsResponse };
+export type { AdminGetJobsResponse, AdminGetJobDetailsResponse };
 
 export type AdminGetJobsQuery = NonNullable<AdminGetJobsData["query"]> & {
   search?: string;
@@ -403,6 +406,27 @@ export function useAdminGetJobs(
 ) {
   return useQuery({
     ...adminGetJobsOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
+  });
+}
+
+export type AdminGetJobDetailsQuery = NonNullable<
+  AdminGetJobDetailsData["query"]
+>;
+
+export function useAdminGetJobDetails(
+  query?: AdminGetJobDetailsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetJobDetailsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetJobDetailsOptions({
       client: apiClient,
       query,
     }),
