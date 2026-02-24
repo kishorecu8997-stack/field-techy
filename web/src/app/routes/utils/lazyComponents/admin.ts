@@ -125,30 +125,6 @@ export const HomeClientView = React.lazy(
   () =>
     import("@/pages/admin/client/components/view_components/HomeClientViewForm"),
 );
-export const AdminEditRolePage = React.lazy(
-  () => import("@/pages/admin/sub_admin/role_pages/PermissionList"),
-);
-export const RoleListPage = React.lazy(
-  () => import("@/pages/admin/sub_admin/role_pages/RolePage"),
-);
-export const AddRolePage = React.lazy(
-  () => import("@/pages/admin/sub_admin/role_pages/PermissionList"),
-);
 export const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView"),
-);
-export const ManageGroups = React.lazy(
-  () => import("@/pages/admin/manage_groups"),
-);
-export const ManageGroupsAdd = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/AddGroup"),
-);
-export const ManageGroupsEdit = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/EditGroup"),
-);
-export const ManageGroupsView = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/ViewGroup"),
-);
-export const ManageGroupsAddEngineer = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/SelectEngineers"),
 );

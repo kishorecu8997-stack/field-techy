@@ -51,6 +51,7 @@ const ManageJobDetails = () => {
               isSendProposal={isSendProposal}
               setActiveTab={setActiveTab}
               OfferJobStatus={OfferJobStatus}
+              jobId={""}
             />
             <JobTabSection
               status={filter()?.status as JobStatus}

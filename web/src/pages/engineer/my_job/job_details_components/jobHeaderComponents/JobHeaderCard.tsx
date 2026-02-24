@@ -17,6 +17,7 @@ import ReportPage from "@/pages/client/report";
 import { IoIosWarning } from "react-icons/io";
 import { absoluteUrls } from "@/config/urls";
 
+import { IoChatbubble } from "react-icons/io5";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -45,6 +46,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onAddProgressUpdate,
   onOpenFinalStatement,
   assignmentId,
+  jobId,
+  onToggleChat,
 }) => {
   const location = useLocation();
   const isClient = location.pathname.includes("client");
@@ -154,6 +157,19 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             </div>
 
             {/* Break Details button - visible unless hideBreakDetails is true */}
+            {onToggleChat && jobId && (
+              <button
+                className="bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors"
+                onClick={() => onToggleChat(jobId)}
+              >
+                <span className="relative inline-block">
+                  <IoChatbubble size={16} />
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                </span>
+                <span>Chats</span>
+              </button>
+            )}
+
             {!hideBreakDetails && (
               <div
                 className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"

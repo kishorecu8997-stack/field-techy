@@ -4,6 +4,10 @@ import { HiCheckCircle } from "react-icons/hi";
 import { HiXMark } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { formatDateTime } from "@/utils/formatDateTime";
+import {
+  formatApiDate,
+  transformLogsToTimelineItems,
+} from "@/utils/timelineUtils";
 import TimelineList from "@/shared/components/TimelineList";
 import type { TimelineCardData } from "@/pages/client/my_job_client/types";
 import {
@@ -42,7 +46,6 @@ import {
   useClientGetAssignmentDetails,
   useClientActionOnAssignment,
 } from "@/shared/apiServices/client/clientOpenApiService";
-import type { GetJobLogsResponse } from "@/api";
 
 const clientTimelineCards: TimelineCardData[] = [
   progressUpdateCardDataFromDummy,
@@ -65,86 +68,6 @@ const FormMode = {
 } as const;
 
 type FormMode = (typeof FormMode)[keyof typeof FormMode];
-
-/**
- * Format a date string to display format
- */
-const formatApiDate = (dateStr: string | null | undefined): string => {
-  if (!dateStr) return formatDateTime();
-  try {
-    const date = new Date(dateStr);
-    return date.toLocaleString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  } catch {
-    return formatDateTime();
-  }
-};
-
-/**
- * Transform API logs to timeline items with proper labels
- */
-const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
-  return logs.map((log) => {
-    // Generate proper title based on logType
-    let title = log.title || log.logType;
-    let details = log.details;
-
-    // Customize title based on logType and status
-    if (log.logType === "SUBMISSION") {
-      if (
-        log.status ===
-        ("pending" as
-          | "pending"
-          | "approved"
-          | "rejected"
-          | "revision_requested")
-      ) {
-        title = "Proposal Received";
-        details =
-          details ||
-          "Proposals received. Manage them in the Manage Proposals tab.";
-      } else if (log.status === "approved") {
-        title = "Proposal Accepted";
-        details = details || "Client accepted a proposal";
-      } else if (log.status === "rejected") {
-        title = "Proposal Rejected";
-        details = details || "Client rejected a proposal";
-      }
-    } else if (log.logType === "JOB_POSTED") {
-      title = "Job Posted";
-      details = details || "Client posted a new job";
-    } else if (log.logType === "JOB_STARTED") {
-      title = "Job Started";
-      details = details || "Work has started on this job";
-    } else if (log.logType === "JOB_COMPLETED") {
-      title = "Job Completed";
-      details = details || "Job has been completed";
-    }
-
-    return {
-      title,
-      timestamp: formatApiDate(log.timestamp),
-      statusText:
-        log.status.charAt(0).toUpperCase() +
-        log.status.slice(1).replace(/_/g, " "),
-      statusColor:
-        log.status === "approved"
-          ? "#22c55e"
-          : log.status === "rejected"
-            ? "#ef4444"
-            : "#f59e0b",
-      accentColor: "#3b82f6",
-      details,
-      attachmentUrl: log.attachmentUrl,
-    };
-  });
-};
 
 /**
  * Client timeline tab for progress, revisions, short breaks, final statements, and job approvals.
@@ -214,9 +137,6 @@ const TimelineSection: React.FC<{
 
   // Mutation for client action on assignment (approve/reject start job)
   const { mutate: actionOnAssignment } = useClientActionOnAssignment({
-    onSuccess: () => {
-    window.location.reload();
-  },
     onError: (error) => {
       console.error("Assignment action failed:", error);
       toast.error("Failed to process request. Please try again.", {
@@ -415,7 +335,7 @@ const TimelineSection: React.FC<{
   const apiTimelineItems = useMemo(() => {
     if (!jobLogs) return [];
 
-    const logItems = transformLogsToTimelineItems(jobLogs.logs || []);
+    const logItems = transformLogsToTimelineItems(jobLogs.logs || [], true);
     // Sort by timestamp descending (newest first)
     return logItems.sort((a, b) => {
       const dateA = new Date(a.timestamp).getTime();
@@ -489,11 +409,14 @@ const TimelineSection: React.FC<{
   // Determine card data for JobStartedCard based on status
   const jobStartedCard = useMemo(() => {
     if (hasPendingStartRequest) {
+      // Use current timestamp since API doesn't provide specific timestamp for start_pending_approval
+      const timestamp = new Date().toISOString();
       return {
         ...jobStartedCardDataForCard,
         title: "Job Started",
         description:
           "Engineer has requested to start the job. Please review and approve.",
+        timestamp: formatApiDate(timestamp),
       };
     }
     return jobStartedCardDataForCard;

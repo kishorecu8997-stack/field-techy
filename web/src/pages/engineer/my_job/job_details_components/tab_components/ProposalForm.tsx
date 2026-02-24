@@ -29,7 +29,7 @@ const ProposalForm = ({
   showReview,
   setShowReview,
   setShowSuccess,
-  setSubmittedProposal,
+  // setSubmittedProposal,
   setSendProposal,
   setSelectedTab,
   setHasApplied,
@@ -187,12 +187,6 @@ const ProposalForm = ({
                   if (setSendProposal) setSendProposal(false);
                   if (setSelectedTab)
                     setSelectedTab(JOB_TAB_LABELS.proposalInfo);
-                  setTimeout(() => {
-                    setShowSuccess(false);
-                    const data = reviewData || methods.getValues();
-                    if (setSubmittedProposal) setSubmittedProposal(data);
-                    methods.reset();
-                  }, JOB_TAB_CONFIG.successDelayMs);
                 } catch (error) {
                   console.error("Error submitting proposal:", error);
                   toast.error("Failed to submit proposal. Please try again.");

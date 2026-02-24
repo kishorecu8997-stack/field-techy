@@ -33,10 +33,23 @@ const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
   receivedOn,
   onClick,
 }) => {
+  // The card has an onClick handler but lacks keyboard accessibility.
+  // When a div is clickable, it should either be a button element or include
+  // role="button", tabIndex={0}, and keyboard event handlers (onKeyDown/onKeyPress)
+  // for Enter and Space keys. This follows the accessibility pattern established in the codebase.
   return (
     <div
       className="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-300 dark:border-gray-600 hover:shadow-md transition-shadow w-full max-w-xl"
       onClick={onClick}
+      // Accessibility: make the div focusable and keyboard accessible
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
     >
       {imageUrl ? (
         <img

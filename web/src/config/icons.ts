@@ -35,11 +35,14 @@ import {
   MdOutlineMobileFriendly,
   MdOutlineSecurity,
   MdHistory,
+  MdReportProblem,
 } from "react-icons/md";
 import { PiWarningOctagonFill } from "react-icons/pi";
 import { FaHourglass } from "react-icons/fa";
 import { FiZap } from "react-icons/fi";
 import { RiQrScanLine } from "react-icons/ri";
+import { AiOutlinePause } from "react-icons/ai";
+import { MdCancel } from "react-icons/md";
 
 /**
  * Collection of commonly used icon components mapped to semantic keys for consistent UI usage.
@@ -82,4 +85,7 @@ export const icons = {
   checkmark: IoMdCheckmark,
   active: FiZap,
   sessions: MdOutlineMobileFriendly,
+  hold: AiOutlinePause,
+  flagged: MdReportProblem,
+  cancel: MdCancel,
 };

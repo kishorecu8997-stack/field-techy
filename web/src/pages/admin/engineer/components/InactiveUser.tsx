@@ -1,13 +1,11 @@
-import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
-import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import { IoCloseSharp } from "react-icons/io5";
 import {
+  documentType,
   SUSPEND_ENGINEER_DEFAULT_VALUES,
   type BlockEngineerFormData,
   type ManageEngineerProps,
@@ -15,12 +13,15 @@ import {
 } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import { useClickOutside } from "@/shared/components/UseclickOutside";
 import { useForm } from "react-hook-form";
 import SuspendEngineer from "./SuspendEngineer";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import BlockEngineer from "./BlockEngineer";
 import ActionsMenu from "./ActionMenu";
+import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
+import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
+import ViewFileComponent from "./ViewFileComponent";
+import SelectMenu from "@/shared/components/SelectMenu";
 
 /**
  * InactiveUser Component
@@ -38,28 +39,25 @@ export default function InactiveUser() {
   });
 
   const { showPopup } = usePopupStore();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
+  const [activeRowId, setActiveRowId] = useState<number | null>(null);
+  const [activeUserId, setActiveUserId] = useState<number | null>(null);
+  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
+    null,
+  );
+  const [isOpen, setIsOpen] = useState(false);
   const [showAction, setShowAction] = useState<number | null>(null);
   const [isSuspendEngineer, setIsSuspendEngineer] = useState<boolean>(false);
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLDivElement>(null);
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    status: "inactive",
+  });
 
-  const filteredData = manageEngineer
-    .filter((e) => e.employmentStatus === "Inactive")
-    .filter((e) => {
-      const query = search.toLowerCase();
-      return (
-        e.engineerID.toLowerCase().includes(query) ||
-        e.details.name.toLowerCase().includes(query) ||
-        e.details.email.toLowerCase().includes(query) ||
-        e.location.toLowerCase().includes(query)
-      );
-    });
-
-  useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
+  const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   //Delete confirmation
   const handleDeleteEngineer = async (job: ManageEngineerProps) => {
@@ -87,10 +85,22 @@ export default function InactiveUser() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No." },
+    {
+      label: "Sr.No.",
+      renderCell: (_row: ManageEngineerProps, index: number) =>
+        (currentPage - 1) * pageSize + index + 1,
+    },
     {
       key: "engineerID",
       label: "Engineer ID",
+      renderCell: (row: ManageEngineerProps) => {
+        const id = row.engineerCode || "N/A";
+        return (
+          <div className="text-sm font-medium text-gray-900 dark:text-white">
+            {id}
+          </div>
+        );
+      },
     },
     {
       key: "details",
@@ -102,12 +112,12 @@ export default function InactiveUser() {
               <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
             </div>
             <div>
-              <div className="font-semibold">{row.details.name}</div>
+              <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.phone}
+                {row.phoneNumber}
               </div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.email}
+                {row.email}
               </div>
             </div>
           </div>
@@ -115,56 +125,68 @@ export default function InactiveUser() {
       },
     },
     {
-      key: "documents",
+      key: "documentType",
       label: "View Documents",
-      align: "center",
       renderCell: (row: ManageEngineerProps) => {
-        const name = row.documents || "N/A";
         return (
-          <div className="mx-auto text-center">
-            <Button
-              className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-              onClick={() => {
-                setIsModalOpen(true);
-                setSelectedRowId(row.id);
-              }}
-            >
-              {name}
-            </Button>
-          </div>
+          <SelectMenu
+            placeholder="Select Document"
+            className="w-36"
+            options={
+              documentType?.map((item) => ({
+                value: item.value ?? "",
+                label: item.label ?? "",
+              })) ?? []
+            }
+            value={activeRowId === row.id ? selectedType : null}
+            onChange={(value) => {
+              setActiveRowId(row.id);
+              setActiveUserId(row.userId);
+              setSelectedType(value as ProfileFileType | null);
+              setIsOpen(true);
+            }}
+          />
         );
       },
     },
     {
       key: "location",
       label: "Location",
+      renderCell: (row) => row.location || "N/A",
     },
     {
       key: "registrationDate",
       label: "Registration Date",
       dataCellAlign: "center",
+      renderCell: (row) =>
+        row.registrationDate
+          ? new Date(row.registrationDate).toLocaleDateString()
+          : "N/A",
     },
     {
       key: "walletBalance",
       label: "Wallet Balance",
       dataCellAlign: "center",
+      renderCell: (row) => row.balance,
     },
     {
       key: "kycStatus",
       label: "KYC Status",
       dataCellAlign: "center",
+      renderCell: (row) => row.profileStatus || "N/A",
     },
     {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
+      renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed"),
     },
     {
       key: "avgRating",
       label: "Avg Rating",
       dataCellAlign: "center",
+      renderCell: (row) => row.averageRating?.toFixed(1) || "N/A",
     },
-    { key: "lastActiveOn", label: "Last Active On", dataCellAlign: "center" },
     {
       key: "action",
       label: "Actions",
@@ -246,26 +268,22 @@ export default function InactiveUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredData}
-            initialPageSize={10}
+            data={engineerData}
+            loading={isLoading}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+            totalCount={engineersResponse?.total ?? 0}
           />
         </div>
       </div>
-      <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="p-4">
-          <div className="flex justify-between items-center">
-            <span className="font-bold">View File {selectedRowId}</span>
-            <div
-              className="text-xl font-semibold cursor-pointer"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <IoCloseSharp />
-            </div>
-          </div>
-          <div className="border border-gray-400 h-36 my-6">
-            <img src="https://via.placeholder.com/500" alt="file" />
-          </div>
-        </div>
+      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+        <ViewFileComponent
+          onClose={() => setIsOpen(false)}
+          userId={activeUserId}
+          fileType={selectedType}
+        />
       </Popup>
       <FormContainer methods={methods} onSubmit={onSubmit}>
         {isSuspendEngineer && (

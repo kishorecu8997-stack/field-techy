@@ -7,6 +7,7 @@ import { SORT_OPTIONS } from "../../search_result/types";
 import JobCardDetailsHeader from "./JobCardDetailsHeader";
 import JobTabSection from "./JobTabSection";
 import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 
 /**
  * `JobsDetails` is a page component that displays detailed information about a specific job.
@@ -16,6 +17,8 @@ const JobsDetails: React.FC = () => {
   const params = useParams();
   const [activeTab] = useState("Timeline");
   const jobId = params.jobId;
+  const [pageHeading, setPageHeading] = useState("Job Details");
+  const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
 
   // Fetch jobs data from API
   const { data: jobsData, isLoading, error } = useClientGetJobs(true);
@@ -115,46 +118,70 @@ const JobsDetails: React.FC = () => {
     status: job.status || "Posted",
   };
 
-  console.log(
-    "formattedJob being passed to JobCardDetailsHeader:",
-    formattedJob,
-  );
+  // Build manual breadcrumb segments for client
+  const segments = [
+    "client",
+    "my-jobs",
+    params.jobId ? params.jobId : "",
+    breadcrumbExtra === "chats" ? "Chats" : null,
+  ].filter((v): v is string => typeof v === "string");
+
+  // Update heading when chat is toggled
+  const handleToggleChat = () => {
+    setBreadcrumbExtra("chats");
+    setPageHeading("Chats");
+  };
+  const handleCloseChat = () => {
+    setBreadcrumbExtra(null);
+    setPageHeading("Job Details");
+  };
 
   return (
     <div className="min-h-screen transition-colors duration-200">
       <div className="container mx-auto px-4 py-6">
         <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
-            title="Job Details"
+            title={pageHeading}
             currentSort={SORT_OPTIONS.NEWEST}
-            isReport
+            isReport={breadcrumbExtra !== "chats"}
+            isShowSort={breadcrumbExtra !== "chats"}
             onSortChange={() => {}}
+            segments={segments}
+            isChatVisible={breadcrumbExtra === "chats"}
+            handleCloseChat={handleCloseChat}
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-              <JobCardDetailsHeader job={formattedJob} />
-              <div className="space-y-6 pt-2">
-                <JobTabSection
-                  status={formattedJob.status}
-                  activeTab={activeTab}
-                  job={job}
-                  assignmentId={
-                    job.assignmentIds?.[0]
-                      ? Number(job.assignmentIds[0])
-                      : Number(jobId)
-                  }
-                />
+        {breadcrumbExtra === "chats" ? (
+          <div className="flex-1 overflow-y-auto">
+            <ChatForJobs jobId={String(params.jobId)} currentUser="Client" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+                <JobCardDetailsHeader job={formattedJob} />
+                <div className="space-y-6 pt-2">
+                  <JobTabSection
+                    status={formattedJob.status}
+                    activeTab={activeTab}
+                    job={job}
+                    assignmentId={
+                      job.assignmentIds?.[0]
+                        ? Number(job.assignmentIds[0])
+                        : Number(jobId)
+                    }
+                    onToggleChat={handleToggleChat}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-1">
+              <div className="sticky top-6 pt-2">
+                <SidebarJobPostWallet earnings={earningsData} />
               </div>
             </div>
           </div>
-          <div className="lg:col-span-1">
-            <div className="sticky top-6 pt-2">
-              <SidebarJobPostWallet earnings={earningsData} />
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
