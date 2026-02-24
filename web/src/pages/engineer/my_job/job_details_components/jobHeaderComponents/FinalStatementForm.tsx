@@ -37,6 +37,7 @@ const FinalStatementForm = ({
 }) => {
   const { showPopup } = usePopupStore();
   const { mutateAsync: submitSignOff, } = useEngineerSubmitSignOff({
+    assignmentId,
     onSuccess: () => {
       toast.success(FINAL_STATEMENT_MESSAGES.submitSuccess);
       onClose?.();

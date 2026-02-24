@@ -58,6 +58,7 @@ const BreakRequestForm = ({
 
   // Use the API mutation for submitting break request
   const breakRequestMutation = useEngineerRequestBreak({
+    assignmentId,
     onSuccess: () => {
       toast.success(BREAK_REQUEST_MESSAGES.submitSuccess);
       onClose();

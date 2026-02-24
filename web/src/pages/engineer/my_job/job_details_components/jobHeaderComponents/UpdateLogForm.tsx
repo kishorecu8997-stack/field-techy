@@ -36,6 +36,7 @@ const UpdateLogForm = ({
 
   // Mutation for adding work log
   const { mutate: addWorkLog} = useEngineerAddWorkLog({
+    assignmentId,
     onSuccess: () => {  
       toast.success("Log submitted successfully!");
        onClose();

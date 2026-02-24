@@ -327,13 +327,16 @@ export function useClientCalculateJobPrice(
 export function useClientActionOnWorkLog(options?: {
   onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...clientActionOnWorkLogMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Invalidate client-related queries to ensure job logs are refetched
-      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      // Use exact query key format
+      const exactQueryKey = [{ _id: 'getJobLogs', path: { assignmentId: options?.assignmentId } }];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: 'getJobLogs' }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -343,12 +346,16 @@ export function useClientActionOnWorkLog(options?: {
 export function useClientActionOnBreak(options?: {
   onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...clientActionOnBreakMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      // Use exact query key format
+      const exactQueryKey = [{ _id: 'getJobLogs', path: { assignmentId: options?.assignmentId } }];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: 'getJobLogs' }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

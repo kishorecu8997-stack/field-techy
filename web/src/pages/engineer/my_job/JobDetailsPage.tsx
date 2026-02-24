@@ -2,6 +2,7 @@ import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import { useEngineerSearchJobs, useGetJobLogs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 import { getDurationString } from "@/utils";
 import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -93,6 +94,8 @@ const JobDetailsPage = () => {
   const [activeTab, setActiveTab] = useState(JOB_TAB_LABELS.timeline);
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [pageHeading, setPageHeading] = useState("Job Details");
   const [_offerJobStatus, setOfferJobStatus] = useState<
     OfferedJobStatusType | AssignmentStatus | undefined
   >();
@@ -187,6 +190,17 @@ const JobDetailsPage = () => {
 
   const handleOpenFinalStatement = () => setShowFinalStatement(true);
   const handleCloseFinalStatement = () => setShowFinalStatement(false);
+
+  // Handle chat toggle
+  const handleToggleChat = (_jobId: string) => {
+    setShowChat(true);
+    setPageHeading("Chats");
+  };
+
+  const handleCloseChat = () => {
+    setShowChat(false);
+    setPageHeading("Job Details");
+  };
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {
@@ -295,37 +309,46 @@ const JobDetailsPage = () => {
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
-          title="Job Details"
+          title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport={false}
+          isReport={!showChat}
+          isShowSort={!showChat}
+          isChatVisible={showChat}
+          handleCloseChat={handleCloseChat}
           customLabels={
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
           }
         />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <div className="lg:col-span-2 space-y-6">
-            <JobHeaderCard
-              title={jobTitle}
-              client={`Client #${clientId}`}
-              duration={duration as string}
-              type={engagementType}
-              status={jobStatus}
-              setIsWorkSubmitted={setIsWorkSubmitted}
-              setSendProposal={setIsSendProposal}
-              isSendProposal={isSendProposal}
-              setActiveTab={setActiveTab}
-              OfferJobStatus={_offerJobStatus || assignmentStatus}
-              setOfferJobStatus={setOfferJobStatus}
-              jobLocation={jobLocation}
-              numberOfVacancy={job?.vacancies ?? undefined}
-              activeTab={activeTab}
-              onAddProgressUpdate={handleAddProgressUpdate}
-              onOpenFinalStatement={handleOpenFinalStatement}
-              assignmentId={assignmentId}
-              progressUpdates={allProgressUpdates}
-              jobId={params.jobId}
-            />
+        {showChat ? (
+          <div className="flex-1 overflow-y-auto">
+            <ChatForJobs jobId={String(params.jobId)} currentUser="Engineer" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div className="lg:col-span-2 space-y-6">
+              <JobHeaderCard
+                title={jobTitle}
+                client={`Client #${clientId}`}
+                duration={duration as string}
+                type={engagementType}
+                status={jobStatus}
+                setIsWorkSubmitted={setIsWorkSubmitted}
+                setSendProposal={setIsSendProposal}
+                isSendProposal={isSendProposal}
+                setActiveTab={setActiveTab}
+                OfferJobStatus={_offerJobStatus || assignmentStatus}
+                setOfferJobStatus={setOfferJobStatus}
+                jobLocation={jobLocation}
+                numberOfVacancy={job?.vacancies ?? undefined}
+                activeTab={activeTab}
+                onAddProgressUpdate={handleAddProgressUpdate}
+                onOpenFinalStatement={handleOpenFinalStatement}
+                assignmentId={assignmentId}
+                progressUpdates={allProgressUpdates}
+                jobId={params.jobId}
+                onToggleChat={handleToggleChat}
+              />
 
             <JobTabSection
               status={jobStatus}
@@ -371,6 +394,7 @@ const JobDetailsPage = () => {
             />
           </div>
         </div>
+        )}
       </div>
 
       {isReviewOpen && (
