@@ -5,7 +5,11 @@ import {
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
+import {
+  SORT_OPTIONS,
+  type JobStatus,
+  type AssignmentStatus,
+} from "../../search_result/types";
 import ClientInfoCard from "./ClientInfoCard";
 import JobHeaderCard from "./jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "./JobTabSection";
@@ -28,6 +32,9 @@ const OfferPages = () => {
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
+  const [offerJobStatus, setOfferJobStatus] = useState<
+    AssignmentStatus | undefined
+  >();
 
   const rawJob = useMemo(() => {
     if (!apiJob) return null;
@@ -52,6 +59,7 @@ const OfferPages = () => {
           : "Not specified",
       type: "ON_SITE", // TODO: Map engagementModelId
       status: rawJob.status || "NEW",
+      assignmentStatus: rawJob.assignmentStatus || undefined,
     };
   }, [rawJob]);
 
@@ -71,16 +79,20 @@ const OfferPages = () => {
               duration={jobData?.duration || dummyJobHeader.duration}
               type={jobData?.type}
               status={jobData?.status}
+              OfferJobStatus={offerJobStatus || jobData?.assignmentStatus}
+              setOfferJobStatus={setOfferJobStatus as any}
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
               setActiveTab={setActiveTab}
+              jobId={""}
             />
             <JobTabSection
               status={jobData?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
               activeTab={activeTab}
+              jobId={Number(jobId)}
             />
           </div>
           <div className="lg:col-span-1">

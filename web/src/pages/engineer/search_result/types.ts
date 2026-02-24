@@ -11,8 +11,10 @@ export const JOB_STATUSES = {
   closed: "Closed",
   hold: "Hold",
   flagged: "Flagged",
-  applied: "Applied",
-  new: "New",
+  // Additional statuses for EngineersActions
+  inprogress: "inprogress",
+  applied: "applied",
+  new: "new",
   offer: "offer",
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
@@ -150,17 +152,6 @@ export const JOB_FILTERS = {
 } as const;
 
 export type JobFilter = (typeof JOB_FILTERS)[keyof typeof JOB_FILTERS];
-
-export const OfferedJobStatus = {
-  initial: "initial",
-  accepted: "accepted",
-  declined: "declined",
-  started: "started",
-  checkedIn: "checked-in",
-} as const;
-
-export type OfferedJobStatusType =
-  (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
 
 export const ASSIGNMENT_STATUSES = {
   assigned: "assigned",
