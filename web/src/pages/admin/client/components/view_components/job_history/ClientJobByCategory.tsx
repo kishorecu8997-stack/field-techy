@@ -13,7 +13,6 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { days } from "@/dummy_data/adminDashboard";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { useAdminGetJobGraph } from "@/shared/apiServices/admin/adminOpenApiService";
-import { chartData as dummyChartData } from "@/dummy_data/chart";
 import { useSearchParams } from "react-router-dom";
 
 interface ClientJobByCategoryProps {
@@ -227,7 +226,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
             </div>
 
             <GeneralChart
-              data={chartData.length > 0 ? chartData : dummyChartData}
+              data={chartData}
               chartType="line"
               xAxisDataKey="name"
               aspectRatio={2}
