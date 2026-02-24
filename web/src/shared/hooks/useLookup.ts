@@ -37,9 +37,7 @@ type LookupQueryOptions = UseQueryOptions<
  * Memoized API client using Vite env variable fallback.
  */
 export const useApiClient = () => {
-  const baseUrl =
-    (import.meta.env as { VITE_API_URL?: string }).VITE_API_URL ??
-    "http://localhost:3000";
+  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
   return useMemo(() => createClient({ baseUrl }), [baseUrl]);
 };
 

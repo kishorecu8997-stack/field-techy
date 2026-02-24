@@ -125,6 +125,10 @@ export interface JobHeaderCardProps {
   activeTab?: string;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
+  isFinalStatementSubmitted?: boolean;
+  onOpenGiveClientFeedback?: () => void;
+  onOpenViewClientFeedback?: () => void;
+  allCardsApproved?: boolean;
   assignmentId?: number;
   jobId: string;
   onToggleChat?: (jobId: string) => void;

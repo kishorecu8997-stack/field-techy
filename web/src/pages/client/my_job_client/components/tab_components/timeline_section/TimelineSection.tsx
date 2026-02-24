@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { HiCheckCircle } from "react-icons/hi";
+import { HiCheckCircle, HiChevronDown } from "react-icons/hi";
 import { HiXMark } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { formatDateTime } from "@/utils/formatDateTime";
@@ -16,6 +16,7 @@ import {
   createRevisionUpdateCardData,
   shortTermBreakCardData as shortTermBreakCardDataFromDummy,
   finalStatementCardData as finalStatementCardDataFromDummy,
+  engineerTimelineData,
 } from "@/dummy_data/clientTimelineDummyData";
 import {
   TIMELINE_STATUS,
@@ -35,8 +36,8 @@ import RevisionFormModal from "./RevisionFormModal";
 import ConfirmModal from "./ConfirmModal";
 import ShortBreakApprovalModal from "./ShortBreakApprovalModal";
 import ActionRequiredBadge from "./ActionRequiredBadge";
-import TimelineToggleButton from "./TimelineToggleButton";
 import TimelineSectionHeader from "./TimelineSectionHeader";
+import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
 import type {
   RevisionFormData,
   RevisionRequestDetails,
@@ -85,8 +86,6 @@ const TimelineSection: React.FC<{
   hasProposals?: boolean;
 }> = ({ assignmentId, jobId, hasProposals = false }) => {
   const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
-  const [isRevisionUpdateCollapsed, setIsRevisionUpdateCollapsed] =
-    useState(false);
   const [isShortBreakCollapsed, setIsShortBreakCollapsed] = useState(false);
   const [isFinalStatementCollapsed, setIsFinalStatementCollapsed] =
     useState(false);
@@ -113,6 +112,7 @@ const TimelineSection: React.FC<{
   const [revisionRequestDetails, setRevisionRequestDetails] =
     useState<RevisionRequestDetails | null>(null);
   const [revisionUpdateCardData] = useState(createRevisionUpdateCardData());
+  const [isSectionCollapsed, setIsSectionCollapsed] = useState(false);
 
   const revisionFormMethods = useForm<RevisionFormData>({
     mode: "onSubmit",
@@ -549,7 +549,6 @@ const TimelineSection: React.FC<{
       });
     } else {
       setRevisionUpdateStatus(TIMELINE_STATUS.revision);
-      setIsRevisionUpdateCollapsed(true);
     }
 
     toast.success(TOAST_MESSAGES.revisionSubmitted, { position: "top-right" });
@@ -575,10 +574,9 @@ const TimelineSection: React.FC<{
   };
 
   const handleShortBreakApprovalSubmit = () => {
-    setShowShortBreakApprovalModal(false);
-    setShortBreakNotes("");
     setShortBreakStatus(TIMELINE_STATUS.approved);
-    setIsShortBreakCollapsed(true);
+    setShortBreakNotes("");
+    setShowShortBreakApprovalModal(false);
     toast.success(TOAST_MESSAGES.shortBreakApproved, { position: "top-right" });
   };
 
@@ -626,7 +624,6 @@ const TimelineSection: React.FC<{
   };
 
   const handleJobApproveConfirmSubmit = () => {
-    // Call API to approve start job request
     if (assignmentId) {
       actionOnAssignment({
         body: {
@@ -651,7 +648,6 @@ const TimelineSection: React.FC<{
   };
 
   const handleJobRejectConfirmSubmit = () => {
-    // Call API to reject start job request
     if (assignmentId) {
       actionOnAssignment({
         body: {
@@ -701,7 +697,6 @@ const TimelineSection: React.FC<{
     },
   ];
 
-  // Auto-collapse cards once a decision is made
   useEffect(() => {
     if (
       progressStatus === TIMELINE_STATUS.approved ||
@@ -712,10 +707,6 @@ const TimelineSection: React.FC<{
       }
     } else if (progressStatus === TIMELINE_STATUS.revision) {
       setIsProgressCollapsed(false);
-    }
-
-    if (revisionUpdateStatus !== TIMELINE_STATUS.pending) {
-      setIsRevisionUpdateCollapsed(true);
     }
 
     if (shortBreakStatus !== TIMELINE_STATUS.pending) {
@@ -753,145 +744,211 @@ const TimelineSection: React.FC<{
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-      <TimelineToggleButton
-        isCollapsed={
-          isProgressCollapsed &&
-          isRevisionUpdateCollapsed &&
-          isShortBreakCollapsed &&
-          isFinalStatementCollapsed &&
-          isJobCollapsed
-        }
-        onToggle={() => {
-          setIsProgressCollapsed((prev) => !prev);
-          setIsRevisionUpdateCollapsed((prev) => !prev);
-          setIsShortBreakCollapsed((prev) => !prev);
-          setIsFinalStatementCollapsed((prev) => !prev);
-          setIsJobCollapsed((prev) => !prev);
-        }}
-      />
-
-      <div className="px-4 pb-4 space-y-6">
-        {/* Action Required Badge - Only show when there's action required */}
-        {actionRequiredCount > 0 && (
-          <ActionRequiredBadge count={actionRequiredCount} />
-        )}
-
-        {/* Progress Update Card - Only show when API has data */}
-        {hasProgressData && (
-          <ProgressUpdateCard
-            isCollapsed={isProgressCollapsed}
-            cardData={apiProgressData}
-            progressAccentColor={progressAccentColor}
-            progressStatus={progressStatus}
-            progressStatusNode={progressStatusNode}
-            revisionRequestDetails={revisionRequestDetails}
-            revisionUpdateCardData={revisionUpdateCardData}
-            revisionRequestUpdateCardData={revisionRequestUpdateCardData}
-            revisionUpdateStatus={revisionUpdateStatus}
-            onProgressReject={handleProgressReject}
-            onRequestRevision={handleRequestRevision}
-            onProgressApprove={handleProgressApprove}
-            onRevisionUpdateRequestRevision={
-              handleRevisionUpdateRequestRevision
+      {isSectionCollapsed ? (
+        <div
+          className="p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+          role="button"
+          tabIndex={0}
+          onClick={() => setIsSectionCollapsed(false)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setIsSectionCollapsed(false);
             }
-          />
-        )}
-
-        {/* Short Term Break Card - Only show when API has data */}
-        {hasBreakData && (
-          <ShortBreakCard
-            isCollapsed={isShortBreakCollapsed}
-            cardData={
-              apiBreakRequestData
-                ? { ...shortTermBreakCardData, ...apiBreakRequestData }
-                : shortTermBreakCardData
-            }
-            shortBreakAccentColor={shortBreakAccentColor}
-            shortBreakStatus={shortBreakStatus}
-            shortBreakStatusNode={shortBreakStatusNode}
-            onShortBreakReject={handleShortBreakReject}
-            onShortBreakApprove={handleShortBreakApprove}
-          />
-        )}
-
-        {/* Final Statement Card - Only show when API has data */}
-        {hasFinalStatementData && (
-          <FinalStatementCard
-            isCollapsed={isFinalStatementCollapsed}
-            cardData={
-              apiFinalStatementData
-                ? { ...finalStatementCardData, ...apiFinalStatementData }
-                : finalStatementCardData
-            }
-            finalStatementAccentColor={finalStatementAccentColor}
-            finalStatementStatus={finalStatementStatus}
-            finalStatementStatusNode={finalStatementStatusNode}
-            onFinalStatementReject={handleFinalStatementReject}
-            onFinalStatementApprove={handleFinalStatementApprove}
-          />
-        )}
-
-        {/* Job Started Card - Show when there's progress data OR pending start request */}
-        {showJobStartedCard && (
-          <JobStartedCard
-            isCollapsed={isJobCollapsed}
-            cardData={jobStartedCard}
-            accentColor={accentColor}
-            jobStatus={
-              hasPendingStartRequest ? TIMELINE_STATUS.pending : jobStatus
-            }
-            statusNode={statusNode}
-            onReject={handleReject}
-            onApprove={handleApprove}
-          />
-        )}
-
-        {hasProgressData && (
-          <TimelineSectionHeader items={activityTimelineItems} />
-        )}
-
-        {/* Show TimelineList for job logs */}
-        {timelineItems.length > 0 && <TimelineList items={timelineItems} />}
-
-        {/* Show message when no timeline data and not loading */}
-        {!hasProgressData &&
-          !hasBreakData &&
-          !hasFinalStatementData &&
-          !isLoadingLogs &&
-          timelineItems.length === 0 && (
-            <div className="text-center text-gray-500 py-4">
-              No timeline data available yet
+          }}
+        >
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                {engineerTimelineData.engineerNumber}
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  {engineerTimelineData.name}
+                </span>
+                <span className="text-gray-500 dark:text-gray-400">•</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  {engineerTimelineData.role}
+                </span>
+              </div>
+              <div className="text-sm space-y-1">
+                {actionRequiredCount > 0 ? (
+                  <div className="text-gray-700 dark:text-gray-300">
+                    Status:{" "}
+                    <span className="font-medium text-red-600 dark:text-red-400">
+                      {actionRequiredCount} pending approval
+                      {actionRequiredCount > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-gray-700 dark:text-gray-300">
+                    Status:{" "}
+                    <span className="font-medium">No pending approvals</span>
+                  </div>
+                )}
+                <div className="text-gray-500 dark:text-gray-400">
+                  Last activity: {engineerTimelineData.lastActivity}
+                </div>
+              </div>
             </div>
-          )}
-      </div>
+            <div className="flex items-center gap-2">
+              {actionRequiredCount === 0 && (
+                <GiveFeedbackButton
+                  label="Give Feedback On Engineer"
+                  targetName={engineerTimelineData.name}
+                  targetRole={engineerTimelineData.role}
+                  assignmentId={engineerTimelineData.assignmentId}
+                  stopPropagation
+                  textClassName="hidden sm:inline cursor-pointer"
+                />
+              )}
+              <HiChevronDown className="h-5 w-5 text-gray-500" />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-end items-center gap-2 px-4 pt-3">
+            {actionRequiredCount === 0 && (
+              <GiveFeedbackButton
+                label="Give Feedback On Engineer"
+                targetName={engineerTimelineData.name}
+                targetRole={engineerTimelineData.role}
+                stopPropagation
+                assignmentId={engineerTimelineData.assignmentId}
+              />
+            )}
+            <div
+              className="p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Collapse engineer section"
+              onClick={() => setIsSectionCollapsed(true)}
+            >
+              <HiChevronDown className="h-5 w-5 rotate-180" />
+            </div>
+          </div>
 
-      <RevisionFormModal
-        isOpen={showFormModal && Boolean(formMode)}
-        isRevisionMode={formMode === FormMode.Revision}
-        formMethods={revisionFormMethods}
-        onSubmit={handleRevisionSubmit}
-        onCancel={handleFormCancel}
-      />
+          <div className="px-4 pb-4 space-y-6">
+            {actionRequiredCount > 0 && (
+              <ActionRequiredBadge count={actionRequiredCount} />
+            )}
 
-      {confirmModals.map((modal) => (
-        <ConfirmModal
-          key={modal.key}
-          isOpen={modal.isOpen}
-          title={modal.title}
-          message={modal.message}
-          confirmLabel={modal.confirmLabel}
-          onConfirm={modal.onConfirm}
-          onCancel={modal.onCancel}
-        />
-      ))}
+            {hasProgressData && (
+              <ProgressUpdateCard
+                isCollapsed={isProgressCollapsed}
+                cardData={apiProgressData}
+                progressAccentColor={progressAccentColor}
+                progressStatus={progressStatus}
+                progressStatusNode={progressStatusNode}
+                revisionRequestDetails={revisionRequestDetails}
+                revisionUpdateCardData={revisionUpdateCardData}
+                revisionRequestUpdateCardData={revisionRequestUpdateCardData}
+                revisionUpdateStatus={revisionUpdateStatus}
+                onProgressReject={handleProgressReject}
+                onRequestRevision={handleRequestRevision}
+                onProgressApprove={handleProgressApprove}
+                onRevisionUpdateRequestRevision={
+                  handleRevisionUpdateRequestRevision
+                }
+              />
+            )}
 
-      <ShortBreakApprovalModal
-        isOpen={showShortBreakApprovalModal}
-        notes={shortBreakNotes}
-        onNotesChange={setShortBreakNotes}
-        onCancel={handleShortBreakApprovalCancel}
-        onSubmit={handleShortBreakApprovalSubmit}
-      />
+            {/* Short Term Break Card - Only show when API has data */}
+            {hasBreakData && (
+              <ShortBreakCard
+                isCollapsed={isShortBreakCollapsed}
+                cardData={
+                  apiBreakRequestData
+                    ? { ...shortTermBreakCardData, ...apiBreakRequestData }
+                    : shortTermBreakCardData
+                }
+                shortBreakAccentColor={shortBreakAccentColor}
+                shortBreakStatus={shortBreakStatus}
+                shortBreakStatusNode={shortBreakStatusNode}
+                onShortBreakReject={handleShortBreakReject}
+                onShortBreakApprove={handleShortBreakApprove}
+              />
+            )}
+
+            {/* Final Statement Card - Only show when API has data */}
+            {hasFinalStatementData && (
+              <FinalStatementCard
+                isCollapsed={isFinalStatementCollapsed}
+                cardData={
+                  apiFinalStatementData
+                    ? { ...finalStatementCardData, ...apiFinalStatementData }
+                    : finalStatementCardData
+                }
+                finalStatementAccentColor={finalStatementAccentColor}
+                finalStatementStatus={finalStatementStatus}
+                finalStatementStatusNode={finalStatementStatusNode}
+                onFinalStatementReject={handleFinalStatementReject}
+                onFinalStatementApprove={handleFinalStatementApprove}
+              />
+            )}
+
+            {/* Job Started Card - Show when there's progress data OR pending start request */}
+            {showJobStartedCard && (
+              <JobStartedCard
+                isCollapsed={isJobCollapsed}
+                cardData={jobStartedCard}
+                accentColor={accentColor}
+                jobStatus={
+                  hasPendingStartRequest ? TIMELINE_STATUS.pending : jobStatus
+                }
+                statusNode={statusNode}
+                onReject={handleReject}
+                onApprove={handleApprove}
+              />
+            )}
+
+            {hasProgressData && (
+              <TimelineSectionHeader items={activityTimelineItems} />
+            )}
+
+            {/* Show TimelineList for job logs */}
+            {timelineItems.length > 0 && <TimelineList items={timelineItems} />}
+
+            {/* Show message when no timeline data and not loading */}
+            {!hasProgressData &&
+              !hasBreakData &&
+              !hasFinalStatementData &&
+              !isLoadingLogs &&
+              timelineItems.length === 0 && (
+                <div className="text-center text-gray-500 py-4">
+                  No timeline data available yet
+                </div>
+              )}
+          </div>
+          {/* Modals - Always available regardless of collapsed state */}
+          <RevisionFormModal
+            isOpen={showFormModal && Boolean(formMode)}
+            isRevisionMode={formMode === FormMode.Revision}
+            formMethods={revisionFormMethods}
+            onSubmit={handleRevisionSubmit}
+            onCancel={handleFormCancel}
+          />
+
+          {confirmModals.map((modal) => (
+            <ConfirmModal
+              key={modal.key}
+              isOpen={modal.isOpen}
+              title={modal.title}
+              message={modal.message}
+              confirmLabel={modal.confirmLabel}
+              onConfirm={modal.onConfirm}
+              onCancel={modal.onCancel}
+            />
+          ))}
+
+          <ShortBreakApprovalModal
+            isOpen={showShortBreakApprovalModal}
+            notes={shortBreakNotes}
+            onNotesChange={setShortBreakNotes}
+            onCancel={handleShortBreakApprovalCancel}
+            onSubmit={handleShortBreakApprovalSubmit}
+          />
+        </>
+      )}
     </div>
   );
 };
