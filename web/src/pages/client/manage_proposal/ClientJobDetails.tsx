@@ -26,8 +26,7 @@ const ClientJobDetails = () => {
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
-  const [allCardsApproved, setAllCardsApproved] = useState(false);
-  const [activeTab, setActiveTab] = useState("Job Information");
+  const [activeTab, setActiveTab] = useState("Timeline");
   const [OfferJobStatus, setOfferJobStatus] = useState<
     OfferedJobStatusType | AssignmentStatus | undefined
   >(undefined);
@@ -204,8 +203,6 @@ const ClientJobDetails = () => {
                 numberOfApplicants={undefined}
                 jobId={jobIdParam!}
                 onToggleChat={handleToggleChat}
-                activeTab={activeTab}
-                allCardsApproved={allCardsApproved}
               />
               <JobTabSection
                 status={(jobStatus as JobStatus) || "Posted"}
@@ -215,9 +212,7 @@ const ClientJobDetails = () => {
                 OfferJobStatus={OfferJobStatus}
                 isDummyNetworkEngineer={isDummyNetworkEngineer}
                 showManageProposals={true}
-                onAllCardsApprovedChange={setAllCardsApproved}
-                onTabChange={setActiveTab}
-                jobID={jobIdParam!}
+                job={job}
                 assignmentId={assignmentId}
               />
             </div>
@@ -225,7 +220,7 @@ const ClientJobDetails = () => {
           </div>
         )}
       </div>
-    </div >
+    </div>
   );
 };
 

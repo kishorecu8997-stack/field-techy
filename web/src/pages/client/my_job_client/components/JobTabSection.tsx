@@ -149,14 +149,11 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     activeTab || JOB_TAB_LABELS.timeline,
   );
 
-  // Get jobId from job prop
-  const jobId = job?.id ? Number(job.id) : undefined;
-
   // Fetch assignments/proposals for this job when showManageProposals is true
   const { data: assignmentsData, isLoading: isLoadingAssignments } =
     useClientGetAssignmentDetails(
-      { jobId: jobId },
-      !!(showManageProposals && jobId),
+      { jobId: Number(jobID) },
+      !!(showManageProposals && jobID),
     );
 
   useEffect(() => {
@@ -176,7 +173,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       content: (
         <TimelineSection
           assignmentId={assignmentId}
-          jobId={jobId}
+          jobId={Number(jobID)}
           hasProposals={!!assignmentsData?.length}
         />
       ),
@@ -198,7 +195,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
             <ManageProposalsTab
               assignments={assignmentsData}
               isLoading={isLoadingAssignments}
-              jobId={jobId}
+              jobId={Number(jobID)}
             />
           ),
         },
