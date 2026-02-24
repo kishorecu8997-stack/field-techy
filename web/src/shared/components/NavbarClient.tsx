@@ -15,6 +15,8 @@ import {
   useClientDisplayName,
 } from "@/shared/store/useClientStore";
 
+import { useAppNotifications } from "@/shared/apiServices/notifications/notificationOpenApiService";
+
 interface NavbarClientProps {
   onDrawerToggle: () => void;
   isDrawerOpen: boolean;
@@ -45,7 +47,9 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { setActiveKey } = useDrawerStore();
-  const notificationCount = 3;
+
+  const { notifications } = useAppNotifications();
+  const notificationCount = notifications.filter((n) => !n.read).length;
 
   const { profileImageUrl, loading: isLoadingProfile } = useClientStore();
 
@@ -172,9 +176,11 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
                 <div className="flex items-center space-x-3">
                   <FaBell className="mr-3" size={18} />
                   <span>Notifications</span>
-                  <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    3
-                  </span>
+                  {notificationCount > 0 && (
+                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {notificationCount}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
@@ -213,9 +219,11 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           }}
         >
           <FaBell size={20} />
-          <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-            {notificationCount}
-          </span>
+          {notificationCount > 0 && (
+            <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+              {notificationCount}
+            </span>
+          )}
         </div>
         <div
           onClick={() => {

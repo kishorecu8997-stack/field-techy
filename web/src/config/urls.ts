@@ -84,6 +84,7 @@ export const urls = {
       Client_Job_Details: "jobs-details/in-progress",
       ClientSelectEngineers: "select-engineers",
       chat: "messages",
+      notifications: "notifications",
     },
     auth: {
       login: "login",
@@ -227,6 +228,7 @@ export const absoluteUrls = {
       ClientJobInviteEngineers: `${BASE.CLIENT}/explore-engineers`,
       ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
       chat: `${BASE.CLIENT}/messages`,
+      notifications: `${BASE.CLIENT}/notifications`,
     },
   },
 

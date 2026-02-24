@@ -13,8 +13,12 @@ interface DeviceState {
   locationPermission: PermissionState | "prompt" | "granted" | "denied";
   /** The current status of the notification permission. */
   notificationPermission: NotificationPermission;
+  /** Stable device identifier for the current browser/device. */
+  deviceId: string | null;
   /** Sets the FCM token. */
   setFcmToken: (token: string | null) => void;
+  /** Sets the device identifier. */
+  setDeviceId: (id: string) => void;
   /** Sets the user's location. */
   setLocation: (location: { lat: number; lng: number } | null) => void;
   /** Sets the location permission status. */
@@ -33,10 +37,12 @@ export const useDeviceStore = create<DeviceState>()(
   persist(
     (set) => ({
       fcmToken: null,
+      deviceId: null,
       location: null,
       locationPermission: "prompt",
       notificationPermission: "default",
       setFcmToken: (token) => set({ fcmToken: token }),
+      setDeviceId: (id) => set({ deviceId: id }),
       setLocation: (location) => set({ location }),
       setLocationPermission: (status) => set({ locationPermission: status }),
       setNotificationPermission: (status) =>
@@ -47,3 +53,19 @@ export const useDeviceStore = create<DeviceState>()(
     },
   ),
 );
+
+/**
+ * Ensures a stable device ID exists and returns it.
+ */
+export const getStableDeviceId = (): string => {
+  const store = useDeviceStore.getState();
+  if (store.deviceId) return store.deviceId;
+
+  const newId =
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `web-${Math.random().toString(36).substring(2, 15)}-${Date.now()}`;
+
+  store.setDeviceId(newId);
+  return newId;
+};

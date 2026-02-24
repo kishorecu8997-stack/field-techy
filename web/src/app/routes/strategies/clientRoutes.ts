@@ -13,9 +13,6 @@ import { withSuspense } from "../WithSuspense";
  * Implements RouteStrategy for client-specific routes
  */
 export class ClientRouteStrategy implements RouteStrategy {
-  /**
-   * Get public routes (authentication pages)
-   */
   getPublicRoutes(): RouteObject[] {
     return [
       {
@@ -176,6 +173,10 @@ export class ClientRouteStrategy implements RouteStrategy {
           {
             path: urls.client.home.faq,
             element: withSuspense(Components.ClientFAQ),
+          },
+          {
+            path: urls.client.home.notifications,
+            element: withSuspense(Components.CommonNotificationPage),
           },
         ],
       },
