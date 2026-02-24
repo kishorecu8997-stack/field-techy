@@ -120,7 +120,7 @@ const MyJobsClient: React.FC = () => {
                   </p>
                 )}
               </div>
-              {filteredJobs.length > itemsPerPage && (
+              {totalPages > 1 && (
                 <Pagination
                   totalPages={totalPages}
                   onPageChange={handlePageChange}

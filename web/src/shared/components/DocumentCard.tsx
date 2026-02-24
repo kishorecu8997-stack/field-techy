@@ -158,7 +158,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
     <div className="relative">
       <div className="flex items-center justify-between">
         <h3
-          className="text-sm font-semibold text-gray-800 truncate"
+          className="text-sm font-semibold text-gray-800 truncate dark:text-gray-200"
           title={document.title}
         >
           {document.title}

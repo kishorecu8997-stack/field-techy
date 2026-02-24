@@ -52,12 +52,15 @@ import {
   engineerUpdateSkillsAndToolsMutation,
   engineerUpdateWorkPreferenceMutation,
   getJobLogsOptions,
+  engineerGetProfileCompletionOptions,
+  engineerGetMyDocumentsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
 import { type EngineerData } from "./engineerTypes";
+import { refetchProfileCompletion } from "./engineerProfileBarCompletionHelper";
 
 /**
  * Re-export shared hooks for convenience (avoiding naming conflicts)
@@ -145,6 +148,7 @@ export function useEngineerUpdatePersonalInfo(options?: {
         updateData.address = variables.body.address;
 
       syncProfile(updateData);
+      await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
@@ -175,10 +179,25 @@ export function useEngineerAddEducation(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
             "engineerGetEducation",
       });
+      await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+}
+
+export function useEngineerGetProfileCompletion() {
+  return useQuery({
+    ...engineerGetProfileCompletionOptions({ client: apiClient }),
+    staleTime: 0,
+  });
+}
+
+export function useEngineerGetMyDocuments() {
+  return useQuery({
+    ...engineerGetMyDocumentsOptions({ client: apiClient }),
+    staleTime: 0,
   });
 }
 
@@ -198,6 +217,7 @@ export function useEngineerDeleteEducation(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
             "engineerGetEducation",
       });
+      await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
@@ -221,6 +241,7 @@ export function useEngineerUpdateEducation(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
             "engineerGetEducation",
       });
+      await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
@@ -251,6 +272,7 @@ export function useEngineerAddExperience(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
             "engineerGetExperience",
       });
+      await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
@@ -274,6 +296,7 @@ export function useEngineerDeleteExperience(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
             "engineerGetExperience",
       });
+      await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
@@ -297,6 +320,7 @@ export function useEngineerUpdateExperience(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
             "engineerGetExperience",
       });
+      await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
@@ -327,6 +351,7 @@ export function useEngineerUpdateSkillsAndTools(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
             "engineerGetSkillsAndTools",
       });
+      await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
@@ -357,6 +382,7 @@ export function useEngineerUpdateWorkPreference(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
             "engineerGetWorkPreference",
       });
+      await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
@@ -549,6 +575,19 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
       path: { assignmentId },
     }),
     enabled: enabled && !!assignmentId,
+  });
+}
+
+/**
+ * Fetch engineer's jobs with proposal status
+ * Returns jobs that the engineer has applied to or been assigned to
+ */
+export function useEngineerGetMyJobs(enabled: boolean = true) {
+  return useQuery({
+    ...engineerGetMyJobsOptions({
+      client: apiClient,
+    }),
+    enabled,
   });
 }
 
