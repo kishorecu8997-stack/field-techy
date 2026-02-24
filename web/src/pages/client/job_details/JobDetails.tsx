@@ -3,13 +3,14 @@ import { useParams } from "react-router-dom";
 import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 import JobCardHead from "./components/JobCardHead";
 import JobTabSection from "../my_job_client/components/JobTabSection";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 
 /**
  * Job Details page for client - displays job information with API data
  */
 const JobDetails: React.FC = () => {
   const params = useParams();
-  const [activeTab] = useState("Timeline");
+  const [activeTab] = useState(JOB_TAB_LABELS.timeline);
   const jobId = params.jobId;
 
   // Fetch jobs data from API

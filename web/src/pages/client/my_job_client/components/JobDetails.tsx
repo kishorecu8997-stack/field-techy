@@ -8,6 +8,7 @@ import JobCardDetailsHeader from "./JobCardDetailsHeader";
 import JobTabSection from "./JobTabSection";
 import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 import ChatForJobs from "@/shared/components/ChatForJobs";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 
 /**
  * `JobsDetails` is a page component that displays detailed information about a specific job.
@@ -15,7 +16,7 @@ import ChatForJobs from "@/shared/components/ChatForJobs";
  */
 const JobsDetails: React.FC = () => {
   const params = useParams();
-  const [activeTab] = useState("Timeline");
+  const [activeTab] = useState(JOB_TAB_LABELS.timeline);
   const jobId = params.jobId;
   const [pageHeading, setPageHeading] = useState("Job Details");
   const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
