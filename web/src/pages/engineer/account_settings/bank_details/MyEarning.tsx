@@ -8,6 +8,7 @@ import MonthlyComparison from "./MonthlyComparison";
 import { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { useEngineerBalance } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { formatCurrency } from "@/shared/libs/utils";
 
 /**
  * Displays the user's current balance with quick actions (Bank Details, Withdraw) and a transaction history dashboard.
@@ -34,15 +35,10 @@ const MyEarning = () => {
                     const currency = balance?.currencyCode ?? "USD";
 
                     if (isNaN(amount)) {
-                      return "00.00";
+                      return "$0.00";
                     }
 
-                    return amount.toLocaleString("en-US", {
-                      style: "currency",
-                      currency,
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    });
+                    return formatCurrency(amount, currency);
                   })()
                 : "******"}
             </span>

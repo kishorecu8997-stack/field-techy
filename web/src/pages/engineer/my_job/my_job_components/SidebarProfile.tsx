@@ -12,6 +12,7 @@ import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import { useEngineerBalance } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { useEngineerGetProfileCompletion } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { formatCurrency } from "@/shared/libs/utils";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -148,15 +149,10 @@ const EarningsCard = () => {
                     const currency = balance?.currencyCode ?? "USD";
 
                     if (isNaN(amount)) {
-                      return "00.00";
+                      return "$0.00";
                     }
 
-                    return amount.toLocaleString("en-US", {
-                      style: "currency",
-                      currency,
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    });
+                    return formatCurrency(amount, currency);
                   })()
                 : "******"}
             </span>

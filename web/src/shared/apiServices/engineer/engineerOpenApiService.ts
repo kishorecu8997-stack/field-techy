@@ -587,7 +587,7 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
 
 export function useEngineerBalance(enabled: boolean = true) {
   return useQuery<GetEngineerBalanceResponse, GetEngineerBalanceError>({
-    queryKey: [...queryKeys.client.all, "balance"],
+    queryKey: [...queryKeys.engineer.all, "balance"],
     queryFn: async () => {
       const response = await getEngineerBalance({ client: apiClient });
       if (response.data) {
@@ -596,7 +596,7 @@ export function useEngineerBalance(enabled: boolean = true) {
       throw response.error ?? { error: "Unknown error" };
     },
     enabled,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 1000,
     refetchOnWindowFocus: false,
   });
 }
@@ -605,7 +605,7 @@ export function useEngineerTransactions(
   enabled = true,
 ) {
   return useQuery<GetEngineerTransactionsResponse, GetEngineerTransactionsError>({
-    queryKey: [...queryKeys.client.all, "transactions", params],
+    queryKey: [...queryKeys.engineer.all, "transactions", params],
     queryFn: async () => {
       const res = await getEngineerTransactions({
         client: apiClient,
@@ -615,7 +615,7 @@ export function useEngineerTransactions(
       throw res.error ?? { error: "Unknown error" };
     },
     enabled,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 }
