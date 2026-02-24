@@ -14,6 +14,30 @@ import VideoCallGroup from "./VideoCallGroup";
 import CallLogsPopup from "./CallLogsPopup";
 import { HiPhoneArrowUpRight } from "react-icons/hi2";
 
+/**
+ * ChatForJobs Component
+ *
+ * A chat interface for a specific job, supporting:
+ * - Searching and selecting chats (individual or group)
+ * - Sending text messages
+ * - Sending attachments (photos, videos, documents)
+ * - 1-on-1 voice and video calls
+ * - Group video calls
+ * - Incoming and outgoing call popups (mocked via WebSocket)
+ * - Call logs popup
+ *
+ * Props:
+ * - jobId: The ID of the job for which chats are displayed
+ * - currentUser: The name/ID of the current user
+ *
+ * Features:
+ * - Maintains local state for selected chat, messages, input, search, and popups
+ * - Filters chats based on search input
+ * - Handles click-outside for attachment menu
+ * - Formats timestamps for messages
+ * - Integrates with a mock WebSocket for incoming call simulation
+ */
+
 type IncomingCall = {
   id: string;
   callerName?: string;
