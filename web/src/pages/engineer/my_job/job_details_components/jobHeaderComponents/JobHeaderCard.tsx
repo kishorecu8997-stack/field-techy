@@ -8,13 +8,11 @@ import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
 import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
-import { IoEllipsisVerticalOutline } from "react-icons/io5";
+import { IoChatbubble, IoEllipsisVerticalOutline } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
-import { IoChatbubble } from "react-icons/io5";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -51,8 +49,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onToggleChat,
 }) => {
   const params = useParams();
-  const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
-
   const location = useLocation();
   const isClient = location.pathname.includes("client");
   const [isMenuOpen, setIsMenuOpen] = useState(false);

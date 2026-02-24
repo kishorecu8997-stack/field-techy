@@ -1,6 +1,7 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { createPathBuilder } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
@@ -30,7 +31,7 @@ const ClientActions = ({
   };
 
   // Show "View Feedback From Engineers" button only on Timeline tab when all cards are approved
-  const showFeedbackButton = activeTab === "Timeline" && allCardsApproved;
+  const showFeedbackButton = activeTab === JOB_TAB_LABELS.timeline && allCardsApproved;
 
   return (
     <>
