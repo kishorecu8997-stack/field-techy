@@ -45,6 +45,7 @@ import {
   clientUpdateCompanyInfoMutation,
   getJobLogsOptions,
   clientGetMyDocumentsOptions,
+  clientGetDashboardOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
@@ -431,5 +432,14 @@ export function useClientTransactions(
     enabled,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useClientJobOverviewDashboard(enabled: boolean = true) {
+  return useQuery({
+    ...clientGetDashboardOptions({
+      client: apiClient,
+    }),
+    enabled: enabled,
   });
 }
