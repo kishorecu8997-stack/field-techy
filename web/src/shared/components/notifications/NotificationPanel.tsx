@@ -3,6 +3,7 @@ import type { NotificationPanelProps } from "@/shared/types/notification";
 import NotificationItem from "./NotificationItem";
 import useNotificationGate from "@/shared/store/useNotificationGate";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { Button } from "../commonUI/Buttons";
 
 /**
  * Displays notifications grouped by date (e.g., Today, Yesterday).
@@ -37,12 +38,13 @@ const NotificationPanel = ({
     <div className="max-w-md w-full max-h-full overflow-y-auto relative">
       <div className="flex justify-end gap-4 mb-2 pr-2 sticky top-0 bg-white dark:bg-gray-800 z-10 py-1">
         {onMarkAllAsRead && hasUnread && (
-          <button
+          <Button
+            variant="no_style"
             onClick={onMarkAllAsRead}
             className="text-xs font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors cursor-pointer"
           >
             Mark all as read
-          </button>
+          </Button>
         )}
         {viewAllLink && (
           <NavLink to={viewAllLink}>

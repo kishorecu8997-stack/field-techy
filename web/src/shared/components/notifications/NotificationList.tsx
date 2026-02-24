@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { RiCloseLine, RiDeleteBin6Line } from "react-icons/ri";
+import LoaderComponent from "../commonUI/LoaderComponent";
 
 /**
  * Renders a notification center with categorized views (All, Jobs, Wallet, Unread).
@@ -221,12 +222,13 @@ const NotificationList: React.FC = () => {
                 {/* Row 2: Mark all as read + Search — stacks on small, side-by-side on sm+ */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
                     {hasUnread && (
-                        <button
+                        <Button
+                            variant="no_style"
                             onClick={async () => await markAllAsReadAsync({})}
                             className="text-sm font-semibold text-teal-800 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300 transition-colors cursor-pointer whitespace-nowrap self-end sm:self-auto"
                         >
                             Mark all as read
-                        </button>
+                        </Button>
                     )}
                     <div className="flex flex-row items-center border border-gray-400 rounded-sm py-1 px-4 w-full sm:w-64">
                         <CiSearch className="text-2xl text-gray-500 shrink-0" />
@@ -242,7 +244,7 @@ const NotificationList: React.FC = () => {
 
                 <div className="flex flex-col gap-y-6">
                     {isLoading && (
-                        <div className="text-center p-4">Loading notifications...</div>
+                        <LoaderComponent />
                     )}
                     {!isLoading && totalCount === 0 && (
                         <div className="text-center p-4 text-gray-500">
