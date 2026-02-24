@@ -27,6 +27,8 @@ import {
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
   type AdminDeleteServiceCategoryResponse,
+  type AdminUpdateJobStatusData,
+  type AdminUpdateJobStatusResponses,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -45,6 +47,7 @@ import {
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
+  adminUpdateJobStatusMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -331,6 +334,33 @@ export function useAdminEngineersByUserIdStatus(options?: {
     ...adminUpdateUserStatusMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["adminManageEngineers"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminUpdateJobStatusBody = NonNullable<
+  AdminUpdateJobStatusData["body"]
+>;
+
+export type AdminUpdateJobStatusSuccess = AdminUpdateJobStatusResponses[200];
+
+export function useAdminUpdateJobStatus(options?: {
+  onSuccess?: (data: AdminUpdateJobStatusSuccess) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateJobStatusMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "adminGetJobs",
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
