@@ -7,7 +7,7 @@ type ViewClientFeedbackModalProps = {
   onClose: () => void;
   clientName: string;
   clientImage?: string;
-  rating?: number;
+  rating?: number | string;
   review?: string;
 };
 
@@ -60,7 +60,7 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
               aria-label={`Rated ${rating || 0} out of 5 stars`}
             >
               {(() => {
-                const safeRating = Math.max(0, Math.min(5, Math.round(rating || 0)));
+                const safeRating = Math.max(0, Math.min(5, Math.round(Number(rating) || 0)));
                 return Array.from({ length: 5 }).map((_, i) => (
                   <FaStar
                     key={i}
