@@ -27,7 +27,7 @@ const BlockedClientList: React.FC = () => {
   const [limit, setLimit] = useState(10);
 
   const { data: manageClient, refetch: refetchClients, isLoading } = useAdminManageClients({
-    query: { page, limit, search: search || undefined },
+    query: { page, limit, status: 'blocked', search: search || undefined },
   });
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
@@ -65,11 +65,7 @@ const BlockedClientList: React.FC = () => {
     });
   };
 
-  // Filter blocked clients from the list 
-  // (In a real scenario, this should ideally be handled by the API)
-  const clientData = (manageClient?.data || []) as unknown as ManageClientProps[];
-  const blockedClients = clientData.filter(c => c.userStatus === 'blocked');
-  console.log("blockedClients", blockedClients)
+  const blockedClients = (manageClient?.data || []) as ManageClientProps[];
 
   const columns: Column<ManageClientProps>[] = [
     {
@@ -177,7 +173,7 @@ const BlockedClientList: React.FC = () => {
           columns={columns}
           data={blockedClients}
           initialPageSize={limit}
-          totalCount={blockedClients.length}
+          totalCount={manageClient?.total || 0}
           currentPage={page}
           onPageChange={setPage}
           onPageSizeChange={setLimit}

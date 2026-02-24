@@ -1,9 +1,7 @@
 import React from "react";
 import { useAdminGetClientHistory } from "@/shared/apiServices/admin/adminOpenApiService";
-import { bankCardData } from "@/dummy_data/ClientViewData";
 import dayjs from "dayjs";
 import { CustomTable, type Column } from "@/shared/components/commonUI/custom_table";
-import BankCardDetail from "./BankCardDetail";
 
 interface WalletTabProps {
   userId: number;
@@ -71,12 +69,6 @@ const WalletTab: React.FC<WalletTabProps> = ({ userId, walletBalance }) => {
 
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md">
-      <div className="mb-2 flex justify-between items-center gap-2">
-        <BankCardDetail 
-          {...bankCardData} 
-          walletBalance={walletBalance !== undefined ? `₹${walletBalance}` : bankCardData.walletBalance} 
-        />
-      </div>
       <div className="h-full flex-1 overflow-y-auto p-3">
         <CustomTable<WalletTransaction>
           columns={columns}
