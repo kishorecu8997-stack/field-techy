@@ -8,12 +8,15 @@ import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
 import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
-import { IoEllipsisVerticalOutline } from "react-icons/io5";
+import { IoChatbubble, IoEllipsisVerticalOutline } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import { IoChatbubble } from "react-icons/io5";
+import ReportPage from "@/pages/client/report";
+import { IoIosWarning } from "react-icons/io";
+import { absoluteUrls } from "@/config/urls";
+
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -32,7 +35,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   isSendProposal,
   setActiveTab,
   OfferJobStatus,
-  setOfferJobStatus,
   hideBreakDetails = false,
   jobLocation,
   numberOfVacancy,
@@ -41,15 +43,21 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   activeTab,
   onAddProgressUpdate,
   onOpenFinalStatement,
+  isFinalStatementSubmitted,
+  onOpenGiveClientFeedback,
+  onOpenViewClientFeedback,
+  allCardsApproved,
+  setOfferJobStatus,
   assignmentId,
   jobId,
   onToggleChat,
 }) => {
+  const params = useParams();
   const location = useLocation();
   const isClient = location.pathname.includes("client");
-  const params = useParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const { closePopup, showPopup } = usePopupStore();
@@ -132,6 +140,26 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
           </div>
           <div className="flex gap-2 items-center">
+            <div
+              onClick={() =>
+                isClient
+                  ? navigate(
+                      `${absoluteUrls.client.home.my_jobs}/${params.jobId}/report_updates`,
+                    )
+                  : navigate(
+                      `${absoluteUrls.engineer.home.my_jobs}/${params.jobId}/report_updates`,
+                    )
+              }
+              className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
+            >
+              <span>Report Updates</span>
+              <div className="relative">
+                <IoIosWarning size={20} />
+                <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
+              </div>
+            </div>
+
+            {/* Break Details button - visible unless hideBreakDetails is true */}
             {onToggleChat && jobId && (
               <button
                 className="bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors"
@@ -171,18 +199,25 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-20 text-gray-800 dark:text-white">
                     <ul className="py-1">
-                      {["Hold the job", "Cancel the job", "Clone the job"].map(
-                        (item) => (
-                          <li key={item}>
-                            <div
-                              onClick={() => handleMenuAction(item)}
-                              className="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                            >
-                              {item}
-                            </div>
-                          </li>
-                        ),
-                      )}
+                      {[
+                        "Hold the job",
+                        "Cancel the job",
+                        "Clone the job",
+                        "Report Issue",
+                      ].map((item) => (
+                        <li key={item}>
+                          <div
+                            onClick={() =>
+                              item === "Report Issue"
+                                ? setIsReportOpen(true)
+                                : handleMenuAction(item)
+                            }
+                            className="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                          >
+                            {item}
+                          </div>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 )}
@@ -202,7 +237,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         )}
         {/* Client or Engineer actions */}
         {isClient ? (
-          <ClientActions />
+          <ClientActions
+            activeTab={activeTab}
+            allCardsApproved={allCardsApproved}
+          />
         ) : (
           <EngineersActions
             OfferJobStatus={OfferJobStatus}
@@ -211,11 +249,15 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             setIsWorkSubmitted={setIsWorkSubmitted}
             setOfferJobStatus={setOfferJobStatus}
             setOpen={setOpen}
+            setIsReportOpen={setIsReportOpen}
             status={status}
             setSendProposal={setSendProposal}
             activeTab={activeTab}
             onAddProgressUpdate={onAddProgressUpdate}
             onOpenFinalStatement={onOpenFinalStatement}
+            isFinalStatementSubmitted={isFinalStatementSubmitted}
+            onOpenGiveClientFeedback={onOpenGiveClientFeedback}
+            onOpenViewClientFeedback={onOpenViewClientFeedback}
             assignmentId={assignmentId}
           />
         )}
@@ -235,6 +277,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           onClose={() => setIsConfirmOpen(false)}
         />
       </Popup>
+      <ReportPage open={isReportOpen} onClose={() => setIsReportOpen(false)} />
     </>
   );
 };

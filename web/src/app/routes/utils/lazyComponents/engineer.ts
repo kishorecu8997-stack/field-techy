@@ -55,6 +55,10 @@ export const EngineerBreakDetails = React.lazy(
   () =>
     import("@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakDetails"),
 );
+export const EngineerReportIssue = React.lazy(
+  () =>
+    import("@/pages/engineer/my_job/job_details_components/jobHeaderComponents/ReportDetails"),
+);
 export const EngineerOfferPages = React.lazy(
   () => import("@/pages/engineer/my_job/job_details_components/OfferPages"),
 );

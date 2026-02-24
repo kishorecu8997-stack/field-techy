@@ -121,15 +121,20 @@ export const FileUpload = ({
 
   // ✅ Load existing form value if present
   useEffect(() => {
-    const existingFiles = getValues(name) as FileList | undefined;
-    if (existingFiles && existingFiles.length > 0) {
-      const file = existingFiles[0];
+    const value = getValues(name);
+    if (!value) return;
+
+    if (value instanceof FileList && value.length > 0) {
+      const file = value[0];
       setFileName(file.name);
       setFileSize(formatFileSize(file.size));
       if (file.type === "application/pdf" && validatePDF) {
         validatePdfPages(file).then(({ pages }) => setPageCount(pages));
       }
       setFileUrl(URL.createObjectURL(file));
+    } else if (typeof value === "string") {
+      setFileName(value.split("/").pop() || "Document");
+      setFileUrl(value);
     }
   }, [getValues, name, validatePDF, validatePdfPages]);
 

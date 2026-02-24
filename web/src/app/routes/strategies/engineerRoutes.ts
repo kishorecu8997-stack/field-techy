@@ -118,6 +118,10 @@ export class EngineerRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.EngineerBreakDetails),
           },
           {
+            path: `${urls.engineer.home.my_jobs}/:jobId/report_updates`,
+            element: withSuspense(Components.EngineerReportIssue),
+          },
+          {
             path: `${urls.engineer.home.my_jobs}/:jobId`,
             element: withSuspense(Components.EngineerOfferPages),
           },
@@ -125,10 +129,11 @@ export class EngineerRouteStrategy implements RouteStrategy {
             path: urls.engineer.home.search_result,
             element: withSuspense(Components.EngineerSearchResult),
           },
-          {
-            path: urls.engineer.home.search_analytics,
-            element: withSuspense(Components.EngineerSearchAnalyticsPage),
-          },
+          //Planned to remove search analytics feature.
+          // {
+          //   path: urls.engineer.home.search_analytics,
+          //   element: withSuspense(Components.EngineerSearchAnalyticsPage),
+          // },
           {
             path: urls.engineer.home.terms_and_conditions,
             element: withSuspense(Components.EngineerTermsAndConditions),

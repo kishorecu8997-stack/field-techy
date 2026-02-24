@@ -1,5 +1,4 @@
 import { absoluteUrls } from "@/config/urls";
-import { earningsData, userData } from "@/dummy_data/jobDetails";
 import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 import { useFCM } from "@/shared/hooks/useFCM";
@@ -159,7 +158,7 @@ const Home = () => {
           {/* Sidebar - takes 1 column on large screens */}
           <div className="lg:col-span-1">
             <div className="sticky top-6">
-              <SidebarProfile user={userData} earnings={earningsData} />
+              <SidebarProfile />
             </div>
           </div>
 

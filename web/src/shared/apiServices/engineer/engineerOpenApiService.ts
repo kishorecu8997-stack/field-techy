@@ -1,4 +1,6 @@
 import {
+  getEngineerBalance,
+  getEngineerTransactions,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
   type AppLoginResponse,
@@ -21,6 +23,11 @@ import {
   type EngineerUpdatePersonalInfoResponse,
   type EngineerUpdateSkillsAndToolsResponse,
   type EngineerUpdateWorkPreferenceResponse,
+  type GetEngineerBalanceError,
+  type GetEngineerBalanceResponse,
+  type GetEngineerTransactionsData,
+  type GetEngineerTransactionsError,
+  type GetEngineerTransactionsResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -575,6 +582,45 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
       path: { assignmentId },
     }),
     enabled: enabled && !!assignmentId,
+  });
+}
+
+export function useEngineerBalance(enabled: boolean = true) {
+  return useQuery<GetEngineerBalanceResponse, GetEngineerBalanceError>({
+    queryKey: [...queryKeys.engineer.all, "balance"],
+    queryFn: async () => {
+      const response = await getEngineerBalance({ client: apiClient });
+      if (response.data) {
+        return response.data;
+      }
+      throw response.error ?? { error: "Unknown error" };
+    },
+    enabled,
+    staleTime: 30 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+export function useEngineerTransactions(
+  params: GetEngineerTransactionsData["query"] = {},
+  enabled = true,
+) {
+  const paramsKey = params ? JSON.stringify(params) : "";
+  return useQuery<
+    GetEngineerTransactionsResponse,
+    GetEngineerTransactionsError
+  >({
+    queryKey: [...queryKeys.engineer.all, "transactions", paramsKey],
+    queryFn: async () => {
+      const res = await getEngineerTransactions({
+        client: apiClient,
+        query: params,
+      });
+      if (res.data) return res.data;
+      throw res.error ?? { error: "Unknown error" };
+    },
+    enabled,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 }
 

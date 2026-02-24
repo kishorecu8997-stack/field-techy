@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { useClientGetAssignmentDetails } from "@/shared/apiServices/client/clientOpenApiService";
 import TabComponent from "@/shared/components/TabComponent";
-import JobInfoSection from "./tab_components/JobInfoSection";
-import LocationMap from "./tab_components/LocationMap";
-import TimelineSection from "./tab_components/TimelineSection";
-import ManageProposalsTab from "./tab_components/ManageProposalsTab";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { useEffect, useState } from "react";
 import type {
-  JobTabSectionProps,
   JobInfoSectionProps,
+  JobTabSectionProps,
   paymentTermsProps,
 } from "../types";
-import { useClientGetAssignmentDetails } from "@/shared/apiServices/client/clientOpenApiService";
+import JobInfoSection from "./tab_components/JobInfoSection";
+import LocationMap from "./tab_components/LocationMap";
+import ManageProposalsTab from "./tab_components/ManageProposalsTab";
+import TimelineSection from "./tab_components/timeline_section/TimelineSection";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -143,19 +143,17 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   job,
   assignmentId,
   showManageProposals,
+  jobID,
 }) => {
   const [selectedTab, setSelectedTab] = useState<string>(
     activeTab || JOB_TAB_LABELS.timeline,
   );
 
-  // Get jobId from job prop
-  const jobId = job?.id ? Number(job.id) : undefined;
-
   // Fetch assignments/proposals for this job when showManageProposals is true
   const { data: assignmentsData, isLoading: isLoadingAssignments } =
     useClientGetAssignmentDetails(
-      { jobId: jobId },
-      !!(showManageProposals && jobId),
+      { jobId: Number(jobID) },
+      !!(showManageProposals && jobID),
     );
 
   useEffect(() => {
@@ -175,7 +173,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       content: (
         <TimelineSection
           assignmentId={assignmentId}
-          jobId={jobId}
+          jobId={Number(jobID)}
           hasProposals={!!assignmentsData?.length}
         />
       ),
@@ -197,7 +195,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
               <ManageProposalsTab
                 assignments={assignmentsData}
                 isLoading={isLoadingAssignments}
-                jobId={jobId}
+                jobId={Number(jobID)}
               />
             ),
           },

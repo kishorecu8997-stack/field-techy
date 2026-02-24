@@ -166,7 +166,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
 
       <div className="fixed inset-y-0 right-0 z-50 w-[90%] md:w-[30rem] bg-white shadow-xl dark:bg-gray-800">
         <div className="flex h-screen flex-col">
-          <div className="shrink-0 py-5 px-6">
+          <div className="shrink-0 pt-4 pb-1 px-6">
             <DrawerHeader
               title={config.title}
               onClose={onClose}

@@ -14,6 +14,7 @@ import type { JobStatus } from "../my_job_client/types.d";
 import type { AssignmentStatus } from "../search_result/types";
 import type { OfferedJobStatusType } from "../../engineer/my_job/types.d";
 import ChatForJobs from "@/shared/components/ChatForJobs";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -26,7 +27,7 @@ const ClientJobDetails = () => {
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
-  const [activeTab, setActiveTab] = useState("Timeline");
+  const [activeTab, setActiveTab] = useState(JOB_TAB_LABELS.timeline);
   const [OfferJobStatus, setOfferJobStatus] = useState<
     OfferedJobStatusType | AssignmentStatus | undefined
   >(undefined);
@@ -78,6 +79,7 @@ const ClientJobDetails = () => {
           <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
             <MyJobsHeader
               title="Job Details"
+              isReport={false}
               isShowBreadcrumb
               customLabels={{
                 [params.jobId || ""]: "Loading...",
@@ -102,6 +104,7 @@ const ClientJobDetails = () => {
           <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
             <MyJobsHeader
               title="Job Details"
+              isReport={false}
               isShowBreadcrumb
               customLabels={{
                 [params.jobId || ""]: "Job not found",
@@ -168,6 +171,7 @@ const ClientJobDetails = () => {
         <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
             title={pageHeading}
+            isReport={false}
             isShowBreadcrumb
             customLabels={{
               [params.jobId || ""]: job.jobTitle || "Job",
