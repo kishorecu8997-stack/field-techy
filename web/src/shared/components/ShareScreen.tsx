@@ -99,18 +99,11 @@ const ShareScreen: React.FC<ShareScreenProps> = ({
 
         {/* Bottom Buttons */}
         <div className="px-6 pb-6 flex justify-end gap-4">
-          <Button
-            onClick={onCancel}
-            variant="cancel"
-          >
+          <Button onClick={onCancel} variant="cancel">
             Cancel
           </Button>
 
-          <Button
-            onClick={onShare}
-            disabled={!selectedWindow}
-            variant="accept"
-          >
+          <Button onClick={onShare} disabled={!selectedWindow} variant="accept">
             Share
           </Button>
         </div>

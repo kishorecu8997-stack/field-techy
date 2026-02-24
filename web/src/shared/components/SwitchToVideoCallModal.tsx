@@ -38,16 +38,10 @@ const SwitchToVideoCallModal: React.FC<SwitchToVideoCallModalProps> = ({
 
         {/* Bottom section - buttons */}
         <div className="flex items-center justify-end gap-3">
-          <Button
-            onClick={onCancel}
-            variant="cancel"
-          >
+          <Button onClick={onCancel} variant="cancel">
             Cancel
           </Button>
-          <Button
-            onClick={onConfirm}
-            variant="accept"
-          >
+          <Button onClick={onConfirm} variant="accept">
             Switch
           </Button>
         </div>

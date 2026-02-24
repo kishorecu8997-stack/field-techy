@@ -111,20 +111,19 @@ export const Button: React.FC<ButtonProps> = ({
       "flex items-center gap-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer",
     sendButtonChat:
       "rounded-full bg-teal-700 text-white hover:bg-teal-600 cursor-pointer",
-      chats:
+    chats:
       "bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors",
-      close:
-      "p-1 text-gray-500 hover:text-gray-700 transition-colors",
-      callLogs:
+    close: "p-1 text-gray-500 hover:text-gray-700 transition-colors",
+    callLogs:
       "py-2 px-2.5 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center",
-      rejectCall:
+    rejectCall:
       "bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg shadow-sm flex items-center gap-2",
-      acceptCall:
+    acceptCall:
       "bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-lg shadow-sm flex items-center gap-2",
-      cancel:
+    cancel:
       "px-4 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors font-medium",
-      accept:
-      "px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium"
+    accept:
+      "px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium",
   };
 
   const sizeStyles: Record<string, string> = {
@@ -147,7 +146,16 @@ export const Button: React.FC<ButtonProps> = ({
       className={cn(
         baseStyles,
         variantStyles[variant],
-        variant !== "dropdown" && !["callLogs", "rejectCall", "acceptCall", "cancel", "accept", "close"].includes(variant) && sizeStyles[size],
+        variant !== "dropdown" &&
+          ![
+            "callLogs",
+            "rejectCall",
+            "acceptCall",
+            "cancel",
+            "accept",
+            "close",
+          ].includes(variant) &&
+          sizeStyles[size],
         fullWidth && "w-full",
         className,
       )}

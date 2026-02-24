@@ -44,7 +44,7 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
   const [showShareScreen, setShowShareScreen] = useState(false);
   const [showShareScreenWindow, setShowShareScreenWindow] = useState(false);
 
-  const [showVideoCall, setShowVideoCall] = useState(false); 
+  const [showVideoCall, setShowVideoCall] = useState(false);
 
   useEffect(() => {
     if (!isVisible) return;
@@ -241,7 +241,7 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
           setShowShareScreenWindow(false);
         }}
         onEndCall={() => {
-          setIsScreenShareOn(false); 
+          setIsScreenShareOn(false);
           setShowShareScreenWindow(false);
           (onEndCall || onClose)?.();
         }}

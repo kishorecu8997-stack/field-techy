@@ -109,11 +109,7 @@ const CallLogsPopup: React.FC<CallLogsPopupProps> = ({
           {/* Header */}
           <div className="modal-header flex items-center justify-between p-4 border-b border-gray-200 cursor-move">
             <h2 className="text-lg font-bold text-gray-800">Call Logs</h2>
-            <Button
-              onClick={onClose}
-              variant="close"
-              aria-label="Close"
-            >
+            <Button onClick={onClose} variant="close" aria-label="Close">
               <FiX size={20} />
             </Button>
           </div>
@@ -140,7 +136,9 @@ const CallLogsPopup: React.FC<CallLogsPopupProps> = ({
                   <div className="ml-3 flex-1 min-w-0">
                     <div
                       className={`font-semibold text-sm truncate ${
-                        log.callType === "missed" ? "text-red-600" : "text-black"
+                        log.callType === "missed"
+                          ? "text-red-600"
+                          : "text-black"
                       }`}
                     >
                       {log.name}

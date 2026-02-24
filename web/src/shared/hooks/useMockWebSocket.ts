@@ -23,12 +23,15 @@ const send = (event: string, payload?: any) => {
 };
 
 const simulateIncomingCall = (payload?: any) => {
-  send("incoming_call", payload ?? {
-    id: `mock-${Date.now()}`,
-    callerName: "Kraft And Co (Client)",
-    callType: "Voice Call",
-    metadata: {},
-  });
+  send(
+    "incoming_call",
+    payload ?? {
+      id: `mock-${Date.now()}`,
+      callerName: "Kraft And Co (Client)",
+      callType: "Voice Call",
+      metadata: {},
+    },
+  );
 };
 
 export const useMockWebSocket = () => {

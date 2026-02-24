@@ -57,7 +57,7 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
       { id: "john", name: "John", micOn: false, videoOn: false },
       { id: "kraft", name: "Kraft And Co", micOn: true, videoOn: false },
     ],
-    []
+    [],
   );
 
   const roster =
