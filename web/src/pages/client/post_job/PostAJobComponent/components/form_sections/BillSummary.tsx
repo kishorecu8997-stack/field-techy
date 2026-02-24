@@ -1,6 +1,4 @@
-import {
-  useLookupData
-} from "@/shared/apiServices/client/clientOpenApiService";
+import { useLookupData } from "@/shared/apiServices/client/clientOpenApiService";
 import usePostAJobStore from "@/shared/store/postAJobStore";
 import { useMemo } from "react";
 import { type PostAJobFieldsProps } from "../../../types";
@@ -58,7 +56,6 @@ export const BillSummary = ({
       })) || [],
     [engagementModelsData],
   );
-
 
   const getLabel = (opts: { value: string; label: string }[], v?: string) =>
     opts.find((o) => o.value === v)?.label || "-";
@@ -159,7 +156,10 @@ export const BillSummary = ({
       <hr className="border-gray-200 dark:border-gray-600" />
       <div className="flex items-center justify-between text-lg font-semibold text-gray-900 dark:text-gray-100 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 rounded px-3 py-2">
         <span>Total Bill</span>
-        <span>{totalBill.toLocaleString("en-IN")}{currencySymbol}</span>
+        <span>
+          {totalBill.toLocaleString("en-IN")}
+          {currencySymbol}
+        </span>
       </div>
 
       <label className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">

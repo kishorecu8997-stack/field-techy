@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import { fcmService } from "@/shared/config/firebaseConfig";
 import { useTokenStore } from "@/shared/store";
 import { useDeviceStore } from "@/shared/store/useDeviceStore";
-import { registerDeviceToken, NOTIFICATIONS_QUERY_ID } from "@/shared/apiServices/notifications/notificationOpenApiService";
+import {
+  registerDeviceToken,
+  NOTIFICATIONS_QUERY_ID,
+} from "@/shared/apiServices/notifications/notificationOpenApiService";
 import type { FCMMessage } from "@/shared/store/types";
 import { useQueryClient } from "@tanstack/react-query";
 import type { AppGetNotificationsResponse } from "@/api/types.gen";
@@ -37,7 +40,8 @@ export const FCMHandler = () => {
               queryClient.setQueryData(
                 [{ _id: NOTIFICATIONS_QUERY_ID }], // Match the query key structure
                 (oldData: { data: CachedNotification[] } | undefined) => {
-                  if (!oldData) return { data: [newNotification as CachedNotification] };
+                  if (!oldData)
+                    return { data: [newNotification as CachedNotification] };
 
                   // Check if notification with same ID already exists
                   const exists = oldData.data?.some(
@@ -59,8 +63,8 @@ export const FCMHandler = () => {
               /**
                * We use a predicate to match the query key because the generated SDK uses
                * an object containing an `_id` field as the first element of the query key array.
-               * This approach is more robust than matching by a fixed array, as it targets 
-               * all queries for this endpoint regardless of any additional parameters 
+               * This approach is more robust than matching by a fixed array, as it targets
+               * all queries for this endpoint regardless of any additional parameters
                * (like filter options or search queries) that might be present in the query key.
                */
               predicate: (query) => {

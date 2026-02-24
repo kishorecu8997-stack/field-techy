@@ -98,10 +98,11 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       onClick={() => {
         onMarkAsRead?.(id);
       }}
-      className={`relative flex flex-col p-4 mb-4 rounded-lg border transition-colors cursor-pointer duration-200 ${!notification.read
+      className={`relative flex flex-col p-4 mb-4 rounded-lg border transition-colors cursor-pointer duration-200 ${
+        !notification.read
           ? "bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800"
           : "bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700"
-        }`}
+      }`}
     >
       {onDismiss && (
         <IoMdClose

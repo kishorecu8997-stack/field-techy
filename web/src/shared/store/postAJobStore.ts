@@ -42,8 +42,7 @@ const usePostAJobStore = create<PostAJobStoreStore>()(
       setRateAndCurrency: (rate: string, currencyId: number) =>
         set({ rate, currencyId }),
       clearRateAndCurrency: () => set({ rate: "", currencyId: 0 }),
-      setCurrencySymbol: (currencySymbol: string) =>
-        set({ currencySymbol }),
+      setCurrencySymbol: (currencySymbol: string) => set({ currencySymbol }),
     }),
     {
       name: "post-a-job-store",

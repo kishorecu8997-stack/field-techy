@@ -41,8 +41,14 @@ import JobPostDropdown from "./JobPostDropdown";
 const PostJobPage = () => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
-  const { currentLocation, rate, currencyId, setRateAndCurrency, setAmount, setCurrencySymbol } =
-    usePostAJobStore();
+  const {
+    currentLocation,
+    rate,
+    currencyId,
+    setRateAndCurrency,
+    setAmount,
+    setCurrencySymbol,
+  } = usePostAJobStore();
   const { refetch: refetchJobs } = useClientGetJobs();
   const billConsentRef = useRef(false);
   const isDisable = false;
@@ -66,13 +72,15 @@ const PostJobPage = () => {
       tools: [],
       safetyWears: [],
       task: "",
-      description: "Before calling client.postMessage, check if client and client.postMessage exist to avoid runtime errors. If no clients are found, log a warning for easier debugging. Consider returning a boolean or throwing an error if messaging fails, so the caller can handle it.",
+      description:
+        "Before calling client.postMessage, check if client and client.postMessage exist to avoid runtime errors. If no clients are found, log a warning for easier debugging. Consider returning a boolean or throwing an error if messaging fails, so the caller can handle it.",
       backFills: backFillsType.required,
       budget: "",
       primaryLanguage: "",
       secondaryLanguage: "",
       attachment: null,
-      otherInfo: "Before calling client.postMessage, check if client and client.postMessage exist to avoid runtime errors. If no clients are found, log a warning for easier debugging. Consider returning a boolean or throwing an error if messaging fails, so the caller can handle it.",
+      otherInfo:
+        "Before calling client.postMessage, check if client and client.postMessage exist to avoid runtime errors. If no clients are found, log a warning for easier debugging. Consider returning a boolean or throwing an error if messaging fails, so the caller can handle it.",
       startDate: new Date(),
       startTime: "",
       endDate: new Date(),

@@ -11,9 +11,11 @@ dayjs.extend(relativeTime);
 
 export type ApiNotification = AppGetNotificationsResponse["data"][number];
 
-export const mapApiNotification = (notif: ApiNotification): NotificationProps => ({
+export const mapApiNotification = (
+  notif: ApiNotification,
+): NotificationProps => ({
   id: notif.id,
-  type: "info",  // Fallback to info, can be refined if API provides more specific types
+  type: "info", // Fallback to info, can be refined if API provides more specific types
   title: notif.title,
   message: notif.body,
   timestamp: dayjs(notif.createdAt).fromNow(),
