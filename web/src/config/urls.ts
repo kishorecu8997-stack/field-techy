@@ -148,8 +148,8 @@ export const urls = {
       add_rate_card: "rate-card/add",
       manage_jobs_view: "jobs/view",
       jobOffer: "job-offer",
-      manage_currency_conversion: "conversion",
-      edit_exchange_rate: "conversion/edit"
+      manage_currency_conversion: "exchange-rates",
+      edit_exchange_rate: "exchange-rates/edit"
     },
   },
   ft_landing: { landing: "/landing" },
@@ -254,8 +254,8 @@ export const absoluteUrls = {
       manage_rate_card: `${BASE.ADMIN}/rate-card`,
       manage_payment: `${BASE.ADMIN}/revenue`,
       manage_transactions: `${BASE.ADMIN}/transaction`,
-      manage_currency_conversion: `${BASE.ADMIN}/conversion`,
-      edit_exchange_rate: `${BASE.ADMIN}/conversion/edit`,
+      manage_currency_conversion: `${BASE.ADMIN}/exchange-rates`,
+      edit_exchange_rate: `${BASE.ADMIN}/exchange-rates/edit`,
       wallet_overview: `${BASE.ADMIN}/wallet-overview`,
       wallet_overview_view: `${BASE.ADMIN}/wallet-overview/view`,
       wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,

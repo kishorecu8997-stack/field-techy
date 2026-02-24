@@ -1,12 +1,4 @@
-export type CurrencyConversionRow = {
-  id: string;
-  country: string;
-  currencyPair: string;
-  baseCurrency: "INR";
-  exchangeRate: number;
-  lastUpdated: string;
-  lastUpdatedBy: string;
-};
+import type { CurrencyConversionRow } from "@/pages/admin/manage_currency_conversion/types";
 
 export const CurrencyConversionData: CurrencyConversionRow[] = [
   {

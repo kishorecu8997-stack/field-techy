@@ -7,6 +7,8 @@ import React from "react";
 import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import type { CurrencyConversionRow } from "./types";
+import { Button } from "@headlessui/react";
+import { useState } from "react";
 
 /**
  * Displays currency exchange rates in a searchable table
@@ -16,6 +18,8 @@ import type { CurrencyConversionRow } from "./types";
 
 const ManageCurrencyConversion: React.FC = () => {
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
 
   const columns: Column<CurrencyConversionRow>[] = [
     {
@@ -37,7 +41,7 @@ const ManageCurrencyConversion: React.FC = () => {
       dataCellAlign: "center",
       renderCell: (row: CurrencyConversionRow) => (
         <div className="flex items-center gap-2">
-          <div
+          <Button
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() => {
               navigate(
@@ -47,7 +51,7 @@ const ManageCurrencyConversion: React.FC = () => {
             }}
           >
             <CiEdit className="text-blue-600" />
-          </div>
+          </Button>
         </div>
       ),
     },
@@ -57,8 +61,8 @@ const ManageCurrencyConversion: React.FC = () => {
       <h1 className="font-semibold ">Currency Rates</h1>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex justify-between">
-          <SearchInput />
-          <div className="inline-flex items-center bg-teal-100 text-black-900 font-medium rounded-md px-3 py-4 h-6 text-sm">
+          <SearchInput value={search} onChange={setSearch} />
+          <div className="inline-flex items-center bg-teal-100 text-black font-medium rounded-md px-3 py-4 h-6 text-sm">
             Base Currency: INR - Indian Rupee
           </div>
         </div>
