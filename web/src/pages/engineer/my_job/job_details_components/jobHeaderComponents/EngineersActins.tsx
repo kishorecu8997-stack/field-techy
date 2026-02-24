@@ -123,7 +123,7 @@ const EngineersActions = ({
         toast.success("Job start request submitted successfully");
         // Query invalidation is handled by the mutation hook
         handleUpdateOfferStatus("started");
-        window.location.reload()
+        window.location.reload();
       },
       onError: (error) => {
         console.error("Failed to request job start:", error);
@@ -209,10 +209,12 @@ const EngineersActions = ({
   const handleSubmitWork = async () => {
     // Validate that assignmentId exists before opening the modal
     if (!assignmentId) {
-      toast.error("Assignment ID is not available. Please refresh and try again.");
+      toast.error(
+        "Assignment ID is not available. Please refresh and try again.",
+      );
       return;
     }
-    
+
     // Open Final Statement modal directly instead of switching tabs
     await showPopup({
       title: "",

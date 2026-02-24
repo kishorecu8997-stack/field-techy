@@ -152,7 +152,8 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   // Fetch assignments/proposals for this job when showManageProposals is true
   // Convert jobID to number, but handle invalid values properly
   const parsedJobId = jobID ? Number(jobID) : undefined;
-  const validJobId = parsedJobId && !isNaN(parsedJobId) ? parsedJobId : undefined;
+  const validJobId =
+    parsedJobId && !isNaN(parsedJobId) ? parsedJobId : undefined;
   const { data: assignmentsData, isLoading: isLoadingAssignments } =
     useClientGetAssignmentDetails(
       { jobId: validJobId, assignmentId },
@@ -180,12 +181,13 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     "submitted",
     "rejected",
   ];
-  const unprocessedProposalsCount = assignmentsData?.filter(
-    (proposal) =>
-      !processedStatuses.includes(
-        (proposal.assignmentStatus || "").toLowerCase(),
-      ),
-  ).length || 0;
+  const unprocessedProposalsCount =
+    assignmentsData?.filter(
+      (proposal) =>
+        !processedStatuses.includes(
+          (proposal.assignmentStatus || "").toLowerCase(),
+        ),
+    ).length || 0;
 
   // Simplified 3 tabs: Timeline, Job Overview, Work Location, Manage Proposals
   const tabs = [
@@ -212,7 +214,10 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       ? [
           {
             label: JOB_TAB_LABELS.manageProposals || "Manage Proposals",
-            badge: unprocessedProposalsCount > 0 ? unprocessedProposalsCount : undefined,
+            badge:
+              unprocessedProposalsCount > 0
+                ? unprocessedProposalsCount
+                : undefined,
             content: (
               <ManageProposalsTab
                 assignments={assignmentsData}

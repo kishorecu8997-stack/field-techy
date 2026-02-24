@@ -64,7 +64,7 @@ const BreakRequestForm = ({
       onClose();
     },
     onError: (error) => {
-       console.error("Failed to submit break request:", error);
+      console.error("Failed to submit break request:", error);
       toast.error("Failed to submit break request");
       setIsSubmitting(false);
     },
@@ -113,28 +113,35 @@ const BreakRequestForm = ({
     // If assignmentId is provided, use the API
     if (assignmentId) {
       setIsSubmitting(true);
-      
-      const breakType = data.requestType === "Long Term Break" ? "long_term" : "short_term";
-      
+
+      const breakType =
+        data.requestType === "Long Term Break" ? "long_term" : "short_term";
+
       // Format dates for API
       let startAt: string | null = null;
       let endAt: string | null = null;
-      
+
       if (isLongTermBreak) {
-        startAt = data.startDate ? new Date(data.startDate).toISOString() : null;
+        startAt = data.startDate
+          ? new Date(data.startDate).toISOString()
+          : null;
         endAt = data.endDate ? new Date(data.endDate).toISOString() : null;
       } else {
         // For short term, use today's local date with the selected local time
         const today = new Date();
         const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // 0-based
-        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, "0"); // 0-based
+        const day = String(today.getDate()).padStart(2, "0");
         const localDate = `${year}-${month}-${day}`;
-        
-        startAt = data.startTime ? new Date(`${localDate}T${data.startTime}`).toISOString() : null;
-        endAt = data.endTime ? new Date(`${localDate}T${data.endTime}`).toISOString() : null;
+
+        startAt = data.startTime
+          ? new Date(`${localDate}T${data.startTime}`).toISOString()
+          : null;
+        endAt = data.endTime
+          ? new Date(`${localDate}T${data.endTime}`).toISOString()
+          : null;
       }
-      
+
       breakRequestMutation.mutate({
         body: {
           assignmentId,
@@ -144,10 +151,10 @@ const BreakRequestForm = ({
           endAt,
         },
       });
-      
+
       return;
     }
-    
+
     // Fallback to local state update if no assignmentId (legacy behavior)
     const descriptionParts = [] as string[];
     if (data.reason?.trim()) descriptionParts.push(data.reason.trim());

@@ -22,7 +22,7 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
 }) => {
   // Get revisions from the update object
   const revisions = update.revisions || [];
-  
+
   return (
     <div className="mt-3 pl-4 border-l border-gray-200">
       {/* Show revision count if there are multiple revisions */}
@@ -31,7 +31,8 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
           {revisions.map((revision, index) => (
             <div key={revision.revisionId || index} className="mb-3">
               <p className="text-xs font-semibold text-gray-800">
-                {REVISION_LABELS.numberPrefix} {revisions.length - index} - {update.title}
+                {REVISION_LABELS.numberPrefix} {revisions.length - index} -{" "}
+                {update.title}
               </p>
               <div className="mt-2">
                 {/* Client Revision Request */}
@@ -42,39 +43,51 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                         {REVISION_LABELS.clientLabel}
                       </p>
                       <p className="text-sm text-gray-800 mt-1 break-all">
-                        {revision.clientComment || update.description || MODAL_MESSAGES.revisionFallback}
+                        {revision.clientComment ||
+                          update.description ||
+                          MODAL_MESSAGES.revisionFallback}
                       </p>
                       {revision.clientAttachmentUrl && (
                         <div className="mt-2">
                           <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
-                            {decodeURIComponent(revision.clientAttachmentUrl.split("/").pop()?.split("?")[0] || "")}
+                            {decodeURIComponent(
+                              revision.clientAttachmentUrl
+                                .split("/")
+                                .pop()
+                                ?.split("?")[0] || "",
+                            )}
                           </span>
                         </div>
                       )}
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       <span className="text-xs text-gray-500 leading-4">
-                        {revision.createdAt 
-                          ? new Date(revision.createdAt).toLocaleString("en-US", {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: true,
-                            })
+                        {revision.createdAt
+                          ? new Date(revision.createdAt).toLocaleString(
+                              "en-US",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              },
+                            )
                           : update.timestamp}
                       </span>
                       {/* Show button only if no engineer response exists (neither from API nor local state) */}
-                      {!revisionUpdateEntry && !revision.content && index === 0 && (
-                        <Button
-                          type="button"
-                          className="bg-teal-800 hover:bg-teal-900 text-white px-2 py-0.5 text-xs mt-auto"
-                          onClick={() => onStartRevisionUpdate(update)}
-                        >
-                          {REVISION_LABELS.updateButton}
-                        </Button>
-                      )}
+                      {!revisionUpdateEntry &&
+                        !revision.content &&
+                        index === 0 && (
+                          <Button
+                            type="button"
+                            className="bg-teal-800 hover:bg-teal-900 text-white px-2 py-0.5 text-xs mt-auto"
+                            onClick={() => onStartRevisionUpdate(update)}
+                          >
+                            {REVISION_LABELS.updateButton}
+                          </Button>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -93,22 +106,30 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                         {revision.attachmentUrl && (
                           <div className="mt-2">
                             <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
-                              {decodeURIComponent(revision.attachmentUrl.split("/").pop()?.split("?")[0] || "")}
+                              {decodeURIComponent(
+                                revision.attachmentUrl
+                                  .split("/")
+                                  .pop()
+                                  ?.split("?")[0] || "",
+                              )}
                             </span>
                           </div>
                         )}
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         <span className="text-xs text-gray-500 leading-4">
-                          {revision.updatedAt 
-                            ? new Date(revision.updatedAt).toLocaleString("en-US", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true,
-                              })
+                          {revision.updatedAt
+                            ? new Date(revision.updatedAt).toLocaleString(
+                                "en-US",
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                },
+                              )
                             : update.timestamp}
                         </span>
                       </div>

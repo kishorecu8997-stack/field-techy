@@ -288,10 +288,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
     { label: "Documents", content: <Documents isView={isView} /> },
   ];
 
-  if (isDetailLoading)
-    return (
-      <LoaderComponent />
-    );
+  if (isDetailLoading) return <LoaderComponent />;
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 overflow-hidden">

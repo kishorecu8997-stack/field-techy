@@ -18,7 +18,7 @@ import { useEngineerSubmitSignOff } from "@/shared/apiServices/engineer/engineer
  * Form data structure for work submission component.
  * This interface defines the shape of data collected when an engineer submits their work,
  * including task details, attachments, notes, and signature.
- * 
+ *
  * @interface WorkSubmissionFormData
  * @property {string} onsiteTask - Indicates whether the task was carried out at the site (Yes/No)
  * @property {FileList | null} file - The uploaded completed task file (PDF)
@@ -131,15 +131,17 @@ const WorkSubmissionComponent: React.FC<{
               await submitSignOff({
                 body: {
                   assignmentId: Number(assignmentId),
-                  workAttachment: attachmentMeta ? {
-                    filename: attachmentMeta.filename,
-                    size: attachmentMeta.size,
-                    mimeType: attachmentMeta.mimeType,
-                  } : {
-                    filename: "",
-                    size: 0,
-                    mimeType: "",
-                  },
+                  workAttachment: attachmentMeta
+                    ? {
+                        filename: attachmentMeta.filename,
+                        size: attachmentMeta.size,
+                        mimeType: attachmentMeta.mimeType,
+                      }
+                    : {
+                        filename: "",
+                        size: 0,
+                        mimeType: "",
+                      },
                   signatureAttachment: {
                     filename: "signature",
                     size: 0,
@@ -149,7 +151,9 @@ const WorkSubmissionComponent: React.FC<{
                 },
               });
 
-              toast.success("Work submitted successfully! The client will review your submission.");
+              toast.success(
+                "Work submitted successfully! The client will review your submission.",
+              );
               close(true);
               scrollToTop();
               // Optionally navigate or refresh

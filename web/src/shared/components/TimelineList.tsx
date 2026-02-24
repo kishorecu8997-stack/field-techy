@@ -20,7 +20,9 @@ const TimelineList: React.FC<TimelineListProps> = ({ items, className }) => {
         const statusLower = item.statusText?.toLowerCase() || "";
         const isApproved = statusLower === "approved";
         const isRejected = statusLower === "rejected";
-        const isRevisionRequested = statusLower === "revision requested" || statusLower === "revision_requested";
+        const isRevisionRequested =
+          statusLower === "revision requested" ||
+          statusLower === "revision_requested";
 
         return (
           <div
@@ -51,9 +53,25 @@ const TimelineList: React.FC<TimelineListProps> = ({ items, className }) => {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 cursor-pointer transition-colors"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-3 w-3 text-gray-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
                         </svg>
                         {attachment.name || "View Document"}
                       </a>
@@ -68,9 +86,25 @@ const TimelineList: React.FC<TimelineListProps> = ({ items, className }) => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 cursor-pointer transition-colors"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3 text-gray-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
                     </svg>
                     {item.attachmentName || "View Document"}
                   </a>

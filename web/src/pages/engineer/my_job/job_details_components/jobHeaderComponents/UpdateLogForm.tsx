@@ -25,21 +25,18 @@ interface UpdateLogFormProps {
  * Sends multiple progress updates with different statuses for UI display.
  * Uses react-hook-form for form handling and validation.
  */
-const UpdateLogForm = ({
-  onClose,
-  assignmentId,
-}: UpdateLogFormProps) => {
+const UpdateLogForm = ({ onClose, assignmentId }: UpdateLogFormProps) => {
   const formCtx = useForm<UpdateLogFormFields>({
     defaultValues: UPDATE_LOG_DEFAULTS,
   });
   const { showPopup } = usePopupStore();
 
   // Mutation for adding work log
-  const { mutate: addWorkLog} = useEngineerAddWorkLog({
+  const { mutate: addWorkLog } = useEngineerAddWorkLog({
     assignmentId,
-    onSuccess: () => {  
+    onSuccess: () => {
       toast.success("Log submitted successfully!");
-       onClose();
+      onClose();
     },
     onError: (error) => {
       console.error("Failed to submit log:", error);

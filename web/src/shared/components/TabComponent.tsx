@@ -86,7 +86,7 @@ const TabComponent: React.FC<TabComponentProps> = ({
                 {tab.label}
                 {tab.badge && (
                   <span className="flex items-center justify-center ml-1 min-w-5 h-5 px-1.5 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
-                    {typeof tab.badge === 'number' ? tab.badge : ''}
+                    {typeof tab.badge === "number" ? tab.badge : ""}
                   </span>
                 )}
               </span>

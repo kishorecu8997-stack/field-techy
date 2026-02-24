@@ -21,7 +21,7 @@ import {
   useGetJobLogs,
   useEngineerGetMyJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import type {  EngineerGetMyJobsResponse } from "@/api";
+import type { EngineerGetMyJobsResponse } from "@/api";
 
 /**
  * Transform engineer's job/proposal data to timeline items
@@ -236,8 +236,12 @@ const TimelineSection: React.FC<{
     const allItems = [...logItems, ...breakItems, ...signOffItems];
     // Sort by effectiveTimestamp descending (newest first)
     return allItems.sort((a, b) => {
-      const dateA = a.effectiveTimestamp ? new Date(a.effectiveTimestamp).getTime() : 0;
-      const dateB = b.effectiveTimestamp ? new Date(b.effectiveTimestamp).getTime() : 0;
+      const dateA = a.effectiveTimestamp
+        ? new Date(a.effectiveTimestamp).getTime()
+        : 0;
+      const dateB = b.effectiveTimestamp
+        ? new Date(b.effectiveTimestamp).getTime()
+        : 0;
       return dateB - dateA;
     });
   }, [jobLogs]);
@@ -250,9 +254,11 @@ const TimelineSection: React.FC<{
 
     // Find all progress update logs that have revisions
     for (const log of jobLogs.logs) {
-      if ((log.logType === "progress_update" || log.logType === "SUBMISSION") && 
-          log.revisions && log.revisions.length > 0) {
-        
+      if (
+        (log.logType === "progress_update" || log.logType === "SUBMISSION") &&
+        log.revisions &&
+        log.revisions.length > 0
+      ) {
         const revisions = log.revisions.map((rev) => ({
           revisionId: rev.revisionId,
           logId: log.id,
@@ -313,8 +319,12 @@ const TimelineSection: React.FC<{
     }
     // Sort by effectiveTimestamp descending (newest first)
     return allItems.sort((a, b) => {
-      const dateA = a.effectiveTimestamp ? new Date(a.effectiveTimestamp).getTime() : new Date(a.timestamp).getTime();
-      const dateB = b.effectiveTimestamp ? new Date(b.effectiveTimestamp).getTime() : new Date(b.timestamp).getTime();
+      const dateA = a.effectiveTimestamp
+        ? new Date(a.effectiveTimestamp).getTime()
+        : new Date(a.timestamp).getTime();
+      const dateB = b.effectiveTimestamp
+        ? new Date(b.effectiveTimestamp).getTime()
+        : new Date(b.timestamp).getTime();
       return dateB - dateA;
     });
   }, [apiTimelineItems, proposalTimelineItems]);
@@ -372,15 +382,20 @@ const TimelineSection: React.FC<{
             const actionRequiredUpdates = progressUpdates.filter((update) => {
               if (update.title !== "Progress Update") return false;
               const statusLower = String(update.statusText || "").toLowerCase();
-              return statusLower === "pending" || statusLower === "revision requested" || statusLower === "revision_requested";
+              return (
+                statusLower === "pending" ||
+                statusLower === "revision requested" ||
+                statusLower === "revision_requested"
+              );
             });
             const actionRequiredCount = actionRequiredUpdates.length;
-            
+
             return actionRequiredCount > 0 ? (
               <>
                 <ActionRequiredBadge count={actionRequiredCount} />
                 {actionRequiredUpdates.map((update, idx) => {
-                  if (update.title === REVISION_UPDATE_LABELS.title) return null;
+                  if (update.title === REVISION_UPDATE_LABELS.title)
+                    return null;
                   const updateKey = `${update.title || "update"}-${idx}`;
                   const isCollapsed = collapsedUpdates[updateKey] ?? false;
 
@@ -411,11 +426,11 @@ const TimelineSection: React.FC<{
 
       {/* Activity Timeline - Show ALL items using TimelineSectionHeader for expandable revision conversations */}
       {timelineItems.length > 0 && (
-        <TimelineSectionHeader 
-          items={timelineItems.map(item => ({
+        <TimelineSectionHeader
+          items={timelineItems.map((item) => ({
             ...item,
             logId: item.logId,
-            logType: item.logType || "progress_update"
+            logType: item.logType || "progress_update",
           }))}
           apiRevisionUpdateDataList={apiRevisionUpdateDataList}
         />
@@ -446,7 +461,11 @@ const TimelineSection: React.FC<{
           onAddProgressUpdate={onAddProgressUpdate}
           assignmentId={assignmentId}
           // API returns jobLogId in revisions, not logId - check both for compatibility
-          logId={activeRevision?.revisions?.[0]?.jobLogId ?? activeRevision?.revisions?.[0]?.logId ?? activeRevision?.logId}
+          logId={
+            activeRevision?.revisions?.[0]?.jobLogId ??
+            activeRevision?.revisions?.[0]?.logId ??
+            activeRevision?.logId
+          }
           revisionId={activeRevision?.revisions?.[0]?.revisionId}
         />
       </Popup>

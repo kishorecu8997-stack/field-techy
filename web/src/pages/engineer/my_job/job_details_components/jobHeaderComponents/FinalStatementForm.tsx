@@ -36,7 +36,7 @@ const FinalStatementForm = ({
   assignmentId?: number;
 }) => {
   const { showPopup } = usePopupStore();
-  const { mutateAsync: submitSignOff, } = useEngineerSubmitSignOff({
+  const { mutateAsync: submitSignOff } = useEngineerSubmitSignOff({
     assignmentId,
     onSuccess: () => {
       toast.success(FINAL_STATEMENT_MESSAGES.submitSuccess);
@@ -118,7 +118,9 @@ const FinalStatementForm = ({
               close(true);
             } catch (error) {
               console.error("Failed to submit final statement:", error);
-              toast.error("Failed to submit final statement. Please try again.");
+              toast.error(
+                "Failed to submit final statement. Please try again.",
+              );
               close(true);
             }
           },

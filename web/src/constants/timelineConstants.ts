@@ -24,8 +24,10 @@ export const MODAL_MESSAGES = {
   shortBreakPlaceholder: "Complete your work, then you may take a break.",
   jobApproveConfirm: "Are you sure you want to approve this job?",
   jobRejectConfirm: "Are you sure you want to reject this job?",
-  finalStatementApproveConfirm: "Are you sure you want to approve this final statement? The job will be marked as completed.",
-  finalStatementRejectConfirm: "Are you sure you want to reject this final statement? The engineer will need to resubmit.",
+  finalStatementApproveConfirm:
+    "Are you sure you want to approve this final statement? The job will be marked as completed.",
+  finalStatementRejectConfirm:
+    "Are you sure you want to reject this final statement? The engineer will need to resubmit.",
 } as const;
 
 export const TOAST_MESSAGES = {
@@ -97,4 +99,3 @@ export const jobStartedCardData: TimelineCardData = {
   accentColor: "#16a34a",
   buttons: ["reject", "approve"],
 };
-

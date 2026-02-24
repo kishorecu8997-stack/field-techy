@@ -334,9 +334,11 @@ export function useClientActionOnWorkLog(options?: {
     ...clientActionOnWorkLogMutation({ client: apiClient }),
     onSuccess: (data) => {
       // Use exact query key format
-      const exactQueryKey = [{ _id: 'getJobLogs', path: { assignmentId: options?.assignmentId } }];
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
       queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: 'getJobLogs' }] });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -353,9 +355,11 @@ export function useClientActionOnBreak(options?: {
     ...clientActionOnBreakMutation({ client: apiClient }),
     onSuccess: (data) => {
       // Use exact query key format
-      const exactQueryKey = [{ _id: 'getJobLogs', path: { assignmentId: options?.assignmentId } }];
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
       queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: 'getJobLogs' }] });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

@@ -58,19 +58,26 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
     });
   };
 
-  const hasRevisions = (item: { logType?: string; logId?: number }): boolean => {
+  const hasRevisions = (item: {
+    logType?: string;
+    logId?: number;
+  }): boolean => {
     if (item.logType !== "progress_update" && item.logType !== "SUBMISSION") {
       return false;
     }
     const revisionData = apiRevisionUpdateDataList.find(
-      (rev) => rev.logId === item.logId
+      (rev) => rev.logId === item.logId,
     );
-    return !!(revisionData && revisionData.revisions && revisionData.revisions.length > 0);
+    return !!(
+      revisionData &&
+      revisionData.revisions &&
+      revisionData.revisions.length > 0
+    );
   };
 
   const getRevisions = (item: { logId?: number }) => {
     const revisionData = apiRevisionUpdateDataList.find(
-      (rev) => rev.logId === item.logId
+      (rev) => rev.logId === item.logId,
     );
     return revisionData?.revisions || [];
   };
@@ -103,7 +110,7 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                 }}
                 aria-hidden
               />
-              
+
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-5">
@@ -125,7 +132,7 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex flex-col items-end gap-1">
                   {/* Expand/collapse button - shows when there are revisions OR approver comment */}
                   {shouldShowExpandButton && (
@@ -155,8 +162,14 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                         <HiCheckCircle aria-hidden className="h-3.5 w-3.5" />
                       ) : item.statusText.toLowerCase() === "rejected" ? (
                         <HiXCircle aria-hidden className="h-3.5 w-3.5" />
-                      ) : item.statusText.toLowerCase() === "revision requested" || item.statusText.toLowerCase() === "revision_requested" ? (
-                        <HiArrowUturnRight aria-hidden className="h-3.5 w-3.5" />
+                      ) : item.statusText.toLowerCase() ===
+                          "revision requested" ||
+                        item.statusText.toLowerCase() ===
+                          "revision_requested" ? (
+                        <HiArrowUturnRight
+                          aria-hidden
+                          className="h-3.5 w-3.5"
+                        />
                       ) : (
                         <HiClock aria-hidden className="h-3.5 w-3.5" />
                       )}
@@ -185,22 +198,30 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                               {revision.clientAttachmentUrl && (
                                 <div className="mt-2">
                                   <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    {revision.clientAttachmentUrl.split("/").pop()?.split("?")[0]}
+                                    {
+                                      revision.clientAttachmentUrl
+                                        .split("/")
+                                        .pop()
+                                        ?.split("?")[0]
+                                    }
                                   </span>
                                 </div>
                               )}
                             </div>
                             <div className="flex flex-col items-end gap-2">
                               <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
-                                {revision.createdAt 
-                                  ? new Date(revision.createdAt).toLocaleString("en-US", {
-                                      day: "2-digit",
-                                      month: "short",
-                                      year: "numeric",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                      hour12: true,
-                                    })
+                                {revision.createdAt
+                                  ? new Date(revision.createdAt).toLocaleString(
+                                      "en-US",
+                                      {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                      },
+                                    )
                                   : item.timestamp}
                               </span>
                             </div>
@@ -222,22 +243,30 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                               {revision.attachmentUrl && (
                                 <div className="mt-2">
                                   <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    {revision.attachmentUrl.split("/").pop()?.split("?")[0]}
+                                    {
+                                      revision.attachmentUrl
+                                        .split("/")
+                                        .pop()
+                                        ?.split("?")[0]
+                                    }
                                   </span>
                                 </div>
                               )}
                             </div>
                             <div className="flex flex-col items-end gap-2">
                               <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
-                                {revision.updatedAt 
-                                  ? new Date(revision.updatedAt).toLocaleString("en-US", {
-                                      day: "2-digit",
-                                      month: "short",
-                                      year: "numeric",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                      hour12: true,
-                                    })
+                                {revision.updatedAt
+                                  ? new Date(revision.updatedAt).toLocaleString(
+                                      "en-US",
+                                      {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                      },
+                                    )
                                   : item.timestamp}
                               </span>
                             </div>

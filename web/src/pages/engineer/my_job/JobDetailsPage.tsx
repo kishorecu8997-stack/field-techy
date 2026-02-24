@@ -1,5 +1,8 @@
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
-import { useEngineerSearchJobs, useGetJobLogs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useEngineerSearchJobs,
+  useGetJobLogs,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import ChatForJobs from "@/shared/components/ChatForJobs";
@@ -43,9 +46,10 @@ const mapJobToJobInfo = (
       text: `End Date: ${new Date(job.endDate).toLocaleDateString()}`,
     },
     // Add total price if available
-    job.totalPrice && job.currencySymbol && {
-      text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
-    },
+    job.totalPrice &&
+      job.currencySymbol && {
+        text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
+      },
     // Add work location
     job.workLocationName && { text: `Location: ${job.workLocationName}` },
   ].filter(Boolean) as Array<{ text: string }>;
@@ -115,39 +119,44 @@ const JobDetailsPage = () => {
   // Note: We don't create separate revision entries - revisions are nested under Progress Update
   const apiProgressUpdates = useMemo(() => {
     if (!jobLogs?.logs?.length) return [];
-    
+
     const updates: ProgressUpdate[] = [];
-    
+
     for (const log of jobLogs.logs) {
       // Only include progress_update logs (not SUBMISSION which has its own handling)
       if (log.logType === "progress_update") {
         // Get original engineer's content
-        const originalContent = log.details || "Engineer submitted a progress update";
-        const originalAttachment = log.attachmentUrl 
-          ? decodeURIComponent(log.attachmentUrl.split("/").pop()?.split("?")[0] || "")
+        const originalContent =
+          log.details || "Engineer submitted a progress update";
+        const originalAttachment = log.attachmentUrl
+          ? decodeURIComponent(
+              log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
+            )
           : undefined;
         const originalAttachmentUrl = log.attachmentUrl;
-        
+
         // Determine statusText based on log status OR latest revision status
         // If there's a pending revision, show "Revision Requested"
         // Use 'any' type cast to handle potential 'pending' status from API
-        const hasPendingRevision = log.revisions && log.revisions.some(
-          (rev) => (rev.status as string) === "pending"
-        );
-        
+        const hasPendingRevision =
+          log.revisions &&
+          log.revisions.some((rev) => (rev.status as string) === "pending");
+
         let statusText: string;
         if (log.status === "revision_requested" || hasPendingRevision) {
           statusText = "Revision Requested";
         } else {
-          statusText = log.status.charAt(0).toUpperCase() + log.status.slice(1).replace(/_/g, " ");
+          statusText =
+            log.status.charAt(0).toUpperCase() +
+            log.status.slice(1).replace(/_/g, " ");
         }
-        
+
         updates.push({
           title: "Progress Update",
           description: originalContent,
           attachmentName: originalAttachment,
           attachmentUrl: originalAttachmentUrl,
-          timestamp: log.timestamp 
+          timestamp: log.timestamp
             ? new Date(log.timestamp).toLocaleString("en-US", {
                 day: "2-digit",
                 month: "short",
@@ -158,10 +167,20 @@ const JobDetailsPage = () => {
               })
             : "",
           statusText,
-          statusColor: log.status === "approved" ? "#22c55e" : 
-            log.status === "rejected" ? "#ef4444" : "#f59e0b",
-          accentColor: log.status === "revision_requested" || hasPendingRevision ? "#f59e0b" : "#3b82f6",
-          detailsType: log.status === "revision_requested" || hasPendingRevision ? "revision" : undefined,
+          statusColor:
+            log.status === "approved"
+              ? "#22c55e"
+              : log.status === "rejected"
+                ? "#ef4444"
+                : "#f59e0b",
+          accentColor:
+            log.status === "revision_requested" || hasPendingRevision
+              ? "#f59e0b"
+              : "#3b82f6",
+          detailsType:
+            log.status === "revision_requested" || hasPendingRevision
+              ? "revision"
+              : undefined,
           // Include the log ID for revision update API calls
           logId: log.id,
           // Map revisions to include jobLogId as required by type
@@ -175,7 +194,7 @@ const JobDetailsPage = () => {
         });
       }
     }
-    
+
     return updates;
   }, [jobLogs]);
 
@@ -350,50 +369,50 @@ const JobDetailsPage = () => {
                 onToggleChat={handleToggleChat}
               />
 
-            <JobTabSection
-              status={jobStatus}
-              isWorkSubmitted={isWorkSubmitted}
-              isSendProposal={isSendProposal}
-              setSendProposal={setIsSendProposal}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              OfferJobStatus={assignmentStatus}
-              progressUpdates={allProgressUpdates}
-              onAddProgressUpdate={handleAddProgressUpdate}
-              assignmentId={assignmentId}
-              jobId={Number(params.jobId)}
-              jobInfo={
-                job
-                  ? mapJobToJobInfo(job)
-                  : {
-                      jobTitle: "",
-                      terms: { title: "Job Details", items: [] },
-                      files: [],
-                    }
-              }
-            />
+              <JobTabSection
+                status={jobStatus}
+                isWorkSubmitted={isWorkSubmitted}
+                isSendProposal={isSendProposal}
+                setSendProposal={setIsSendProposal}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                OfferJobStatus={assignmentStatus}
+                progressUpdates={allProgressUpdates}
+                onAddProgressUpdate={handleAddProgressUpdate}
+                assignmentId={assignmentId}
+                jobId={Number(params.jobId)}
+                jobInfo={
+                  job
+                    ? mapJobToJobInfo(job)
+                    : {
+                        jobTitle: "",
+                        terms: { title: "Job Details", items: [] },
+                        files: [],
+                      }
+                }
+              />
 
-            {showFinalStatement && (
-              <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
-                <FinalStatementForm
-                  onClose={handleCloseFinalStatement}
-                  onAddProgressUpdate={handleAddProgressUpdate}
-                />
-              </div>
-            )}
+              {showFinalStatement && (
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
+                  <FinalStatementForm
+                    onClose={handleCloseFinalStatement}
+                    onAddProgressUpdate={handleAddProgressUpdate}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="lg:col-span-1">
+              <ClientInfoCard
+                name={`Client #${clientId}`}
+                memberSince={"-"}
+                location={jobLocation}
+                rating={0}
+                reviews={0}
+                verifications={[]}
+                onOpenReview={() => setIsReviewOpen(true)}
+              />
+            </div>
           </div>
-          <div className="lg:col-span-1">
-            <ClientInfoCard
-              name={`Client #${clientId}`}
-              memberSince={"-"}
-              location={jobLocation}
-              rating={0}
-              reviews={0}
-              verifications={[]}
-              onOpenReview={() => setIsReviewOpen(true)}
-            />
-          </div>
-        </div>
         )}
       </div>
 
