@@ -116,7 +116,7 @@ export default function AllUsersReport() {
                 <span>
                   <h1 className="text-2xl font-semibold">{data.name}</h1>
                   <h1 className="text-md text-gray-500 dark:text-gray-400">
-                    {data.position}
+                    {data.user}
                   </h1>
                 </span>
               </div>

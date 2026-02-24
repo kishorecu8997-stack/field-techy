@@ -141,10 +141,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               onClick={() =>
                 isClient
                   ? navigate(
-                      `${absoluteUrls.client.home.my_jobs}/${params.jobId}/report_issues`,
+                      `${absoluteUrls.client.home.my_jobs}/${params.jobId}/report_updates`,
                     )
                   : navigate(
-                      `${absoluteUrls.engineer.home.my_jobs}/${params.jobId}/report_issues`,
+                      `${absoluteUrls.engineer.home.my_jobs}/${params.jobId}/report_updates`,
                     )
               }
               className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"

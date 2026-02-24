@@ -176,7 +176,7 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.ENGINEER}/dashboard`,
       my_jobs: `${BASE.ENGINEER}/my-jobs`,
-      report_issues: `${BASE.ENGINEER}/:id/report-issues`,
+      report_updates: `${BASE.ENGINEER}/:id/report-updates`,
       search_result: `${BASE.ENGINEER}/search-result`,
       search_analytics: `${BASE.ENGINEER}/search-analytics`,
       faq: `${BASE.ENGINEER}/faq`,
@@ -209,7 +209,7 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.CLIENT}/dashboard`,
       my_jobs: `${BASE.CLIENT}/my-jobs`,
-      report_issues: `${BASE.CLIENT}/:id/report-issues`,
+      report_updates: `${BASE.CLIENT}/:id/report-updates`,
       my_projects: `${BASE.CLIENT}/my-projects`,
       create_project: `${BASE.CLIENT}/my-projects/create-project`,
       client_Explore_engineers: `${BASE.CLIENT}/explore-engineers`,

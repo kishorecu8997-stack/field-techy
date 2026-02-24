@@ -106,7 +106,7 @@ export class ClientRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.ClientCreateProjectPage),
           },
           {
-            path: `${urls.client.home.my_jobs}/:jobId/report_issues`,
+            path: `${urls.client.home.my_jobs}/:jobId/report_updates`,
             element: withSuspense(Components.ClientReportIssue),
           },
           {
