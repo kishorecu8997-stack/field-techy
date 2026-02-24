@@ -7,6 +7,9 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import type { AppVerifyOtpData } from "@/api";
+import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
+
+export type { OTPValues } from "@/shared/components/commonUI/inputs/types";
 
 interface ClientOTPPageProps {
   header?: string;
@@ -17,10 +20,6 @@ interface ClientOTPPageProps {
   verificationType: "email" | "phone";
   contact: string; // email or phone number
   onResendOTP?: () => void;
-}
-
-export interface OTPValues {
-  otp: string;
 }
 
 /**

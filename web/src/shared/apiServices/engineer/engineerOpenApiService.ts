@@ -579,6 +579,19 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
 }
 
 /**
+ * Fetch engineer's jobs with proposal status
+ * Returns jobs that the engineer has applied to or been assigned to
+ */
+export function useEngineerGetMyJobs(enabled: boolean = true) {
+  return useQuery({
+    ...engineerGetMyJobsOptions({
+      client: apiClient,
+    }),
+    enabled,
+  });
+}
+
+/**
  * Raw API functions for use outside of hooks have been moved to engineerRawApi.ts
  * to avoid circular dependencies with stores.
  */
