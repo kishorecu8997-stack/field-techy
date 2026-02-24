@@ -109,21 +109,13 @@ export const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
 export const ReceivedNotification = React.lazy(
   () => import("@/pages/admin/received_notification"),
 );
-export const CorporateClientAdd = React.lazy(
-  () =>
-    import("@/pages/admin/client/components/add_components/CorporateClientForm"),
+const ClientForm = React.lazy(
+  () => import("@/pages/admin/client/components/ClientForm"),
 );
-export const HomeClientAdd = React.lazy(
-  () => import("@/pages/admin/client/components/add_components/HomeClientForm"),
-);
-export const CorporateClientEdit = React.lazy(
-  () =>
-    import("@/pages/admin/client/components/edit_components/CorporateClientEditForm"),
-);
-export const HomeClientEdit = React.lazy(
-  () =>
-    import("@/pages/admin/client/components/edit_components/HomeClientEditForm"),
-);
+export const CorporateClientAdd = ClientForm;
+export const HomeClientAdd = ClientForm;
+export const CorporateClientEdit = ClientForm;
+export const HomeClientEdit = ClientForm;
 export const CorporateClientView = React.lazy(
   () =>
     import("@/pages/admin/client/components/view_components/CorporateClientViewForm"),

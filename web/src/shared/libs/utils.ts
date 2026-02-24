@@ -427,3 +427,26 @@ export const validateOtp = {
     message: "OTP must be a 6-digit numeric code",
   },
 };
+/**
+ * Extracts a human-readable error message from various API error response formats.
+ *
+ * @param error - The error object to extract the message from
+ * @param fallback - A fallback message if no specific error message is found
+ * @returns A string containing the error message
+ */
+export const extractErrorMessage = (error: unknown, fallback = "Something went wrong"): string => {
+  const apiError = error as {
+    body?: { error?: string; message?: string };
+    response?: { data?: { error?: string } };
+    message?: string;
+    error?: string;
+  };
+  return (
+    apiError.body?.error ||
+    apiError.body?.message ||
+    apiError.response?.data?.error ||
+    apiError.error ||
+    apiError.message ||
+    fallback
+  );
+};
