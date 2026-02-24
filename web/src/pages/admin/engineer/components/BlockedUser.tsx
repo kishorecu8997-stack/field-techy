@@ -1,13 +1,13 @@
-import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { FaUserCircle } from "react-icons/fa";
-import type { ManageEngineerProps } from "../types";
+import type { ManageEngineerProps, StatusHistoryType } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * BlockedUser Component
@@ -28,19 +28,45 @@ import { toast } from "react-toastify";
 export default function BlockedUser() {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
-  const filteredData = manageEngineer
-    .filter((e) => e.employmentStatus === "Blocked")
-    .filter((e) => {
-      const query = search.toLowerCase();
-      return (
-        e.engineerID.toLowerCase().includes(query) ||
-        e.details.name.toLowerCase().includes(query) ||
-        e.details.email.toLowerCase().includes(query) ||
-        e.location.toLowerCase().includes(query)
-      );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    status: "blocked",
+  });
+
+  const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const latestBlockMap = useMemo<
+    Record<string, StatusHistoryType | undefined>
+  >(() => {
+    const map: Record<string, StatusHistoryType | undefined> = {};
+
+    engineerData.forEach((engineer) => {
+      // safely handle undefined statusHistory
+      const latestBlock = engineer.statusHistory?.reduce<
+        StatusHistoryType | undefined
+      >((latest, current) => {
+        if (current.type !== "block") return latest;
+        // pick the one with latest actionDate
+        if (
+          !latest ||
+          new Date(current.actionDate) > new Date(latest.actionDate)
+        ) {
+          return current;
+        }
+        return latest;
+      }, undefined);
+
+      map[engineer.id] = latestBlock;
     });
 
-  const handleUnblock = async (id: number) => {
+    return map;
+  }, [engineerData]);
+
+  const handleUnblock = async (engineer: ManageEngineerProps) => {
     await showPopup({
       title: "Unblock",
       body: "Are you sure you want to unblock this engineer?",
@@ -55,7 +81,7 @@ export default function BlockedUser() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Unlocking engineer:", id);
+            console.log("Unlocking engineer:", engineer.id);
             toast.success("Engineer unblocked successfully!");
             close(true);
           },
@@ -65,10 +91,22 @@ export default function BlockedUser() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No." },
+    {
+      label: "Sr.No.",
+      renderCell: (_row: ManageEngineerProps, index: number) =>
+        (currentPage - 1) * pageSize + index + 1,
+    },
     {
       key: "engineerID",
       label: "Engineer ID",
+      renderCell: (row: ManageEngineerProps) => {
+        const id = row.engineerCode || "N/A";
+        return (
+          <div className="text-sm font-medium text-gray-900 dark:text-white">
+            {id}
+          </div>
+        );
+      },
     },
     {
       key: "details",
@@ -80,12 +118,12 @@ export default function BlockedUser() {
               <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
             </div>
             <div>
-              <div className="font-semibold">{row.details.name}</div>
+              <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.phone}
+                {row.phoneNumber}
               </div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.email}
+                {row.email}
               </div>
             </div>
           </div>
@@ -93,21 +131,30 @@ export default function BlockedUser() {
       },
     },
     {
-      key: "suspendReason",
+      key: "blockReason",
       label: "Reason for Block",
+      renderCell: (row) => latestBlockMap[row.id]?.reason || "N/A",
     },
-    { key: "suspendOn", label: "Blocked On" },
-    { key: "suspendBy", label: "Blocked By", dataCellAlign: "center" },
-    { key: "currentStatus", label: "Current Status", dataCellAlign: "center" },
+    {
+      key: "blockOn",
+      label: "Blocked On",
+      renderCell: (row) => {
+        const date = latestBlockMap[row.id]?.actionDate;
+        return date ? new Date(date).toLocaleDateString() : "N/A";
+      },
+    },
+    {
+      key: "blockBy",
+      label: "Blocked By",
+      dataCellAlign: "center",
+      renderCell: (row) => latestBlockMap[row.id]?.adminName || "N/A",
+    },
     {
       key: "action",
       label: "Actions",
       align: "center",
       renderCell: (row: ManageEngineerProps) => (
-        <div
-          className="mx-auto text-center"
-          onClick={() => handleUnblock(row.id)}
-        >
+        <div className="mx-auto text-center" onClick={() => handleUnblock(row)}>
           <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white">
             Unblock
           </Button>
@@ -125,8 +172,13 @@ export default function BlockedUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredData}
-            initialPageSize={10}
+            data={engineerData}
+            loading={isLoading}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+            totalCount={engineersResponse?.total ?? 0}
           />
         </div>
       </div>

@@ -28,50 +28,49 @@ export default function AddCategory() {
   const queryClient = useQueryClient();
 
   const { showPopup } = usePopupStore();
-  const {
-    mutateAsync: createServiceCategory,
-    isPending: isCreatingCategory,
-  } = useAdminCreateServiceCategory({
-    onSuccess: (data) => {
-      queryClient.setQueriesData(
-        {
-          predicate: (query) =>
-            Array.isArray(query.queryKey) &&
-            query.queryKey[0] &&
-            typeof query.queryKey[0] === "object" &&
-            (query.queryKey[0] as { _id?: string })._id ===
-              "adminGetServiceCategories",
-        },
-        (oldData) => {
-          if (!oldData || typeof oldData !== "object") return oldData;
-          const prev = oldData as {
-            data?: Array<{ id: number; name: string }>;
-            total?: number;
-            page?: number;
-            limit?: number;
-          };
-          if (!Array.isArray(prev.data)) return oldData;
-          const newItem = {
-            id: data?.id ?? Date.now(),
-            name: methods.getValues("categoryName"),
-          };
-          return {
-            ...prev,
-            data: [newItem, ...prev.data],
-            total: typeof prev.total === "number" ? prev.total + 1 : prev.total,
-          };
-        },
-      );
-      toast.success("Service category added successfully!");
-      methods.reset();
-      navigate(absoluteUrls.admin.home.manage_categories);
-    },
-    onError: (error) => {
-      const errorMessage =
-        error instanceof Error ? error.message : "Create category failed";
-      toast.error(errorMessage);
-    },
-  });
+  const { mutateAsync: createServiceCategory, isPending: isCreatingCategory } =
+    useAdminCreateServiceCategory({
+      onSuccess: (data) => {
+        queryClient.setQueriesData(
+          {
+            predicate: (query) =>
+              Array.isArray(query.queryKey) &&
+              query.queryKey[0] &&
+              typeof query.queryKey[0] === "object" &&
+              (query.queryKey[0] as { _id?: string })._id ===
+                "adminGetServiceCategories",
+          },
+          (oldData) => {
+            if (!oldData || typeof oldData !== "object") return oldData;
+            const prev = oldData as {
+              data?: Array<{ id: number; name: string }>;
+              total?: number;
+              page?: number;
+              limit?: number;
+            };
+            if (!Array.isArray(prev.data)) return oldData;
+            const newItem = {
+              id: data?.id ?? Date.now(),
+              name: methods.getValues("categoryName"),
+            };
+            return {
+              ...prev,
+              data: [newItem, ...prev.data],
+              total:
+                typeof prev.total === "number" ? prev.total + 1 : prev.total,
+            };
+          },
+        );
+        toast.success("Service category added successfully!");
+        methods.reset();
+        navigate(absoluteUrls.admin.home.manage_categories);
+      },
+      onError: (error) => {
+        const errorMessage =
+          error instanceof Error ? error.message : "Create category failed";
+        toast.error(errorMessage);
+      },
+    });
 
   const handleSubmit = async (data: CategoryFormData) => {
     await showPopup({
