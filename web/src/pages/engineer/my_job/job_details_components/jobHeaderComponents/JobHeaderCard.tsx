@@ -13,7 +13,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import { IoChatbubble } from "react-icons/io5";
 import { Button } from "@/shared/components/commonUI/Buttons";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.

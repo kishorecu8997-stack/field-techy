@@ -5,16 +5,19 @@ import {
   MdMic,
   MdMicOff,
   MdPerson,
+  MdScreenShare,
   MdVideocam,
   MdVideocamOff,
 } from "react-icons/md";
 import { assetsConfig } from "@/assets";
+import ShareScreen from "./ShareScreen";
+import ShareScreenWindow from "./ShareScreenWindow";
 
 interface VideoCallProps {
   isVisible: boolean;
   callerName?: string;
-  onClose: () => void;   // top-right X
-  onEndCall: () => void; // red end call
+  onClose: () => void;
+  onEndCall: () => void;
 }
 
 const VideoCall: React.FC<VideoCallProps> = ({
@@ -30,6 +33,10 @@ const VideoCall: React.FC<VideoCallProps> = ({
   // Common pattern states
   const [isCamOn, setIsCamOn] = useState(false); // initially slashed
   const [isMicOn, setIsMicOn] = useState(true);
+
+  // Screen share states
+  const [showShareScreen, setShowShareScreen] = useState(false);
+  const [showShareScreenWindow, setShowShareScreenWindow] = useState(false);
 
   // Camera permission / stream state
   const [camError, setCamError] = useState<string | null>(null);
@@ -68,7 +75,7 @@ const VideoCall: React.FC<VideoCallProps> = ({
         await localVideoRef.current.play().catch(() => {});
       }
       setIsCamOn(true);
-    } catch  {
+    } catch {
       setIsCamOn(false);
       stopLocalStream();
       setCamError("Camera permission denied or camera not available.");
@@ -107,11 +114,18 @@ const VideoCall: React.FC<VideoCallProps> = ({
       <div className="h-16 px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
         {/* Left: FT logo */}
         <div className="flex items-center">
-          <img
-            src={assetsConfig.logos.companyLogo}
-            alt="logo"
-            className="h-10 w-10"
-          />
+          <div className="flex items-center gap-2">
+            <img
+              src={assetsConfig.logos.ftLogo}
+              alt="Field Techy"
+              className="h-6 w-auto block dark:hidden"
+            />
+            <img
+              src={assetsConfig.logos.ftLogoWhite}
+              alt="Field Techy"
+              className="h-6 w-auto hidden dark:block"
+            />
+          </div>
         </div>
 
         {/* Center: name + duration */}
@@ -201,12 +215,18 @@ const VideoCall: React.FC<VideoCallProps> = ({
                 await startLocalStream();
               }
             }}
-            className="w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center"
+            className="w-20 h-14 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300"
           >
             {isCamOn ? (
-              <MdVideocam size={22} className="text-teal-800 dark:text-teal-300" />
+              <MdVideocam
+                size={22}
+                className="text-teal-800 dark:text-teal-300"
+              />
             ) : (
-              <MdVideocamOff size={22} className="text-gray-700 dark:text-gray-200" />
+              <MdVideocamOff
+                size={22}
+                className="text-gray-700 dark:text-gray-200"
+              />
             )}
           </button>
 
@@ -215,13 +235,25 @@ const VideoCall: React.FC<VideoCallProps> = ({
             type="button"
             aria-label={isMicOn ? "Mute microphone" : "Unmute microphone"}
             onClick={() => setIsMicOn((p) => !p)}
-            className="w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center"
+            className="w-20 h-14 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300"
           >
             {isMicOn ? (
               <MdMic size={22} className="text-teal-800 dark:text-teal-300" />
             ) : (
-              <MdMicOff size={22} className="text-gray-700 dark:text-gray-200" />
+              <MdMicOff
+                size={22}
+                className="text-gray-700 dark:text-gray-200"
+              />
             )}
+          </button>
+
+          <button
+            type="button"
+            aria-label="Screen share"
+            onClick={() => setShowShareScreen(true)}
+            className="w-20 h-14 rounded-full bg-teal-700 dark:bg-teal-700 flex items-center justify-center text-white"
+          >
+            <MdScreenShare size={22} className="text-white" />
           </button>
         </div>
 
@@ -233,11 +265,33 @@ const VideoCall: React.FC<VideoCallProps> = ({
             stopLocalStream();
             onEndCall();
           }}
-          className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow"
+          className="w-20 h-14 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow"
         >
           <MdCallEnd size={22} className="text-white" />
         </button>
       </div>
+
+      {/* Share Screen Modal */}
+      <ShareScreen
+        isVisible={showShareScreen}
+        onCancel={() => setShowShareScreen(false)}
+        onShare={() => {
+          setShowShareScreen(false);
+          setShowShareScreenWindow(true);
+        }}
+      />
+
+      {/* Share Screen Window */}
+      <ShareScreenWindow
+        isVisible={showShareScreenWindow}
+        callerName={callerName}
+        onClose={() => setShowShareScreenWindow(false)}
+        onStopSharing={() => setShowShareScreenWindow(false)}
+        onEndCall={() => {
+          setShowShareScreenWindow(false);
+          onEndCall();
+        }}
+      />
     </div>
   );
 };

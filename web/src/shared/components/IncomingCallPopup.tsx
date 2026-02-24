@@ -54,7 +54,7 @@ const IncomingCallPopup: React.FC<IncomingCallPopupProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed top-20 right-20 z-50">
       {/* Subtle blur-only backdrop */}
       <div className="absolute inset-0 bg-transparent pointer-events-none" />
       {!showOngoingCall && (

@@ -1,6 +1,11 @@
 import React, { useRef } from "react";
 import Draggable from "react-draggable";
-import { FaTimes, FaUser, FaVideoSlash, FaMicrophoneSlash } from "react-icons/fa";
+import {
+  FaTimes,
+  FaUser,
+  FaVideoSlash,
+  FaMicrophoneSlash,
+} from "react-icons/fa";
 import { MdCallEnd } from "react-icons/md";
 import { assetsConfig } from "@/assets";
 
@@ -9,7 +14,10 @@ interface OutgoingCallPopupProps {
   onClose: () => void;
 }
 
-const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({ contactName, onClose }) => {
+const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({
+  contactName,
+  onClose,
+}) => {
   const nodeRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -19,13 +27,25 @@ const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({ contactName, onCl
 
       <Draggable nodeRef={nodeRef} handle=".drag-handle">
         {/* Modal */}
-        <div ref={nodeRef} className="relative z-10 w-full max-w-xl mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+        <div
+          ref={nodeRef}
+          className="relative z-10 w-full max-w-xl mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden"
+        >
           {/* Top section: logo + close */}
           <div className="drag-handle cursor-move flex items-center justify-between px-4 py-3">
             {/* drag handle */}
-          <div className="flex items-center gap-2">
-            <img src={assetsConfig.logos.ftLogo} alt="Field Techy" className="h-6 w-auto" />
-          </div>
+            <div className="flex items-center gap-2">
+              <img
+                src={assetsConfig.logos.ftLogo}
+                alt="Field Techy"
+                className="h-6 w-auto block dark:hidden"
+              />
+              <img
+                src={assetsConfig.logos.ftLogoWhite}
+                alt="Field Techy"
+                className="h-6 w-auto hidden dark:block"
+              />
+            </div>
             <button
               aria-label="Close"
               onClick={onClose}
@@ -35,47 +55,48 @@ const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({ contactName, onCl
             </button>
           </div>
 
-        {/* Center section */}
-        <div className="px-6 pt-2 pb-4 text-center">
-          <div className="mx-auto w-28 h-28 rounded-full bg-teal-600 flex items-center justify-center shadow-md">
-            <FaUser size={48} className="text-white" />
-          </div>
-          <div className="mt-4">
-            <div className="text-lg font-semibold text-gray-900 dark:text-white">{contactName || "Unknown"}</div>
-            <div className="text-sm text-gray-500 mt-1">Ringing...</div>
-          </div>
-        </div>
-
-        {/* Bottom control bar */}
-        <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <button
-              aria-label="Toggle Video"
-              className="w-20 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
-            >
-              <FaVideoSlash size={25} />
-            </button>
-            <button
-              aria-label="Toggle Mute"
-              className="w-20 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
-            >
-              <FaMicrophoneSlash size={25} />
-            </button>
+          {/* Center section */}
+          <div className="px-6 pt-2 pb-4 text-center">
+            <div className="mx-auto w-28 h-28 rounded-full bg-teal-600 flex items-center justify-center shadow-md">
+              <FaUser size={48} className="text-white" />
+            </div>
+            <div className="mt-4">
+              <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                {contactName || "Unknown"}
+              </div>
+              <div className="text-sm text-gray-500 mt-1">Ringing...</div>
+            </div>
           </div>
 
-          <div className="flex items-center">
-            <button
-              aria-label="End Call"
-              onClick={onClose}
-              className="ml-2 bg-red-600 hover:bg-red-700 text-white w-20 h-14 rounded-full flex items-center justify-center shadow-md"
-            >
-              <MdCallEnd size="25" />
-            </button>
+          {/* Bottom control bar */}
+          <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <button
+                aria-label="Toggle Video"
+                className="w-20 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
+              >
+                <FaVideoSlash size={25} />
+              </button>
+              <button
+                aria-label="Toggle Mute"
+                className="w-20 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
+              >
+                <FaMicrophoneSlash size={25} />
+              </button>
+            </div>
+
+            <div className="flex items-center">
+              <button
+                aria-label="End Call"
+                onClick={onClose}
+                className="ml-2 bg-red-600 hover:bg-red-700 text-white w-20 h-14 rounded-full flex items-center justify-center shadow-md"
+              >
+                <MdCallEnd size="25" />
+              </button>
+            </div>
           </div>
-        </div>
         </div>
       </Draggable>
-
     </div>
   );
 };

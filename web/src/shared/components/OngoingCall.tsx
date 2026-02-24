@@ -82,11 +82,16 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
         >
           {/* Header */}
           <div className="drag-handle cursor-move flex items-center justify-between px-6 py-4">
-            <div className="flex justify-center mb-8">
+            <div className="flex items-center gap-2">
               <img
-                src={assetsConfig.logos.companyLogo}
-                alt="logo"
-                className="h-10 w-10 sm:h-10 sm:w-10"
+                src={assetsConfig.logos.ftLogo}
+                alt="Field Techy"
+                className="h-6 w-auto block dark:hidden"
+              />
+              <img
+                src={assetsConfig.logos.ftLogoWhite}
+                alt="Field Techy"
+                className="h-6 w-auto hidden dark:block"
               />
             </div>
 
@@ -234,11 +239,11 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
         callerName={callerName}
         onClose={() => setShowShareScreenWindow(false)}
         onStopSharing={() => {
-          setIsScreenShareOn(false);
+          setIsScreenShareOn(true);
           setShowShareScreenWindow(false);
         }}
         onEndCall={() => {
-          setIsScreenShareOn(false);
+          setIsScreenShareOn(true);
           setShowShareScreenWindow(false);
           (onEndCall || onClose)?.();
         }}

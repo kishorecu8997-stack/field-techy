@@ -311,7 +311,7 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
                 await startLocalStream();
               }
             }}
-            className="w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center"
+            className="w-20 h-14 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300"
           >
             {isCamOn ? (
               <MdVideocam
@@ -331,7 +331,7 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
             type="button"
             aria-label={isMicOn ? "Mute microphone" : "Unmute microphone"}
             onClick={() => setIsMicOn((p) => !p)}
-            className="w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center"
+            className="w-20 h-14 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300"
           >
             {isMicOn ? (
               <MdMic size={22} className="text-teal-800 dark:text-teal-300" />
@@ -350,10 +350,10 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
               isScreenShareOn ? "Stop screen share" : "Start screen share"
             }
             onClick={() => setIsScreenShareOn((p) => !p)}
-            className={`w-14 h-14 rounded-full flex items-center justify-center ${
+            className={`w-20 h-14 rounded-full flex items-center justify-center ${
               isScreenShareOn
                 ? "bg-teal-700 text-white"
-                : "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-200"
+                : "bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
             }`}
           >
             {isScreenShareOn ? (
@@ -372,7 +372,7 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
             stopLocalStream();
             onEndCall();
           }}
-          className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow"
+          className="w-20 h-14 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow"
         >
           <MdCallEnd size={22} className="text-white" />
         </button>

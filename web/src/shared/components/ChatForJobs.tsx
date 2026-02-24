@@ -57,10 +57,8 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId, currentUser }) => {
   const [search, setSearch] = useState("");
   const [chats, setChats] = useState(mockChats);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
-
-  const [showCallPopup, setShowCallPopup] = useState(false); // 1-1 outgoing popup
+  const [showCallPopup, setShowCallPopup] = useState(false);
   const [incomingCall, setIncomingCall] = useState<IncomingCall | null>(null);
-
   const [showGroupVideoCall, setShowGroupVideoCall] = useState(false);
 
   const ws = useMockWebSocket();

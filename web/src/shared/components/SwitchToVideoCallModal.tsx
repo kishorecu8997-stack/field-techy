@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "./commonUI/Buttons";
 
 interface SwitchToVideoCallModalProps {
   isVisible: boolean;
@@ -35,18 +36,18 @@ const SwitchToVideoCallModal: React.FC<SwitchToVideoCallModalProps> = ({
 
         {/* Bottom section - buttons */}
         <div className="flex items-center justify-end gap-3">
-          <button
+          <Button
             onClick={onCancel}
-            className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors font-medium"
+            variant="Cancel"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={onConfirm}
-            className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium"
+            variant="Accept"
           >
             Switch
-          </button>
+          </Button>
         </div>
       </div>
     </div>

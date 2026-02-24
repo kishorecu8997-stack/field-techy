@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
+import { Button } from "./commonUI/Buttons";
 
 interface ShareScreenProps {
   isVisible: boolean;
@@ -98,20 +99,20 @@ const ShareScreen: React.FC<ShareScreenProps> = ({
 
         {/* Bottom Buttons */}
         <div className="px-6 pb-6 flex justify-end gap-4">
-          <button
+          <Button
             onClick={onCancel}
-            className="h-10 px-6 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+            variant="Cancel"
           >
             Cancel
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={onShare}
             disabled={!selectedWindow}
-            className={`h-10 px-6 rounded-lg text-white transition font-medium ${selectedWindow ? "bg-[#0F5C54] dark:bg-[#0F766E] hover:brightness-110" : "bg-gray-400 cursor-not-allowed"}`}
+            variant="Accept"
           >
             Share
-          </button>
+          </Button>
         </div>
       </div>
     </div>
