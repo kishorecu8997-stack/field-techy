@@ -1,8 +1,8 @@
 import { icons } from "@/config/icons";
 import {
   JOB_STATUSES,
-  type JobStatus,
   type AssignmentStatus,
+  type JobStatus,
 } from "@/pages/engineer/search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -63,11 +63,14 @@ const EngineersActions = ({
   setIsReportOpen,
   onAddProgressUpdate,
   onOpenFinalStatement,
+  isFinalStatementSubmitted,
+  onOpenGiveClientFeedback,
+  onOpenViewClientFeedback,
   assignmentId,
   isSendProposal,
 }: {
   setOfferJobStatus?: Dispatch<
-    SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>
+    SetStateAction<OfferedJobStatusType | undefined>
   >;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
@@ -81,6 +84,9 @@ const EngineersActions = ({
   isDummyJob?: boolean;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
+  isFinalStatementSubmitted?: boolean;
+  onOpenGiveClientFeedback?: () => void;
+  onOpenViewClientFeedback?: () => void;
   assignmentId?: number;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
@@ -196,7 +202,30 @@ const EngineersActions = ({
     setActiveTab?.("Job Information");
   };
 
-  const postStartActions = (
+  const postStartActions = isFinalStatementSubmitted ? (
+    <div className="flex flex-wrap gap-4 w-fit">
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
+        onClick={() => onOpenViewClientFeedback?.()}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
+      >
+        <span>View Feedback From Client</span>
+      </Button>
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
+        onClick={() => onOpenGiveClientFeedback?.()}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
+      >
+        <span>Give Feedback On Client</span>
+      </Button>
+    </div>
+  ) : (
     <div className="flex flex-wrap gap-2 w-fit">
       <Button
         className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"

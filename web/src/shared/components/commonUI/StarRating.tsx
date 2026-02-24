@@ -49,17 +49,13 @@ export const StarRating: React.FC<StarRatingProps> = ({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center justify-center w-full">
       {label && (
-        <span className="text-sm text-gray-700 dark:text-gray-300">
+        <span className="text-sm text-gray-700 dark:text-gray-300 mr-2">
           {label}
         </span>
       )}
-      <div
-        className="flex items-center gap-1"
-        role="radiogroup"
-        aria-label={label || "Star rating"}
-      >
+      <div className="flex items-center gap-3 sm:gap-6" role="radiogroup">
         {[0, 1, 2, 3, 4].map((idx) => {
           const filled = idx < value;
           return (
@@ -72,17 +68,18 @@ export const StarRating: React.FC<StarRatingProps> = ({
               onKeyDown={(e) => handleKeyDown(idx, e)}
               className={`transition-transform ${
                 readOnly ? "cursor-default" : "hover:scale-110"
-              } p-0`}
+              } p-0 outline-none focus:outline-none focus:ring-0 focus:ring-offset-0`}
               role="radio"
               aria-checked={filled}
               aria-label={`Rate ${idx + 1} star${idx + 1 !== 1 ? "s" : ""}`}
               tabIndex={readOnly ? -1 : 0}
             >
               <Star
+                aria-hidden="true"
                 className={`${sizes[size]} ${
                   filled
                     ? "text-yellow-400"
-                    : "text-gray-300 dark:text-gray-600"
+                    : "text-gray-300 dark:text-gray-500"
                 }`}
                 fill={filled ? "currentColor" : "none"}
               />
