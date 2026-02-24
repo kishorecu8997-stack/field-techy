@@ -1,4 +1,3 @@
-import { earningsData, userData } from "@/dummy_data/jobDetails";
 import { useEngineerGetJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -95,7 +94,7 @@ const MyJobsPage = () => {
           <JobList jobs={jobs || []} isLoading={isLoading} isError={isError} />
           <div className="lg:col-span-1">
             <div className="sticky top-6">
-              <SidebarProfile user={userData} earnings={earningsData} />
+              <SidebarProfile />
             </div>
           </div>
         </div>
