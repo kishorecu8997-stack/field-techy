@@ -1,7 +1,8 @@
-import { TrackingData } from "@/dummy_data/admin/myjob_datas";
+import { useSearchParams } from "react-router-dom";
 import { exampleMarkers } from "@/dummy_data/jobDetails";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import MapComponent from "@/shared/components/MapComponent";
+import { useAdminGetJobLogs } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * ProcessTracking Component
@@ -14,23 +15,61 @@ import MapComponent from "@/shared/components/MapComponent";
  * <ProcessTracking />
  */
 const ProcessTracking = () => {
+  const [searchParams] = useSearchParams();
+  const jobIdParam = searchParams.get("jobId");
+  const jobId = jobIdParam ? Number(jobIdParam) : NaN;
+  const shouldFetch = Number.isFinite(jobId);
+
+  const { data, isLoading, error } = useAdminGetJobLogs(
+    shouldFetch ? { jobId } : undefined,
+    { enabled: shouldFetch },
+  );
+
   const columns = [
     { key: "id", label: "Sr.No." },
-    { key: "date", label: "Date & Time" },
-    { key: "checkIn", label: "Check In Time" },
-    { key: "checkOut", label: "Check Out Time" },
-    { key: "Total", label: "Total Time" },
+    { key: "timestamp", label: "Date and Time" },
+    { key: "logType", label: "Work Log Type" },
+    { key: "status", label: "Status" },
+    { key: "details", label: "Details" },
+    { key: "updatedAt", label: "Updated At" }
+  
   ];
+
+  if (!shouldFetch) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-gray-600">
+        Missing job id.
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-gray-600">
+        Loading job logs...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-red-600">
+        Failed to load job logs.
+      </div>
+    );
+  }
+
+  const tableData = data?.data ?? [];
 
   return (
     <div>
       <div className="font-bold text-gray-800 mb-1 dark:text-gray-400 py-2">
-        Check-ins
+        Work Log Details
       </div>
       <div>
         <CustomTable<any>
           columns={columns}
-          data={TrackingData}
+          data={tableData}
           initialPageSize={10}
         />
       </div>

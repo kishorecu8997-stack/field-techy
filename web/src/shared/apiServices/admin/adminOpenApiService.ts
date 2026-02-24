@@ -31,6 +31,8 @@ import {
   type AdminDeleteServiceCategoryResponse,
   type AdminUpdateJobStatusData,
   type AdminUpdateJobStatusResponses,
+  type AdminGetJobLogsData,
+  type AdminGetJobLogsResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -51,6 +53,7 @@ import {
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
   adminUpdateJobStatusMutation,
+  adminGetJobLogsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -428,7 +431,7 @@ export function useAdminGetJobDetails(
   return useQuery({
     ...adminGetJobDetailsOptions({
       client: apiClient,
-      query,
+      query: query ?? { jobId: 0 },
     }),
     ...options,
   });
@@ -460,6 +463,25 @@ export function useAdminGetServiceCategories(
     ...adminGetServiceCategoriesOptions({
       client: apiClient,
       query,
+    }),
+    ...options,
+  });
+}
+
+export type AdminGetJobLogsQuery = NonNullable<AdminGetJobLogsData["query"]>;
+
+export function useAdminGetJobLogs(
+  query?: AdminGetJobLogsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetJobLogsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetJobLogsOptions({
+      client: apiClient,
+      query: query ?? { jobId: 0 },
     }),
     ...options,
   });
