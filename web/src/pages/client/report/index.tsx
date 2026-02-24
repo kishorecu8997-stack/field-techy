@@ -37,7 +37,7 @@ const ReportPage = ({
   const handleReportSubmit = async (data: PostReportProps) => {
     await showPopup({
       title: "Report a Problem",
-      body: "are you sure you want to upload this report ?",
+      body: "Are you sure you want to upload this report?",
       actionButtons: [
         {
           label: "Cancel",
