@@ -38,7 +38,7 @@ const JobsDetails: React.FC = () => {
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
               isReport
-              onSortChange={() => { }}
+              onSortChange={() => {}}
             />
           </div>
           <div className="flex justify-center items-center h-64">
@@ -61,7 +61,7 @@ const JobsDetails: React.FC = () => {
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
               isReport
-              onSortChange={() => { }}
+              onSortChange={() => {}}
             />
           </div>
           <div className="flex justify-center items-center h-64">
@@ -84,7 +84,7 @@ const JobsDetails: React.FC = () => {
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
               isReport
-              onSortChange={() => { }}
+              onSortChange={() => {}}
             />
           </div>
           <div className="flex justify-center items-center h-64">
@@ -146,7 +146,7 @@ const JobsDetails: React.FC = () => {
             currentSort={SORT_OPTIONS.NEWEST}
             isReport={breadcrumbExtra !== "chats"}
             isShowSort={breadcrumbExtra !== "chats"}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             segments={segments}
             isChatVisible={breadcrumbExtra === "chats"}
             handleCloseChat={handleCloseChat}

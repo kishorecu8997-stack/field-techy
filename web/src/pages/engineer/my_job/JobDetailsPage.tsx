@@ -131,7 +131,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -156,7 +156,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -175,7 +175,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -233,7 +233,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
           isReport
           customLabels={
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
@@ -278,10 +278,10 @@ const JobDetailsPage = () => {
                 job
                   ? mapJobToJobInfo(job)
                   : {
-                    jobTitle: "",
-                    terms: { title: "Job Details", items: [] },
-                    files: [],
-                  }
+                      jobTitle: "",
+                      terms: { title: "Job Details", items: [] },
+                      files: [],
+                    }
               }
             />
 
@@ -313,7 +313,7 @@ const JobDetailsPage = () => {
           isOpen={isReviewOpen}
           onClose={() => setIsReviewOpen(false)}
           clientName={`Client #${clientId}`}
-        // onSubmit={handleSubmitReview}
+          // onSubmit={handleSubmitReview}
         />
       )}
     </div>

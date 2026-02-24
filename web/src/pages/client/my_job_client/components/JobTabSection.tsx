@@ -189,17 +189,17 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     // Add Manage Proposals tab when showManageProposals is true
     ...(showManageProposals
       ? [
-        {
-          label: JOB_TAB_LABELS.manageProposals || "Manage Proposals",
-          content: (
-            <ManageProposalsTab
-              assignments={assignmentsData}
-              isLoading={isLoadingAssignments}
-              jobId={Number(jobID)}
-            />
-          ),
-        },
-      ]
+          {
+            label: JOB_TAB_LABELS.manageProposals || "Manage Proposals",
+            content: (
+              <ManageProposalsTab
+                assignments={assignmentsData}
+                isLoading={isLoadingAssignments}
+                jobId={Number(jobID)}
+              />
+            ),
+          },
+        ]
       : []),
   ];
 
@@ -212,7 +212,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
           setSelectedTab(tabLabel);
         }}
       />
-    </div >
+    </div>
   );
 };
 

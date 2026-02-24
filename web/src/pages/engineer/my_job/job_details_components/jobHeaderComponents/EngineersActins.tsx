@@ -199,14 +199,15 @@ const EngineersActions = ({
     setActiveTab?.("Job Information");
   };
 
-
   const postStartActions = isFinalStatementSubmitted ? (
     <div className="flex flex-wrap gap-4 w-fit">
       <Button
         variant="no_style"
         className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
         onClick={() => onOpenViewClientFeedback?.()}
-        leftIcon={<icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
       >
         <span>View Feedback From Client</span>
       </Button>
@@ -214,7 +215,9 @@ const EngineersActions = ({
         variant="no_style"
         className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
         onClick={() => onOpenGiveClientFeedback?.()}
-        leftIcon={<icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
       >
         <span>Give Feedback On Client</span>
       </Button>
@@ -392,54 +395,54 @@ const EngineersActions = ({
             </Button>
           </div>
         ) : /* Applied Status */
-          isApplied ? (
-            <div className="flex flex-wrap gap-2 w-fit items-center">
-              <icons.checkCircle className="text-green-500 w-6 h-6" />
-              <span className="text-lg">Job Applied</span>
-            </div>
-          ) : /* Rejected Status */
-            isRejected ? (
-              <div className="flex flex-wrap gap-2 w-fit items-center">
-                <icons.checkCircle className="text-red-500 w-6 h-6" />
-                <span className="text-lg text-red-500">Proposal Rejected</span>
-              </div>
-            ) : /* Job Started Status */
-              isJobStarted ? (
-                <div className="flex flex-wrap gap-2 w-fit items-center">
-                  {OfferJobStatus === "start_pending_approval" ? (
-                    <>
-                      <icons.pending className="text-yellow-500 w-6 h-6" />
-                      <span className="text-lg text-yellow-500">
-                        Start Pending Approval
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <icons.checkCircle className="text-green-500 w-6 h-6" />
-                      <span className="text-lg text-green-500">Job Started</span>
-                    </>
-                  )}
-                </div>
-              ) : /* New/Posted/Offer/Accepted/Assigned Status */
-                (isNew || isPosted || isOffer || isProposalAccepted || hasAssignment) &&
-                  !hasStartPending ? (
-                  <div className="flex flex-wrap gap-2 w-fit items-center">
-                    {renderJobActionButtons()}
-                  </div>
-                ) : /* Cancelled Status */
-                  isCancelled ? (
-                    <div className="flex flex-wrap gap-2 w-fit items-center">
-                      <icons.checkCircle className="text-red-500 w-6 h-6" />
-                      <span className="text-lg">Job Cancelled</span>
-                    </div>
-                  ) : /* Closed Status */
-                    isClosed ? (
-                      <div className="flex flex-wrap gap-2 w-fit items-center">
-                        <icons.checkCircle className="text-green-500 w-6 h-6" />
-                        <span className="text-lg">Job Closed</span>
-                      </div>
-                    ) : /* Unknown Status */
-                      null}
+        isApplied ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-green-500 w-6 h-6" />
+            <span className="text-lg">Job Applied</span>
+          </div>
+        ) : /* Rejected Status */
+        isRejected ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-red-500 w-6 h-6" />
+            <span className="text-lg text-red-500">Proposal Rejected</span>
+          </div>
+        ) : /* Job Started Status */
+        isJobStarted ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            {OfferJobStatus === "start_pending_approval" ? (
+              <>
+                <icons.pending className="text-yellow-500 w-6 h-6" />
+                <span className="text-lg text-yellow-500">
+                  Start Pending Approval
+                </span>
+              </>
+            ) : (
+              <>
+                <icons.checkCircle className="text-green-500 w-6 h-6" />
+                <span className="text-lg text-green-500">Job Started</span>
+              </>
+            )}
+          </div>
+        ) : /* New/Posted/Offer/Accepted/Assigned Status */
+        (isNew || isPosted || isOffer || isProposalAccepted || hasAssignment) &&
+          !hasStartPending ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            {renderJobActionButtons()}
+          </div>
+        ) : /* Cancelled Status */
+        isCancelled ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-red-500 w-6 h-6" />
+            <span className="text-lg">Job Cancelled</span>
+          </div>
+        ) : /* Closed Status */
+        isClosed ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-green-500 w-6 h-6" />
+            <span className="text-lg">Job Closed</span>
+          </div>
+        ) : /* Unknown Status */
+        null}
       </span>
     </div>
   );

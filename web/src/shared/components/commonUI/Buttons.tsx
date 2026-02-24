@@ -7,27 +7,27 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   className?: string;
   variant?:
-  | "primary"
-  | "secondary"
-  | "ghost"
-  | "danger"
-  | "outline"
-  | "link"
-  | "text"
-  | "solid"
-  | "liveChat"
-  | "closeChat"
-  | "liveChatSend"
-  | "no_style"
-  | "dropdown"
-  | "warning"
-  | "headerClose"
-  | "videoCall"
-  | "audioCall"
-  | "attachmentPlus"
-  | "photoVideoAttachment"
-  | "documentAttachment"
-  | "sendButtonChat";
+    | "primary"
+    | "secondary"
+    | "ghost"
+    | "danger"
+    | "outline"
+    | "link"
+    | "text"
+    | "solid"
+    | "liveChat"
+    | "closeChat"
+    | "liveChatSend"
+    | "no_style"
+    | "dropdown"
+    | "warning"
+    | "headerClose"
+    | "videoCall"
+    | "audioCall"
+    | "attachmentPlus"
+    | "photoVideoAttachment"
+    | "documentAttachment"
+    | "sendButtonChat";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
   loading?: boolean;

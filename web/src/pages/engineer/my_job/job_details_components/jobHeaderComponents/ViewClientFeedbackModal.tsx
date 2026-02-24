@@ -13,11 +13,11 @@ type ViewClientFeedbackModalProps = {
 
 /**
  * View Client Feedback Modal
- * 
+ *
  * This component is used to display the feedback given by the client to the engineer.
- * 
- * @param param0 
- * @returns 
+ *
+ * @param param0
+ * @returns
  */
 
 const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
@@ -27,7 +27,6 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
   rating,
   review,
 }) => {
-
   return (
     <div className="w-full bg-white dark:bg-gray-800 rounded-lg">
       <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
@@ -69,15 +68,19 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
               aria-label={`Rated ${rating || 0} out of 5 stars`}
             >
               {(() => {
-                const safeRating = Math.max(0, Math.min(5, Math.round(Number(rating) || 0)));
+                const safeRating = Math.max(
+                  0,
+                  Math.min(5, Math.round(Number(rating) || 0)),
+                );
                 return Array.from({ length: 5 }).map((_, i) => (
                   <FaStar
                     key={i}
                     aria-hidden="true"
-                    className={`w-4 h-4 ${i < safeRating
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300 dark:text-gray-500"
-                      }`}
+                    className={`w-4 h-4 ${
+                      i < safeRating
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-gray-300 dark:text-gray-500"
+                    }`}
                   />
                 ));
               })()}

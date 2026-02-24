@@ -264,13 +264,13 @@ const TimelineSection: React.FC<{
     // Build attachments array from attachmentUrl if available
     const attachments = progressLog.attachmentUrl
       ? [
-        {
-          name:
-            progressLog.attachmentUrl.split("/").pop()?.split("?")[0] ||
-            "Attachment",
-          url: progressLog.attachmentUrl,
-        },
-      ]
+          {
+            name:
+              progressLog.attachmentUrl.split("/").pop()?.split("?")[0] ||
+              "Attachment",
+            url: progressLog.attachmentUrl,
+          },
+        ]
       : undefined;
 
     // Generate proper title based on logType and status
@@ -447,12 +447,12 @@ const TimelineSection: React.FC<{
   const actionRequiredCount =
     (hasAnyApiData
       ? [
-        progressStatus,
-        revisionUpdateStatus,
-        shortBreakStatus,
-        finalStatementStatus,
-        jobStatus,
-      ].filter((status) => status === TIMELINE_STATUS.pending).length
+          progressStatus,
+          revisionUpdateStatus,
+          shortBreakStatus,
+          finalStatementStatus,
+          jobStatus,
+        ].filter((status) => status === TIMELINE_STATUS.pending).length
       : 0) + (hasPendingStartRequest ? 1 : 0);
 
   const shortBreakStatusNode =
@@ -928,19 +928,17 @@ const TimelineSection: React.FC<{
             onCancel={handleFormCancel}
           />
 
-          {
-            confirmModals.map((modal) => (
-              <ConfirmModal
-                key={modal.key}
-                isOpen={modal.isOpen}
-                title={modal.title}
-                message={modal.message}
-                confirmLabel={modal.confirmLabel}
-                onConfirm={modal.onConfirm}
-                onCancel={modal.onCancel}
-              />
-            ))
-          }
+          {confirmModals.map((modal) => (
+            <ConfirmModal
+              key={modal.key}
+              isOpen={modal.isOpen}
+              title={modal.title}
+              message={modal.message}
+              confirmLabel={modal.confirmLabel}
+              onConfirm={modal.onConfirm}
+              onCancel={modal.onCancel}
+            />
+          ))}
 
           <ShortBreakApprovalModal
             isOpen={showShortBreakApprovalModal}
@@ -951,7 +949,7 @@ const TimelineSection: React.FC<{
           />
         </>
       )}
-    </div >
+    </div>
   );
 };
 

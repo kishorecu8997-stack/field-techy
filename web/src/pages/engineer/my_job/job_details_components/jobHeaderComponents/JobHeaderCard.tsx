@@ -116,23 +116,23 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
             {(numberOfVacancy !== undefined ||
               numberOfApplicants !== undefined) && (
-                <p className="text-sm mt-1">
-                  {numberOfVacancy !== undefined && (
-                    <span>
-                      {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
-                    </span>
+              <p className="text-sm mt-1">
+                {numberOfVacancy !== undefined && (
+                  <span>
+                    {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
+                  </span>
+                )}
+                {numberOfVacancy !== undefined &&
+                  numberOfApplicants !== undefined && (
+                    <span>{JOB_HEADER_COPY.separator}</span>
                   )}
-                  {numberOfVacancy !== undefined &&
-                    numberOfApplicants !== undefined && (
-                      <span>{JOB_HEADER_COPY.separator}</span>
-                    )}
-                  {numberOfApplicants !== undefined && (
-                    <span>
-                      {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
-                    </span>
-                  )}
-                </p>
-              )}
+                {numberOfApplicants !== undefined && (
+                  <span>
+                    {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
+                  </span>
+                )}
+              </p>
+            )}
           </div>
           <div className="flex gap-2 items-center">
             {onToggleChat && jobId && (

@@ -32,4 +32,3 @@ export const isDummyJob = (jobId: number | string | undefined): boolean => {
   // Currently only one dummy job, but this can be expanded
   return isDummyNetworkEngineerJob(jobId);
 };
-

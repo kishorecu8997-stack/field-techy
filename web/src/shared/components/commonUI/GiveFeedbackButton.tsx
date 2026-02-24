@@ -56,7 +56,9 @@ const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
       variant="no_style"
       className={className}
       onClick={handleClick}
-      leftIcon={<HiStar aria-hidden="true" className="h-5 w-5 text-yellow-500" />}
+      leftIcon={
+        <HiStar aria-hidden="true" className="h-5 w-5 text-yellow-500" />
+      }
     >
       <span className={textClassName}>{label}</span>
     </Button>

@@ -194,7 +194,9 @@ export function useCreateRateAndReviewAssignment(options?: {
   return useMutation({
     ...createRateAndReviewAssignmentMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: getUserRatingAndReviewsQueryKey({ client: apiClient }) });
+      queryClient.invalidateQueries({
+        queryKey: getUserRatingAndReviewsQueryKey({ client: apiClient }),
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

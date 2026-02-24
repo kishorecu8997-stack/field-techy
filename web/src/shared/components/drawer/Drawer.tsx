@@ -127,9 +127,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
                 title={config.title}
                 onClose={onClose}
                 onBack={onBack}
-                showBack={
-                  !!config.parent || !!immediateParentKey
-                }
+                showBack={!!config.parent || !!immediateParentKey}
                 actions={config.actions}
               />
             </div>

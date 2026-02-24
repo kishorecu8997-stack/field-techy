@@ -145,10 +145,10 @@ const JobTabSection = ({
 
     const proposalAttachmentMeta = file
       ? {
-        filename: file.name,
-        size: file.size,
-        mimeType: file.type,
-      }
+          filename: file.name,
+          size: file.size,
+          mimeType: file.type,
+        }
       : undefined;
 
     try {
@@ -218,26 +218,26 @@ const JobTabSection = ({
     // Show Proposal Info tab after proposal is submitted (from API or local state)
     ...(hasAppliedFromApi || hasApplied || submittedProposal
       ? [
-        {
-          label: JOB_TAB_LABELS.proposalInfo,
-          content: (
-            <ProposalInfoTab
-              submittedProposal={
-                submittedProposal ||
-                (apiProposalData?.proposalDetail
-                  ? {
-                    proposalDescription: apiProposalData.proposalDetail,
-                    attachmentUrl: apiProposalData.proposalAttachmentUrl,
-                  }
-                  : {
-                    proposalDescription: "",
-                    attachments: null,
-                  })
-              }
-            />
-          ),
-        },
-      ]
+          {
+            label: JOB_TAB_LABELS.proposalInfo,
+            content: (
+              <ProposalInfoTab
+                submittedProposal={
+                  submittedProposal ||
+                  (apiProposalData?.proposalDetail
+                    ? {
+                        proposalDescription: apiProposalData.proposalDetail,
+                        attachmentUrl: apiProposalData.proposalAttachmentUrl,
+                      }
+                    : {
+                        proposalDescription: "",
+                        attachments: null,
+                      })
+                }
+              />
+            ),
+          },
+        ]
       : []),
   ];
 

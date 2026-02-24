@@ -5,16 +5,16 @@ export interface GenericPopupButton {
   label: string;
   value: unknown;
   variant?:
-  | "primary"
-  | "outline"
-  | "danger"
-  | "secondary"
-  | "link"
-  | "ghost"
-  | "text"
-  | "solid"
-  | "warning"
-  | undefined;
+    | "primary"
+    | "outline"
+    | "danger"
+    | "secondary"
+    | "link"
+    | "ghost"
+    | "text"
+    | "solid"
+    | "warning"
+    | undefined;
   className?: string;
   action?: (close: (result: unknown) => void) => Promise<void> | void;
 }
@@ -22,9 +22,9 @@ export interface GenericPopupButton {
 export interface GenericPopupProps {
   title?: string | React.ReactNode;
   body:
-  | string
-  | React.ReactNode
-  | ((onClose: (value: unknown) => void) => React.ReactNode);
+    | string
+    | React.ReactNode
+    | ((onClose: (value: unknown) => void) => React.ReactNode);
   actionButtons?: GenericPopupButton[];
   onClose: (value: unknown) => void;
   bodyClassName?: string;
@@ -59,7 +59,12 @@ export function GenericPopup(props: GenericPopupProps) {
       return props.body(props.onClose);
     }
     if (React.isValidElement(props.body)) {
-      return React.cloneElement(props.body as React.ReactElement<{ onClose?: (value: unknown) => void }>, { onClose: props.onClose });
+      return React.cloneElement(
+        props.body as React.ReactElement<{
+          onClose?: (value: unknown) => void;
+        }>,
+        { onClose: props.onClose },
+      );
     }
     return props.body;
   };
@@ -73,8 +78,9 @@ export function GenericPopup(props: GenericPopupProps) {
       </div>
 
       <div
-        className={`px-4 pb-2 flex-grow bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-200 ${props.bodyClassName ?? "overflow-y-auto"
-          }`}
+        className={`px-4 pb-2 flex-grow bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-200 ${
+          props.bodyClassName ?? "overflow-y-auto"
+        }`}
       >
         {renderBody()}
       </div>
@@ -87,8 +93,9 @@ export function GenericPopup(props: GenericPopupProps) {
               key={idx}
               type="button"
               variant={button.variant}
-              className={`px-4 py-2 font-medium transition-all ${isLoading ? "opacity-75 cursor-not-allowed" : ""
-                } ${button.className ?? ""}`}
+              className={`px-4 py-2 font-medium transition-all ${
+                isLoading ? "opacity-75 cursor-not-allowed" : ""
+              } ${button.className ?? ""}`}
               disabled={isLoading}
               onClick={() => handleClick(button, idx)}
               onKeyUp={(e) => {
