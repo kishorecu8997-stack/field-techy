@@ -9,6 +9,8 @@ export interface ManageProposalCardProps {
   bidAmount: string;
   payType: string;
   availability: string;
+  attachmentUrl?: string | null;
+  receivedOn?: string | null;
   onClick?: () => void;
 }
 
@@ -27,12 +29,27 @@ const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
   bidAmount,
   payType,
   availability,
+  attachmentUrl,
+  receivedOn,
   onClick,
 }) => {
+  // The card has an onClick handler but lacks keyboard accessibility.
+  // When a div is clickable, it should either be a button element or include
+  // role="button", tabIndex={0}, and keyboard event handlers (onKeyDown/onKeyPress)
+  // for Enter and Space keys. This follows the accessibility pattern established in the codebase.
   return (
     <div
       className="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-300 dark:border-gray-600 hover:shadow-md transition-shadow w-full max-w-xl"
       onClick={onClick}
+      // Accessibility: make the div focusable and keyboard accessible
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
     >
       {imageUrl ? (
         <img
@@ -78,6 +95,31 @@ const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
           </span>{" "}
           {availability}
         </p>
+
+        {attachmentUrl && (
+          <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+            <span className="font-semibold text-gray-900 dark:text-gray-100">
+              Attachment:
+            </span>{" "}
+            <a
+              href={attachmentUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 dark:text-blue-400 underline"
+            >
+              View PDF
+            </a>
+          </p>
+        )}
+
+        {receivedOn && (
+          <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+            <span className="font-semibold text-gray-900 dark:text-gray-100">
+              Received On:
+            </span>{" "}
+            {receivedOn}
+          </p>
+        )}
       </div>
     </div>
   );
