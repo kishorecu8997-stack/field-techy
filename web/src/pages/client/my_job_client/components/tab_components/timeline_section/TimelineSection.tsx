@@ -9,7 +9,8 @@ import {
   transformLogsToTimelineItems,
 } from "@/utils/timelineUtils";
 // import TimelineList from "@/shared/components/TimelineList";
-import type {  CardButtonType } from "@/pages/client/my_job_client/types";
+import type { CardButtonType, TimelineRevisionData } from "@/pages/client/my_job_client/types";
+import type { RevisionData } from "./TimelineSectionHeader";
 import {
   // createRevisionUpdateCardData,
 } from "@/dummy_data/clientTimelineDummyData";
@@ -355,7 +356,7 @@ const TimelineSection: React.FC<{
       // Generate proper title based on logType and status
       let title = progressLog.title || "Progress Update";
       if (progressLog.logType === "SUBMISSION") {
-        if (progressLog.status === ("pending" as any)) {
+        if ((progressLog.status as string) === "pending") {
           title = "Proposal Submitted";
         } else if (progressLog.status === "approved") {
           title = "Proposal Accepted";
@@ -393,10 +394,10 @@ const TimelineSection: React.FC<{
   const apiProgressData = apiProgressDataList.length > 0 ? apiProgressDataList[0] : null;
 
   // Extract revision updates for EACH progress log - returns array of revision data
-  const apiRevisionUpdateDataList = useMemo(() => {
+  const apiRevisionUpdateDataList = useMemo((): RevisionData[] => {
     if (!jobLogs?.logs?.length) return [];
 
-    const revisionDataList: any[] = [];
+    const revisionDataList: RevisionData[] = [];
 
     // Find all progress update logs that have revisions
     for (const log of jobLogs.logs) {
@@ -416,23 +417,11 @@ const TimelineSection: React.FC<{
         }));
 
         revisionDataList.push({
-          id: `revision-update-${log.id}`,
           logId: log.id,
-          revisionId: revisions[0]?.revisionId,
-          type: "revisionRequestUpdate" as const,
-          title: "Revision Request",
-          description: revisions[0]?.clientComment || "",
-          timestamp: formatApiDate(revisions[0]?.createdAt),
-          attachments: revisions[0]?.clientAttachmentUrl
-            ? [
-                {
-                  name: revisions[0].clientAttachmentUrl.split("/").pop()?.split("?")[0] || "Attachment",
-                  url: revisions[0].clientAttachmentUrl,
-                },
-              ]
-            : undefined,
-          accentColor: TIMELINE_CARD_COLORS.orange,
-          buttons: ["reject", "requestRevision", "approve"] as CardButtonType[],
+          revisionId: revisions[0]?.revisionId || 0,
+          content: revisions[0]?.content || null,
+          attachmentUrl: revisions[0]?.attachmentUrl || null,
+          status: revisions[0]?.status || "pending",
           revisions: revisions,
         });
       }
@@ -554,19 +543,20 @@ const TimelineSection: React.FC<{
     if (!jobLogs) return [];
 
     const logItems = transformLogsToTimelineItems(jobLogs.logs || []);
-    // Filter out null values and sort by effectiveTimestamp descending (newest first)
+    // Filter out items with invalid dates, then sort by timestamp descending (newest first)
     return logItems
-      .filter((item): item is NonNullable<typeof item> => item !== null)
+      .filter((item) => {
+        const time = item.effectiveTimestamp || item.timestamp;
+        if (!time) return false;
+        const date = new Date(time).getTime();
+        return !isNaN(date);
+      })
       .sort((a, b) => {
         const timeA = a.effectiveTimestamp || a.timestamp;
         const timeB = b.effectiveTimestamp || b.timestamp;
-        // Parse dates explicitly to handle ISO format correctly
-        const dateA = timeA ? new Date(timeA).getTime() : 0;
-        const dateB = timeB ? new Date(timeB).getTime() : 0;
-        // If dates are invalid, use 0
-        const validDateA = isNaN(dateA) ? 0 : dateA;
-        const validDateB = isNaN(dateB) ? 0 : dateB;
-        return validDateB - validDateA;
+        const dateA = new Date(timeA!).getTime();
+        const dateB = new Date(timeB!).getTime();
+        return dateB - dateA;
       });
   }, [jobLogs]);
 
@@ -591,6 +581,56 @@ const TimelineSection: React.FC<{
       buttons: ["reject", "approve"] as CardButtonType[],
     };
   }, [jobLogs]);
+
+  // Prepare action required progress update cards - filters and computes card data
+  const actionRequiredProgressCards = useMemo(() => {
+    if (!apiProgressDataList?.length) return [];
+
+    return apiProgressDataList
+      .filter((progressData) => {
+        const thisLogStatus = String((progressData.rawLog as { status?: string })?.status).toLowerCase();
+        return thisLogStatus === "pending" || thisLogStatus === "revision_requested";
+      })
+      .map((progressData) => {
+        // Find the revision data for this specific progress log
+        const revisionData = apiRevisionUpdateDataList.find(r => r.logId === progressData.logId);
+        
+        // Get this specific log's status
+        const thisLogStatus = (progressData.rawLog as { status?: string })?.status;
+        const thisLogIsPending = String(thisLogStatus).toLowerCase() === "pending";
+        
+        // Check if the revision itself is pending
+        const latestRevision = revisionData?.revisions?.[0];
+        const revisionStatus = latestRevision?.status;
+        const revisionIsPending = String(revisionStatus).toLowerCase() === "pending";
+
+        // Use TIMELINE_STATUS.approved for non-pending logs to hide action buttons
+        const thisLogProgressStatus = thisLogIsPending 
+          ? progressStatus 
+          : TIMELINE_STATUS.approved;
+
+        // Determine revisionUpdateStatus based on the revision's status
+        const thisLogRevisionUpdateStatus = revisionIsPending 
+          ? revisionUpdateStatus 
+          : TIMELINE_STATUS.approved;
+
+        // Only show action buttons on PENDING progress logs
+        const cardData = thisLogIsPending ? progressData : {
+          ...progressData,
+          buttons: []
+        };
+
+        return {
+          progressData,
+          revisionData,
+          thisLogStatus,
+          thisLogIsPending,
+          thisLogProgressStatus,
+          thisLogRevisionUpdateStatus,
+          cardData,
+        };
+      });
+  }, [apiProgressDataList, apiRevisionUpdateDataList, progressStatus, revisionUpdateStatus]);
 
   // Build timeline items - combines API data with proposal items
   // Uses effectiveTimestamp for proper sorting
@@ -845,28 +885,49 @@ const TimelineSection: React.FC<{
   };
   const finalStatementAccentColor = TIMELINE_CARD_COLORS.green;
 
-  // Calculate action required count - only count items that actually exist and are pending
-  // Use existing hasProgressData, hasBreakData, hasFinalStatementData variables
-  // Only count progressStatus/revisionUpdateStatus if there's actual progress data
-  // Note: If both progress and revision are pending, count as 1 action (not 2)
-  let actionRequiredItems = 0;
-  if (hasProgressData) {
+  // Calculate action required count using useMemo for better performance and readability
+  const actionRequiredCount = useMemo(() => {
+    let count = 0;
+    
     // Count progress update pending as 1 action
-    if (progressStatus === TIMELINE_STATUS.pending) actionRequiredItems++;
+    if (hasProgressData && progressStatus === TIMELINE_STATUS.pending) {
+      count++;
+    }
     // Count revision update pending as separate action only if progress is NOT pending
     // (when progress is pending, the revision is part of the same action)
-    else if (revisionUpdateStatus === TIMELINE_STATUS.pending) actionRequiredItems++;
-  }
-  if (hasBreakData) {
-    const pendingBreaks = Object.values(shortBreakStatuses).filter(
-      (status) => status === TIMELINE_STATUS.pending
-    ).length;
-    actionRequiredItems += pendingBreaks;
-  }
-  if (hasFinalStatementData && finalStatementStatus === TIMELINE_STATUS.pending) actionRequiredItems++;
-  if (hasPendingStartRequest) actionRequiredItems++;
-  
-  const actionRequiredCount = actionRequiredItems;
+    else if (hasProgressData && revisionUpdateStatus === TIMELINE_STATUS.pending) {
+      count++;
+    }
+    
+    // Count pending break requests
+    if (hasBreakData) {
+      const pendingBreaks = Object.values(shortBreakStatuses).filter(
+        (status) => status === TIMELINE_STATUS.pending
+      ).length;
+      count += pendingBreaks;
+    }
+    
+    // Count pending final statement
+    if (hasFinalStatementData && finalStatementStatus === TIMELINE_STATUS.pending) {
+      count++;
+    }
+    
+    // Count pending start request
+    if (hasPendingStartRequest) {
+      count++;
+    }
+    
+    return count;
+  }, [
+    hasProgressData,
+    progressStatus,
+    revisionUpdateStatus,
+    hasBreakData,
+    shortBreakStatuses,
+    hasFinalStatementData,
+    finalStatementStatus,
+    hasPendingStartRequest,
+  ]);
 
   // Helper function to get status node for a break request
   const getShortBreakStatusNode = (status: TimelineStatus) =>
@@ -1466,21 +1527,9 @@ const TimelineSection: React.FC<{
                 )}
 
                 {/* Progress Update Cards - Show PENDING/REVISION_REQUESTED progress updates in Action Required */}
-                {hasProgressData && apiProgressDataList
-                  .filter((progressData) => {
-                    const thisLogStatus = String((progressData.rawLog as any)?.status).toLowerCase();
-                    return thisLogStatus === "pending" || thisLogStatus === "revision_requested";
-                  })
-                  .map((progressData) => {
-                    const revisionData = apiRevisionUpdateDataList.find(r => r.logId === progressData.logId);
-                    const thisLogStatus = (progressData.rawLog as any)?.status;
-                    const thisLogIsPending = String(thisLogStatus).toLowerCase() === "pending";
-                    const latestRevision = revisionData?.revisions?.[0];
-                    const revisionStatus = latestRevision?.status;
-                    const revisionIsPending = String(revisionStatus).toLowerCase() === "pending";
-                    const thisLogProgressStatus = thisLogIsPending 
-                      ? progressStatus 
-                      : TIMELINE_STATUS.approved;
+                {hasProgressData && actionRequiredProgressCards
+                  .map(({ progressData, revisionData, thisLogStatus, thisLogIsPending, thisLogProgressStatus, thisLogRevisionUpdateStatus, cardData }) => {
+                    // Generate status node for this specific log based on its status
                     const thisLogStatusNode = thisLogIsPending 
                       ? progressStatusNode 
                       : thisLogStatus === "rejected"
@@ -1502,13 +1551,6 @@ const TimelineSection: React.FC<{
                               </span>
                             )
                             : null;
-                    const thisLogRevisionUpdateStatus = revisionIsPending 
-                      ? revisionUpdateStatus 
-                      : TIMELINE_STATUS.approved;
-                    const cardData = thisLogIsPending ? progressData : {
-                      ...progressData,
-                      buttons: []
-                    };
 
                     return (
                       <ProgressUpdateCard
@@ -1519,16 +1561,35 @@ const TimelineSection: React.FC<{
                         progressStatus={thisLogProgressStatus}
                         progressStatusNode={thisLogStatusNode}
                         revisionRequestDetails={revisionRequestDetails}
-                        revisionUpdateCardData={revisionData || {
+                        revisionUpdateCardData={(revisionData ? {
+                          id: `revision-${revisionData.logId}`,
+                          type: "revisionRequestUpdate" as const,
+                          title: "Revision Request",
+                          description: revisionData.revisions?.[0]?.clientComment || "",
+                          timestamp: revisionData.revisions?.[0]?.createdAt || "",
+                          accentColor: TIMELINE_CARD_COLORS.orange,
+                          buttons: ["reject", "requestRevision", "approve"] as CardButtonType[],
+                          revisions: (revisionData.revisions?.map(r => ({
+                            revisionId: r.revisionId,
+                            logId: revisionData.logId,
+                            content: r.content,
+                            attachmentUrl: r.attachmentUrl,
+                            clientComment: r.clientComment,
+                            clientAttachmentUrl: r.clientAttachmentUrl,
+                            createdAt: r.createdAt,
+                            updatedAt: r.updatedAt,
+                            status: r.status,
+                          })) || []) as TimelineRevisionData[],
+                        } : {
                           id: "no-revision",
-                          type: "revisionRequestUpdate",
+                          type: "revisionRequestUpdate" as const,
                           title: "",
                           description: "",
                           timestamp: "",
                           accentColor: TIMELINE_CARD_COLORS.orange,
                           buttons: [],
                           revisions: [],
-                        }}
+                        })}
                         revisionRequestUpdateCardData={apiRevisionRequestData || {
                           id: "no-revision-request",
                           type: "revisionRequestUpdate",

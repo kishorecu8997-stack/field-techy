@@ -47,7 +47,7 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                       {revision.clientAttachmentUrl && (
                         <div className="mt-2">
                           <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
-                            {revision.clientAttachmentUrl.split("/").pop()?.split("?")[0]}
+                            {decodeURIComponent(revision.clientAttachmentUrl.split("/").pop()?.split("?")[0] || "")}
                           </span>
                         </div>
                       )}
@@ -93,7 +93,7 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                         {revision.attachmentUrl && (
                           <div className="mt-2">
                             <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
-                              {revision.attachmentUrl.split("/").pop()?.split("?")[0]}
+                              {decodeURIComponent(revision.attachmentUrl.split("/").pop()?.split("?")[0] || "")}
                             </span>
                           </div>
                         )}

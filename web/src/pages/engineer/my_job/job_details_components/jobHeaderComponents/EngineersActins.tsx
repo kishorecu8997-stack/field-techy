@@ -291,6 +291,7 @@ const EngineersActions = ({
         className={`bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm ${hasPendingProgressUpdate ? "opacity-50 cursor-not-allowed" : ""}`}
         onClick={() => setOpen?.(true)}
         disabled={hasPendingProgressUpdate}
+        aria-disabled={hasPendingProgressUpdate}
       >
         Create Log
       </Button>

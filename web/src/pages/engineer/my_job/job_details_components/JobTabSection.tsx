@@ -35,7 +35,7 @@ import { toast } from "react-toastify";
  */
 const JobTabSection = ({
   // status - kept for future use
-  isWorkSubmitted,
+  // isWorkSubmitted - kept for future use
   isSendProposal,
   setSendProposal,
   activeTab,
@@ -60,8 +60,8 @@ const JobTabSection = ({
   assignmentId?: number;
   jobId?: number;
 }) => {
-  // isWorkSubmitted is intentionally unused but kept for prop interface compatibility
-  void isWorkSubmitted;
+  // isWorkSubmitted is used for prop interface compatibility with other components
+  // Currently kept for future implementation of work submission tracking
   const queryClient = useQueryClient();
 
   const { mutateAsync: applyJob } = useEngineerApplyJob({

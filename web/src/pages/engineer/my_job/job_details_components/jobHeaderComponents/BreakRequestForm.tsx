@@ -63,7 +63,8 @@ const BreakRequestForm = ({
       onClose();
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to submit break request");
+       console.error("Failed to submit break request:", error);
+      toast.error("Failed to submit break request");
       setIsSubmitting(false);
     },
   });
@@ -122,10 +123,15 @@ const BreakRequestForm = ({
         startAt = data.startDate ? new Date(data.startDate).toISOString() : null;
         endAt = data.endDate ? new Date(data.endDate).toISOString() : null;
       } else {
-        // For short term, use today's date with the time
+        // For short term, use today's local date with the selected local time
         const today = new Date();
-        startAt = data.startTime ? new Date(`${today.toISOString().split('T')[0]}T${data.startTime}`).toISOString() : null;
-        endAt = data.endTime ? new Date(`${today.toISOString().split('T')[0]}T${data.endTime}`).toISOString() : null;
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // 0-based
+        const day = String(today.getDate()).padStart(2, '0');
+        const localDate = `${year}-${month}-${day}`;
+        
+        startAt = data.startTime ? new Date(`${localDate}T${data.startTime}`).toISOString() : null;
+        endAt = data.endTime ? new Date(`${localDate}T${data.endTime}`).toISOString() : null;
       }
       
       breakRequestMutation.mutate({

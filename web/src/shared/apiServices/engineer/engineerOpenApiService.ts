@@ -553,8 +553,8 @@ export function useEngineerSubmitRevision(options?: {
   return useMutation({
     ...engineerSubmitRevisionMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Invalidate all queries to ensure job logs are refetched
-      queryClient.invalidateQueries();
+      // Invalidate engineer-related queries to ensure job logs are refetched
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

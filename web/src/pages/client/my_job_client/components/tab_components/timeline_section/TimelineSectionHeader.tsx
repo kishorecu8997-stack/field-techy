@@ -2,6 +2,25 @@ import React, { useState } from "react";
 import { HiChevronDown, HiArrowUturnRight } from "react-icons/hi2";
 import { HiCheckCircle, HiClock, HiXCircle } from "react-icons/hi";
 
+// Proper type for revision data from API
+export interface RevisionData {
+  revisionId: number;
+  logId: number;
+  content: string | null;
+  attachmentUrl?: string | null;
+  status: string;
+  revisions?: Array<{
+    revisionId: number;
+    content: string | null;
+    clientComment: string | null;
+    clientAttachmentUrl?: string | null;
+    attachmentUrl?: string | null;
+    createdAt: string | null;
+    updatedAt: string | null;
+    status: string;
+  }>;
+}
+
 interface TimelineSectionHeaderProps {
   items: Array<{
     title: string;
@@ -14,7 +33,7 @@ interface TimelineSectionHeaderProps {
     logId?: number;
     approverComment?: string | null;
   }>;
-  apiRevisionUpdateDataList?: any[];
+  apiRevisionUpdateDataList?: RevisionData[];
 }
 
 /**
@@ -39,19 +58,19 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
     });
   };
 
-  const hasRevisions = (item: any): boolean => {
+  const hasRevisions = (item: { logType?: string; logId?: number }): boolean => {
     if (item.logType !== "progress_update" && item.logType !== "SUBMISSION") {
       return false;
     }
     const revisionData = apiRevisionUpdateDataList.find(
-      (rev: any) => rev.logId === item.logId
+      (rev) => rev.logId === item.logId
     );
     return !!(revisionData && revisionData.revisions && revisionData.revisions.length > 0);
   };
 
-  const getRevisions = (item: any) => {
+  const getRevisions = (item: { logId?: number }) => {
     const revisionData = apiRevisionUpdateDataList.find(
-      (rev: any) => rev.logId === item.logId
+      (rev) => rev.logId === item.logId
     );
     return revisionData?.revisions || [];
   };
@@ -150,7 +169,7 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
               {/* Expanded revision conversation - engineer timeline style */}
               {isExpanded && itemHasRevisions && revisions.length > 0 && (
                 <div className="mt-3 pl-4 border-l border-gray-200 dark:border-gray-600">
-                  {revisions.map((revision: any, revIdx: number) => (
+                  {revisions.map((revision, revIdx: number) => (
                     <div key={revision.revisionId || revIdx} className="mb-3">
                       {/* Client message in amber box */}
                       {revision.clientComment && (

@@ -88,8 +88,6 @@ const JobDetailsPage = () => {
   const params = useParams();
   const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
-  // isWorkSubmitted is intentionally unused but needed for prop interface compatibility
-  void isWorkSubmitted;
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(JOB_TAB_LABELS.timeline);
@@ -123,7 +121,7 @@ const JobDetailsPage = () => {
         // Get original engineer's content
         const originalContent = log.details || "Engineer submitted a progress update";
         const originalAttachment = log.attachmentUrl 
-          ? log.attachmentUrl.split("/").pop()?.split("?")[0]
+          ? decodeURIComponent(log.attachmentUrl.split("/").pop()?.split("?")[0] || "")
           : undefined;
         const originalAttachmentUrl = log.attachmentUrl;
         
@@ -131,7 +129,7 @@ const JobDetailsPage = () => {
         // If there's a pending revision, show "Revision Requested"
         // Use 'any' type cast to handle potential 'pending' status from API
         const hasPendingRevision = log.revisions && log.revisions.some(
-          (rev: any) => rev.status === "pending"
+          (rev) => (rev.status as string) === "pending"
         );
         
         let statusText: string;
@@ -164,10 +162,13 @@ const JobDetailsPage = () => {
           // Include the log ID for revision update API calls
           logId: log.id,
           // Map revisions to include jobLogId as required by type
-          revisions: (log.revisions || []).map((rev: any) => ({
-            ...rev,
-            jobLogId: rev.jobLogId || log.id,
-          })),
+          revisions: (log.revisions || []).map((rev) => {
+            const revision = rev as typeof rev & { jobLogId?: number };
+            return {
+              ...revision,
+              jobLogId: revision.jobLogId || log.id,
+            };
+          }),
         });
       }
     }
@@ -328,6 +329,7 @@ const JobDetailsPage = () => {
 
             <JobTabSection
               status={jobStatus}
+              isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
               setSendProposal={setIsSendProposal}
               activeTab={activeTab}

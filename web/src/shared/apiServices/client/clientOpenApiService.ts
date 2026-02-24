@@ -332,8 +332,8 @@ export function useClientActionOnWorkLog(options?: {
   return useMutation({
     ...clientActionOnWorkLogMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Invalidate all queries to ensure job logs are refetched
-      queryClient.invalidateQueries();
+      // Invalidate client-related queries to ensure job logs are refetched
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
