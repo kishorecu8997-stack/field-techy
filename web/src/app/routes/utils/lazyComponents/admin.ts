@@ -66,6 +66,13 @@ export const AdminManagePayment = React.lazy(
 export const AdminManageTransactions = React.lazy(
   () => import("@/pages/admin/transactions"),
 );
+export const AdminManageCurrencyConversion = React.lazy(
+  () => import("@/pages/admin/manage_currency_conversion"),
+);
+export const AdminEditExchangeRate = React.lazy(
+  () =>
+    import("@/pages/admin/manage_currency_conversion/components/EditCurrencyRates"),
+);
 export const WalletOverview = React.lazy(
   () => import("@/pages/admin/wallet_management/wallet_overview"),
 );
@@ -95,25 +102,20 @@ export const EditSubAdmin = React.lazy(
 );
 export const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
 export const Settings = React.lazy(() => import("@/pages/admin/settings"));
+export const AdminReportIssue = React.lazy(
+  () => import("@/pages/admin/report_issue"),
+);
 export const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
 export const ReceivedNotification = React.lazy(
   () => import("@/pages/admin/received_notification"),
 );
-export const CorporateClientAdd = React.lazy(
-  () =>
-    import("@/pages/admin/client/components/add_components/CorporateClientForm"),
+const ClientForm = React.lazy(
+  () => import("@/pages/admin/client/components/ClientForm"),
 );
-export const HomeClientAdd = React.lazy(
-  () => import("@/pages/admin/client/components/add_components/HomeClientForm"),
-);
-export const CorporateClientEdit = React.lazy(
-  () =>
-    import("@/pages/admin/client/components/edit_components/CorporateClientEditForm"),
-);
-export const HomeClientEdit = React.lazy(
-  () =>
-    import("@/pages/admin/client/components/edit_components/HomeClientEditForm"),
-);
+export const CorporateClientAdd = ClientForm;
+export const HomeClientAdd = ClientForm;
+export const CorporateClientEdit = ClientForm;
+export const HomeClientEdit = ClientForm;
 export const CorporateClientView = React.lazy(
   () =>
     import("@/pages/admin/client/components/view_components/CorporateClientViewForm"),

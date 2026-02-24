@@ -1,19 +1,19 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useEngineerProfile } from "@/shared/store/useEngineerStore";
+import React, { useState } from "react";
+import { FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
+import { useEngineerBalance } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import {
   useEngineerGetProfileCompletion,
   useGetEngineerSavedJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import useDrawerStore from "@/shared/store/useDrawerStore";
-import { useEngineerProfile } from "@/shared/store/useEngineerStore";
-import { getCurrencyFromStorage } from "@/utils/currency";
-import React, { useState } from "react";
-import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
-import { FaUser } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import type { EarningsData, SidebarProfileProps } from "../types";
+import { formatCurrency } from "@/shared/libs/utils";
 import { useCountUp } from "@/shared/hooks/useCountUp";
 
 /**
@@ -26,11 +26,11 @@ import { useCountUp } from "@/shared/hooks/useCountUp";
  * @example
  * <SidebarProfile user={user} earnings={earnings} />
  */
-const SidebarProfile: React.FC<SidebarProfileProps> = ({ earnings }) => {
+const SidebarProfile: React.FC = () => {
   return (
     <div className="space-y-6">
       <ProfileCard />
-      <EarningsCard earnings={earnings} />
+      <EarningsCard />
       <SavedJobsCard />
     </div>
   );
@@ -116,10 +116,18 @@ const ProfileCard = () => {
  *
  * Includes a "View all" link (currently placeholder) for navigating to a full earnings page.
  */
-const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
-  const { balance } = earnings;
+const EarningsCard = () => {
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
   const [showBalance, setShowBalance] = useState<boolean>(false);
+  const { data: balanceArr } = useEngineerBalance();
+  const balance = balanceArr?.[0];
+  const formattedBalance = showBalance
+    ? (() => {
+        const amount = Number(balance?.balance);
+        const currency = balance?.currencyCode ?? "USD";
+        return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+      })()
+    : "******";
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -143,17 +151,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         </div>
         <div className="text-3xl font-bold text-gray-900 dark:text-white">
           <div className="flex justify-between items-center">
-            {showBalance ? (
-              <span>
-                {getCurrencyFromStorage()}
-                {balance.toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>
-            ) : (
-              "******"
-            )}
+            <span>{formattedBalance}</span>
 
             {!showBalance ? (
               <BsEyeFill

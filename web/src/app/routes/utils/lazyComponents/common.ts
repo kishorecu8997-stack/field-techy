@@ -22,3 +22,6 @@ export const AdminLayout = React.lazy(
   () => import("@/layout/admin/AdminLayout"),
 );
 export const FTLayout = React.lazy(() => import("@/layout/FTLayout"));
+export const CommonNotificationPage = React.lazy(
+  () => import("@/shared/components/notifications/NotificationList"),
+);

@@ -67,19 +67,19 @@ export default function EditEngineer() {
       address: engineerData.address ?? "",
       skills: [],
       price:
-        engineerData.hourlyRate !== undefined &&
-        engineerData.hourlyRate !== null
-          ? String(engineerData.hourlyRate)
+        engineerData.pricePerHour !== undefined &&
+        engineerData.pricePerHour !== null
+          ? String(engineerData.pricePerHour)
           : "",
-      serviceCategory: engineerData.serviceCategoryId
-        ? String(engineerData.serviceCategoryId)
+      serviceCategory: engineerData.serviceCategory
+        ? String(engineerData.serviceCategory)
         : "",
       portfolio: engineerData.portfolioLink ?? "",
       designation: engineerData.currentDesignation ?? "",
       location: "",
       employer: engineerData.employer ?? "",
-      experience: engineerData.experienceYears
-        ? String(engineerData.experienceYears)
+      experience: engineerData.totalExperience
+        ? String(engineerData.totalExperience)
         : "",
       resume: "",
       governmentId: "",
