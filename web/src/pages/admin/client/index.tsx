@@ -24,7 +24,10 @@ const ManageClient: React.FC = () => {
     type: ProfileFileType;
   } | null>(null);
 
-  const handleViewDocument = (client: ManageClientProps, type: ProfileFileType) => {
+  const handleViewDocument = (
+    client: ManageClientProps,
+    type: ProfileFileType,
+  ) => {
     setSelectedFile({ client, type });
     setIsPreviewOpen(true);
   };
@@ -36,11 +39,18 @@ const ManageClient: React.FC = () => {
   const tabs = [
     {
       label: "Corporate Client",
-      content: <ClientList clientType="corporate" onViewDocument={handleViewDocument} />,
+      content: (
+        <ClientList
+          clientType="corporate"
+          onViewDocument={handleViewDocument}
+        />
+      ),
     },
     {
       label: "Home Client",
-      content: <ClientList clientType="home" onViewDocument={handleViewDocument} />,
+      content: (
+        <ClientList clientType="home" onViewDocument={handleViewDocument} />
+      ),
     },
   ];
 
@@ -62,14 +72,10 @@ const ManageClient: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 overflow-hidden bg-gray-50 dark:bg-gray-900">
       <div className="flex justify-between items-center px-1">
-        <h1 className="font-semibold text-gray-800 dark:text-white">Manage Clients</h1>
-        <Button
-          variant="outline" 
-          onClick={() => alert("Export CSV")}
-          className="border-teal-700 text-teal-700 hover:bg-teal-50"
-        >
-          Export CSV
-        </Button>
+        <h1 className="font-semibold text-gray-800 dark:text-white">
+          Manage Clients
+        </h1>
+        <Button variant="solid">Export CSV</Button>
       </div>
 
       <div className="flex-1 overflow-hidden">
@@ -82,7 +88,7 @@ const ManageClient: React.FC = () => {
             onClose={() => setIsPreviewOpen(false)}
             fileType={selectedFile.type}
             fileUrl={getFileUrl()}
-              title={`${
+            title={`${
               selectedFile.client.clientType === "corporate"
                 ? selectedFile.client.companyName || selectedFile.client.name
                 : selectedFile.client.name
