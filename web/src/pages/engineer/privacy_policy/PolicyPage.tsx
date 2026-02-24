@@ -9,7 +9,7 @@ import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService
  */
 const PolicyPage = () => {
   const location = useLocation();
-  const { data: cmsData, isLoading, error } = useGetCmsContent("customer-privacy-policy");
+  const { data: cmsData, isLoading, error } = useGetCmsContent("privacy-policy");
 
   if (isLoading) {
     return (

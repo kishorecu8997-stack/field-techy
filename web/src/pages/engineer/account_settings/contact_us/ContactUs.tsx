@@ -4,37 +4,9 @@ import ContactCard from "./ContactCard";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
- * Contact page featuring a header with a message icon and two expandable sections (Contact Us & Support)
+ * Contact page featuring a header with a message icon and two expandable sections (Contact Us)
  * using an Accordion. Each section displays contact details via the ContactCard component.
  */
-const dummyContactDetails = [
-  {
-    id: "1",
-    label: "Call",
-    value: "+91 12345 67890",
-    icon: <icons.phone className="text-white" />,
-  },
-  {
-    id: "2",
-    label: "Email",
-    value: "support@field-techy.com",
-    icon: <icons.email className="text-white" />,
-  },
-];
-const supportDetails = [
-  {
-    id: "1",
-    label: "Support",
-    value: "+91 12345 67890",
-    icon: <icons.phone className="text-white" />,
-  },
-  {
-    id: "2",
-    label: "Email",
-    value: "support@field-techy.com",
-    icon: <icons.email className="text-white" />,
-  },
-];
 
 const ContactUs = () => {
   const {
@@ -43,31 +15,41 @@ const ContactUs = () => {
     error: contactError,
   } = useGetCmsContent("contact-info");
 
-  let contactDetails = dummyContactDetails;
+  const getContactItems = () => {
+    let phone = "+91 12345 67890";
+    let email = "support@field-techy.com";
 
-  if (
-    !contactLoading &&
-    !contactError &&
-    contactData &&
-    "type" in contactData &&
-    contactData.type === "contact-info" &&
-    contactData.data
-  ) {
-    contactDetails = [
+    if (
+      contactData?.type === "contact-info" &&
+      contactData.data &&
+      typeof contactData.data === "object" &&
+      !Array.isArray(contactData.data)
+    ) {
+      if ("phone" in contactData.data && contactData.data.phone) {
+        phone = String(contactData.data.phone);
+      }
+      if ("email" in contactData.data && contactData.data.email) {
+        email = String(contactData.data.email);
+      }
+    }
+
+    return [
       {
         id: "1",
         label: "Call",
-        value: contactData.data.phone || "+91 12345 67890",
+        value: phone,
         icon: <icons.phone className="text-white" />,
       },
       {
         id: "2",
         label: "Email",
-        value: contactData.data.email || "support@field-techy.com",
+        value: email,
         icon: <icons.email className="text-white" />,
       },
     ];
-  }
+  };
+
+  const contactDetails = getContactItems();
 
   const sections = [
     {
@@ -88,12 +70,6 @@ const ContactUs = () => {
       ),
       icon: <icons.phone />,
     },
-    {
-      id: "2",
-      label: "Support",
-      icon: <icons.headset />,
-      content: <ContactCard items={supportDetails} />,
-    },
   ];
 
   return (
@@ -108,6 +84,7 @@ const ContactUs = () => {
           we assist you today?
         </div>
       </div>
+
       <Accordion
         items={sections}
         className="border border-gray-300 rounded-lg overflow-hidden shadow-sm"
