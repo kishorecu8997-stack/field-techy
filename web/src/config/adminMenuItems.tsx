@@ -7,6 +7,7 @@ import { RxBackpack } from "react-icons/rx";
 import { LuSettings, LuSettings2, LuWallet } from "react-icons/lu";
 import { RiBankCardLine, RiErrorWarningLine } from "react-icons/ri";
 import { BiFile } from "react-icons/bi";
+import { ImLoop } from "react-icons/im";
 
 /**
  * Represents a single item in the admin navigation menu.
@@ -88,6 +89,11 @@ export const menuItems: MenuItem[] = [
         name: "Rate Card",
         path: absoluteUrls.admin.home.manage_rate_card,
         icon: <RiBankCardLine className="text-lg" />,
+      },
+      {
+        name: "Exchange Rates",
+        path: absoluteUrls.admin.home.manage_currency_conversion,
+        icon: <ImLoop className="text-lg" />,
       },
     ],
   },
