@@ -1,11 +1,12 @@
 import { absoluteUrls } from "@/config/urls";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaMapMarkerAlt, FaSearch, FaChartBar } from "react-icons/fa";
+import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
+// import { FaChartBar } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { InputField } from "./commonUI/inputs";
 import { FormContainer } from "./commonUI/inputs/FormContainer";
-import { Button } from "./commonUI/Buttons";
+// import { Button } from "./commonUI/Buttons";
 
 /**
  * A search bar component for job search.
@@ -45,7 +46,7 @@ export const JobSearchBar = () => {
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const hasValue = (value: any): boolean => {
+  const hasValue = (value: unknown): boolean => {
     return value !== undefined && value !== null && String(value).trim() !== "";
   };
 
@@ -96,15 +97,15 @@ export const JobSearchBar = () => {
             name="searchQuery"
             placeholder="Search Jobs.."
             leftIcon={<FaSearch className="text-gray-400" />}
-            containerClassName="flex-1 py-0"
+            containerClassName="flex-1 py-0 border-r border-gray-200 dark:border-gray-600"
             onChange={(e) => handleSearchChange(e)}
-            inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none py-2"
+            inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-300 pr-3 focus:outline-none py-2"
           />
 
-          <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
+          {/* <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div> */}
 
           {/* Analytics Button/Icon */}
-          <Button
+          {/* <Button
             type="button"
             onClick={() =>
               navigate(absoluteUrls.engineer.home.search_analytics)
@@ -114,8 +115,8 @@ export const JobSearchBar = () => {
             aria-label="View Search Analytics"
           >
             <FaChartBar size={20} />
-          </Button>
-          <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
+          </Button> */}
+          {/* <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div> */}
           {/* Location */}
           <InputField
             name="location"

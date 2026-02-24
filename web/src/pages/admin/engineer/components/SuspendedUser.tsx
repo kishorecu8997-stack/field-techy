@@ -1,13 +1,13 @@
-import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { FaUserCircle } from "react-icons/fa";
-import type { ManageEngineerProps } from "../types";
+import type { ManageEngineerProps, StatusHistoryType } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * SuspendedUser Component
@@ -28,20 +28,47 @@ import { toast } from "react-toastify";
 export default function SuspendedUser() {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const filteredData = manageEngineer
-    .filter((e) => e.employmentStatus === "Suspended")
-    .filter((e) => {
-      const query = search.toLowerCase();
-      return (
-        e.engineerID.toLowerCase().includes(query) ||
-        e.details.name.toLowerCase().includes(query) ||
-        e.details.email.toLowerCase().includes(query) ||
-        e.location.toLowerCase().includes(query)
-      );
+  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    status: "suspended",
+  });
+
+  const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const latestSuspensionMap = useMemo<
+    Record<string, StatusHistoryType | undefined>
+  >(() => {
+    const map: Record<string, StatusHistoryType | undefined> = {};
+
+    engineerData.forEach((engineer) => {
+      // safely reduce over statusHistory
+      const latestSuspension = engineer.statusHistory?.reduce<
+        StatusHistoryType | undefined
+      >((latest, current) => {
+        if (current.type !== "suspension") return latest;
+
+        // pick the one with the latest actionDate
+        if (
+          !latest ||
+          new Date(current.actionDate) > new Date(latest.actionDate)
+        ) {
+          return current;
+        }
+
+        return latest;
+      }, undefined);
+
+      map[engineer.id] = latestSuspension;
     });
 
-  const handleRevoke = async (id: number) => {
+    return map;
+  }, [engineerData]);
+
+  const handleRevoke = async (engineer: ManageEngineerProps) => {
     await showPopup({
       title: "Revoke",
       body: "Are you sure you want to revoke suspension of this engineer?",
@@ -56,7 +83,7 @@ export default function SuspendedUser() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Revoking engineer:", id);
+            console.log("Revoking engineer:", engineer.id);
             toast.success("Suspension revoked successfully!");
             close(true);
           },
@@ -66,10 +93,22 @@ export default function SuspendedUser() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No." },
+    {
+      label: "Sr.No.",
+      renderCell: (_row: ManageEngineerProps, index: number) =>
+        (currentPage - 1) * pageSize + index + 1,
+    },
     {
       key: "engineerID",
       label: "Engineer ID",
+      renderCell: (row: ManageEngineerProps) => {
+        const id = row.engineerCode || "N/A";
+        return (
+          <div className="text-sm font-medium text-gray-900 dark:text-white">
+            {id}
+          </div>
+        );
+      },
     },
     {
       key: "details",
@@ -81,12 +120,12 @@ export default function SuspendedUser() {
               <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
             </div>
             <div>
-              <div className="font-semibold">{row.details.name}</div>
+              <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.phone}
+                {row.phoneNumber}
               </div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.email}
+                {row.email}
               </div>
             </div>
           </div>
@@ -96,24 +135,43 @@ export default function SuspendedUser() {
     {
       key: "suspendReason",
       label: "Reason for Suspension",
+      renderCell: (row) => latestSuspensionMap[row.id]?.reason || "N/A",
     },
     {
       key: "suspendFrom",
       label: "Suspend From",
+      renderCell: (row) => {
+        const date = latestSuspensionMap[row.id]?.startDate;
+        return date ? new Date(date).toLocaleDateString() : "N/A";
+      },
     },
-    { key: "suspendTo", label: "Suspend To" },
-    { key: "suspendBy", label: "Suspend By" },
-    { key: "suspendOn", label: "Suspend On" },
-    { key: "currentStatus", label: "Current Status", dataCellAlign: "center" },
+    {
+      key: "suspendTo",
+      label: "Suspend To",
+      renderCell: (row) => {
+        const date = latestSuspensionMap[row.id]?.endDate;
+        return date ? new Date(date).toLocaleDateString() : "N/A";
+      },
+    },
+    {
+      key: "suspendBy",
+      label: "Suspend By",
+      renderCell: (row) => latestSuspensionMap[row.id]?.adminName || "N/A",
+    },
+    {
+      key: "suspendOn",
+      label: "Suspend On",
+      renderCell: (row) => {
+        const date = latestSuspensionMap[row.id]?.actionDate;
+        return date ? new Date(date).toLocaleDateString() : "N/A";
+      },
+    },
     {
       key: "action",
       label: "Actions",
       align: "center",
       renderCell: (row: ManageEngineerProps) => (
-        <div
-          className="mx-auto text-center"
-          onClick={() => handleRevoke(row.id)}
-        >
+        <div className="mx-auto text-center" onClick={() => handleRevoke(row)}>
           <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white">
             Revoke
           </Button>
@@ -131,8 +189,13 @@ export default function SuspendedUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredData}
-            initialPageSize={10}
+            data={engineerData}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
+            loading={isLoading}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+            totalCount={engineersResponse?.total ?? 0}
           />
         </div>
       </div>

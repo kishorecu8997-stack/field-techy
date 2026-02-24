@@ -1,5 +1,3 @@
-import type { adminJobsStatus } from "../jobs/types";
-
 export interface BasicInformation {
   name: string;
   email: string;
@@ -24,6 +22,17 @@ export interface Documents {
   governmentId: string;
   certificate: string;
 }
+
+export interface DocumentOption {
+  value: string;
+  label: string;
+}
+
+export const documentType: DocumentOption[] = [
+  { value: "resumeFile", label: "Resume File" },
+  { value: "govIdDoc", label: "Government Document" },
+  { value: "certificateDoc", label: "Certificate Document" },
+];
 
 export type EngineerFormData = BasicInformation & ExperienceDetails & Documents;
 
@@ -58,28 +67,68 @@ export interface DetailsTypes {
   phone: string;
   email: string;
 }
+
+export interface StatusHistoryType {
+  type: "suspension" | "block";
+  reason: string;
+  startDate?: string;
+  endDate?: string;
+  actionDate: string;
+  adminName: string;
+  revokedAt?: string | null;
+  revokedBy?: string | null;
+}
 export interface ManageEngineerProps {
+  // API fields
   id: number;
   userId: number;
-  engineerID: string;
-  details: DetailsTypes;
-  documents: string;
-  status?: adminJobsStatus;
-  location: string;
+  engineerCode: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  location: string | null;
   registrationDate: string;
-  walletBalance: string;
-  kycStatus: string;
-  employmentStatus: string;
-  avgRating: number;
-  approvalStatus: string;
+  balance: number;
+  profileStatus: string;
+  userStatus: string;
+  isEmployed?: boolean;
+  averageRating: number;
+  statusHistory?: StatusHistoryType[];
+
+  // Optional nested objects
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    status: string;
+    userRole: string;
+    emailVerified: boolean;
+    phoneVerified: boolean;
+    updatedAt: string;
+    createdAt: string;
+  };
+
+  // Derived / UI fields
+  engineerID?: string;
+  details?: DetailsTypes;
+  walletBalance?: string;
+  kycStatus?: string;
+  employmentStatus?: string;
+  avgRating?: number;
+  approvalStatus?: string;
   lastActiveOn?: string;
+
+  // Suspension info
   suspendFrom?: string;
   suspendTo?: string;
   suspendReason?: string;
   suspendBy?: string;
   suspendOn?: string;
   currentStatus?: string;
-  submittedDocuments: string[];
+
+  submittedDocuments?: string[];
+  documents?: string;
 }
 export interface SuspendEngineerFormData {
   suspendStartDate: Date | null;

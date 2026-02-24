@@ -123,6 +123,14 @@ export class AdminRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.AdminManageTransactions),
           },
           {
+            path: urls.admin.home.manage_currency_conversion,
+            element: withSuspense(Components.AdminManageCurrencyConversion),
+          },
+          {
+            path: `${urls.admin.home.edit_exchange_rate}/:id?`,
+            element: withSuspense(Components.AdminEditExchangeRate),
+          },
+          {
             path: urls.admin.home.wallet_overview,
             element: withSuspense(Components.WalletOverview),
           },
@@ -199,40 +207,8 @@ export class AdminRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.HomeClientView),
           },
           {
-            path: urls.admin.home.edit_role,
-            element: withSuspense(Components.AdminEditRolePage),
-          },
-          {
-            path: urls.admin.home.roleList,
-            element: withSuspense(Components.RoleListPage),
-          },
-          {
-            path: urls.admin.home.add_role,
-            element: withSuspense(Components.AddRolePage),
-          },
-          {
             path: urls.admin.home.manage_jobs_view,
             element: withSuspense(Components.ManageJobView),
-          },
-          {
-            path: urls.admin.home.manage_groups,
-            element: withSuspense(Components.ManageGroups),
-          },
-          {
-            path: urls.admin.home.manage_groups_add,
-            element: withSuspense(Components.ManageGroupsAdd),
-          },
-          {
-            path: `${urls.admin.home.manage_groups_edit}/:id?`,
-            element: withSuspense(Components.ManageGroupsEdit),
-          },
-          {
-            path: `${urls.admin.home.manage_groups_view}/:id?`,
-            element: withSuspense(Components.ManageGroupsView),
-          },
-          {
-            path: `${urls.admin.home.manage_groups_addEngineer}/:id?`,
-            element: withSuspense(Components.ManageGroupsAddEngineer),
           },
         ],
       },

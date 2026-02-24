@@ -6,10 +6,22 @@ export const client = {
   phone: "+91 98765-43210",
 };
 
-export const engineer = {
+export const engineer1 = {
   name: "Peter Quill",
   email: "peter@gmail.com",
   phone: "+91 98765-43210",
+};
+
+export const engineer2 = {
+  name: "Tony Stark",
+  email: "tony@starkindustries.com",
+  phone: "+91 98765-43211",
+};
+
+export const engineer3 = {
+  name: "Bruce Banner",
+  email: "bruce@avengers.com",
+  phone: "+91 98765-43212",
 };
 
 export const engineersList = [
@@ -26,11 +38,7 @@ export const jobData: JobDataProps[] = [
       email: "peter@gmail.com",
       phone: "+91 98765-43210",
     },
-    engineerDetails: {
-      name: "Peter Quill",
-      email: "peter@gmail.com",
-      phone: "+91 98765-43210",
-    },
+    engineerDetails: [engineer1],
     company: "Google",
     title: "Mobile App UI/UX Designer",
     description:
@@ -45,6 +53,7 @@ export const jobData: JobDataProps[] = [
     city: "Mumbai",
     createdDate: "2024-11-01",
     status: "completed",
+    count: 1,
   },
   {
     id: "#Ride002",
@@ -53,11 +62,7 @@ export const jobData: JobDataProps[] = [
       email: "peter@gmail.com",
       phone: "+91 98765-43210",
     },
-    engineerDetails: {
-      name: "Peter Quill",
-      email: "peter@gmail.com",
-      phone: "+91 98765-43210",
-    },
+    engineerDetails: [engineer1, engineer3],
     company: "Google",
     title: "Mobile App UI/UX Designer",
     description:
@@ -72,6 +77,7 @@ export const jobData: JobDataProps[] = [
     city: "Mumbai",
     createdDate: "2024-11-01",
     status: "pending",
+    count: 2,
   },
   {
     id: "#Ride003",
@@ -80,11 +86,7 @@ export const jobData: JobDataProps[] = [
       email: "peter@gmail.com",
       phone: "+91 98765-43210",
     },
-    engineerDetails: {
-      name: "Peter Quill",
-      email: "peter@gmail.com",
-      phone: "+91 98765-43210",
-    },
+    engineerDetails: [engineer2],
     company: "Google",
     title: "Mobile App UI/UX Designer",
     description:
@@ -99,6 +101,7 @@ export const jobData: JobDataProps[] = [
     city: "Mumbai",
     createdDate: "2024-11-01",
     status: "in-progress",
+    count: 1,
   },
 ];
 

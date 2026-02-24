@@ -27,7 +27,6 @@ export type MenuItems = {
  * Contains user profile info and action buttons.
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
-  // Modified to get navigation to source from the store
   const {
     activeKey,
     setActiveKey,
@@ -36,7 +35,6 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
     resetNavigationSource,
     immediateParentKey,
     setImmediateParentKey,
-    showBackButton,
   } = useDrawerStore();
 
   // Escape key & scroll lock effect
@@ -48,13 +46,11 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
     };
 
     if (isOpen) {
-      // Lock scroll & enable Escape
       document.documentElement.classList.add("drawer-open");
       document.addEventListener("keydown", handleEsc);
     }
 
     return () => {
-      // Clean up: unlock scroll & remove listener
       document.documentElement.classList.remove("drawer-open");
       document.removeEventListener("keydown", handleEsc);
     };
@@ -131,7 +127,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
                 title={config.title}
                 onClose={onClose}
                 onBack={onBack}
-                showBack={showBackButton}
+                showBack={!!config.parent || !!immediateParentKey}
                 actions={config.actions}
               />
             </div>

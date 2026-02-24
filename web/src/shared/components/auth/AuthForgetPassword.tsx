@@ -11,7 +11,9 @@ import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
-import OTPPage from "@/pages/engineer/auth/components/OTPPage";
+import EngineerOTPPage from "@/pages/engineer/auth/components/OTPPage";
+import ClientOTPPage from "@/pages/client/auth/components/OTPPage";
+import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
 import type { AppForgotPasswordError } from "@/api";
 
 export type ForgetPasswordFormData = {
@@ -58,6 +60,23 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
     });
   };
 
+  const resetUrl =
+    role === "client"
+      ? absoluteUrls.client.auth.reset_password
+      : absoluteUrls.engineer.auth.reset_password;
+
+  const handleOtpSubmit = (otpData: OTPValues) => {
+    const otp = otpData?.otp ? otpData.otp : "";
+
+    if (otp) {
+      sessionStorage.setItem("reset_password_otp", otp);
+    }
+
+    sessionStorage.setItem("reset_password_email", methods.getValues("email"));
+
+    navigate(`${resetUrl}?email=${methods.getValues("email")}`);
+  };
+
   return (
     <div className="flex items-center justify-center max-w-lg md:w-lg ">
       <div className="p-10 w-full max-w-lg">
@@ -101,24 +120,21 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
         </FormContainer>
 
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-          <OTPPage
-            header="Enter the OTP"
-            description="We sent you an OTP code"
-            onClose={() => setIsOpen(false)}
-            onSubmit={(otpData) => {
-              const resetUrl =
-                role === "client"
-                  ? absoluteUrls.client.auth.reset_password
-                  : absoluteUrls.engineer.auth.reset_password;
-              const otpQuery =
-                otpData && otpData.otp
-                  ? `&otp=${encodeURIComponent(otpData.otp)}`
-                  : "";
-              navigate(
-                `${resetUrl}?email=${methods.getValues("email")}${otpQuery}`,
-              );
-            }}
-          />
+          {role === "client" ? (
+            <ClientOTPPage
+              header="Enter the OTP"
+              description="We sent you an OTP code"
+              onClose={() => setIsOpen(false)}
+              onSubmit={handleOtpSubmit}
+            />
+          ) : (
+            <EngineerOTPPage
+              header="Enter the OTP"
+              description="We sent you an OTP code"
+              onClose={() => setIsOpen(false)}
+              onSubmit={handleOtpSubmit}
+            />
+          )}
         </Popup>
       </div>
     </div>

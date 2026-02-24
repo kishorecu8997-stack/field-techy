@@ -1,9 +1,7 @@
-import {
-  useLookupData,
-  useClientGetRateCard,
-} from "@/shared/apiServices/client/clientOpenApiService";
+import { useLookupData } from "@/shared/apiServices/client/clientOpenApiService";
+import usePostAJobStore from "@/shared/store/postAJobStore";
+import { useMemo } from "react";
 import { type PostAJobFieldsProps } from "../../../types";
-import { useEffect, useState, useMemo } from "react";
 
 interface BillSummaryProps {
   data: PostAJobFieldsProps;
@@ -27,6 +25,7 @@ export const BillSummary = ({
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
   const { data: experienceLevelsData } = useLookupData("experienceLevels");
   const { data: engagementModelsData } = useLookupData("engagementModels");
+  const { rate, currencySymbol, amount } = usePostAJobStore();
 
   const countries = useMemo(
     () =>
@@ -57,50 +56,6 @@ export const BillSummary = ({
       })) || [],
     [engagementModelsData],
   );
-  const { mutate: getRateCard } = useClientGetRateCard();
-  const [ratePerWeek, setRatePerWeek] = useState<number>(0);
-  useEffect(() => {
-    const token = localStorage.getItem("auth_token");
-    if (
-      data.serviceCategory &&
-      data.experienceLevel &&
-      data.engagementModel &&
-      data.country
-    ) {
-      getRateCard(
-        {
-          query: {
-            serviceCategoryId: Number(data.serviceCategory),
-            experienceLevelId: Number(data.experienceLevel),
-            engagementModelId:
-              data.engagementModel === "" || data.engagementModel == null
-                ? 1
-                : Number(data.engagementModel),
-            countryId: Number(data.country),
-          },
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        },
-        {
-          onSuccess: (response) => {
-            setRatePerWeek(Number(response.rate));
-          },
-          onError: () => {
-            setRatePerWeek(0);
-          },
-        },
-      );
-    } else {
-      setRatePerWeek(0);
-    }
-  }, [
-    data.serviceCategory,
-    data.experienceLevel,
-    data.engagementModel,
-    data.country,
-    getRateCard,
-  ]);
 
   const getLabel = (opts: { value: string; label: string }[], v?: string) =>
     opts.find((o) => o.value === v)?.label || "-";
@@ -132,12 +87,7 @@ export const BillSummary = ({
   const weeks = duration.weeks;
   const toolBudget = data.toolBudgetTotal || 0;
   const totalBill =
-    ratePerWeek * weeks * Number(data.numberOfVacancy || 1) + toolBudget;
-  const currency = new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(totalBill);
+    Number(amount) * weeks * Number(data.numberOfVacancy || 1) + toolBudget;
 
   return (
     <div className="space-y-4">
@@ -169,7 +119,7 @@ export const BillSummary = ({
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
           <span className="font-medium">Rate</span>
           <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-            ₹{ratePerWeek}
+            {rate}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
@@ -192,7 +142,7 @@ export const BillSummary = ({
           <span className="font-medium">Tools Cost</span>
           <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
             {data.toolBudgetTotal
-              ? `₹${data.toolBudgetTotal.toLocaleString("en-IN")}`
+              ? `${data.toolBudgetTotal.toLocaleString("en-IN")}${currencySymbol}`
               : "-"}
           </span>
         </div>
@@ -206,7 +156,10 @@ export const BillSummary = ({
       <hr className="border-gray-200 dark:border-gray-600" />
       <div className="flex items-center justify-between text-lg font-semibold text-gray-900 dark:text-gray-100 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 rounded px-3 py-2">
         <span>Total Bill</span>
-        <span>{currency}</span>
+        <span>
+          {totalBill.toLocaleString("en-IN")}
+          {currencySymbol}
+        </span>
       </div>
 
       <label className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
