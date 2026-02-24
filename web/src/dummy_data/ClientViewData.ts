@@ -1,25 +1,8 @@
 import type {
   BankCardData,
-  CompanyInfo,
   PostedJobsProps,
   walletViewData,
 } from "@/pages/admin/client/types";
-
-export const ClientViewData: CompanyInfo = {
-  profileImage: "https://via.placeholder.com/100",
-  companyName: "ABC Pvt Ltd",
-  businessType: "Retail",
-  country: "India",
-  postalCode: "110001",
-  contactPersonName: "John Doe",
-  industry: "E-commerce",
-  state: "Delhi",
-  taxDocument: "VAT Type A",
-  phoneNumber: "+91 9876543210",
-  address: "123 Business Street, Sector 45",
-  city: "New Delhi",
-  vatRegistrationNumber: "VAT12345678",
-};
 
 export const bankCardData: BankCardData = {
   bankName: "ENDB Bank",
