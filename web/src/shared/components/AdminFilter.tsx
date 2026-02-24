@@ -17,7 +17,7 @@ export interface FilterDataProps {
 /**
  * AdminFilter Component
  * * A sliding sidebar component used by administrators to sort and filter report data.
- * Features include a programmatically triggered native date picker, multi-level 
+ * Features include a programmatically triggered native date picker, multi-level
  * status filtering, and full support for light/dark themes.
  * * @component
  * @param {Object} props - Component props
@@ -29,10 +29,10 @@ export interface FilterDataProps {
  * @param {string[]} props.onApply.data.filters - Array of selected priority levels (e.g., ['Level 1']).
  * @param {string} props.onApply.data.date - ISO date string selected via the hidden date input.
  * * @example
- * <AdminFilter 
- * isOpen={isFilterOpen} 
- * onClose={() => setFilterOpen(false)} 
- * onApply={(data) => console.log("Filters Applied:", data)} 
+ * <AdminFilter
+ * isOpen={isFilterOpen}
+ * onClose={() => setFilterOpen(false)}
+ * onApply={(data) => console.log("Filters Applied:", data)}
  * />
  */
 const AdminFilter: React.FC<AdminFilterProps> = ({

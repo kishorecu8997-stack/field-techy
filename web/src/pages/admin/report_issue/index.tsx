@@ -5,7 +5,9 @@ import CompletedReport from "./components/CompletedReport";
 import EngineerReport from "./components/EngineerReport";
 import { useState } from "react";
 import { BsFilterRight } from "react-icons/bs";
-import AdminFilter, { type FilterDataProps} from "@/shared/components/AdminFilter";
+import AdminFilter, {
+  type FilterDataProps,
+} from "@/shared/components/AdminFilter";
 
 /**
  * AdminReportIssue page for admin. Presents AdminReportIssue in tabbed sections using

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { sampleReportsIssue, type AdminReportIssue } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import {
