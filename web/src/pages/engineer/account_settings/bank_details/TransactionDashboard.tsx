@@ -64,7 +64,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
         sortOrder: SORT_DESC,
         startDate: startDateStr,
         endDate: endDateStr,
-        limit: limit + 1,
+        limit: limit + 1, // Fetch `limit + 1` records to determine if there is a next page.
         offset,
       }
     : { sortOrder: SORT_DESC, limit: 10 };
