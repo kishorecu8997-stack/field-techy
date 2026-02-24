@@ -2,8 +2,8 @@ import { create } from "zustand";
 
 interface NotificationGateState {
   isPaused: boolean;
-  pendingId: number | null;
-  pause: (id: number) => void;
+  pendingId: string | number | null;
+  pause: (id: string | number) => void;
   resume: () => void;
 }
 /**

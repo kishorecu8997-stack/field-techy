@@ -8,12 +8,11 @@ import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
 import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
-import { IoEllipsisVerticalOutline } from "react-icons/io5";
+import { IoChatbubble, IoEllipsisVerticalOutline } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import { IoChatbubble } from "react-icons/io5";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -32,7 +31,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   isSendProposal,
   setActiveTab,
   OfferJobStatus,
-  setOfferJobStatus,
   hideBreakDetails = false,
   jobLocation,
   numberOfVacancy,
@@ -41,13 +39,18 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   activeTab,
   onAddProgressUpdate,
   onOpenFinalStatement,
+  isFinalStatementSubmitted,
+  onOpenGiveClientFeedback,
+  onOpenViewClientFeedback,
+  allCardsApproved,
+  setOfferJobStatus,
   assignmentId,
   jobId,
   onToggleChat,
 }) => {
+  const params = useParams();
   const location = useLocation();
   const isClient = location.pathname.includes("client");
-  const params = useParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -202,7 +205,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         )}
         {/* Client or Engineer actions */}
         {isClient ? (
-          <ClientActions />
+          <ClientActions
+            activeTab={activeTab}
+            allCardsApproved={allCardsApproved}
+          />
         ) : (
           <EngineersActions
             OfferJobStatus={OfferJobStatus}
@@ -216,6 +222,9 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             activeTab={activeTab}
             onAddProgressUpdate={onAddProgressUpdate}
             onOpenFinalStatement={onOpenFinalStatement}
+            isFinalStatementSubmitted={isFinalStatementSubmitted}
+            onOpenGiveClientFeedback={onOpenGiveClientFeedback}
+            onOpenViewClientFeedback={onOpenViewClientFeedback}
             assignmentId={assignmentId}
           />
         )}

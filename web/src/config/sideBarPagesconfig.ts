@@ -170,7 +170,7 @@ const Feedback = React.lazy(
   () => import("@/pages/client/my_job_client/components/FeedbackForm"),
 );
 const ClientNotification = React.lazy(
-  () => import("@/pages/client/messages/ClientNotification"),
+  () => import("@/pages/client/notification/NotificationPage"),
 );
 
 const RecentTransactionsModule =
@@ -188,6 +188,10 @@ const ProfileCompletionCard = React.lazy(
 const AllTransactionsPage = React.lazy(
   () =>
     import("@/pages/engineer/account_settings/bank_details/AllTransactionsPage"),
+);
+const FeedbackFromEngineer = React.lazy(
+  () =>
+    import("@/pages/client/manage_proposal/components/ViewEngineerFeedbackSidebar"),
 );
 
 /**
@@ -450,5 +454,9 @@ export const sectionConfig: Record<
   editPointOfContent: {
     component: EditPOC,
     title: "Edit Point of Contact",
+  },
+  engineerFromFeedback: {
+    component: FeedbackFromEngineer,
+    title: "Feedback From Engineers",
   },
 };
