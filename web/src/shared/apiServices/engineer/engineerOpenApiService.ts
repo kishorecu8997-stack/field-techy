@@ -61,6 +61,7 @@ import {
   getJobLogsOptions,
   engineerGetProfileCompletionOptions,
   engineerGetMyDocumentsOptions,
+  getEngineerEarningsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
@@ -585,6 +586,21 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
   });
 }
 
+// export function useEngineerBalance(enabled: boolean = true) {
+//   return useQuery<GetEngineerBalanceResponse, GetEngineerBalanceError>({
+//     queryKey: [...queryKeys.engineer.all, "balance"],
+//     queryFn: async () => {
+//       const response = await getEngineerBalance({ client: apiClient });
+//       if (response.data) {
+//         return response.data;
+//       }
+//       throw response.error ?? { error: "Unknown error" };
+//     },
+//     enabled,
+//     staleTime: 30 * 1000,
+//     refetchOnWindowFocus: false,
+//   });
+// }
 export function useEngineerBalance(enabled: boolean = true) {
   return useQuery<GetEngineerBalanceResponse, GetEngineerBalanceError>({
     queryKey: [...queryKeys.engineer.all, "balance"],
@@ -631,6 +647,15 @@ export function useEngineerTransactions(
 export function useEngineerGetMyJobs(enabled: boolean = true) {
   return useQuery({
     ...engineerGetMyJobsOptions({
+      client: apiClient,
+    }),
+    enabled,
+  });
+}
+
+export function useEngineerEarnings(enabled: boolean = true) {
+  return useQuery({
+    ...getEngineerEarningsOptions({
       client: apiClient,
     }),
     enabled,

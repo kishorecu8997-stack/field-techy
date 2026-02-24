@@ -1,4 +1,4 @@
-import { transactions } from "@/dummy_data/bankDetails";
+import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { formatCurrency } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { BiTrendingUp } from "react-icons/bi";
@@ -16,26 +16,13 @@ import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
  */
 const TotalEarningsSummary: React.FC = () => {
   const [showBalance, setShowBalance] = useState<boolean>(false);
-  const totalEarnings = transactions
-    .filter((tx) => tx.amount > 0)
-    .reduce((sum, tx) => sum + tx.amount, 0);
+  const { data } = useEngineerEarnings();
+  const totalEarnings = data ? Number(data.totalEarnings) : 0;
   const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
-  const thisMonthEarnings = transactions
-    .filter((tx) => {
-      if (tx.amount <= 0) return false;
-      const txDate = new Date(tx.date);
-      return (
-        txDate.getMonth() === currentMonth &&
-        txDate.getFullYear() === currentYear
-      );
-    })
-    .reduce((sum, tx) => sum + tx.amount, 0);
-  const totalWithdrawn = transactions
-    .filter((tx) => tx.amount < 0 && tx.status !== "Failed")
-    .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
+  const thisMonthEarnings = data ? Number(data.monthlyEarnings) : 0;
+  const totalWithdrawn = data ? Number(data.withdrawn) : 0;
   const availableBalance = totalEarnings - totalWithdrawn;
+  const currencyCode = data?.currencyCode;
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
       {/* Header */}
@@ -92,7 +79,9 @@ const TotalEarningsSummary: React.FC = () => {
           Available Balance
         </p>
         <p className="text-4xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">
-          {showBalance ? formatCurrency(availableBalance) : "******"}
+          {showBalance
+            ? formatCurrency(availableBalance, currencyCode)
+            : "******"}
         </p>
       </div>
 
@@ -106,7 +95,9 @@ const TotalEarningsSummary: React.FC = () => {
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {showBalance ? formatCurrency(totalEarnings) : "******"}
+            {showBalance
+              ? formatCurrency(totalEarnings, currencyCode)
+              : "******"}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             All time
@@ -121,7 +112,9 @@ const TotalEarningsSummary: React.FC = () => {
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {showBalance ? formatCurrency(thisMonthEarnings) : "******"}
+            {showBalance
+              ? formatCurrency(thisMonthEarnings, currencyCode)
+              : "******"}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {now.toLocaleDateString("en-US", {
@@ -140,7 +133,9 @@ const TotalEarningsSummary: React.FC = () => {
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {showBalance ? formatCurrency(totalWithdrawn) : "******"}
+            {showBalance
+              ? formatCurrency(totalWithdrawn, currencyCode)
+              : "******"}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Completed withdrawals

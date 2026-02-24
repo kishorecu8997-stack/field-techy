@@ -1,6 +1,4 @@
-import { transactions } from "@/dummy_data/bankDetails";
 import { formatCurrency } from "@/shared/libs/utils";
-import { getMonthEarnings } from "@/shared/libs/earnings";
 import React, { useState } from "react";
 import {
   BiTrendingUp,
@@ -9,6 +7,7 @@ import {
   BiChevronDown,
   BiChevronUp,
 } from "react-icons/bi";
+import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * MonthlyComparison Component
@@ -21,49 +20,26 @@ import {
 const MonthlyComparison: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
-  const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-  const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+  const { data } = useEngineerEarnings();
+  const comparison = data?.monthlyComparison;
 
-  const thisMonthEarnings = getMonthEarnings(
-    transactions,
-    currentMonth,
-    currentYear,
-  );
+  const currencyCode = data?.currencyCode;
 
-  const lastMonthEarnings = getMonthEarnings(
-    transactions,
-    lastMonth,
-    lastMonthYear,
-  );
+  const currentMonthAmount = Number(comparison?.currentMonth.amount ?? 0);
+  const lastMonthAmount = Number(comparison?.lastMonth.amount ?? 0);
+  const percentageChange = Number(comparison?.change.percentage ?? 0);
 
-  const percentageChange =
-    lastMonthEarnings === 0
-      ? thisMonthEarnings > 0
-        ? 100
-        : 0
-      : ((thisMonthEarnings - lastMonthEarnings) / lastMonthEarnings) * 100;
-  const isIncrease = percentageChange > 0;
-  const isSame = Math.abs(percentageChange) < 0.1;
-  const thisMonthName = now.toLocaleDateString("en-US", {
-    month: "short",
-    year: "numeric",
-  });
-  const lastMonthName = new Date(lastMonthYear, lastMonth).toLocaleDateString(
-    "en-US",
-    {
-      month: "short",
-      year: "numeric",
-    },
-  );
-  // Preview text
+  const isIncrease = comparison?.change.type === "increase";
+  const isSame = percentageChange === 0;
+
+  const thisMonthName = comparison?.currentMonth.name ?? "";
+  const lastMonthName = comparison?.lastMonth.name ?? "";
+
   const changeText = isSame
     ? "Same as last month"
     : isIncrease
-      ? `+${Math.abs(percentageChange).toFixed(0)}% vs ${lastMonthName}`
-      : `-${Math.abs(percentageChange).toFixed(0)}% vs ${lastMonthName}`;
-
+      ? `+${percentageChange}% vs ${lastMonthName}`
+      : `-${percentageChange}% vs ${lastMonthName}`;
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
       {/* Clickable Compact Label */}
@@ -81,7 +57,7 @@ const MonthlyComparison: React.FC = () => {
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(thisMonthEarnings)}
+                {formatCurrency(currentMonthAmount, currencyCode)}
               </span>{" "}
               this month ({thisMonthName}) — {changeText}
             </p>
@@ -118,7 +94,7 @@ const MonthlyComparison: React.FC = () => {
                 {lastMonthName}
               </p>
               <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {formatCurrency(lastMonthEarnings)}
+                {formatCurrency(lastMonthAmount, currencyCode)}
               </p>
             </div>
 
@@ -173,12 +149,12 @@ const MonthlyComparison: React.FC = () => {
                 {thisMonthName}
               </p>
               <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(thisMonthEarnings)}
+                {formatCurrency(currentMonthAmount, currencyCode)}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-500 mt-3">
                 {now.getDate()} days in
               </p>
-              {isIncrease && thisMonthEarnings > 0 && (
+              {isIncrease && currentMonthAmount > 0 && (
                 <p className="mt-4 text-sm font-semibold text-emerald-700 dark:text-emerald-400">
                   On track to beat last month!
                 </p>

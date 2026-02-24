@@ -1,13 +1,7 @@
-import { transactions } from "@/dummy_data/bankDetails";
+import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { formatCurrency } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { BiBriefcase, BiChevronDown, BiChevronUp } from "react-icons/bi";
-
-interface JobEarning {
-  client: string;
-  totalEarnings: number;
-  transactionCount: number;
-}
 
 /**
  * Represents aggregated earning information for a job/client.
@@ -19,34 +13,11 @@ interface JobEarning {
  */
 const BestPayingJobs: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const calculateTopJobs = (): JobEarning[] => {
-    const earningsMap = new Map<string, JobEarning>();
-    transactions.forEach((tx) => {
-      if (tx.amount > 0) {
-        const client = tx.description || "Unknown Client";
-        const existing = earningsMap.get(client);
-        if (existing) {
-          existing.totalEarnings += tx.amount;
-          existing.transactionCount += 1;
-        } else {
-          earningsMap.set(client, {
-            client,
-            totalEarnings: tx.amount,
-            transactionCount: 1,
-          });
-        }
-      }
-    });
+  const { data, isLoading, error } = useEngineerEarnings();
 
-    return Array.from(earningsMap.values())
-      .sort((a, b) => b.totalEarnings - a.totalEarnings)
-      .slice(0, 5);
-  };
-
-  const topJobs = calculateTopJobs();
-  // Preview: Show top earner only
-  const topEarner = topJobs[0] || null;
-  const totalClients = topJobs.length;
+  const bestPaying = data?.bestPaying ?? [];
+  const topEarner = bestPaying[0] ?? null;
+  const totalClients = bestPaying.length;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
@@ -63,13 +34,20 @@ const BestPayingJobs: React.FC = () => {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Best Paying Jobs / Clients
             </h2>
-            {topEarner ? (
+            {isLoading ? (
+              <p className="text-sm text-gray-500 mt-1">Loading...</p>
+            ) : error ? (
+              <p className="text-sm text-rose-500 mt-1">Failed to load data</p>
+            ) : topEarner ? (
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 Top:{" "}
                 <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                  {formatCurrency(topEarner.totalEarnings)}
+                  {formatCurrency(
+                    Number(topEarner.totalAmount),
+                    data?.currencyCode,
+                  )}
                 </span>{" "}
-                from <span className="font-medium">{topEarner.client}</span> (
+                from <span className="font-medium">{topEarner.name}</span> (
                 {totalClients} {totalClients === 1 ? "client" : "clients"})
               </p>
             ) : (
@@ -100,7 +78,15 @@ const BestPayingJobs: React.FC = () => {
         }`}
       >
         <div className="px-6 pb-6 pt-2">
-          {topJobs.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500 dark:text-gray-400">
+                Loading best paying jobs...
+              </p>
+            </div>
+          ) : error ? (
+            <p className="text-sm text-rose-500 mt-1">Failed to load data</p>
+          ) : bestPaying.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-gray-500 dark:text-gray-400">
                 No earnings recorded yet. Complete your first job to see top
@@ -109,9 +95,9 @@ const BestPayingJobs: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {topJobs.map((job, index) => (
+              {bestPaying.map((job, index) => (
                 <div
-                  key={job.client}
+                  key={job.rank}
                   className="flex items-center justify-between py-4 border-b border-gray-100 dark:border-gray-700 last:border-0"
                 >
                   <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -127,13 +113,13 @@ const BestPayingJobs: React.FC = () => {
                               : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                       }`}
                     >
-                      {index + 1}
+                      {job.rank}
                     </div>
 
                     {/* Client Info */}
                     <div className="min-w-0">
                       <p className="font-semibold text-gray-900 dark:text-gray-100 truncate">
-                        {job.client}
+                        {job.name}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
                         {job.transactionCount} transaction
@@ -145,7 +131,11 @@ const BestPayingJobs: React.FC = () => {
                   {/* Earnings */}
                   <div className="text-right">
                     <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
-                      +{formatCurrency(job.totalEarnings)}
+                      +
+                      {formatCurrency(
+                        Number(job.totalAmount),
+                        data?.currencyCode,
+                      )}
                     </p>
                   </div>
                 </div>
@@ -153,7 +143,7 @@ const BestPayingJobs: React.FC = () => {
             </div>
           )}
 
-          {topJobs.length > 0 && (
+          {bestPaying.length > 0 && (
             <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-6">
               Based on completed earnings
             </p>
