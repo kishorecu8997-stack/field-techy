@@ -36,10 +36,15 @@ export const queryKeys = {
   admin: {
     all: ["admin"] as const,
     manageClients: ["adminManageClients"] as const,
+    adminGetClient: ["adminGetClient"] as const,
     notifications: {
       all: ["admin", "notifications"] as const,
       detail: (id: string | number) =>
         ["admin", "notifications", String(id)] as const,
     },
+  },
+  notifications: {
+    all: ["notifications"] as const,
+    unread: () => [...queryKeys.notifications.all, "unread"] as const,
   },
 } as const;

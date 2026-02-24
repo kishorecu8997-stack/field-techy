@@ -77,7 +77,7 @@ const TimelineList: React.FC<TimelineListProps> = ({ items, className }) => {
                 )}
               </div>
               {(item.details || item.description) && (
-                <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 break-all">
                   {item.details || item.description}
                 </div>
               )}

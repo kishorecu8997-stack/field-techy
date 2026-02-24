@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { useClientGetAssignmentDetails } from "@/shared/apiServices/client/clientOpenApiService";
 import TabComponent from "@/shared/components/TabComponent";
-import JobInfoSection from "./tab_components/JobInfoSection";
-import LocationMap from "./tab_components/LocationMap";
-import TimelineSection from "./tab_components/TimelineSection";
-import ManageProposalsTab from "./tab_components/ManageProposalsTab";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { useEffect, useState } from "react";
 import type {
-  JobTabSectionProps,
   JobInfoSectionProps,
+  JobTabSectionProps,
   paymentTermsProps,
 } from "../types";
-import { useClientGetAssignmentDetails } from "@/shared/apiServices/client/clientOpenApiService";
+import JobInfoSection from "./tab_components/JobInfoSection";
+import LocationMap from "./tab_components/LocationMap";
+import ManageProposalsTab from "./tab_components/ManageProposalsTab";
+import TimelineSection from "./tab_components/timeline_section/TimelineSection";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -143,19 +143,20 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   job,
   assignmentId,
   showManageProposals,
+  jobID,
 }) => {
   const [selectedTab, setSelectedTab] = useState<string>(
     activeTab || JOB_TAB_LABELS.timeline,
   );
 
-  // Get jobId from job prop
-  const jobId = job?.id ? Number(job.id) : undefined;
-
   // Fetch assignments/proposals for this job when showManageProposals is true
+  // Convert jobID to number, but handle invalid values properly
+  const parsedJobId = jobID ? Number(jobID) : undefined;
+  const validJobId = parsedJobId && !isNaN(parsedJobId) ? parsedJobId : undefined;
   const { data: assignmentsData, isLoading: isLoadingAssignments } =
     useClientGetAssignmentDetails(
-      { jobId: jobId },
-      !!(showManageProposals && jobId),
+      { jobId: validJobId, assignmentId },
+      !!(showManageProposals && (validJobId || assignmentId)),
     );
 
   useEffect(() => {
@@ -168,6 +169,24 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   const jobInfo = mapClientJobToJobInfo(job);
   const payInfo = mapClientJobToPayInfo(job);
 
+  // Calculate unprocessed proposals count for badge notification
+  const processedStatuses = [
+    "accepted",
+    "assigned",
+    "approved",
+    "start_pending_approval",
+    "started",
+    "submit_pending_approval",
+    "submitted",
+    "rejected",
+  ];
+  const unprocessedProposalsCount = assignmentsData?.filter(
+    (proposal) =>
+      !processedStatuses.includes(
+        (proposal.assignmentStatus || "").toLowerCase(),
+      ),
+  ).length || 0;
+
   // Simplified 3 tabs: Timeline, Job Overview, Work Location, Manage Proposals
   const tabs = [
     {
@@ -175,7 +194,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       content: (
         <TimelineSection
           assignmentId={assignmentId}
-          jobId={jobId}
+          jobId={validJobId}
           hasProposals={!!assignmentsData?.length}
         />
       ),
@@ -193,11 +212,12 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       ? [
           {
             label: JOB_TAB_LABELS.manageProposals || "Manage Proposals",
+            badge: unprocessedProposalsCount > 0 ? unprocessedProposalsCount : undefined,
             content: (
               <ManageProposalsTab
                 assignments={assignmentsData}
                 isLoading={isLoadingAssignments}
-                jobId={jobId}
+                jobId={Number(jobID)}
               />
             ),
           },

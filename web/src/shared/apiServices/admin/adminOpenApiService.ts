@@ -1,6 +1,7 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
+  adminGetClientsForManagement,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -22,6 +23,13 @@ import {
   type AdminGetEngineersForManagementData,
   type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
+  type AdminCreateClientData,
+  type AdminCreateClientResponse,
+  type AdminUpdateClientData,
+  type AdminUpdateClientResponse,
+  type AdminGetClientResponse,
+  type AdminGetClientsForManagementError,
+  type AdminDeleteClientResponse,
   type AdminCreateServiceCategoryResponse,
   type AdminGetServiceCategoriesData,
   type AdminGetServiceCategoriesResponse,
@@ -36,17 +44,25 @@ import {
   appGetLookupDataOptions,
   appLoginMutation,
   appResetPasswordMutation,
-  adminGetClientsForManagementOptions,
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetEngineersForManagementOptions,
+   adminCreateClientMutation,
+  adminUpdateClientMutation,
+  adminGetClientOptions,
+  adminDeleteClientMutation,
   adminGetEngineerOptions,
   adminCreateServiceCategoryMutation,
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
 } from "@/api/@tanstack/react-query.gen";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryKey,
+} from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 
@@ -62,6 +78,7 @@ export const LookupTable = {
   WorkLocations: "workLocations",
   EducationLevels: "educationLevels",
   Courses: "courses",
+  BusinessTypes: "businessTypes",
 } as const;
 
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
@@ -232,7 +249,9 @@ export type AppGetLookupDataResponse = NonNullable<
 
 export function useAppGetLookupData(
   table: LookupTable,
+  parentId?: string | number,
   options?: {
+    enabled?: boolean;
     onSuccess?: (data: AppGetLookupDataResponse) => void;
     onError?: (error: unknown) => void;
   },
@@ -240,7 +259,10 @@ export function useAppGetLookupData(
   return useQuery({
     ...appGetLookupDataOptions({
       client: apiClient,
-      query: { table },
+      query: {
+        table,
+        ...(parentId && { parentId: String(parentId) }),
+      },
     }),
     ...options,
   });
@@ -288,11 +310,22 @@ export function useAdminManageClients(options?: {
     ...(clientType ? { clientType } : {}),
   };
 
-  return useQuery({
-    ...adminGetClientsForManagementOptions({
-      client: apiClient,
-      query: queryParams,
-    }),
+  return useQuery<
+    AdminManageClientsResponse,
+    AdminGetClientsForManagementError,
+    AdminManageClientsResponse,
+    QueryKey
+  >({
+    queryKey: [...queryKeys.admin.manageClients, queryParams],
+    queryFn: async ({ signal }) => {
+      const { data } = await adminGetClientsForManagement({
+        client: apiClient,
+        query: queryParams,
+        signal,
+        throwOnError: true,
+      });
+      return data as AdminManageClientsResponse;
+    },
     ...queryOptions,
   });
 }
@@ -380,6 +413,66 @@ export function useAdminGetJobs(
   });
 }
 
+export type AdminAddClientResponse = AdminCreateClientResponse;
+export type AdminAddClientBody = AdminCreateClientData["body"];
+
+export function useAdminAddClient(options?: {
+  onSuccess?: (data: AdminAddClientResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateClientMutation({ client: apiClient }),
+    onSuccess: (data: AdminAddClientResponse) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageClients,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminUpdateClientBody = AdminUpdateClientData["body"];
+
+export function useAdminUpdateClient(options?: {
+  onSuccess?: (data: AdminUpdateClientResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateClientMutation({ client: apiClient }),
+    onSuccess: (data: AdminUpdateClientResponse) => {
+      queryClient.resetQueries({
+        queryKey: queryKeys.admin.manageClients,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminGetClientByUserId(
+  userId: string | number,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetClientResponse) => void;
+    onError?: (error: unknown) => void;
+    refetchOnMount?: boolean | "always";
+    staleTime?: number;
+  },
+) {
+  return useQuery({
+    ...adminGetClientOptions({
+      client: apiClient,
+      path: { userId: Number(userId) },
+    }),
+    ...options,
+  });
+}
+
 export function useAdminGetEngineerById(userId: number, enabled = true) {
   const isValidId = Number.isFinite(userId);
   return useQuery({
@@ -408,5 +501,23 @@ export function useAdminGetServiceCategories(
       query,
     }),
     ...options,
+  });
+}
+
+export function useAdminDeleteClientMutation(options?: {
+  onSuccess?: (data: AdminDeleteClientResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminDeleteClientMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageClients,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
   });
 }

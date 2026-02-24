@@ -74,7 +74,7 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
             {updateTitle}
           </p>
           {!isCollapsed && update.description && (
-            <p className="text-sm text-gray-700 mt-1 whitespace-pre-line leading-5">
+            <p className="text-sm text-gray-700 mt-1 whitespace-pre-line break-all leading-5">
               {update.description}
             </p>
           )}

@@ -41,7 +41,7 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                       <p className="text-xs font-semibold text-amber-600">
                         {REVISION_LABELS.clientLabel}
                       </p>
-                      <p className="text-sm text-gray-800 mt-1">
+                      <p className="text-sm text-gray-800 mt-1 break-all">
                         {revision.clientComment || update.description || MODAL_MESSAGES.revisionFallback}
                       </p>
                       {revision.clientAttachmentUrl && (
@@ -87,7 +87,7 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                         <p className="text-xs font-semibold text-blue-700">
                           {REVISION_LABELS.engineerLabel}
                         </p>
-                        <p className="text-sm text-gray-800 mt-1">
+                        <p className="text-sm text-gray-800 mt-1 break-all">
                           {revision.content}
                         </p>
                         {revision.attachmentUrl && (
@@ -133,7 +133,7 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                   <p className="text-xs font-semibold text-amber-600">
                     {REVISION_LABELS.clientLabel}
                   </p>
-                  <p className="text-sm text-gray-800 mt-1">
+                  <p className="text-sm text-gray-800 mt-1 break-all">
                     {update.description || MODAL_MESSAGES.revisionFallback}
                   </p>
                   {update.attachmentName && (
@@ -170,7 +170,7 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                     <p className="text-xs font-semibold text-blue-700">
                       {REVISION_LABELS.engineerLabel}
                     </p>
-                    <p className="text-sm text-gray-800 mt-1">
+                    <p className="text-sm text-gray-800 mt-1 break-all">
                       {revisionUpdateEntry.description}
                     </p>
                     {revisionUpdateEntry.attachmentName && (

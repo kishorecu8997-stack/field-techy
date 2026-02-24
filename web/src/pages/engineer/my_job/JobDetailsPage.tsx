@@ -22,6 +22,7 @@ import FinalStatementForm from "./job_details_components/jobHeaderComponents/Fin
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import JobTabSection from "./job_details_components/JobTabSection";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -91,7 +92,7 @@ const JobDetailsPage = () => {
   void isWorkSubmitted;
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Timeline");
+  const [activeTab, setActiveTab] = useState(JOB_TAB_LABELS.timeline);
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
   const [_offerJobStatus, setOfferJobStatus] = useState<
@@ -195,7 +196,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             onSortChange={() => {}}
-            isReport
+            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -220,7 +221,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             onSortChange={() => {}}
-            isReport
+            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <LoaderComponent />
@@ -239,7 +240,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             onSortChange={() => {}}
-            isReport
+            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -296,7 +297,7 @@ const JobDetailsPage = () => {
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport
+          isReport={false}
           customLabels={
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
           }

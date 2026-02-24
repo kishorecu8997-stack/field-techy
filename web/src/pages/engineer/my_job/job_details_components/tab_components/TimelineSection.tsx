@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
-import TimelineSectionHeader from "@/pages/client/my_job_client/components/tab_components/TimelineSectionHeader";
-import ActionRequiredBadge from "@/pages/client/my_job_client/components/tab_components/ActionRequiredBadge";
+import TimelineSectionHeader from "@/pages/client/my_job_client/components/tab_components/timeline_section/TimelineSectionHeader";
+import ActionRequiredBadge from "@/pages/client/my_job_client/components/tab_components/timeline_section/ActionRequiredBadge";
 // import TimelineList from "@/shared/components/TimelineList";
 import {
   formatApiDate,
