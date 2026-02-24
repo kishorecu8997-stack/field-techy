@@ -340,10 +340,15 @@ export const generatePageRange = (
 };
 
 // Format currency
-export const formatCurrency = (amount: number) => {
+export const formatCurrency = (
+  amount: number,
+  currencyCode: string = "USD",
+) => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: currencyCode,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(amount);
 };
 
