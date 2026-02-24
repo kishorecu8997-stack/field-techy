@@ -67,7 +67,10 @@ const TermsAndConditions = () => {
                        prose-a:text-teal-600 dark:prose-a:text-teal-400
                        prose-strong:text-gray-900 dark:prose-strong:text-gray-100
                        prose-ul:text-gray-700 dark:prose-ul:text-gray-300
-                       prose-ol:text-gray-700 dark:prose-ol:text-gray-300"
+                       prose-ol:text-gray-700 dark:prose-ol:text-gray-300
+                      break-words              
+                      overflow-x-hidden         
+                      w-full"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(cmsData.data.content),
             }}

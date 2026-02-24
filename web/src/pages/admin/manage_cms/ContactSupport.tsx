@@ -85,8 +85,6 @@ export default function ContactSupport() {
   };
 
   const handleSubmit = (data: ContactSupportFormData) => {
-    console.log("Contact Support Form Submitted", data);
-
     handleSaveConfirmation(data);
   };
 

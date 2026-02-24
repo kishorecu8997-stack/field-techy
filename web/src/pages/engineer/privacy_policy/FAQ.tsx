@@ -124,12 +124,21 @@ const FAQ = () => {
                   </div>
 
                   {isExpanded && (
-                    <div
-                      className="mt-2 text-sm text-gray-600 dark:text-gray-400"
-                      dangerouslySetInnerHTML={{
-                        __html: item.description,
-                      }}
-                    />
+                    <div className="px-6 pb-6">
+                      <div
+                        className="
+                        text-sm text-gray-600 dark:text-gray-400
+                        prose prose-sm dark:prose-invert      
+                        max-w-none
+                        break-words
+                        overflow-x-hidden
+                        w-full
+                        "
+                        dangerouslySetInnerHTML={{
+                          __html: item.description,
+                        }}
+                      />
+                    </div>
                   )}
                 </div>
               );

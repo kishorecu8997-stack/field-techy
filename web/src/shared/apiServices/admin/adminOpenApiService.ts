@@ -431,7 +431,6 @@ export function useGetCmsContent(
         client: apiClient,
         query: { key },
       });
-      console.log(`CMS content received for key: ${key}`, response.data);
       return response.data;
     },
     staleTime: 10 * 1000,

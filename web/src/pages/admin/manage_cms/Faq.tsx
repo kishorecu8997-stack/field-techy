@@ -282,7 +282,7 @@ export default function Faq() {
           />
         </div>
       </div>
-      // In your Faq.tsx, update the Popup section:
+    
       {isModalOpen && (
         <Popup
           onClose={() => {

@@ -57,7 +57,11 @@ const FAQ = () => {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
-          <MyJobsHeader title="FAQ" onSortChange={() => {}} isShowSort={false} />
+          <MyJobsHeader
+            title="FAQ"
+            onSortChange={() => {}}
+            isShowSort={false}
+          />
 
           <div className="flex justify-center mt-20">
             <p className="text-gray-500">Loading FAQs...</p>
@@ -71,7 +75,11 @@ const FAQ = () => {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
-          <MyJobsHeader title="FAQ" onSortChange={() => {}} isShowSort={false} />
+          <MyJobsHeader
+            title="FAQ"
+            onSortChange={() => {}}
+            isShowSort={false}
+          />
 
           <div className="flex justify-center mt-20">
             <p className="text-red-500">Failed to load FAQs</p>
@@ -84,7 +92,6 @@ const FAQ = () => {
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
-
         <MyJobsHeader title="FAQ" onSortChange={() => {}} isShowSort={false} />
 
         {/* Search */}
@@ -103,59 +110,49 @@ const FAQ = () => {
         {/* FAQ List */}
         {filteredData.length > 0 ? (
           <div className="space-y-4">
-
             {filteredData.map((item, index) => {
-
               const itemKey = `${item.title}-${index}`;
               const isExpanded = expandedIndex === itemKey;
 
               return (
                 <div
                   key={itemKey}
-                  onClick={() =>
-                    setExpandedIndex(isExpanded ? null : itemKey)
-                  }
+                  onClick={() => setExpandedIndex(isExpanded ? null : itemKey)}
                   className="bg-white dark:bg-gray-800 rounded-lg shadow-sm cursor-pointer transition"
                 >
-
                   {/* Question */}
                   <div className="flex justify-between items-center p-6 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
-
-                    <span>
-                      {item.title}
-                    </span>
+                    <span>{item.title}</span>
 
                     <span className="text-gray-400 text-xl">
                       {isExpanded ? "−" : "+"}
                     </span>
-
                   </div>
 
                   {/* Answer */}
                   {isExpanded && (
                     <div className="px-6 pb-6">
-
                       <div
-                        className="text-sm text-gray-600 dark:text-gray-400"
+                        className="
+                       text-sm text-gray-600 dark:text-gray-400
+                       prose prose-sm dark:prose-invert      
+                       max-w-none
+                       break-words
+                       overflow-x-hidden
+                       w-full"
                         dangerouslySetInnerHTML={{
                           __html: item.description,
                         }}
                       />
-
                     </div>
                   )}
-
                 </div>
               );
             })}
-
           </div>
         ) : (
-          <p className="text-gray-500">
-            No FAQs match your search.
-          </p>
+          <p className="text-gray-500">No FAQs match your search.</p>
         )}
-
       </div>
     </div>
   );

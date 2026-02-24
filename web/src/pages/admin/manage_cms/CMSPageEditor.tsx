@@ -65,8 +65,6 @@ export default function CMSPageEditor({
       queryClient.invalidateQueries({
         queryKey: ["cms-content"],
       });
-
-      console.log(`Cache invalidated for slug: ${slug}`);
     },
     onError: (error: any) => {
       toast.error(
