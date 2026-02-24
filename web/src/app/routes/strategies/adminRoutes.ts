@@ -175,6 +175,10 @@ export class AdminRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.Settings),
           },
           {
+            path: urls.admin.home.report_issue,
+            element: withSuspense(Components.AdminReportIssue),
+          },
+          {
             path: urls.admin.home.profile,
             element: withSuspense(Components.AdminProfile),
           },

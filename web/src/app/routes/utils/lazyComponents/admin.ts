@@ -102,6 +102,9 @@ export const EditSubAdmin = React.lazy(
 );
 export const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
 export const Settings = React.lazy(() => import("@/pages/admin/settings"));
+export const AdminReportIssue = React.lazy(
+  () => import("@/pages/admin/report_issue"),
+);
 export const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
 export const ReceivedNotification = React.lazy(
   () => import("@/pages/admin/received_notification"),

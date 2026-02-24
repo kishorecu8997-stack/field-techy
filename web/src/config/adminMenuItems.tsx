@@ -5,7 +5,7 @@ import { HiOutlineUserGroup } from "react-icons/hi";
 import { BsPersonGear, BsPersonWorkspace, BsSuitcaseLg } from "react-icons/bs";
 import { RxBackpack } from "react-icons/rx";
 import { LuSettings, LuSettings2, LuWallet } from "react-icons/lu";
-import { RiBankCardLine } from "react-icons/ri";
+import { RiBankCardLine, RiErrorWarningLine } from "react-icons/ri";
 import { BiFile } from "react-icons/bi";
 import { ImLoop } from "react-icons/im";
 
@@ -141,6 +141,11 @@ export const menuItems: MenuItem[] = [
         icon: <LuSettings className="text-lg" />,
       },
     ],
+  },
+  {
+    name: "Reported Issue",
+    path: absoluteUrls.admin.home.report_issue,
+    icon: <RiErrorWarningLine className="text-lg" />,
   },
 ];
 

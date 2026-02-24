@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
 import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
 import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { RiErrorWarningFill } from "react-icons/ri";
 
 /**
  * Maps AssignmentStatus to OfferedJobStatusType for UI compatibility
@@ -59,6 +60,7 @@ const EngineersActions = ({
   setActiveTab,
   OfferJobStatus,
   status,
+  setIsReportOpen,
   onAddProgressUpdate,
   onOpenFinalStatement,
   isFinalStatementSubmitted,
@@ -72,6 +74,7 @@ const EngineersActions = ({
   >;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  setIsReportOpen?: Dispatch<SetStateAction<boolean>>;
   setIsWorkSubmitted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
   isSendProposal?: boolean;
@@ -367,7 +370,14 @@ const EngineersActions = ({
   };
 
   return (
-    <div className="mt-4 flex flex-wrap gap-3 h-fit justify-end">
+    <div className="mt-4 flex flex-wrap gap-3 h-fit justify-between">
+      <div
+        className="flex cursor-pointer flex-row items-center gap-1 mt-3 border-b px-3"
+        onClick={() => setIsReportOpen?.(true)}
+      >
+        <RiErrorWarningFill className="text-red-400 text-lg" />
+        <span className="text-md">Report Issue</span>
+      </div>
       <span className="flex rounded-md text-sm font-medium h-fit justify-end items-end w-fit">
         {/* In Progress Status */}
         {hasJobStarted ? (
