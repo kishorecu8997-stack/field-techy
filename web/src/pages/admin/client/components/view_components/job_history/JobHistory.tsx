@@ -40,10 +40,9 @@ const JobHistory: React.FC<JobHistoryProps> = ({ userId }) => {
     data: historyResponse,
     isLoading,
     error,
-  } = useAdminGetClientHistory({
+  } = useAdminGetClientHistory(userId, {
     page,
     limit,
-    userId,
     type: "jobs",
     statusGroup: currentStatusGroup,
   });
@@ -93,6 +92,7 @@ const JobHistory: React.FC<JobHistoryProps> = ({ userId }) => {
         total={historyResponse?.total || 0}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
+        userId={userId}
       />
     ),
   }));

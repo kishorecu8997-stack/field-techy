@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { usePopupStore } from "@/shared/store/popupStore";
 import { FiEye } from "react-icons/fi";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -14,20 +12,23 @@ import GeneralChart from "@/shared/components/AdminChart";
 import SelectMenu from "@/shared/components/SelectMenu";
 import { days } from "@/dummy_data/adminDashboard";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
-import { chartData } from "@/dummy_data/chart";
+import { useAdminGetJobGraph } from "@/shared/apiServices/admin/adminOpenApiService";
+import { chartData as dummyChartData } from "@/dummy_data/chart";
+import { useSearchParams } from "react-router-dom";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];
   isLoading?: boolean;
   error?: unknown;
-  search: string;
-  setSearch: (value: string) => void;
-  onClearFilters: () => void;
   page?: number;
   limit?: number;
   total?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
+  userId?: number;
+  search?: string;
+  setSearch?: (value: string) => void;
+  onClearFilters?: () => void;
 }
 
 /**
@@ -38,17 +39,90 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
   data,
   isLoading,
   error,
-  search,
-  setSearch,
-  onClearFilters,
   page = 1,
   limit = 10,
   total,
   onPageChange,
   onPageSizeChange,
+  userId,
+  search: externalSearch,
+  setSearch: externalSetSearch,
+  onClearFilters: externalOnClearFilters,
 }) => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const internalSearch = searchParams.get("search") || "";
 
+  const search = externalSearch !== undefined ? externalSearch : internalSearch;
+
+  const setSearch = (value: string) => {
+    if (externalSetSearch) {
+      externalSetSearch(value);
+    } else {
+      const newParams = new URLSearchParams(searchParams);
+      if (value) {
+        newParams.set("search", value);
+      } else {
+        newParams.delete("search");
+      }
+      setSearchParams(newParams, { replace: true });
+    }
+  };
+
+  const onClearFilters = () => {
+    if (externalOnClearFilters) {
+      externalOnClearFilters();
+    } else {
+      setSearch("");
+    }
+  };
+
+  const filteredData = useMemo(() => {
+    // If we have external search, the data is already filtered by the parent
+    if (externalSearch !== undefined || !search) return data;
+
+    const query = search.toLowerCase();
+    return data.filter(
+      (item) =>
+        item.jobTitle?.toLowerCase().includes(query) ||
+        item.jobCode?.toLowerCase().includes(query) ||
+        item.jobDescription?.toLowerCase().includes(query) ||
+        item.categoryName?.toLowerCase().includes(query),
+    );
+  }, [data, search, externalSearch]);
+
+  const [selectedDay, setSelectedDay] = useState<string | null>("monthly");
+
+  const intervalMap: Record<string, "day" | "week" | "month" | "year"> = {
+    daily: "day",
+    weekly: "week",
+    monthly: "month",
+    yearly: "year",
+  };
+
+  const {
+    data: graphResponse,
+    isLoading: isGraphLoading,
+    error: graphError,
+  } = useAdminGetJobGraph(
+    {
+      userId,
+      interval: intervalMap[selectedDay || "monthly"],
+    },
+    {
+      enabled: !!userId,
+    },
+  );
+
+  const chartData = useMemo(() => {
+    if (graphResponse?.data) {
+      return graphResponse.data.map((item) => ({
+        name: dayjs(item.label).format("DD/MM/YYYY"),
+        jobs: item.completed || 0,
+      }));
+    }
+    return [];
+  }, [graphResponse]);
   const columns: Column<JobItem>[] = [
     {
       label: "Sr.No.",
@@ -112,7 +186,6 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
     },
   ];
 
-  const [selectedDay, setSelectedDay] = useState<string | null>();
   const hasSelectedFilters = Boolean(search);
 
   return (
@@ -128,7 +201,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
       <div className="h-full flex-1 overflow-y-auto mt-4">
         <CustomTable<JobItem>
           columns={columns}
-          data={data}
+          data={filteredData}
           initialPageSize={limit}
           loading={isLoading}
           error={error ? "An error occurred while fetching jobs." : null}
@@ -154,7 +227,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
             </div>
 
             <GeneralChart
-              data={chartData}
+              data={chartData.length > 0 ? chartData : dummyChartData}
               chartType="line"
               xAxisDataKey="name"
               aspectRatio={2}
@@ -168,6 +241,8 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
               customTooltip={CustomTooltip}
               height={400}
               showLegend={false}
+              isLoading={isGraphLoading}
+              error={graphError ? "An error occurred while fetching graph data." : null}
             />
           </div>
         </div>

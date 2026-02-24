@@ -37,6 +37,8 @@ import {
   type AdminDeleteServiceCategoryResponse,
   type AdminGetClientHistoryResponse,
   type AdminGetClientHistoryData,
+  type AdminGetJobGraphData,
+  type AdminGetJobGraphResponses,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -60,6 +62,7 @@ import {
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
   adminGetClientHistoryOptions,
+  adminGetJobGraphOptions,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -352,6 +355,8 @@ export function useAdminClientsByUserIdStatus(options?: {
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
+        exact: false,
+        refetchType: "all",
       });
       options?.onSuccess?.(data);
     },
@@ -471,7 +476,7 @@ export function useAdminGetClientByUserId(
   return useQuery({
     ...adminGetClientOptions({
       client: apiClient,
-      query: { userId: Number(userId) },
+      path: { userId: Number(userId) },
     }),
     ...options,
   });
@@ -518,6 +523,7 @@ export function useAdminDeleteClientMutation(options?: {
 export type AdminGetClientHistoryQuery = NonNullable<AdminGetClientHistoryData["query"]>;
 
 export function useAdminGetClientHistory(
+  userId: number,
   query: AdminGetClientHistoryQuery,
   options?: {
     enabled?: boolean;
@@ -528,7 +534,36 @@ export function useAdminGetClientHistory(
   return useQuery({
     ...adminGetClientHistoryOptions({
       client: apiClient,
+      path: { userId },
       query,
+    }),
+    ...options,
+  });
+}
+
+export type AdminGetJobGraphQuery = Omit<
+  NonNullable<AdminGetJobGraphData["query"]>,
+  "userId"
+> & {
+  userId?: number;
+};
+export type AdminGetJobGraphResponse = NonNullable<
+  AdminGetJobGraphResponses[200]
+>;
+
+export function useAdminGetJobGraph(
+  query: AdminGetJobGraphQuery,
+  options?: {
+    enabled?: boolean;
+  }
+) {
+  return useQuery({
+    ...adminGetJobGraphOptions({
+      client: apiClient,
+      query: {
+        ...query,
+        userId: query.userId ?? 0,
+      },
     }),
     ...options,
   });

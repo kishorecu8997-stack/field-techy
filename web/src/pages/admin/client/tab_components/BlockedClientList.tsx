@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
@@ -9,30 +9,50 @@ import dayjs from "dayjs";
 import {
   useAdminManageClients,
   useAdminClientsByUserIdStatus,
+  type ClientType,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { type ManageClientProps } from "../types";
+import AdminTabComponent from "@/shared/components/AdminTabComponent";
+
+interface BlockedClientTableProps {
+  clientType: ClientType;
+}
 
 /**
- * BlockedClientList Component
+ * BlockedClientTable Component
  *
- * Displays a table of clients whose status is set to "blocked".
- * Provides functionality to unblock clients with a confirmation popup.
- *
- * @returns {JSX.Element} The rendered BlockedClientList component.
+ * Displays a table of blocked clients for a specific client type (home or corporate).
+ * Provides search functionality and the ability to unblock clients.
  */
-const BlockedClientList: React.FC = () => {
+const BlockedClientTable: React.FC<BlockedClientTableProps> = ({ clientType }) => {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
   const { data: manageClient, refetch: refetchClients, isLoading } = useAdminManageClients({
-    query: { page, limit, status: 'blocked', search: search || undefined },
+    clientType,
+    query: { page, limit, status: "blocked" },
   });
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
 
-  const handleUnblock = async (client: ManageClientProps) => {
+  const rawData = (manageClient?.data || []) as ManageClientProps[];
+
+  // Client-side search filtering
+  const blockedClients = useMemo(() => {
+    if (!search) return rawData;
+    const query = search.toLowerCase();
+    return rawData.filter((row) =>
+      row.name?.toLowerCase().includes(query) ||
+      row.companyName?.toLowerCase().includes(query) ||
+      row.email?.toLowerCase().includes(query) ||
+      row.clientCode?.toLowerCase().includes(query) ||
+      row.phoneNumber?.includes(query)
+    );
+  }, [rawData, search]);
+
+  const handleUnblock = useCallback(async (client: ManageClientProps) => {
     await showPopup({
       title: "Unblock Client",
       body: `Are you sure you want to unblock client ${client.companyName || client.name}?`,
@@ -63,9 +83,7 @@ const BlockedClientList: React.FC = () => {
         },
       ],
     });
-  };
-
-  const blockedClients = (manageClient?.data || []) as ManageClientProps[];
+  }, [showPopup, updateClientStatus, refetchClients]);
 
   const columns: Column<ManageClientProps>[] = [
     {
@@ -81,17 +99,12 @@ const BlockedClientList: React.FC = () => {
       ),
     },
     {
-      key: "clientType",
-      label: "Client Type",
-      renderCell: (row: ManageClientProps) => (
-        <span className="capitalize">{row.clientType}</span>
-      ),
-    },
-    {
       key: "details",
       label: "Details",
       renderCell: (row: ManageClientProps) => {
-        const displayName = row.companyName || row.name;
+        const displayName = clientType === "corporate"
+          ? (row.companyName || row.name)
+          : row.name;
         const initials = (displayName || "C").charAt(0).toUpperCase();
         const avatarUrl = row.profilePicture?.url;
 
@@ -119,25 +132,25 @@ const BlockedClientList: React.FC = () => {
       key: "reason",
       label: "Reason for Block",
       renderCell: (row: ManageClientProps) => {
-        const lastBlock = row.statusHistory?.filter(h => h.type === 'block').pop();
+        const lastBlock = row.statusHistory?.filter(h => h.type === "block").pop();
         return lastBlock?.reason || "N/A";
-      }
+      },
     },
     {
       key: "registrationDate",
       label: "Blocked On",
       renderCell: (row: ManageClientProps) => {
-         const lastBlock = row.statusHistory?.filter(h => h.type === 'block').pop();
-         return lastBlock?.actionDate ? dayjs(lastBlock.actionDate).format("DD/MM/YYYY") : "N/A";
-      }
+        const lastBlock = row.statusHistory?.filter(h => h.type === "block").pop();
+        return lastBlock?.actionDate ? dayjs(lastBlock.actionDate).format("DD/MM/YYYY") : "N/A";
+      },
     },
     {
-       key: "blockedBy",
-       label: "Blocked By",
-       renderCell: (row: ManageClientProps) => {
-          const lastBlock = row.statusHistory?.filter(h => h.type === 'block').pop();
-          return lastBlock?.adminName || "N/A";
-       }
+      key: "blockedBy",
+      label: "Blocked By",
+      renderCell: (row: ManageClientProps) => {
+        const lastBlock = row.statusHistory?.filter(h => h.type === "block").pop();
+        return lastBlock?.adminName || "N/A";
+      },
     },
     {
       key: "userStatus",
@@ -153,7 +166,7 @@ const BlockedClientList: React.FC = () => {
       label: "Actions",
       align: "center",
       renderCell: (row: ManageClientProps) => (
-        <Button 
+        <Button
           className="w-fit bg-gradient-to-r from-teal-800 to-teal-900 text-white shadow-sm hover:opacity-90"
           onClick={() => handleUnblock(row)}
         >
@@ -180,6 +193,33 @@ const BlockedClientList: React.FC = () => {
           loading={isLoading}
         />
       </div>
+    </div>
+  );
+};
+
+/**
+ * BlockedClientList Component
+ *
+ * Displays blocked clients in two sub-tabs: "Corporate" and "Home".
+ * Each tab filters blocked clients by the corresponding client type.
+ *
+ * @returns {JSX.Element} The rendered BlockedClientList component.
+ */
+const BlockedClientList: React.FC = () => {
+  const tabs = [
+    {
+      label: "Corporate",
+      content: <BlockedClientTable clientType="corporate" />,
+    },
+    {
+      label: "Home",
+      content: <BlockedClientTable clientType="home" />,
+    },
+  ];
+
+  return (
+    <div className="h-full w-full flex flex-1 overflow-hidden flex-col">
+      <AdminTabComponent tabs={tabs} defaultActiveTab="Corporate" />
     </div>
   );
 };

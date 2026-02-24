@@ -2,7 +2,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -46,7 +46,7 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
 
   const { data: manageClient, refetch: refetchClients, isLoading } = useAdminManageClients({
     clientType,
-    query: { page, limit, search: search || undefined },
+    query: { page, limit },
   });
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
@@ -63,7 +63,20 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
     handleStatusChange,
   });
 
-  const clientData = (manageClient?.data || []) as unknown as ManageClientProps[];
+  const rawData = (manageClient?.data || []) as unknown as ManageClientProps[];
+
+  // Client-side search filtering
+  const clientData = useMemo(() => {
+    if (!search) return rawData;
+    const query = search.toLowerCase();
+    return rawData.filter((row) =>
+      row.name?.toLowerCase().includes(query) ||
+      row.companyName?.toLowerCase().includes(query) ||
+      row.email?.toLowerCase().includes(query) ||
+      row.clientCode?.toLowerCase().includes(query) ||
+      row.phoneNumber?.includes(query)
+    );
+  }, [rawData, search]);
 
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
@@ -76,7 +89,7 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            await deleteClient({ body: { userId: client.userId } });
+            await deleteClient({ path: { userId: client.userId } });
             toast.success("Client deleted successfully");
             close(true);
           },
@@ -164,25 +177,8 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
       renderCell: (row: ManageClientProps) => `₹${row.balance || 0}`,
     },
     {
-      key: "profileStatus",
-      label: "Profile Status",
-      renderCell: (row: ManageClientProps) => (
-        <span
-          className={`capitalize font-medium ${
-            row.profileStatus === "approved"
-              ? "text-green-600"
-              : row.profileStatus === "pending"
-                ? "text-yellow-600"
-                : "text-red-600"
-          }`}
-        >
-          {row.profileStatus || "N/A"}
-        </span>
-      ),
-    },
-    {
       key: "userStatus",
-      label: "User Status",
+      label: "Profile Status",
       renderCell: (row: ManageClientProps) => (
         <SelectMenu
           placeholder="Select"
