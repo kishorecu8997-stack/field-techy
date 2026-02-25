@@ -18,13 +18,21 @@ interface ChartData {
 }
 /**
  * EarningHistoryChart Component
- * Displays a line chart of the user's monthly earnings history with an expandable view.
+ *
+ * Renders a line chart showing the user's monthly earnings history using
+ * data fetched from the engineer earnings API.
+ *
+ * The component:
+ * - Retrieves earnings history via `useEngineerEarnings`
+ * - Transforms API response into chart-friendly data (month, earnings)
+ * - Displays the latest month’s earnings summary
+ * - Supports an expandable/collapsible chart view
+ *
+ * Currency formatting is derived from the API response (`currencyCode` and
+ * `currencySymbol`) and applied consistently across the chart and labels.
  *
  * @component
- * @example
- * <EarningHistoryChart />
- *  @returns {JSX.Element} The rendered EarningHistoryChart component.
- *
+ * @returns {JSX.Element} A collapsible earnings history line chart.
  */
 const EarningHistoryChart: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -69,7 +77,7 @@ const EarningHistoryChart: React.FC = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Latest:{" "}
               <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(latest.earnings, currencyCode)}
+                {formatCurrency(latest.earnings, currencyCode ?? "USD")}
               </span>{" "}
               in {latest.month}
             </p>
@@ -127,7 +135,11 @@ const EarningHistoryChart: React.FC = () => {
                         : `${currencySymbol}${value}`
                     }
                   />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip
+                    content={
+                      <CustomTooltip currencyCode={currencyCode ?? "USD"} />
+                    }
+                  />
                   <Line
                     type="monotone"
                     dataKey="earnings"

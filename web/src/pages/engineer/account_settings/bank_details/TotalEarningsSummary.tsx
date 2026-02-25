@@ -16,9 +16,25 @@ import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
  */
 const TotalEarningsSummary: React.FC = () => {
   const [showBalance, setShowBalance] = useState<boolean>(false);
-  const { data } = useEngineerEarnings();
+  const { data, isLoading, isError } = useEngineerEarnings();
   const totalEarnings = data ? Number(data.totalEarnings) : 0;
   const now = new Date();
+  // Loading or error message
+  if (isLoading) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden p-6 text-center text-gray-500">
+        Loading earnings summary...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden p-6 text-center text-rose-500">
+        Failed to load earnings summary
+      </div>
+    );
+  }
   const thisMonthEarnings = data ? Number(data.monthlyEarnings) : 0;
   const totalWithdrawn = data ? Number(data.withdrawn) : 0;
   const availableBalance = totalEarnings - totalWithdrawn;
@@ -80,7 +96,7 @@ const TotalEarningsSummary: React.FC = () => {
         </p>
         <p className="text-4xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">
           {showBalance
-            ? formatCurrency(availableBalance, currencyCode)
+            ? formatCurrency(availableBalance, currencyCode ?? "USD")
             : "******"}
         </p>
       </div>
@@ -96,7 +112,7 @@ const TotalEarningsSummary: React.FC = () => {
           </div>
           <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {showBalance
-              ? formatCurrency(totalEarnings, currencyCode)
+              ? formatCurrency(totalEarnings, currencyCode ?? "USD")
               : "******"}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -113,7 +129,7 @@ const TotalEarningsSummary: React.FC = () => {
           </div>
           <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {showBalance
-              ? formatCurrency(thisMonthEarnings, currencyCode)
+              ? formatCurrency(thisMonthEarnings, currencyCode ?? "USD")
               : "******"}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -134,7 +150,7 @@ const TotalEarningsSummary: React.FC = () => {
           </div>
           <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {showBalance
-              ? formatCurrency(totalWithdrawn, currencyCode)
+              ? formatCurrency(totalWithdrawn, currencyCode ?? "USD")
               : "******"}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">

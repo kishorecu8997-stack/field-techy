@@ -4,12 +4,20 @@ import React, { useState } from "react";
 import { BiBriefcase, BiChevronDown, BiChevronUp } from "react-icons/bi";
 
 /**
- * Represents aggregated earning information for a job/client.
+ * BestPayingJobs Component
  *
- * @interface JobEarning
- * @property {string} client - Name of the client or job source.
- * @property {number} totalEarnings - Total amount earned from this client.
- * @property {number} transactionCount - Number of transactions associated with this client.
+ * Displays the top-paying jobs/clients based on transaction data retrieved
+ * from the API. The component aggregates positive transaction amounts by client,
+ * calculates total earnings and transaction counts, and shows the top results
+ * in a collapsible list.
+ *
+ * Data is derived dynamically by:
+ * - Grouping transactions by client (from the transaction description)
+ * - Summing positive transaction amounts per client
+ * - Sorting clients by total earnings in descending order
+ * - Displaying the top 5 highest-earning clients
+ *
+ * @returns {JSX.Element} A collapsible summary of best-paying jobs/clients.
  */
 const BestPayingJobs: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -44,7 +52,7 @@ const BestPayingJobs: React.FC = () => {
                 <span className="font-medium text-emerald-600 dark:text-emerald-400">
                   {formatCurrency(
                     Number(topEarner.totalAmount),
-                    data?.currencyCode,
+                    data?.currencyCode ?? "USD",
                   )}
                 </span>{" "}
                 from <span className="font-medium">{topEarner.name}</span> (
@@ -134,7 +142,7 @@ const BestPayingJobs: React.FC = () => {
                       +
                       {formatCurrency(
                         Number(job.totalAmount),
-                        data?.currencyCode,
+                        data?.currencyCode ?? "USD",
                       )}
                     </p>
                   </div>

@@ -20,26 +20,36 @@ import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenA
 const MonthlyComparison: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const now = new Date();
-  const { data } = useEngineerEarnings();
+  const { data, isLoading, isError } = useEngineerEarnings();
+  if (isLoading) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden p-6 text-center text-gray-500">
+        Loading monthly comparison...
+      </div>
+    );
+  }
+
+  if (isError || !data?.monthlyComparison) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden p-6 text-center text-rose-500">
+        Failed to load monthly comparison
+      </div>
+    );
+  }
   const comparison = data?.monthlyComparison;
-
   const currencyCode = data?.currencyCode;
-
   const currentMonthAmount = Number(comparison?.currentMonth.amount ?? 0);
   const lastMonthAmount = Number(comparison?.lastMonth.amount ?? 0);
   const percentageChange = Number(comparison?.change.percentage ?? 0);
-
   const isIncrease = comparison?.change.type === "increase";
   const isSame = percentageChange === 0;
-
   const thisMonthName = comparison?.currentMonth.name ?? "";
   const lastMonthName = comparison?.lastMonth.name ?? "";
-
   const changeText = isSame
     ? "Same as last month"
     : isIncrease
-      ? `+${percentageChange}% vs ${lastMonthName}`
-      : `-${percentageChange}% vs ${lastMonthName}`;
+      ? `+${Math.abs(percentageChange)}% vs ${lastMonthName}`
+      : `-${Math.abs(percentageChange)}% vs ${lastMonthName}`;
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
       {/* Clickable Compact Label */}
@@ -57,7 +67,7 @@ const MonthlyComparison: React.FC = () => {
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(currentMonthAmount, currencyCode)}
+                {formatCurrency(currentMonthAmount, currencyCode ?? "USD")}
               </span>{" "}
               this month ({thisMonthName}) — {changeText}
             </p>
@@ -94,7 +104,7 @@ const MonthlyComparison: React.FC = () => {
                 {lastMonthName}
               </p>
               <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                {formatCurrency(lastMonthAmount, currencyCode)}
+                {formatCurrency(lastMonthAmount, currencyCode ?? "USD")}
               </p>
             </div>
 
@@ -109,7 +119,7 @@ const MonthlyComparison: React.FC = () => {
               ) : (
                 <>
                   <div
-                    className={`w-18 h-18 rounded-full flex items-center justify-center shadow-xl ${
+                    className={`w-[4.5rem] h-[4.5rem] rounded-full flex items-center justify-center shadow-xl ${
                       isIncrease
                         ? "bg-emerald-100 dark:bg-emerald-900/40"
                         : "bg-rose-100 dark:bg-rose-900/40"
@@ -149,7 +159,7 @@ const MonthlyComparison: React.FC = () => {
                 {thisMonthName}
               </p>
               <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(currentMonthAmount, currencyCode)}
+                {formatCurrency(currentMonthAmount, currencyCode ?? "USD")}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-500 mt-3">
                 {now.getDate()} days in
