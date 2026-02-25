@@ -15,6 +15,8 @@
     "sdk:generate": "npm run openapi:client"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@fullcalendar/daygrid": "^6.1.19",
     "@fullcalendar/list": "^6.1.19",
     "@fullcalendar/multimonth": "^6.1.19",
@@ -72,6 +74,7 @@
     "@types/react-pdf": "^6.2.0",
     "@types/react-slick": "^0.23.13",
     "@vitejs/plugin-react": "^5.0.0",
+    "dompurify": "^3.1.6",
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
