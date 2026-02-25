@@ -465,11 +465,13 @@ export function useGetCmsContent(
       });
       return response.data;
     },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
+    staleTime: 10 * 1000,
+    gcTime: 30 * 1000,
     retry: 2,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchInterval: 30 * 1000,
+    refetchIntervalInBackground: false,
     ...options,
   });
 }

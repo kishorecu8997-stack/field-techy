@@ -73,8 +73,8 @@ export default function CMSPageEditor({
   }, [cmsPages, isFetchingPages, slug]);
 
   const mutation = useCreateOrUpdateCMSPage({
-    onSuccess: async (data) => {
-      toast.success(data.message || `${pageLabel} updated successfully!`);
+    onSuccess: async () => {
+     toast.success(`${pageLabel} updated successfully!`);
 
       await refetch();
 
