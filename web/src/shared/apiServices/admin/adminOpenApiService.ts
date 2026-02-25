@@ -64,7 +64,7 @@ import {
   createFaqMutation,
   updateFaqMutation,
   deleteFaqMutation,
-   adminCreateClientMutation,
+  adminCreateClientMutation,
   adminUpdateClientMutation,
   adminGetClientOptions,
   adminDeleteClientMutation,
@@ -459,20 +459,17 @@ export function useGetCmsContent(
   return useQuery({
     queryKey: ["cms-content", key],
     queryFn: async () => {
-      console.log(`Fetching CMS content for key: ${key}`);
       const response = await getCmsContent({
         client: apiClient,
         query: { key },
       });
       return response.data;
     },
-    staleTime: 10 * 1000,
-    gcTime: 30 * 1000,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
     retry: 2,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchInterval: 30 * 1000,
-    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     ...options,
   });
 }

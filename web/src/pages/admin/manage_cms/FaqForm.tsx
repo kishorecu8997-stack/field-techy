@@ -5,38 +5,63 @@ import { validateAlphabeticTextArea, validateQuestion } from "@/utils/validate";
 import { IoCloseSharp } from "react-icons/io5";
 
 interface AddFaqProps {
-  faqMode: string;
+  faqMode: "Add" | "Edit";
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   isLoading?: boolean;
 }
 
 /**
- * Renders a form for adding or editing a Frequently Asked Question (FAQ).
- * The form is typically displayed within a modal.
- * @param {AddFaqProps} props - The props for the component.
- * @returns {JSX.Element} The rendered Add/Edit FAQ form.
+ * Form component for adding or editing a Frequently Asked Question (FAQ).
+ * Typically rendered inside a modal dialog.
+ *
+ * @component
+ * @example
+ * <FaqForm
+ *   faqMode="Add"
+ *   setIsModalOpen={setModalOpen}
+ *   isLoading={isSubmitting}
+ * />
  */
 export default function FaqForm({
   faqMode,
   setIsModalOpen,
-  isLoading,
+  isLoading = false,
 }: AddFaqProps) {
+  const handleClose = () => {
+    if (!isLoading) {
+      setIsModalOpen(false);
+    }
+  };
+
   return (
     <div>
       <div className="p-4">
-        <div className="flex justify-between items-center mb-6">
-          <p className="text-lg font-bold">
-            {faqMode === "Add" ? "Add" : "Edit"} FAQ
-          </p>
-          <div
-            onClick={() => !isLoading && setIsModalOpen(false)}
-            className="cursor-pointer text-xl"
+        {/* Header with title and close button */}
+        <div className="flex justify-between items-center mb-6 dark:text-gray-200">
+          <h2 className="text-lg font-bold">
+            {faqMode === "Add" ? "Add New" : "Edit"} FAQ
+          </h2>
+
+          <button
+            type="button"
+            onClick={handleClose}
+            disabled={isLoading}
+            aria-label="Close FAQ form"
+            title="Close"
+            className={`
+              p-1 rounded-full text-gray-500 hover:text-gray-800 
+              dark:text-gray-400 dark:hover:text-gray-200
+              focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2
+              disabled:opacity-50 disabled:cursor-not-allowed
+              transition-colors
+            `}
           >
-            <IoCloseSharp />
-          </div>
+            <IoCloseSharp className="w-6 h-6" />
+          </button>
         </div>
 
-        <div className="grid w-full gap-4">
+        {/* Form fields */}
+        <div className="grid w-full gap-5">
           <InputField
             name="question"
             label="Question"
@@ -82,13 +107,14 @@ export default function FaqForm({
           />
         </div>
 
-        <div className="flex justify-end mt-2">
+        {/* Submit button */}
+        <div className="flex justify-end mt-6">
           <Button
             type="submit"
-            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            className="w-fit bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2.5 px-6 rounded-lg hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
-            {isLoading ? "Saving..." : "Submit"}
+            {isLoading ? "Saving..." : faqMode === "Add" ? "Add FAQ" : "Update FAQ"}
           </Button>
         </div>
       </div>

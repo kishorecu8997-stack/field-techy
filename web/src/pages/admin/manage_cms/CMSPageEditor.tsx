@@ -60,11 +60,13 @@ export default function CMSPageEditor({
   });
 
   useEffect(() => {
-    if (cmsPages && !isFetchingPages) {
-      const existingPage = cmsPages.find((page) => page.slug === slug);
-      if (existingPage) {
-        setTitle(existingPage.title);
-        setContent(existingPage.content);
+    if (!isFetchingPages) {
+      if (cmsPages) {
+        const existingPage = cmsPages.find((page) => page.slug === slug);
+        if (existingPage) {
+          setTitle(existingPage.title);
+          setContent(existingPage.content);
+        }
       }
       setIsLoading(false);
     }
