@@ -22,7 +22,7 @@ type WalletTransaction = {
  * WalletTab component displays the client's financial information.
  * It includes a searchable table of wallet transaction history using the `<CustomTable />` component.
  */
-const WalletTab: React.FC<WalletTabProps> = ({ userId, walletBalance }) => {
+const WalletTab: React.FC<WalletTabProps> = ({ userId }) => {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(10);
   const [search, setSearch] = useState("");
