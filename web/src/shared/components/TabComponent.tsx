@@ -4,6 +4,7 @@ interface TabItem {
   label: string;
   content: React.ReactNode;
   hide?: boolean;
+  badge?: number | boolean; // badge can be a count number or boolean for simple dot
 }
 
 interface TabComponentProps {
@@ -75,13 +76,20 @@ const TabComponent: React.FC<TabComponentProps> = ({
             <button
               key={tab.label}
               onClick={() => handleTabClick(tab.label)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer relative ${
                 activeTab === tab.label
                   ? finalActiveClassName
                   : finalInactiveClassName
               }`}
             >
-              {tab.label}
+              <span className="flex items-center gap-2">
+                {tab.label}
+                {tab.badge && (
+                  <span className="flex items-center justify-center ml-1 min-w-5 h-5 px-1.5 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
+                    {typeof tab.badge === "number" ? tab.badge : ""}
+                  </span>
+                )}
+              </span>
             </button>
           ))}
       </div>

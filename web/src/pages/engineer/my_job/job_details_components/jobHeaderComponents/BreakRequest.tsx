@@ -177,7 +177,6 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
               );
             } else {
               toast.success("Break request submitted successfully!");
-              console.log("Submitted Break Request:", data);
             }
             close(true);
             onClose();
