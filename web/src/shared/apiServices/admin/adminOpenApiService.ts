@@ -486,3 +486,51 @@ export function useAdminGetJobLogs(
     ...options,
   });
 }
+
+// Payment Transactions API
+
+export interface PaymentTransaction {
+  id: number;
+  accountType: string;
+  walletId: string | null;
+  amount: string;
+  type: string;
+  description: string | null;
+  referenceId: string | null;
+  timestamp: string | null;
+}
+
+export interface PaymentTransactionsResponse {
+  data: PaymentTransaction[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export type AdminGetPaymentTransactionsQuery = {
+  jobId: number;
+  page?: number;
+  limit?: number;
+};
+
+export function useAdminGetPaymentTransactions(
+  query?: AdminGetPaymentTransactionsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: PaymentTransactionsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: [...queryKeys.admin.paymentTransactions.all, query],
+    queryFn: async () => {
+      const queryParams = query ? { page: query.page ?? 1, limit: query.limit ?? 10 } : { page: 1, limit: 10 };
+      const response = await apiClient.get<PaymentTransactionsResponse>({
+        url: "admin/manage-jobs/transactions",
+        query: { jobId: query?.jobId, ...queryParams },
+      });
+      return response.data;
+    },
+    ...options,
+  });
+}

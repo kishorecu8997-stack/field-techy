@@ -1,15 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PaymentData } from "@/dummy_data/admin";
+import { useSearchParams } from "react-router-dom";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import SelectMenu from "@/shared/components/SelectMenu";
+import { useAdminGetPaymentTransactions } from "@/shared/apiServices/admin/adminOpenApiService";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
 import type { adminJobsStatus } from "../types";
 
 const Payment = () => {
+  const [searchParams] = useSearchParams();
+  const jobIdParam = searchParams.get("jobId");
+  const jobId = jobIdParam ? Number(jobIdParam) : NaN;
+  const shouldFetch = Number.isFinite(jobId);
+  
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const { showPopup } = usePopupStore();
+
+  const { data, isLoading, error } = useAdminGetPaymentTransactions(
+    shouldFetch ? { jobId, page: 1, limit: 10 } : undefined,
+    { enabled: shouldFetch }
+  );
 
   const handleStatusChange = async (data: any) => {
     if (!data.status) return;
@@ -72,12 +83,39 @@ const Payment = () => {
       },
     },
   ];
+
+  if (!shouldFetch) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-gray-600">
+        Missing job id.
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-gray-600">
+        Loading payment transactions...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-red-600">
+        Failed to load payment transactions.
+      </div>
+    );
+  }
+
+  const tableData = data?.data ?? [];
+
   return (
     <div>
       <div>
         <CustomTable<any>
           columns={columns}
-          data={PaymentData}
+          data={tableData}
           initialPageSize={10}
         />
       </div>
