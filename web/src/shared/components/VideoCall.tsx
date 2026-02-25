@@ -81,10 +81,38 @@ const VideoCall: React.FC<VideoCallProps> = ({
 
     setCamError(null);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+      // First, check if media devices are available
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("Media devices API not supported");
+      }
+
+      // Enumerate devices to find available cameras
+      let videoDeviceId: string | undefined;
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter((d) => d.kind === "videoinput");
+        if (videoDevices.length > 0) {
+          // Prefer front camera (user-facing) if available
+          const frontCamera = videoDevices.find(
+            (d) => d.label.toLowerCase().includes("front") ||
+                   d.label.toLowerCase().includes("user")
+          );
+          videoDeviceId = frontCamera?.deviceId || videoDevices[0].deviceId;
+        }
+      } catch {
+        // If enumerateDevices fails, we'll try with default constraints
+      }
+
+      // Build constraints based on available device
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const constraints: any = {
+        video: videoDeviceId
+          ? { deviceId: { exact: videoDeviceId } }
+          : { facingMode: "user" }, // Fallback to front camera
         audio: false,
-      });
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
       streamRef.current = stream;
 
       if (localVideoRef.current) {
@@ -97,12 +125,26 @@ const VideoCall: React.FC<VideoCallProps> = ({
         // localVideoRef.current is NULL when assigning stream
       }
       setIsCamOn(true);
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      console.error("getUserMedia error:", errorMessage);
-      setIsCamOn(false);
-      stopLocalStream();
-      setCamError("Camera permission denied or camera not available.");
+    } catch {
+      // Try one more time with basic constraints as fallback
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+        streamRef.current = stream;
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+          await localVideoRef.current.play().catch(() => {});
+        }
+        setIsCamOn(true);
+      } catch (fallbackErr: unknown) {
+        const errorMessage = fallbackErr instanceof Error ? fallbackErr.message : "Unknown error";
+        console.error("getUserMedia error:", errorMessage);
+        setIsCamOn(false);
+        stopLocalStream();
+        setCamError("Camera permission denied or camera not available.");
+      }
     }
   };
 
