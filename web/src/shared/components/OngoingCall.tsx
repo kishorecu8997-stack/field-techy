@@ -16,7 +16,28 @@ import ShareScreen from "./ShareScreen";
 import { assetsConfig } from "@/assets";
 import ShareScreenWindow from "./ShareScreenWindow";
 import VideoCall from "./VideoCall";
+import { Button } from "./commonUI/Buttons";
+/**
+ * Props for OngoingCall component.
+ */
+interface OngoingCallProps {
+  /** Controls visibility of the call window */
+  isVisible?: boolean;
+  /** Name of the caller */
+  callerName?: string;
+  /** Triggered when closing the window */
+  onClose?: () => void;
+  /** Triggered when ending the call */
+  onEndCall?: () => void;
+}
 
+/**
+ * Draggable ongoing call UI with timer, mic, video,
+ * screen share, and end call controls.
+ *
+ * @param props - Component props
+ * @returns Ongoing call window or null when hidden
+ */
 interface OngoingCallProps {
   isVisible?: boolean;
   callerName?: string;
@@ -128,7 +149,6 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
           {/* Controls */}
           <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-4">
-              {/* ✅ Video: slashed initially, NOT faded */}
               <button
                 aria-label={isVideoOn ? "Video On" : "Video Off"}
                 onClick={() => {
@@ -154,15 +174,10 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
                 )}
               </button>
 
-              <button
+              <Button
+                variant={isMicOn ? "micOn" : "micOff"}
                 aria-label={isMicOn ? "Mute Microphone" : "Unmute Microphone"}
                 onClick={() => setIsMicOn(!isMicOn)}
-                className={`w-20 h-12 rounded-full flex items-center justify-center shadow-sm transition-all ${
-                  isMicOn
-                    ? "hover:opacity-90"
-                    : "bg-gray-200 dark:bg-gray-600 opacity-60 hover:opacity-80"
-                }`}
-                style={isMicOn ? { backgroundColor: "#0d9488" } : {}}
               >
                 {isMicOn ? (
                   <MdMic size={25} className="text-white" />
@@ -172,7 +187,7 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
                     className="text-gray-400 dark:text-gray-500"
                   />
                 )}
-              </button>
+              </Button>
 
               <button
                 aria-label={
@@ -252,7 +267,7 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
         callerName={callerName}
         onClose={() => {
           setShowVideoCall(false);
-          setIsVideoOn(false); // optional: go back to slashed when closed
+          setIsVideoOn(false);
         }}
         onEndCall={() => {
           setShowVideoCall(false);

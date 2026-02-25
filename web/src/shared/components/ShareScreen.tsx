@@ -1,7 +1,15 @@
 import React, { useMemo, useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { Button } from "./commonUI/Buttons";
-
+/**
+ * ShareScreen
+ *
+ * A modal that lets users select a window to share.
+ * Includes a dropdown, preview cards, and Cancel/Share buttons.
+ *
+ * @param props - Component props
+ * @returns Window sharing modal
+ */
 interface ShareScreenProps {
   isVisible: boolean;
   onCancel: () => void;

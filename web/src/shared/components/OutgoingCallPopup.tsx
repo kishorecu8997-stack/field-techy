@@ -8,7 +8,16 @@ import {
 } from "react-icons/fa";
 import { MdCallEnd } from "react-icons/md";
 import { assetsConfig } from "@/assets";
-
+import { Button } from "./commonUI/Buttons";
+/**
+ * OutgoingCallPopup
+ *
+ * A draggable modal that shows an outgoing call interface
+ * with caller info, video/mic controls, and an end call button.
+ *
+ * @param props - Component props
+ * @returns Outgoing call popup modal
+ */
 interface OutgoingCallPopupProps {
   contactName?: string;
   onClose: () => void;
@@ -46,13 +55,9 @@ const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({
                 className="h-6 w-auto hidden dark:block"
               />
             </div>
-            <button
-              aria-label="Close"
-              onClick={onClose}
-              className="text-gray-600 hover:text-gray-800 p-1 rounded cursor-pointer"
-            >
+            <Button aria-label="Close" onClick={onClose} variant="close">
               <FaTimes />
-            </button>
+            </Button>
           </div>
 
           {/* Center section */}
@@ -71,28 +76,18 @@ const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({
           {/* Bottom control bar */}
           <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <button
-                aria-label="Toggle Video"
-                className="w-20 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
-              >
+              <Button aria-label="Toggle Video" variant="callControl">
                 <FaVideoSlash size={25} />
-              </button>
-              <button
-                aria-label="Toggle Mute"
-                className="w-20 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm"
-              >
+              </Button>
+              <Button aria-label="Toggle Mute" variant="callControl">
                 <FaMicrophoneSlash size={25} />
-              </button>
+              </Button>
             </div>
 
             <div className="flex items-center">
-              <button
-                aria-label="End Call"
-                onClick={onClose}
-                className="ml-2 bg-red-600 hover:bg-red-700 text-white w-20 h-14 rounded-full flex items-center justify-center shadow-md"
-              >
-                <MdCallEnd size="25" />
-              </button>
+              <Button aria-label="End Call" variant="endCall" onClick={onClose}>
+                <MdCallEnd size={25} />
+              </Button>
             </div>
           </div>
         </div>

@@ -21,7 +21,20 @@ export type GroupCallParticipant = {
   // Future (API/WebRTC): attach remote MediaStream here
   stream?: MediaStream;
 };
-
+/**
+ * VideoCallGroup
+ *
+ * Displays a full-screen group video call interface with:
+ * - Featured participant tile and a scrollable participant column
+ * - Local camera/microphone toggles
+ * - Screen share toggle (UI only)
+ * - Call timer
+ * - End call and close controls
+ * - Pinning participants to the main tile
+ *
+ * @param props - Component props
+ * @returns Group video call overlay/modal
+ */
 interface VideoCallGroupProps {
   isVisible: boolean;
   title?: string; // e.g., JOB-001
@@ -89,6 +102,14 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
   };
 
   const startLocalStream = async () => {
+    // If stream already exists and video element is ready, just ensure it's playing
+    if (localStreamRef.current && localVideoRef.current) {
+      localVideoRef.current.srcObject = localStreamRef.current;
+      await localVideoRef.current.play().catch(() => {});
+      setIsCamOn(true);
+      return;
+    }
+    
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -140,7 +161,6 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
     variant?: "small" | "featured";
   }) => {
     const isFeatured = variant === "featured";
-    const showLocal = p.isYou && isCamOn;
 
     return (
       // IMPORTANT: w-full h-full so tile ALWAYS uses full given height
@@ -152,21 +172,33 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
         } bg-black`}
       >
         {/* Video area / placeholder */}
-        {showLocal ? (
-          <video
-            ref={localVideoRef}
-            autoPlay
-            playsInline
-            muted
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
-              <MdPerson size={28} className="text-white" />
-            </div>
+        {/* Always render video element, use CSS to show/hide */}
+        <video
+          ref={(el) => {
+            if (el) {
+              // Use participant's own stream if available, otherwise use local stream (for "You")
+              const streamToUse = p.stream || (p.isYou ? localStreamRef.current : null);
+              
+              if (streamToUse) {
+                el.srcObject = streamToUse;
+                el.play().catch(() => {});
+                if (!isCamOn) {
+                  setIsCamOn(true);
+                }
+              }
+            }
+          }}
+          autoPlay
+          playsInline
+          muted={p.isYou} // Only mute local video
+          className={`w-full h-full object-cover ${isCamOn ? 'block' : 'hidden'}`}
+        />
+        {/* Show placeholder when camera is off */}
+        <div className={`w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${isCamOn ? 'hidden' : 'block'}`}>
+          <div className="w-16 h-16 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
+            <MdPerson size={28} className="text-white" />
           </div>
-        )}
+        </div>
 
         {/* Name pill */}
         <div className="absolute left-2 bottom-2 bg-white/90 text-gray-900 text-xs px-2 py-0.5 rounded">

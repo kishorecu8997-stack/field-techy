@@ -1,4 +1,3 @@
-// ShareScreenWindow.tsx
 import React, { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 import {
@@ -9,7 +8,15 @@ import {
   MdScreenShare,
 } from "react-icons/md";
 import { assetsConfig } from "@/assets";
-
+/**
+ * ShareScreenWindow
+ *
+ * Displays a full-screen screen-sharing preview with participant card,
+ * timer, and call controls including video, mic, screen share, and end call.
+ *
+ * @param props - Component props
+ * @returns Screen sharing overlay modal
+ */
 interface ShareScreenWindowProps {
   isVisible: boolean;
   callerName?: string;

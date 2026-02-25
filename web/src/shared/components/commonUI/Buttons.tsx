@@ -34,7 +34,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "rejectCall"
     | "acceptCall"
     | "cancel"
-    | "accept";
+    | "accept"
+    | "micOn"
+    | "micOff"
+    | "callControl"
+    | "endCall";
   size?: "sm" | "md" | "lg" | "icon" | "chip";
   disabled?: boolean;
   loading?: boolean;
@@ -124,6 +128,14 @@ export const Button: React.FC<ButtonProps> = ({
       "px-4 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors font-medium",
     accept:
       "px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium",
+    micOn:
+      "rounded-full bg-[#0d9488] hover:opacity-90 shadow-sm transition-all w-20 h-12 flex items-center justify-center",
+    micOff:
+      "rounded-full bg-gray-200 dark:bg-gray-600 opacity-60 hover:opacity-80 shadow-sm transition-all w-20 h-12 flex items-center justify-center",
+    callControl:
+      "rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm w-20 h-14",
+    endCall:
+      "rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-md w-20 h-14",
   };
 
   const sizeStyles: Record<string, string> = {
@@ -154,6 +166,10 @@ export const Button: React.FC<ButtonProps> = ({
             "cancel",
             "accept",
             "close",
+            "micOn",
+            "micOff",
+            "callControl",
+            "endCall",
           ].includes(variant) &&
           sizeStyles[size],
         fullWidth && "w-full",
@@ -164,11 +180,15 @@ export const Button: React.FC<ButtonProps> = ({
     >
       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 
-      {!loading && leftIcon && <span className="mr-2">{leftIcon}</span>}
+      {!loading && leftIcon && (
+        <span className="flex items-center justify-center mr-2">{leftIcon}</span>
+      )}
 
       {children && <span>{children}</span>}
 
-      {!loading && rightIcon && <span className="ml-2">{rightIcon}</span>}
+      {!loading && rightIcon && (
+        <span className="flex items-center justify-center ml-2">{rightIcon}</span>
+      )}
     </button>
   );
 };

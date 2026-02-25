@@ -12,7 +12,15 @@ import {
 import { assetsConfig } from "@/assets";
 import ShareScreen from "./ShareScreen";
 import ShareScreenWindow from "./ShareScreenWindow";
-
+/**
+ * VideoCall
+ *
+ * Displays a full-screen video call interface with local preview, remote placeholder,
+ * call timer, camera/mic controls, screen sharing, and end call functionality.
+ *
+ * @param props - Component props
+ * @returns Video call overlay/modal
+ */
 interface VideoCallProps {
   isVisible: boolean;
   callerName?: string;
@@ -61,6 +69,16 @@ const VideoCall: React.FC<VideoCallProps> = ({
   };
 
   const startLocalStream = async () => {
+    // If stream already exists and video element is ready, just ensure it's playing
+    if (streamRef.current && localVideoRef.current) {
+      localVideoRef.current.srcObject = streamRef.current;
+      await localVideoRef.current.play().catch(() => {
+        // play() error handled silently
+      });
+      setIsCamOn(true);
+      return;
+    }
+
     setCamError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -72,10 +90,16 @@ const VideoCall: React.FC<VideoCallProps> = ({
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
         // iOS/Safari needs play() sometimes
-        await localVideoRef.current.play().catch(() => {});
+        await localVideoRef.current.play().catch(() => {
+          // play() error handled silently
+        });
+      } else {
+        // localVideoRef.current is NULL when assigning stream
       }
       setIsCamOn(true);
-    } catch {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      console.error("getUserMedia error:", errorMessage);
       setIsCamOn(false);
       stopLocalStream();
       setCamError("Camera permission denied or camera not available.");
@@ -98,6 +122,7 @@ const VideoCall: React.FC<VideoCallProps> = ({
     startLocalStream();
 
     return () => {
+      // Cleanup: stopping local stream
       stopLocalStream();
       setCamError(null);
       setIsCamOn(false); // reset to slashed when closed
@@ -173,24 +198,38 @@ const VideoCall: React.FC<VideoCallProps> = ({
 
         {/* Local preview (bottom-right) */}
         <div className="absolute right-8 bottom-8 w-[260px] h-[160px] rounded-lg overflow-hidden border border-white/20 shadow-lg bg-black">
-          {isCamOn && !camError ? (
-            <video
-              ref={localVideoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-black/70">
-              <div className="text-center px-3">
-                <div className="text-white/80 text-xs font-medium">You</div>
-                <div className="mt-2 text-white/60 text-[11px]">
-                  {camError ? camError : "Camera is off"}
-                </div>
+          {/* Always render video element, use CSS to show/hide */}
+          <video
+            ref={(el) => {
+              localVideoRef.current = el;
+              // If we have a stream ready and video element just attached, assign it
+              if (el && streamRef.current) {
+                el.srcObject = streamRef.current;
+                el.play().catch(() => {
+                  /* play() error handled silently */
+                });
+                // Ensure isCamOn is true so video is shown
+                if (!isCamOn) {
+                  setIsCamOn(true);
+                }
+              }
+            }}
+            autoPlay
+            playsInline
+            muted
+            className={`w-full h-full object-cover ${isCamOn && !camError ? "block" : "hidden"}`}
+          />
+          {/* Show placeholder when camera is off */}
+          <div
+            className={`w-full h-full flex items-center justify-center bg-black/70 ${isCamOn && !camError ? "hidden" : "block"}`}
+          >
+            <div className="text-center px-3">
+              <div className="text-white/80 text-xs font-medium">You</div>
+              <div className="mt-2 text-white/60 text-[11px]">
+                {camError ? camError : "Camera is off"}
               </div>
             </div>
-          )}
+          </div>
 
           {/* "You" label */}
           <div className="absolute left-2 bottom-2 bg-white/90 text-gray-900 text-[11px] px-2 py-0.5 rounded">
