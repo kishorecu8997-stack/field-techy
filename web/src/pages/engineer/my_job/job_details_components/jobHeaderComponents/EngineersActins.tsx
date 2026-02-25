@@ -11,6 +11,7 @@ import { type Dispatch, type SetStateAction } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
+import FinalStatementForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/FinalStatementForm";
 import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
 import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { RiErrorWarningFill } from "react-icons/ri";
@@ -56,7 +57,6 @@ const EngineersActions = ({
   setOfferJobStatus,
   setSendProposal,
   setOpen,
-  setIsWorkSubmitted,
   setActiveTab,
   OfferJobStatus,
   status,
@@ -68,6 +68,7 @@ const EngineersActions = ({
   onOpenViewClientFeedback,
   assignmentId,
   isSendProposal,
+  progressUpdates,
 }: {
   setOfferJobStatus?: Dispatch<
     SetStateAction<OfferedJobStatusType | undefined>
@@ -88,10 +89,32 @@ const EngineersActions = ({
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
   assignmentId?: number;
+  progressUpdates?: ProgressUpdate[];
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
   const queryClient = useQueryClient();
+
+  // Check if there's a pending progress update
+  const hasPendingProgressUpdate = progressUpdates?.some((update) => {
+    // Check if there's a revision with pending status
+    if (update.revisions?.some((rev) => rev.status === "pending")) {
+      return true;
+    }
+    // Check for revision_requested status
+    if (update.statusText === "revision_requested") {
+      return true;
+    }
+    // Check for Pending status (capitalized)
+    if (update.statusText === "Pending") {
+      return true;
+    }
+    // Check for pending status (lowercase) in statusText
+    if (update.statusText === "pending") {
+      return true;
+    }
+    return false;
+  });
 
   // Hook for requesting to start a job
   const { mutateAsync: requestStartJob, isPending: isStartingJob } =
@@ -100,6 +123,7 @@ const EngineersActions = ({
         toast.success("Job start request submitted successfully");
         // Query invalidation is handled by the mutation hook
         handleUpdateOfferStatus("started");
+        window.location.reload();
       },
       onError: (error) => {
         console.error("Failed to request job start:", error);
@@ -182,6 +206,31 @@ const EngineersActions = ({
     onOpenFinalStatement?.();
   };
 
+  const handleSubmitWork = async () => {
+    // Validate that assignmentId exists before opening the modal
+    if (!assignmentId) {
+      toast.error(
+        "Assignment ID is not available. Please refresh and try again.",
+      );
+      return;
+    }
+
+    // Open Final Statement modal directly instead of switching tabs
+    await showPopup({
+      title: "",
+      body: (
+        <FinalStatementForm
+          onClose={() => closePopup()}
+          onAddProgressUpdate={onAddProgressUpdate}
+          assignmentId={assignmentId}
+        />
+      ),
+      bodyClassName: "overflow-visible",
+      containerClassName: "overflow-visible max-h-none h-auto sm:max-w-2xl",
+      actionButtons: [],
+    });
+  };
+
   const handlebreakRequest = async () => {
     await showPopup({
       title: "",
@@ -189,6 +238,7 @@ const EngineersActions = ({
         <BreakRequestForm
           onClose={closePopup}
           onAddProgressUpdate={onAddProgressUpdate}
+          assignmentId={assignmentId}
         />
       ),
       bodyClassName: "overflow-visible",
@@ -240,8 +290,10 @@ const EngineersActions = ({
         Break Request
       </Button>
       <Button
-        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        className={`bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm ${hasPendingProgressUpdate ? "opacity-50 cursor-not-allowed" : ""}`}
         onClick={() => setOpen?.(true)}
+        disabled={hasPendingProgressUpdate}
+        aria-disabled={hasPendingProgressUpdate}
       >
         Create Log
       </Button>
@@ -389,19 +441,17 @@ const EngineersActions = ({
               Break Request
             </Button>
             <Button
-              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+              className={`bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300 ${hasPendingProgressUpdate ? "opacity-50 cursor-not-allowed" : ""}`}
               onClick={() => setOpen?.(true)}
+              disabled={hasPendingProgressUpdate}
             >
               Create Log
             </Button>
             <Button
               className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-              onClick={() => {
-                setIsWorkSubmitted?.(true);
-                setActiveTab?.("Work Submissions");
-              }}
+              onClick={handleSubmitWork}
             >
-              Submit work
+              Final Statement
             </Button>
           </div>
         ) : /* Applied Status */

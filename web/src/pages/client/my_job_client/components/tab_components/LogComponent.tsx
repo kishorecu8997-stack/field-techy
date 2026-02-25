@@ -60,7 +60,7 @@ const LogItem: React.FC<LogEntry> = ({
             {date}
           </p>
           {children && (
-            <div className="mt-3 text-sm text-gray-700 dark:text-gray-300">
+            <div className="mt-3 text-sm text-gray-700 dark:text-gray-300 break-all">
               {children}
             </div>
           )}
