@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import React from "react";
 import { absoluteUrls } from "@/config/urls";
 import type { JobOverview } from "../type";
+import { useCountUp } from "@/shared/hooks/useCountUp";
 
 /**
  * `JobOverviewCard` is a component that displays a summary of job statistics.
@@ -22,6 +23,7 @@ const JobOverviewCard: React.FC<JobOverview> = ({
   status,
   buttonShow,
 }) => {
+  const animatedCount = useCountUp(count);
   const getStatusColors = (status: string) => {
     switch (status) {
       case "completed":
@@ -63,7 +65,7 @@ const JobOverviewCard: React.FC<JobOverview> = ({
             <span className="text-2xl">
               <VscBriefcase />
             </span>
-            <span className="text-3xl font-bold">{count}</span>
+            <span className="text-3xl font-bold">{animatedCount}</span>
           </div>
           <p className="text-sm opacity-80">{title}</p>
         </div>
