@@ -148,13 +148,6 @@ const ProfileCompletionCard = () => {
                   >
                     Complete This Section
                   </Button>
-                  <span className="text-gray-500">
-                    ~
-                    {estimatedTime && !isNaN(estimatedTime)
-                      ? estimatedTime
-                      : "—"}{" "}
-                    minutes remaining
-                  </span>
                 </div>
               </div>
             );
