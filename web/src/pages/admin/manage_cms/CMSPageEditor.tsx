@@ -119,7 +119,9 @@ export default function CMSPageEditor({
                 },
               });
               close(true);
-            } catch {}
+            } catch (err) {
+              toast.error("Could not save. Please try again.");
+            }
           },
         },
       ],

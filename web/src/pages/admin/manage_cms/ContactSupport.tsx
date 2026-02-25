@@ -72,7 +72,9 @@ export default function ContactSupport() {
                 },
               });
               close(true);
-            } catch {}
+            } catch (err) {
+              toast.error("Failed to save contact details. Please try again.");
+            }
           },
         },
       ],

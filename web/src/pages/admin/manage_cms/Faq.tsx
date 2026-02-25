@@ -104,7 +104,7 @@ export default function Faq() {
     );
   }, [faqList, searchQuery]);
 
-  // Delete confirmation
+ 
   const handleDeleteFaq = async (faq: FaqItem) => {
     await showPopup({
       title: "Delete FAQ",
@@ -227,7 +227,6 @@ export default function Faq() {
   };
 
   const handleSubmit = (data: FaqAddFormData) => {
-    console.log("FAQ Form Submitted", data);
     handleSaveConfirmation(data);
   };
 
