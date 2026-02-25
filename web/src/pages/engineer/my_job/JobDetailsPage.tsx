@@ -5,7 +5,6 @@ import {
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import ChatForJobs from "@/shared/components/ChatForJobs";
 import { getDurationString } from "@/utils";
 import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -27,6 +26,7 @@ import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeade
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import JobTabSection from "./job_details_components/JobTabSection";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -98,11 +98,12 @@ const JobDetailsPage = () => {
   const [activeTab, setActiveTab] = useState(JOB_TAB_LABELS.timeline);
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [pageHeading, setPageHeading] = useState("Job Details");
   const [_offerJobStatus, setOfferJobStatus] = useState<
     OfferedJobStatusType | AssignmentStatus | undefined
   >();
+  const [openChatJobId, setOpenChatJobId] = useState<string | null>(null);
+  const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
+  const [pageHeading, setPageHeading] = useState<string>("Job Details");
 
   // Fetch job data from real API using search endpoint with jobId filter
   const { data: jobList, isLoading: isJobsLoading } = useEngineerSearchJobs({
@@ -210,16 +211,36 @@ const JobDetailsPage = () => {
   const handleOpenFinalStatement = () => setShowFinalStatement(true);
   const handleCloseFinalStatement = () => setShowFinalStatement(false);
 
-  // Handle chat toggle
-  const handleToggleChat = (_jobId: string) => {
-    setShowChat(true);
-    setPageHeading("Chats");
+  // Chat toggle function
+  const handleToggleChat = (jobId: string) => {
+    setOpenChatJobId((prev) => {
+      const isOpening = prev !== jobId;
+      if (isOpening) {
+        setBreadcrumbExtra("chats");
+        setPageHeading("Chats");
+        return jobId;
+      } else {
+        setBreadcrumbExtra(null);
+        setPageHeading("Job Details");
+        return null;
+      }
+    });
   };
 
+  // Close chat handler
   const handleCloseChat = () => {
-    setShowChat(false);
+    setOpenChatJobId(null);
+    setBreadcrumbExtra(null);
     setPageHeading("Job Details");
   };
+
+  // Breadcrumb segments for MyJobsHeader
+  const segments = [
+    "Engineer",
+    "my-jobs",
+    params.jobId ?? "",
+    breadcrumbExtra === "chats" ? "Chats" : null,
+  ].filter((v): v is string => typeof v === "string");
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {
@@ -331,17 +352,20 @@ const JobDetailsPage = () => {
           title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport={!showChat}
-          isShowSort={!showChat}
-          isChatVisible={showChat}
-          handleCloseChat={handleCloseChat}
+          isReport={false}
+          isShowBreadcrumb
           customLabels={
-            isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
+            isDummyJob
+              ? { "dummy-j1": "Network Engineer" }
+              : { [params.jobId || ""]: jobTitle }
           }
+          segments={segments}
+          isChatVisible={!!openChatJobId}
+          handleCloseChat={handleCloseChat}
         />
-        {showChat ? (
+        {openChatJobId ? (
           <div className="flex-1 overflow-y-auto">
-            <ChatForJobs jobId={String(params.jobId)} currentUser="Engineer" />
+            <ChatForJobs jobId={openChatJobId} currentUser="Engineer" />
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
@@ -404,7 +428,7 @@ const JobDetailsPage = () => {
             <div className="lg:col-span-1">
               <ClientInfoCard
                 name={`Client #${clientId}`}
-                memberSince={"-"}
+                memberSince="-"
                 location={jobLocation}
                 rating={0}
                 reviews={0}
