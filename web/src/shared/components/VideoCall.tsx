@@ -45,6 +45,7 @@ const VideoCall: React.FC<VideoCallProps> = ({
   // Screen share states
   const [showShareScreen, setShowShareScreen] = useState(false);
   const [showShareScreenWindow, setShowShareScreenWindow] = useState(false);
+  const screenShareStreamRef = useRef<MediaStream | null>(null);
 
   // Camera permission / stream state
   const [camError, setCamError] = useState<string | null>(null);
@@ -358,9 +359,26 @@ const VideoCall: React.FC<VideoCallProps> = ({
       <ShareScreen
         isVisible={showShareScreen}
         onCancel={() => setShowShareScreen(false)}
-        onShare={() => {
-          setShowShareScreen(false);
-          setShowShareScreenWindow(true);
+        onShare={async () => {
+          try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+              video: true,
+              audio: false,
+            });
+            screenShareStreamRef.current = stream;
+            setShowShareScreen(false);
+            setShowShareScreenWindow(true);
+
+            // Handle when user stops sharing via browser UI
+            stream.getVideoTracks()[0].onended = () => {
+              setShowShareScreenWindow(false);
+              screenShareStreamRef.current = null;
+            };
+          } catch (err) {
+            // User cancelled or error
+            console.error("Screen share error:", err);
+            setShowShareScreen(false);
+          }
         }}
       />
 
@@ -368,9 +386,26 @@ const VideoCall: React.FC<VideoCallProps> = ({
       <ShareScreenWindow
         isVisible={showShareScreenWindow}
         callerName={callerName}
-        onClose={() => setShowShareScreenWindow(false)}
-        onStopSharing={() => setShowShareScreenWindow(false)}
+        onClose={() => {
+          setShowShareScreenWindow(false);
+          // Stop the screen share stream
+          if (screenShareStreamRef.current) {
+            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current = null;
+          }
+        }}
+        onStopSharing={() => {
+          if (screenShareStreamRef.current) {
+            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current = null;
+          }
+          setShowShareScreenWindow(false);
+        }}
         onEndCall={() => {
+          if (screenShareStreamRef.current) {
+            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current = null;
+          }
           setShowShareScreenWindow(false);
           onEndCall();
         }}

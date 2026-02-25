@@ -1,10 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Draggable from "react-draggable";
 import {
   FaTimes,
   FaUser,
   FaVideoSlash,
   FaMicrophoneSlash,
+  FaVideo,
+  FaMicrophone,
 } from "react-icons/fa";
 import { MdCallEnd } from "react-icons/md";
 import { assetsConfig } from "@/assets";
@@ -28,6 +30,10 @@ const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({
   onClose,
 }) => {
   const nodeRef = useRef<HTMLDivElement | null>(null);
+
+  // Toggle states for video and mic buttons
+  const [isVideoOn, setIsVideoOn] = useState(false);
+  const [isMicOn, setIsMicOn] = useState(false);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -76,11 +82,19 @@ const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({
           {/* Bottom control bar */}
           <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Button aria-label="Toggle Video" variant="callControl">
-                <FaVideoSlash size={25} />
+              <Button 
+                aria-label={isVideoOn ? "Turn video off" : "Turn video on"} 
+                variant="callControl"
+                onClick={() => setIsVideoOn(!isVideoOn)}
+              >
+                {isVideoOn ? <FaVideo size={25} /> : <FaVideoSlash size={25} />}
               </Button>
-              <Button aria-label="Toggle Mute" variant="callControl">
-                <FaMicrophoneSlash size={25} />
+              <Button 
+                aria-label={isMicOn ? "Turn mic off" : "Turn mic on"} 
+                variant="callControl"
+                onClick={() => setIsMicOn(!isMicOn)}
+              >
+                {isMicOn ? <FaMicrophone size={25} /> : <FaMicrophoneSlash size={25} />}
               </Button>
             </div>
 

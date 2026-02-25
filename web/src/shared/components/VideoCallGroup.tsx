@@ -11,6 +11,8 @@ import {
   MdStopScreenShare,
 } from "react-icons/md";
 import { assetsConfig } from "@/assets";
+import ShareScreen from "./ShareScreen";
+import ShareScreenWindow from "./ShareScreenWindow";
 
 export type GroupCallParticipant = {
   id: string;
@@ -59,6 +61,11 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
   const [isCamOn, setIsCamOn] = useState(false); // slashed initially
   const [isMicOn, setIsMicOn] = useState(true);
   const [isScreenShareOn, setIsScreenShareOn] = useState(false);
+
+  // Screen share modal states
+  const [showShareScreen, setShowShareScreen] = useState(false);
+  const [showShareScreenWindow, setShowShareScreenWindow] = useState(false);
+  const screenShareStreamRef = useRef<MediaStream | null>(null);
 
   // choose who is featured on the big tile
   const [pinnedId, setPinnedId] = useState<string | null>(null);
@@ -421,13 +428,13 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
             )}
           </button>
 
-          {/* Screen share (UI only) */}
+          {/* Screen share (with modal) */}
           <button
             type="button"
             aria-label={
               isScreenShareOn ? "Stop screen share" : "Start screen share"
             }
-            onClick={() => setIsScreenShareOn((p) => !p)}
+            onClick={() => setShowShareScreen(true)}
             className={`w-20 h-14 rounded-full flex items-center justify-center ${
               isScreenShareOn
                 ? "bg-teal-700 text-white"
@@ -448,6 +455,11 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
           aria-label="End Call"
           onClick={() => {
             stopLocalStream();
+            // Stop screen share if active
+            if (screenShareStreamRef.current) {
+              screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+              screenShareStreamRef.current = null;
+            }
             onEndCall();
           }}
           className="w-20 h-14 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow"
@@ -455,6 +467,68 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
           <MdCallEnd size={22} className="text-white" />
         </button>
       </div>
+
+      {/* Share Screen Modal */}
+      <ShareScreen
+        isVisible={showShareScreen}
+        onCancel={() => setShowShareScreen(false)}
+        onShare={async () => {
+          try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+              video: true,
+              audio: false,
+            });
+            screenShareStreamRef.current = stream;
+            setIsScreenShareOn(true);
+            setShowShareScreen(false);
+            setShowShareScreenWindow(true);
+
+            // Handle when user stops sharing via browser UI
+            stream.getVideoTracks()[0].onended = () => {
+              setIsScreenShareOn(false);
+              setShowShareScreenWindow(false);
+              screenShareStreamRef.current = null;
+            };
+          } catch (err) {
+            // User cancelled or error
+            console.error("Screen share error:", err);
+            setShowShareScreen(false);
+          }
+        }}
+      />
+
+      {/* Share Screen Window */}
+      <ShareScreenWindow
+        isVisible={showShareScreenWindow}
+        callerName={title}
+        onClose={() => {
+          setShowShareScreenWindow(false);
+          // Stop the screen share stream
+          if (screenShareStreamRef.current) {
+            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current = null;
+          }
+          setIsScreenShareOn(false);
+        }}
+        onStopSharing={() => {
+          if (screenShareStreamRef.current) {
+            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current = null;
+          }
+          setIsScreenShareOn(false);
+          setShowShareScreenWindow(false);
+        }}
+        onEndCall={() => {
+          if (screenShareStreamRef.current) {
+            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current = null;
+          }
+          setIsScreenShareOn(false);
+          setShowShareScreenWindow(false);
+          stopLocalStream();
+          onEndCall();
+        }}
+      />
     </div>
   );
 };
