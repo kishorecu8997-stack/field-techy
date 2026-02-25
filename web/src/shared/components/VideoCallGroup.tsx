@@ -457,7 +457,9 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
             stopLocalStream();
             // Stop screen share if active
             if (screenShareStreamRef.current) {
-              screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+              screenShareStreamRef.current
+                .getTracks()
+                .forEach((track) => track.stop());
               screenShareStreamRef.current = null;
             }
             onEndCall();
@@ -505,14 +507,18 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
           setShowShareScreenWindow(false);
           // Stop the screen share stream
           if (screenShareStreamRef.current) {
-            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
             screenShareStreamRef.current = null;
           }
           setIsScreenShareOn(false);
         }}
         onStopSharing={() => {
           if (screenShareStreamRef.current) {
-            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
             screenShareStreamRef.current = null;
           }
           setIsScreenShareOn(false);
@@ -520,7 +526,9 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
         }}
         onEndCall={() => {
           if (screenShareStreamRef.current) {
-            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
             screenShareStreamRef.current = null;
           }
           setIsScreenShareOn(false);

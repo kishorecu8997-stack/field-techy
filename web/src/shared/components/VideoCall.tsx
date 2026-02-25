@@ -390,20 +390,26 @@ const VideoCall: React.FC<VideoCallProps> = ({
           setShowShareScreenWindow(false);
           // Stop the screen share stream
           if (screenShareStreamRef.current) {
-            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
             screenShareStreamRef.current = null;
           }
         }}
         onStopSharing={() => {
           if (screenShareStreamRef.current) {
-            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
             screenShareStreamRef.current = null;
           }
           setShowShareScreenWindow(false);
         }}
         onEndCall={() => {
           if (screenShareStreamRef.current) {
-            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
             screenShareStreamRef.current = null;
           }
           setShowShareScreenWindow(false);

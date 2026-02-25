@@ -259,14 +259,18 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
           setShowShareScreenWindow(false);
           // Stop the screen share stream
           if (screenShareStreamRef.current) {
-            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
             screenShareStreamRef.current = null;
           }
           setIsScreenShareOn(false);
         }}
         onStopSharing={() => {
           if (screenShareStreamRef.current) {
-            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
             screenShareStreamRef.current = null;
           }
           setIsScreenShareOn(false);
@@ -274,7 +278,9 @@ const OngoingCall: React.FC<OngoingCallProps> = ({
         }}
         onEndCall={() => {
           if (screenShareStreamRef.current) {
-            screenShareStreamRef.current.getTracks().forEach((track) => track.stop());
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
             screenShareStreamRef.current = null;
           }
           setIsScreenShareOn(false);

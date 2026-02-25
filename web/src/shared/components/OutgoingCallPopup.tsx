@@ -82,19 +82,23 @@ const OutgoingCallPopup: React.FC<OutgoingCallPopupProps> = ({
           {/* Bottom control bar */}
           <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Button 
-                aria-label={isVideoOn ? "Turn video off" : "Turn video on"} 
+              <Button
+                aria-label={isVideoOn ? "Turn video off" : "Turn video on"}
                 variant="callControl"
                 onClick={() => setIsVideoOn(!isVideoOn)}
               >
                 {isVideoOn ? <FaVideo size={25} /> : <FaVideoSlash size={25} />}
               </Button>
-              <Button 
-                aria-label={isMicOn ? "Turn mic off" : "Turn mic on"} 
+              <Button
+                aria-label={isMicOn ? "Turn mic off" : "Turn mic on"}
                 variant="callControl"
                 onClick={() => setIsMicOn(!isMicOn)}
               >
-                {isMicOn ? <FaMicrophone size={25} /> : <FaMicrophoneSlash size={25} />}
+                {isMicOn ? (
+                  <FaMicrophone size={25} />
+                ) : (
+                  <FaMicrophoneSlash size={25} />
+                )}
               </Button>
             </div>
 
