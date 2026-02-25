@@ -26,12 +26,12 @@ export default function DocumentView() {
 
         <div className="w-60">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Qualification Certificate
+            Certificate
           </label>
           <div className="w-full h-48 bg-transparent rounded-lg flex items-center justify-center border border-gray-300 dark:border-gray-700">
             <img
               src={placeholdr_user}
-              alt="Qualification Certificate"
+              alt="Certificate"
               className="max-w-full max-h-full object-contain"
             />
           </div>

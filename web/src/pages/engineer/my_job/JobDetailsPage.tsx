@@ -1,11 +1,14 @@
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
-import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useEngineerSearchJobs,
+  useGetJobLogs,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 import { getDurationString } from "@/utils";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-// import { toast } from "react-toastify";
 import {
   JOB_STATUSES,
   SORT_OPTIONS,
@@ -23,6 +26,7 @@ import FinalStatementForm from "./job_details_components/jobHeaderComponents/Fin
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import JobTabSection from "./job_details_components/JobTabSection";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -30,34 +34,25 @@ import JobTabSection from "./job_details_components/JobTabSection";
 const mapJobToJobInfo = (
   job: EngineerSearchJobsResponse[number],
 ): JobInfoSectionProps => {
-  const termsItems: Array<{ text: string }> = [];
-
-  // Add job description as first term item if available
-  if (job.jobDescription) {
-    termsItems.push({ text: job.jobDescription });
-  }
-
-  // Add start and end dates
-  if (job.startDate) {
-    termsItems.push({
+  // Build termsItems array using conditional elements to reduce repetition
+  const termsItems: Array<{ text: string }> = [
+    // Add job description as first term item if available
+    job.jobDescription && { text: job.jobDescription },
+    // Add start and end dates
+    job.startDate && {
       text: `Start Date: ${new Date(job.startDate).toLocaleDateString()}`,
-    });
-  }
-  if (job.endDate) {
-    termsItems.push({
+    },
+    job.endDate && {
       text: `End Date: ${new Date(job.endDate).toLocaleDateString()}`,
-    });
-  }
-
-  // Add total price if available
-  if (job.totalPrice && job.currencySymbol) {
-    termsItems.push({ text: `Budget: ${job.currencySymbol}${job.totalPrice}` });
-  }
-
-  // Add work location
-  if (job.workLocationName) {
-    termsItems.push({ text: `Location: ${job.workLocationName}` });
-  }
+    },
+    // Add total price if available
+    job.totalPrice &&
+      job.currencySymbol && {
+        text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
+      },
+    // Add work location
+    job.workLocationName && { text: `Location: ${job.workLocationName}` },
+  ].filter(Boolean) as Array<{ text: string }>;
 
   // Add job type
   if (job.jobType) {
@@ -100,13 +95,14 @@ const JobDetailsPage = () => {
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Job Information");
+  const [activeTab, setActiveTab] = useState(JOB_TAB_LABELS.timeline);
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [pageHeading, setPageHeading] = useState("Job Details");
   const [_offerJobStatus, setOfferJobStatus] = useState<
     OfferedJobStatusType | AssignmentStatus | undefined
   >();
-  const [_isWorkSubmitted] = useState(false);
 
   // Fetch job data from real API using search endpoint with jobId filter
   const { data: jobList, isLoading: isJobsLoading } = useEngineerSearchJobs({
@@ -114,6 +110,98 @@ const JobDetailsPage = () => {
   });
 
   const job = jobList?.[0];
+  const assignmentId = job?.assignmentId ?? undefined;
+
+  // Fetch job logs to get revision requests from client
+  const { data: jobLogs } = useGetJobLogs(assignmentId ?? 0, !!assignmentId);
+
+  // Extract progress updates from job logs for TimelineSection
+  // Note: We don't create separate revision entries - revisions are nested under Progress Update
+  const apiProgressUpdates = useMemo(() => {
+    if (!jobLogs?.logs?.length) return [];
+
+    const updates: ProgressUpdate[] = [];
+
+    for (const log of jobLogs.logs) {
+      // Only include progress_update logs (not SUBMISSION which has its own handling)
+      if (log.logType === "progress_update") {
+        // Get original engineer's content
+        const originalContent =
+          log.details || "Engineer submitted a progress update";
+        const originalAttachment = log.attachmentUrl
+          ? decodeURIComponent(
+              log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
+            )
+          : undefined;
+        const originalAttachmentUrl = log.attachmentUrl;
+
+        // Determine statusText based on log status OR latest revision status
+        // If there's a pending revision, show "Revision Requested"
+        // Use 'any' type cast to handle potential 'pending' status from API
+        const hasPendingRevision =
+          log.revisions &&
+          log.revisions.some((rev) => (rev.status as string) === "pending");
+
+        let statusText: string;
+        if (log.status === "revision_requested" || hasPendingRevision) {
+          statusText = "Revision Requested";
+        } else {
+          statusText =
+            log.status.charAt(0).toUpperCase() +
+            log.status.slice(1).replace(/_/g, " ");
+        }
+
+        updates.push({
+          title: "Progress Update",
+          description: originalContent,
+          attachmentName: originalAttachment,
+          attachmentUrl: originalAttachmentUrl,
+          timestamp: log.timestamp
+            ? new Date(log.timestamp).toLocaleString("en-US", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })
+            : "",
+          statusText,
+          statusColor:
+            log.status === "approved"
+              ? "#22c55e"
+              : log.status === "rejected"
+                ? "#ef4444"
+                : "#f59e0b",
+          accentColor:
+            log.status === "revision_requested" || hasPendingRevision
+              ? "#f59e0b"
+              : "#3b82f6",
+          detailsType:
+            log.status === "revision_requested" || hasPendingRevision
+              ? "revision"
+              : undefined,
+          // Include the log ID for revision update API calls
+          logId: log.id,
+          // Map revisions to include jobLogId as required by type
+          revisions: (log.revisions || []).map((rev) => {
+            const revision = rev as typeof rev & { jobLogId?: number };
+            return {
+              ...revision,
+              jobLogId: revision.jobLogId || log.id,
+            };
+          }),
+        });
+      }
+    }
+
+    return updates;
+  }, [jobLogs]);
+
+  // Combine manually added progress updates with API progress updates
+  const allProgressUpdates = useMemo(() => {
+    return [...progressUpdates, ...apiProgressUpdates];
+  }, [progressUpdates, apiProgressUpdates]);
 
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
@@ -121,6 +209,17 @@ const JobDetailsPage = () => {
 
   const handleOpenFinalStatement = () => setShowFinalStatement(true);
   const handleCloseFinalStatement = () => setShowFinalStatement(false);
+
+  // Handle chat toggle
+  const handleToggleChat = (_jobId: string) => {
+    setShowChat(true);
+    setPageHeading("Chats");
+  };
+
+  const handleCloseChat = () => {
+    setShowChat(false);
+    setPageHeading("Job Details");
+  };
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {
@@ -131,7 +230,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             onSortChange={() => {}}
-            isReport
+            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -156,7 +255,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             onSortChange={() => {}}
-            isReport
+            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <LoaderComponent />
@@ -175,7 +274,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             onSortChange={() => {}}
-            isReport
+            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -198,7 +297,6 @@ const JobDetailsPage = () => {
     startDateStr: job?.startDate || "",
     endDateStr: job?.endDate || "",
   });
-  const assignmentId = job?.assignmentId ?? undefined;
 
   const engagementTypeMapping: Record<string, string> = {
     "On site": "ON_SITE",
@@ -230,81 +328,92 @@ const JobDetailsPage = () => {
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
-          title="Job Details"
+          title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport
+          isReport={!showChat}
+          isShowSort={!showChat}
+          isChatVisible={showChat}
+          handleCloseChat={handleCloseChat}
           customLabels={
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
           }
         />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <div className="lg:col-span-2 space-y-6">
-            <JobHeaderCard
-              title={jobTitle}
-              client={`Client #${clientId}`}
-              duration={duration as string}
-              type={engagementType}
-              status={jobStatus}
-              setIsWorkSubmitted={setIsWorkSubmitted}
-              setSendProposal={setIsSendProposal}
-              isSendProposal={isSendProposal}
-              setActiveTab={setActiveTab}
-              OfferJobStatus={_offerJobStatus || assignmentStatus}
-              setOfferJobStatus={setOfferJobStatus}
-              jobLocation={jobLocation}
-              numberOfVacancy={job?.vacancies ?? undefined}
-              activeTab={activeTab}
-              onAddProgressUpdate={handleAddProgressUpdate}
-              onOpenFinalStatement={handleOpenFinalStatement}
-              assignmentId={assignmentId}
-              jobId={params.jobId}
-            />
-
-            <JobTabSection
-              status={jobStatus}
-              isWorkSubmitted={isWorkSubmitted}
-              isSendProposal={isSendProposal}
-              setSendProposal={setIsSendProposal}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              OfferJobStatus={assignmentStatus}
-              progressUpdates={progressUpdates}
-              onAddProgressUpdate={handleAddProgressUpdate}
-              assignmentId={assignmentId}
-              jobId={Number(params.jobId)}
-              jobInfo={
-                job
-                  ? mapJobToJobInfo(job)
-                  : {
-                      jobTitle: "",
-                      terms: { title: "Job Details", items: [] },
-                      files: [],
-                    }
-              }
-            />
-
-            {showFinalStatement && (
-              <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
-                <FinalStatementForm
-                  onClose={handleCloseFinalStatement}
-                  onAddProgressUpdate={handleAddProgressUpdate}
-                />
-              </div>
-            )}
+        {showChat ? (
+          <div className="flex-1 overflow-y-auto">
+            <ChatForJobs jobId={String(params.jobId)} currentUser="Engineer" />
           </div>
-          <div className="lg:col-span-1">
-            <ClientInfoCard
-              name={`Client #${clientId}`}
-              memberSince={"-"}
-              location={jobLocation}
-              rating={0}
-              reviews={0}
-              verifications={[]}
-              onOpenReview={() => setIsReviewOpen(true)}
-            />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div className="lg:col-span-2 space-y-6">
+              <JobHeaderCard
+                title={jobTitle}
+                client={`Client #${clientId}`}
+                duration={duration as string}
+                type={engagementType}
+                status={jobStatus}
+                setIsWorkSubmitted={setIsWorkSubmitted}
+                setSendProposal={setIsSendProposal}
+                isSendProposal={isSendProposal}
+                setActiveTab={setActiveTab}
+                OfferJobStatus={_offerJobStatus || assignmentStatus}
+                setOfferJobStatus={setOfferJobStatus}
+                jobLocation={jobLocation}
+                numberOfVacancy={job?.vacancies ?? undefined}
+                activeTab={activeTab}
+                onAddProgressUpdate={handleAddProgressUpdate}
+                onOpenFinalStatement={handleOpenFinalStatement}
+                assignmentId={assignmentId}
+                progressUpdates={allProgressUpdates}
+                jobId={params.jobId}
+                onToggleChat={handleToggleChat}
+              />
+
+              <JobTabSection
+                status={jobStatus}
+                isWorkSubmitted={isWorkSubmitted}
+                isSendProposal={isSendProposal}
+                setSendProposal={setIsSendProposal}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                OfferJobStatus={assignmentStatus}
+                progressUpdates={allProgressUpdates}
+                onAddProgressUpdate={handleAddProgressUpdate}
+                assignmentId={assignmentId}
+                jobId={Number(params.jobId)}
+                jobInfo={
+                  job
+                    ? mapJobToJobInfo(job)
+                    : {
+                        jobTitle: "",
+                        terms: { title: "Job Details", items: [] },
+                        files: [],
+                      }
+                }
+              />
+
+              {showFinalStatement && (
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
+                  <FinalStatementForm
+                    onClose={handleCloseFinalStatement}
+                    onAddProgressUpdate={handleAddProgressUpdate}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="lg:col-span-1">
+              <ClientInfoCard
+                name={`Client #${clientId}`}
+                memberSince={"-"}
+                location={jobLocation}
+                rating={0}
+                reviews={0}
+                verifications={[]}
+                onOpenReview={() => setIsReviewOpen(true)}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {isReviewOpen && (

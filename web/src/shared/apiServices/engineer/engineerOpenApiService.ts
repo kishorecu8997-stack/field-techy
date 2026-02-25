@@ -1,4 +1,6 @@
 import {
+  getEngineerBalance,
+  getEngineerTransactions,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
   type AppLoginResponse,
@@ -21,6 +23,11 @@ import {
   type EngineerUpdatePersonalInfoResponse,
   type EngineerUpdateSkillsAndToolsResponse,
   type EngineerUpdateWorkPreferenceResponse,
+  type GetEngineerBalanceError,
+  type GetEngineerBalanceResponse,
+  type GetEngineerTransactionsData,
+  type GetEngineerTransactionsError,
+  type GetEngineerTransactionsResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -496,12 +503,18 @@ export function useEngineerMarkProposalFileUploaded(options?: {
 export function useEngineerRequestStart(options?: {
   onSuccess?: (data: EngineerRequestStartResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerRequestStartMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -511,12 +524,18 @@ export function useEngineerRequestStart(options?: {
 export function useEngineerSubmitSignOff(options?: {
   onSuccess?: (data: EngineerSubmitSignOffResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerSubmitSignOffMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -526,12 +545,18 @@ export function useEngineerSubmitSignOff(options?: {
 export function useEngineerAddWorkLog(options?: {
   onSuccess?: (data: EngineerAddWorkLogResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerAddWorkLogMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -541,12 +566,18 @@ export function useEngineerAddWorkLog(options?: {
 export function useEngineerSubmitRevision(options?: {
   onSuccess?: (data: EngineerSubmitRevisionResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerSubmitRevisionMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -556,12 +587,18 @@ export function useEngineerSubmitRevision(options?: {
 export function useEngineerRequestBreak(options?: {
   onSuccess?: (data: EngineerRequestBreakResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerRequestBreakMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format to invalidate timeline queries
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -575,6 +612,45 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
       path: { assignmentId },
     }),
     enabled: enabled && !!assignmentId,
+  });
+}
+
+export function useEngineerBalance(enabled: boolean = true) {
+  return useQuery<GetEngineerBalanceResponse, GetEngineerBalanceError>({
+    queryKey: [...queryKeys.engineer.all, "balance"],
+    queryFn: async () => {
+      const response = await getEngineerBalance({ client: apiClient });
+      if (response.data) {
+        return response.data;
+      }
+      throw response.error ?? { error: "Unknown error" };
+    },
+    enabled,
+    staleTime: 30 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+export function useEngineerTransactions(
+  params: GetEngineerTransactionsData["query"] = {},
+  enabled = true,
+) {
+  const paramsKey = params ? JSON.stringify(params) : "";
+  return useQuery<
+    GetEngineerTransactionsResponse,
+    GetEngineerTransactionsError
+  >({
+    queryKey: [...queryKeys.engineer.all, "transactions", paramsKey],
+    queryFn: async () => {
+      const res = await getEngineerTransactions({
+        client: apiClient,
+        query: params,
+      });
+      if (res.data) return res.data;
+      throw res.error ?? { error: "Unknown error" };
+    },
+    enabled,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 }
 

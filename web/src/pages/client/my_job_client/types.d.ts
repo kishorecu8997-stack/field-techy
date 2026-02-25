@@ -142,6 +142,10 @@ export type JobTabSectionProps = {
   isDummyNetworkEngineer?: boolean;
   showManageProposals?: boolean;
   isJobAccepted?: boolean;
+  onAllCardsApprovedChange?: (allApproved: boolean) => void;
+  onTabChange?: (tabLabel: string) => void;
+  jobID?: string;
+  onToggleChat?: () => void;
   assignmentId?: number;
   job?: {
     id: string | number;
@@ -169,10 +173,25 @@ export type CardButtonType = "approve" | "reject" | "requestRevision";
 
 export interface TimelineCardAttachment {
   name: string;
+  url?: string;
+}
+
+export interface TimelineRevisionData {
+  revisionId: number;
+  logId: number;
+  content: string | null;
+  attachmentUrl: string | null | undefined;
+  clientComment: string | null;
+  clientAttachmentUrl: string | null | undefined;
+  createdAt: string | null;
+  updatedAt: string | null;
+  status: string;
 }
 
 export interface TimelineCardData {
   id: string;
+  logId?: number;
+  revisionId?: number;
   type: TimelineCardType;
   title: string;
   description: string;
@@ -180,6 +199,8 @@ export interface TimelineCardData {
   attachments?: TimelineCardAttachment[];
   accentColor: string;
   buttons: CardButtonType[];
+  revisions?: TimelineRevisionData[];
+  approverComment?: string | null;
 }
 
 export interface ActivityTimelineItem {
