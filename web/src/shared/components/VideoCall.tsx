@@ -94,8 +94,9 @@ const VideoCall: React.FC<VideoCallProps> = ({
         if (videoDevices.length > 0) {
           // Prefer front camera (user-facing) if available
           const frontCamera = videoDevices.find(
-            (d) => d.label.toLowerCase().includes("front") ||
-                   d.label.toLowerCase().includes("user")
+            (d) =>
+              d.label.toLowerCase().includes("front") ||
+              d.label.toLowerCase().includes("user"),
           );
           videoDeviceId = frontCamera?.deviceId || videoDevices[0].deviceId;
         }
@@ -139,7 +140,8 @@ const VideoCall: React.FC<VideoCallProps> = ({
         }
         setIsCamOn(true);
       } catch (fallbackErr: unknown) {
-        const errorMessage = fallbackErr instanceof Error ? fallbackErr.message : "Unknown error";
+        const errorMessage =
+          fallbackErr instanceof Error ? fallbackErr.message : "Unknown error";
         console.error("getUserMedia error:", errorMessage);
         setIsCamOn(false);
         stopLocalStream();

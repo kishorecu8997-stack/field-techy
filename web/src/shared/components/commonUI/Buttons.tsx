@@ -181,13 +181,17 @@ export const Button: React.FC<ButtonProps> = ({
       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 
       {!loading && leftIcon && (
-        <span className="flex items-center justify-center mr-2">{leftIcon}</span>
+        <span className="flex items-center justify-center mr-2">
+          {leftIcon}
+        </span>
       )}
 
       {children && <span>{children}</span>}
 
       {!loading && rightIcon && (
-        <span className="flex items-center justify-center ml-2">{rightIcon}</span>
+        <span className="flex items-center justify-center ml-2">
+          {rightIcon}
+        </span>
       )}
     </button>
   );

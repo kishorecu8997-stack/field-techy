@@ -104,7 +104,6 @@ export default function Faq() {
     );
   }, [faqList, searchQuery]);
 
- 
   const handleDeleteFaq = async (faq: FaqItem) => {
     await showPopup({
       title: "Delete FAQ",
@@ -281,7 +280,7 @@ export default function Faq() {
           />
         </div>
       </div>
-    
+
       {isModalOpen && (
         <Popup
           onClose={() => {

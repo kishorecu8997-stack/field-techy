@@ -109,7 +109,7 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
       setIsCamOn(true);
       return;
     }
-    
+
     try {
       // First, check if media devices are available
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -124,8 +124,9 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
         if (videoDevices.length > 0) {
           // Prefer front camera (user-facing) if available
           const frontCamera = videoDevices.find(
-            (d) => d.label.toLowerCase().includes("front") ||
-                   d.label.toLowerCase().includes("user")
+            (d) =>
+              d.label.toLowerCase().includes("front") ||
+              d.label.toLowerCase().includes("user"),
           );
           videoDeviceId = frontCamera?.deviceId || videoDevices[0].deviceId;
         }
@@ -219,8 +220,9 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
           ref={(el) => {
             if (el) {
               // Use participant's own stream if available, otherwise use local stream (for "You")
-              const streamToUse = p.stream || (p.isYou ? localStreamRef.current : null);
-              
+              const streamToUse =
+                p.stream || (p.isYou ? localStreamRef.current : null);
+
               if (streamToUse) {
                 el.srcObject = streamToUse;
                 el.play().catch(() => {});
@@ -233,10 +235,12 @@ const VideoCallGroup: React.FC<VideoCallGroupProps> = ({
           autoPlay
           playsInline
           muted={p.isYou} // Only mute local video
-          className={`w-full h-full object-cover ${isCamOn ? 'block' : 'hidden'}`}
+          className={`w-full h-full object-cover ${isCamOn ? "block" : "hidden"}`}
         />
         {/* Show placeholder when camera is off */}
-        <div className={`w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${isCamOn ? 'hidden' : 'block'}`}>
+        <div
+          className={`w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${isCamOn ? "hidden" : "block"}`}
+        >
           <div className="w-16 h-16 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
             <MdPerson size={28} className="text-white" />
           </div>
