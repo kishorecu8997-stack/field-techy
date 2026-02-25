@@ -1,6 +1,7 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
+  adminGetSubAdmins,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -27,6 +28,12 @@ import {
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
   type AdminDeleteServiceCategoryResponse,
+  type AdminCreateSubAdminData,
+  type AdminCreateSubAdminResponses,
+  type AdminGetSubAdminsData,
+  type AdminGetSubAdminsResponses,
+  type AdminUpdateSubAdminData,
+  type AdminUpdateSubAdminResponses,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -45,6 +52,8 @@ import {
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
+  adminCreateSubAdminMutation,
+  adminUpdateSubAdminMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -331,6 +340,69 @@ export function useAdminEngineersByUserIdStatus(options?: {
     ...adminUpdateUserStatusMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["adminManageEngineers"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminCreateSubAdminBody = NonNullable<
+  AdminCreateSubAdminData["body"]
+>;
+export type AdminGetSubAdminsQuery = NonNullable<
+  AdminGetSubAdminsData["query"]
+>;
+export type AdminUpdateSubAdminBody = NonNullable<
+  AdminUpdateSubAdminData["body"]
+>;
+
+const SUBADMINS_QUERY_KEY = ["admin", "sub-admins"] as const;
+
+export function useAdminGetSubAdmins(
+  query?: AdminGetSubAdminsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetSubAdminsResponses[200]) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: [...SUBADMINS_QUERY_KEY, query],
+    queryFn: async () => {
+      const response = await adminGetSubAdmins({
+        client: apiClient,
+        query,
+      });
+      return response.data as AdminGetSubAdminsResponses[200];
+    },
+    ...options,
+  });
+}
+
+export function useAdminCreateSubAdmin(options?: {
+  onSuccess?: (data: AdminCreateSubAdminResponses[201]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateSubAdminMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.removeQueries({ queryKey: SUBADMINS_QUERY_KEY });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateSubAdmin(options?: {
+  onSuccess?: (data: AdminUpdateSubAdminResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateSubAdminMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.removeQueries({ queryKey: SUBADMINS_QUERY_KEY });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
