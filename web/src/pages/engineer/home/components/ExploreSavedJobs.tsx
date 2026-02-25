@@ -92,9 +92,6 @@ const ExploreSavedJobs = () => {
             const found = toolsData?.find((s) => s.id === toolId);
             return found?.name ?? String(toolId);
           }) ?? null,
-
-        toolImage: null,
-        toolAdditionalBudget: null,
         postedTime: job.createdAt ?? "",
         jobDuration: "",
         rating: Number(job.clientDetails?.averageRating ?? undefined),
@@ -128,7 +125,7 @@ const ExploreSavedJobs = () => {
 
   const totalCount = data?.total ?? 0;
 
-  const jobsPerPage = 10; // should match the `limit` passed to useGetEngineerSavedJobs
+  const jobsPerPage = 10;
 
   const totalPages = useMemo(() => {
     return Math.ceil(totalCount / jobsPerPage);
