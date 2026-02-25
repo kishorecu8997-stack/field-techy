@@ -5,7 +5,6 @@ import {
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import ChatForJobs from "@/shared/components/ChatForJobs";
 import { getDurationString } from "@/utils";
 import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -99,12 +98,9 @@ const JobDetailsPage = () => {
   const [activeTab, setActiveTab] = useState(JOB_TAB_LABELS.timeline);
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [pageHeading, setPageHeading] = useState("Job Details");
   const [_offerJobStatus, setOfferJobStatus] = useState<
     OfferedJobStatusType | AssignmentStatus | undefined
   >();
-  const [_isWorkSubmitted] = useState(false);
   const [openChatJobId, setOpenChatJobId] = useState<string | null>(null);
   const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
   const [pageHeading, setPageHeading] = useState<string>("Job Details");
