@@ -16,6 +16,7 @@ interface SimpleSelectProps {
   value?: string | null;
   className?: string;
   badge?: boolean;
+  disableSelected?: boolean;
 }
 
 /**
@@ -32,6 +33,7 @@ const SelectMenu = ({
   value: selectedValue,
   className = "",
   badge,
+  disableSelected = false,
 }: SimpleSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<"bottom" | "top">("bottom");
@@ -98,7 +100,8 @@ const SelectMenu = ({
   }, [isOpen]);
 
   const handleSelect = (option: Option) => {
-    if (option.disabled) return;
+    if (option.disabled || (disableSelected && option.value === selectedValue))
+      return;
     onChange?.(option.value);
     setIsOpen(false);
   };
@@ -155,30 +158,35 @@ const SelectMenu = ({
           } bg-white border text-gray-800 dark:text-white dark:bg-gray-800 
           border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto`}
         >
-          {options.map((option) => (
-            <li
-              key={option.value}
-              onClick={() => {
-                handleSelect(option);
-              }}
-              className={`flex items-center gap-x-1 px-3 py-2 cursor-pointer text-sm 
-                ${
-                  option.disabled
-                    ? "opacity-50 cursor-not-allowed"
-                    : option.value === selectedValue
-                      ? "bg-emerald-100 text-gray-900 font-medium"
-                      : badge
-                        ? `${option?.bg ?? "bg-gray-100"}`
-                        : "hover:bg-gray-100 dark:hover:bg-blue-400"
-                }`}
-            >
-              {badge && option.icon && (
-                <option.icon className="inline w-4 h-4 ml-2" />
-              )}
+          {options.map((option) => {
+            const isDisabled =
+              option.disabled ||
+              (disableSelected && option.value === selectedValue);
+            return (
+              <li
+                key={option.value}
+                onClick={() => {
+                  handleSelect(option);
+                }}
+                className={`flex items-center gap-x-1 px-3 py-2 cursor-pointer text-sm 
+                  ${
+                    isDisabled
+                      ? "opacity-50 cursor-not-allowed"
+                      : option.value === selectedValue
+                        ? "bg-emerald-100 text-gray-900 font-medium"
+                        : badge
+                          ? `${option?.bg ?? "bg-gray-100"}`
+                          : "hover:bg-gray-100 dark:hover:bg-blue-400"
+                  }`}
+              >
+                {badge && option.icon && (
+                  <option.icon className="inline w-4 h-4 ml-2" />
+                )}
 
-              {option.label}
-            </li>
-          ))}
+                {option.label}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

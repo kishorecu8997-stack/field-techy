@@ -118,6 +118,10 @@ export class EngineerRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.EngineerBreakDetails),
           },
           {
+            path: `${urls.engineer.home.my_jobs}/:jobId/report_updates`,
+            element: withSuspense(Components.EngineerReportIssue),
+          },
+          {
             path: `${urls.engineer.home.my_jobs}/:jobId`,
             element: withSuspense(Components.EngineerOfferPages),
           },
@@ -131,8 +135,20 @@ export class EngineerRouteStrategy implements RouteStrategy {
           //   element: withSuspense(Components.EngineerSearchAnalyticsPage),
           // },
           {
+            path: urls.engineer.home.terms_and_conditions,
+            element: withSuspense(Components.EngineerTermsAndConditions),
+          },
+          {
             path: urls.engineer.home.privacy_policy,
             element: withSuspense(Components.EngineerPrivacyPolicy),
+          },
+          {
+            path: urls.engineer.home.faq,
+            element: withSuspense(Components.EngineerFAQ),
+          },
+          {
+            path: urls.engineer.home.about_app,
+            element: withSuspense(Components.EngineerAboutApp),
           },
           {
             path: urls.engineer.home.chat,
