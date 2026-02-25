@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { Filters } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useLookupData } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { JOB_TYPES_ARRAY, type JobType } from "@/constants/jobTypes";
 
 /**
  * FilterPanel component provides filtering options for job listings
@@ -18,16 +19,15 @@ const FilterPanel: React.FC<{
   currentFilters: Filters;
 }> = ({ onFilterChange, onClearAll, currentFilters }) => {
   // Fetch lookup data
-  const { data: workLocations, isLoading: isLoadingLocations } =
-    useLookupData("workLocations");
+
   const { data: serviceCategories, isLoading: isLoadingCategories } =
     useLookupData("serviceCategories");
   const { data: skillsData, isLoading: isLoadingSkills } =
     useLookupData("skills");
 
   // Local state for filters
-  const [selectedLocationType, setSelectedLocationType] = useState<string[]>(
-    currentFilters.locationType || [],
+  const [selectedJobType, setSelectedJobType] = useState<string>(
+    (currentFilters.jobTypeEnum as JobType) || "",
   );
   const [selectedCategory, setSelectedCategory] = useState<string[]>(
     currentFilters.category || [],
@@ -42,7 +42,7 @@ const FilterPanel: React.FC<{
 
   // Sync local state with currentFilters when they change
   useEffect(() => {
-    setSelectedLocationType(currentFilters.locationType || []);
+    setSelectedJobType((currentFilters.jobTypeEnum as JobType) || "");
     setSelectedCategory(currentFilters.category || []);
     setExperience(currentFilters.experience || 0);
     setSelectedSkills(currentFilters.skills || []);
@@ -83,11 +83,21 @@ const FilterPanel: React.FC<{
     onFilterChange(newFilters);
   };
 
+  const handleJobTypeSelect = (value: JobType) => {
+    // If clicking the same one, clear it (optional), otherwise set to new value
+    const newValue = selectedJobType === value ? "" : value;
+    setSelectedJobType(newValue);
+    onFilterChange({
+      ...currentFilters,
+      jobTypeEnum: newValue,
+    });
+  };
+
   /**
    * Clear all filters
    */
   const handleClearAll = () => {
-    setSelectedLocationType([]);
+    setSelectedJobType("");
     setSelectedCategory([]);
     setExperience(0);
     setSelectedSkills([]);
@@ -120,8 +130,7 @@ const FilterPanel: React.FC<{
   };
 
   // Loading state
-  const isLoading =
-    isLoadingLocations || isLoadingCategories || isLoadingSkills;
+  const isLoading = isLoadingCategories || isLoadingSkills;
 
   if (isLoading) {
     return (
@@ -155,26 +164,24 @@ const FilterPanel: React.FC<{
           Job Type
         </h3>
         <div className="flex flex-wrap gap-2">
-          {workLocations?.map((location) => (
-            <button
-              key={location.id}
-              onClick={() =>
-                toggleFilter(
-                  selectedLocationType,
-                  location.name,
-                  setSelectedLocationType,
-                  "locationType",
-                )
-              }
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                selectedLocationType.includes(location.name)
-                  ? "bg-green-700 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-              }`}
-            >
-              {location.name}
-            </button>
-          ))}
+          {JOB_TYPES_ARRAY?.map((jobType, key) => {
+            // Cast the name to your specific JobType
+            const locName = jobType.label;
+
+            return (
+              <button
+                key={key}
+                onClick={() => handleJobTypeSelect(locName as JobType)}
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${
+                  selectedJobType === locName
+                    ? "bg-green-700 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                }`}
+              >
+                {jobType.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

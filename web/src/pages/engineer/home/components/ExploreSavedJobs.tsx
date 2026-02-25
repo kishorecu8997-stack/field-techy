@@ -14,6 +14,7 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { scrollToTop } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
 import type { JobItem } from "../types";
+import type { JobType } from "@/constants/jobTypes";
 
 /**
  * explore jobs page component
@@ -38,12 +39,13 @@ const ExploreSavedJobs = () => {
     locationRadius: 0,
     primaryLanguage: "",
     slaLevel: "",
+    jobTypeEnum: "",
   });
 
   const { data, refetch } = useGetEngineerSavedJobs({
     limit: 10,
     page: currentPage,
-    jobType: undefined,
+    jobType: filters.jobTypeEnum as JobType,
     serviceCategoryIds: filters.category || [],
     experienceLevelId: filters.experience || 0,
     skillIds: filters.skills || [],
@@ -56,6 +58,8 @@ const ExploreSavedJobs = () => {
     scrollToTop();
     refetch();
   }, [filters, currentPage]);
+  console.log(filters.jobTypeEnum);
+  
 
   const savedJobs: JobItem[] = useMemo(() => {
     return (data?.data ?? []).map(
@@ -159,6 +163,7 @@ const ExploreSavedJobs = () => {
       locationRadius: 0,
       primaryLanguage: "",
       slaLevel: "",
+      jobTypeEnum: "",
     });
     setCurrentPage(1);
   };
@@ -199,7 +204,7 @@ const ExploreSavedJobs = () => {
             )}
 
             {/* Pagination Component */}
-            {totalPages > 1 && (
+            {paginatedJobs.length > 0 && totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

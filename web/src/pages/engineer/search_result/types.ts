@@ -114,6 +114,7 @@ export interface Filters {
   budgetRange: { min: number; max: number };
   primaryLanguage: string;
   slaLevel: string;
+  jobTypeEnum?: string;
 }
 
 /**
