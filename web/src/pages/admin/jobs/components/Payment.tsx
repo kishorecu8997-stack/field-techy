@@ -7,6 +7,7 @@ import { useAdminGetPaymentTransactions } from "@/shared/apiServices/admin/admin
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
 import type { adminJobsStatus } from "../types";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 const Payment = () => {
   const [searchParams] = useSearchParams();
@@ -94,9 +95,7 @@ const Payment = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-gray-600">
-        Loading payment transactions...
-      </div>
+       <LoaderComponent />
     );
   }
 

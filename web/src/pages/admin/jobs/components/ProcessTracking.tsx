@@ -3,6 +3,7 @@ import { exampleMarkers } from "@/dummy_data/jobDetails";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import MapComponent from "@/shared/components/MapComponent";
 import { useAdminGetJobLogs } from "@/shared/apiServices/admin/adminOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * ProcessTracking Component
@@ -45,9 +46,7 @@ const ProcessTracking = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-gray-600">
-        Loading job logs...
-      </div>
+    <LoaderComponent />
     );
   }
 

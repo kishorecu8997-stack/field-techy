@@ -748,15 +748,10 @@ export function useAdminGetPaymentTransactions(
   },
 ) {
   return useQuery({
-    queryKey: [...queryKeys.admin.paymentTransactions.all, query],
-    queryFn: async () => {
-      const queryParams = query ? { page: query.page ?? 1, limit: query.limit ?? 10 } : { page: 1, limit: 10 };
-      const response = await apiClient.get<PaymentTransactionsResponse>({
-        url: "admin/manage-jobs/transactions",
-        query: { jobId: query?.jobId, ...queryParams },
-      });
-      return response.data;
-    },
+    ...adminGetJobTransactionsOptions({
+      client: apiClient,
+      query: query ?? { jobId: 0 },
+    }),
     ...options,
     });
 }

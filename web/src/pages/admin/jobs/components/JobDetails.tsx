@@ -7,6 +7,7 @@ import {
   type JobStatus,
 } from "@/constants/jobStatus";
 import { useAdminGetJobDetails } from "@/shared/apiServices/admin/adminOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * JobDetails Component
@@ -74,11 +75,7 @@ const JobDetails = () => {
   }
 
   if (isLoading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center text-gray-600">
-        Loading job details...
-      </div>
-    );
+    return <LoaderComponent />;
   }
 
   if (error) {
