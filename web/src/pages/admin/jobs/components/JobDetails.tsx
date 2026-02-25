@@ -96,7 +96,7 @@ const JobDetails = () => {
           <JobStatusCard
             jobId={job?.jobCode || String(job?.id ?? "N/A")}
             date={new Date(job?.createdAt || Date.now())}
-            status={mapJobStatus(job?.status)}
+            status={mapJobStatus(job?.status ?? undefined)}
             onStatusChange={handleStatusChange}
           />
           <ContactDetailsCard
