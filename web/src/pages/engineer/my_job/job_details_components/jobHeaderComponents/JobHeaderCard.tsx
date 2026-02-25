@@ -49,6 +49,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   allCardsApproved,
   setOfferJobStatus,
   assignmentId,
+  progressUpdates,
   jobId,
   onToggleChat,
 }) => {
@@ -257,6 +258,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             onOpenGiveClientFeedback={onOpenGiveClientFeedback}
             onOpenViewClientFeedback={onOpenViewClientFeedback}
             assignmentId={assignmentId}
+            progressUpdates={progressUpdates}
           />
         )}
       </div>
@@ -265,6 +267,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         <UpdateLogForm
           onClose={() => setOpen(false)}
           onAddProgressUpdate={onAddProgressUpdate}
+          assignmentId={assignmentId}
         />
       </Popup>
       {/* Confirmation Modal Popup */}
