@@ -6,11 +6,15 @@ import {
   SORT_OPTIONS,
   type Filters,
 } from "@/pages/engineer/search_result/types";
+import {
+  useGetEngineerSavedJobs,
+  useLookupData,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { getSavedJobs } from "@/utils/bookmarkUtils";
+import { scrollToTop } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
 import type { JobItem } from "../types";
-import { scrollToTop } from "@/utils";
+import type { JobType } from "@/constants/jobTypes";
 
 /**
  * explore jobs page component
@@ -35,35 +39,110 @@ const ExploreSavedJobs = () => {
     locationRadius: 0,
     primaryLanguage: "",
     slaLevel: "",
+    jobTypeEnum: "",
   });
-  const [savedJobs, setSavedJobs] = useState<JobItem[]>([]);
+
+  const { data } = useGetEngineerSavedJobs({
+    limit: 10,
+    page: currentPage,
+    jobType: (filters.jobTypeEnum as JobType) || null,
+    serviceCategoryIds: filters.category || [],
+    experienceLevelId: filters.experience || 0,
+    skillIds: filters.skills || [],
+  });
+
+  const { data: skillsData } = useLookupData("skills");
+  const { data: toolsData } = useLookupData("tools");
 
   useEffect(() => {
     scrollToTop();
-    setSavedJobs(getSavedJobs());
-  }, []);
-  const refreshSavedJobs = () => {
-    setSavedJobs(getSavedJobs());
-    setCurrentPage(1);
-  };
-  const allSavedJobs = savedJobs;
+  }, [filters, currentPage]);
 
-  // Pagination settings
-  const jobsPerPage = 4;
+  const savedJobs: JobItem[] = useMemo(() => {
+    return (data?.data ?? []).map(
+      (job): JobItem => ({
+        id: String(job.id),
+        jobCode: job.jobCode,
+        clientId: String(job.clientId),
+        jobTitle: job.jobTitle,
+        jobDescription: job.jobDescription ?? "",
+        category: job.serviceCategoryId,
+        jobType: job.jobType,
+        engagementModel: job.engagementModelId,
+        countryId: job.countryId,
+        stateId: job.stateId,
+        cityId: job.cityId,
+        location: job.workLocationName ?? null,
+        startDate: job.startDate ?? "",
+        endDate: job.endDate ?? null,
+        numberOfVacancy: job.vacancies ?? 1,
+        experience: job.experienceLevelId ?? null,
+        salary: job.totalPrice ?? null,
+        budgetType: job.rateCardId ? String(job.rateCardId) : null,
+
+        status: job.status || "",
+
+        skills:
+          job.skills?.map((skillId: number) => {
+            const found = skillsData?.find((s) => s.id === skillId);
+            return found?.name ?? String(skillId);
+          }) ?? null,
+
+        tools:
+          job.tools?.map((toolId: number) => {
+            const found = toolsData?.find((s) => s.id === toolId);
+            return found?.name ?? String(toolId);
+          }) ?? null,
+        postedTime: job.createdAt ?? "",
+        jobDuration: "",
+        rating: Number(job.clientDetails?.averageRating ?? undefined),
+        slaLevel: undefined,
+
+        client: {
+          id: String(job.clientDetails?.id ?? ""),
+          clientType: job.clientDetails?.clientType ?? "",
+          companyName: job.clientDetails?.companyName ?? "",
+          contactPersonName: job.clientDetails?.personName ?? "",
+
+          email: job.clientDetails?.email ?? "",
+          phoneNumber: job.clientDetails?.phoneNumber ?? "",
+          country: "",
+          state: "",
+          city: "",
+          postalCode: "",
+          address: job.clientDetails?.address ?? "",
+        },
+
+        assignmentId: job.assignmentId ?? null,
+        assignmentType:
+          job.assignmentStatus === "invited"
+            ? "invitation"
+            : job.assignmentStatus === "applied"
+              ? "application"
+              : null,
+      }),
+    );
+  }, [data, skillsData, toolsData]);
+
+  const totalCount = data?.total ?? 0;
+
+  const jobsPerPage = 10;
+
   const totalPages = useMemo(() => {
-    return Math.ceil(allSavedJobs.length / jobsPerPage);
-  }, [allSavedJobs.length]);
-  const paginatedJobs = useMemo(() => {
-    const startIndex = (currentPage - 1) * jobsPerPage;
-    return allSavedJobs.slice(startIndex, startIndex + jobsPerPage);
-  }, [currentPage, allSavedJobs]);
+    return Math.ceil(totalCount / jobsPerPage);
+  }, [totalCount]);
+
+  const paginatedJobs = savedJobs;
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
-    setCurrentPage(1); // reset page on filter change
+    setCurrentPage(1);
   };
+
   const handleClearAllFilters = () => {
     setFilters({
       location: [],
@@ -81,6 +160,7 @@ const ExploreSavedJobs = () => {
       locationRadius: 0,
       primaryLanguage: "",
       slaLevel: "",
+      jobTypeEnum: "",
     });
     setCurrentPage(1);
   };
@@ -92,8 +172,8 @@ const ExploreSavedJobs = () => {
           title="Saved Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb={false}
-          description={`${allSavedJobs.length} saved job${
-            allSavedJobs.length !== 1 ? "s" : ""
+          description={`${data?.summary?.savedJobsCount} saved job${
+            data?.summary?.savedJobsCount !== 1 ? "s" : ""
           }`}
         />
 
@@ -107,7 +187,6 @@ const ExploreSavedJobs = () => {
                   job={job}
                   showBookmark={true}
                   navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
-                  onBookmarkChange={refreshSavedJobs}
                 />
               ))
             ) : (
@@ -122,7 +201,7 @@ const ExploreSavedJobs = () => {
             )}
 
             {/* Pagination Component */}
-            {totalPages > 1 && (
+            {paginatedJobs.length > 0 && totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -132,7 +211,7 @@ const ExploreSavedJobs = () => {
           </div>
 
           {/* RIGHT SIDE (Filters) */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 sticky top-20 h-fit">
             <FilterPanel
               onFilterChange={handleFilterChange}
               onClearAll={handleClearAllFilters}
