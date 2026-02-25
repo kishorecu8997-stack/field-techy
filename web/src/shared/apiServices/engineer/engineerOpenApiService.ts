@@ -586,21 +586,6 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
   });
 }
 
-// export function useEngineerBalance(enabled: boolean = true) {
-//   return useQuery<GetEngineerBalanceResponse, GetEngineerBalanceError>({
-//     queryKey: [...queryKeys.engineer.all, "balance"],
-//     queryFn: async () => {
-//       const response = await getEngineerBalance({ client: apiClient });
-//       if (response.data) {
-//         return response.data;
-//       }
-//       throw response.error ?? { error: "Unknown error" };
-//     },
-//     enabled,
-//     staleTime: 30 * 1000,
-//     refetchOnWindowFocus: false,
-//   });
-// }
 export function useEngineerBalance(enabled: boolean = true) {
   return useQuery<GetEngineerBalanceResponse, GetEngineerBalanceError>({
     queryKey: [...queryKeys.engineer.all, "balance"],
