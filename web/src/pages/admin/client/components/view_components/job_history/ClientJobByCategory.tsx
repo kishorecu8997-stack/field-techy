@@ -99,7 +99,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
       interval: intervalMap[selectedDay || "monthly"],
     },
     {
-      enabled: !!userId,
+      enabled: userId != null,
     },
   );
 
