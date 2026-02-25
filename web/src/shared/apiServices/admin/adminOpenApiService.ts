@@ -52,6 +52,8 @@ import {
   type AdminUpdateJobStatusResponses,
   type AdminGetJobLogsData,
   type AdminGetJobLogsResponse,
+  type AdminGetJobTransactionsData,
+  type AdminGetJobTransactionsResponses,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -82,6 +84,7 @@ import {
   adminDeleteServiceCategoryMutation,
   adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
+  adminGetJobTransactionsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -728,29 +731,13 @@ export function useAdminGetJobLogs(
 
 // Payment Transactions API
 
-export interface PaymentTransaction {
-  id: number;
-  accountType: string;
-  walletId: string | null;
-  amount: string;
-  type: string;
-  description: string | null;
-  referenceId: string | null;
-  timestamp: string | null;
-}
+export type PaymentTransaction = AdminGetJobTransactionsResponses[200]["data"][number];
 
-export interface PaymentTransactionsResponse {
-  data: PaymentTransaction[];
-  total: number;
-  page: number;
-  limit: number;
-}
+export type PaymentTransactionsResponse = AdminGetJobTransactionsResponses[200];
 
-export type AdminGetPaymentTransactionsQuery = {
-  jobId: number;
-  page?: number;
-  limit?: number;
-};
+export type AdminGetPaymentTransactionsQuery = NonNullable<
+  AdminGetJobTransactionsData["query"]
+>;
 
 export function useAdminGetPaymentTransactions(
   query?: AdminGetPaymentTransactionsQuery,
