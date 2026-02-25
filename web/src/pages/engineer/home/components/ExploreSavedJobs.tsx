@@ -45,7 +45,7 @@ const ExploreSavedJobs = () => {
   const { data, refetch } = useGetEngineerSavedJobs({
     limit: 10,
     page: currentPage,
-    jobType: filters.jobTypeEnum as JobType,
+    jobType: (filters.jobTypeEnum as JobType) || null,
     serviceCategoryIds: filters.category || [],
     experienceLevelId: filters.experience || 0,
     skillIds: filters.skills || [],
@@ -59,7 +59,6 @@ const ExploreSavedJobs = () => {
     refetch();
   }, [filters, currentPage]);
   console.log(filters.jobTypeEnum);
-  
 
   const savedJobs: JobItem[] = useMemo(() => {
     return (data?.data ?? []).map(

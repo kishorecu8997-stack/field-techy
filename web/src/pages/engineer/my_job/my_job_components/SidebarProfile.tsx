@@ -232,9 +232,9 @@ const SavedJobsCard = () => {
   const animateActiveCount = useCountUp(
     savedJobs?.summary?.activeJobsCount ?? 0,
   );
-  const animateExpireCount =
-    useCountUp(savedJobs?.summary?.savedJobsCount ?? 0) -
-    (savedJobs?.summary?.activeJobsCount ?? 0);
+  const animateExpireCount = useCountUp(
+    savedJobs?.summary?.expiredJobsCount ?? 0,
+  );
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
       <div className="flex justify-between items-center mb-4">

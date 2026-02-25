@@ -1,6 +1,9 @@
 import { icons } from "@/config/icons";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
-import { useStoreEngineerSaveJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useGetEngineerSavedJobs,
+  useStoreEngineerSaveJobs,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { scrollToTop } from "@/utils";
 import { calculateMatchScore } from "@/utils/matchCalculator";
 import dayjs from "dayjs";
@@ -178,8 +181,13 @@ const JobCard: React.FC<{
     job.stateId ? String(job.stateId) : undefined,
     !!job.stateId,
   );
+  const { refetch } = useGetEngineerSavedJobs({
+    limit: 10,
+    page: 1,
+  });
   const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
     onSuccess: (response) => {
+      refetch();
       toast.success(
         response?.status === "saved"
           ? "Job saved successfully"
