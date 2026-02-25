@@ -388,6 +388,7 @@ const JobDetailsPage = () => {
                 onAddProgressUpdate={handleAddProgressUpdate}
                 onOpenFinalStatement={handleOpenFinalStatement}
                 assignmentId={assignmentId}
+                progressUpdates={allProgressUpdates}
                 jobId={params.jobId}
                 onToggleChat={handleToggleChat}
               />
@@ -400,7 +401,7 @@ const JobDetailsPage = () => {
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 OfferJobStatus={assignmentStatus}
-                progressUpdates={progressUpdates}
+                progressUpdates={allProgressUpdates}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 assignmentId={assignmentId}
                 jobId={Number(params.jobId)}
@@ -424,75 +425,16 @@ const JobDetailsPage = () => {
                 </div>
               )}
             </div>
-            ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-              <div className="lg:col-span-2 space-y-6">
-                <JobHeaderCard
-                  title={jobTitle}
-                  client={`Client #${clientId}`}
-                  duration={duration as string}
-                  type={engagementType}
-                  status={jobStatus}
-                  setIsWorkSubmitted={setIsWorkSubmitted}
-                  setSendProposal={setIsSendProposal}
-                  isSendProposal={isSendProposal}
-                  setActiveTab={setActiveTab}
-                  OfferJobStatus={_offerJobStatus || assignmentStatus}
-                  setOfferJobStatus={setOfferJobStatus}
-                  jobLocation={jobLocation}
-                  numberOfVacancy={job?.vacancies ?? undefined}
-                  activeTab={activeTab}
-                  onAddProgressUpdate={handleAddProgressUpdate}
-                  onOpenFinalStatement={handleOpenFinalStatement}
-                  assignmentId={assignmentId}
-                  progressUpdates={allProgressUpdates}
-                  jobId={params.jobId}
-                  onToggleChat={handleToggleChat}
-                />
-
-                <JobTabSection
-                  status={jobStatus}
-                  isWorkSubmitted={isWorkSubmitted}
-                  isSendProposal={isSendProposal}
-                  setSendProposal={setIsSendProposal}
-                  activeTab={activeTab}
-                  setActiveTab={setActiveTab}
-                  OfferJobStatus={assignmentStatus}
-                  progressUpdates={allProgressUpdates}
-                  onAddProgressUpdate={handleAddProgressUpdate}
-                  assignmentId={assignmentId}
-                  jobId={Number(params.jobId)}
-                  jobInfo={
-                    job
-                      ? mapJobToJobInfo(job)
-                      : {
-                          jobTitle: "",
-                          terms: { title: "Job Details", items: [] },
-                          files: [],
-                        }
-                  }
-                />
-
-                {showFinalStatement && (
-                  <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
-                    <FinalStatementForm
-                      onClose={handleCloseFinalStatement}
-                      onAddProgressUpdate={handleAddProgressUpdate}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="lg:col-span-1">
-                <ClientInfoCard
-                  name={`Client #${clientId}`}
-                  memberSince={"-"}
-                  location={jobLocation}
-                  rating={0}
-                  reviews={0}
-                  verifications={[]}
-                  onOpenReview={() => setIsReviewOpen(true)}
-                />
-              </div>
+            <div className="lg:col-span-1">
+              <ClientInfoCard
+                name={`Client #${clientId}`}
+                memberSince="-"
+                location={jobLocation}
+                rating={0}
+                reviews={0}
+                verifications={[]}
+                onOpenReview={() => setIsReviewOpen(true)}
+              />
             </div>
           </div>
         )}

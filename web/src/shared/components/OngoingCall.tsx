@@ -18,20 +18,6 @@ import ShareScreenWindow from "./ShareScreenWindow";
 import VideoCall from "./VideoCall";
 import { Button } from "./commonUI/Buttons";
 /**
- * Props for OngoingCall component.
- */
-interface OngoingCallProps {
-  /** Controls visibility of the call window */
-  isVisible?: boolean;
-  /** Name of the caller */
-  callerName?: string;
-  /** Triggered when closing the window */
-  onClose?: () => void;
-  /** Triggered when ending the call */
-  onEndCall?: () => void;
-}
-
-/**
  * Draggable ongoing call UI with timer, mic, video,
  * screen share, and end call controls.
  *
