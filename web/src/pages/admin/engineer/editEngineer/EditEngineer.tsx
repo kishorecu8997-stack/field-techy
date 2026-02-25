@@ -1,37 +1,84 @@
 import { absoluteUrls } from "@/config/urls";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
+import {
+  useAdminGetEngineerById,
+  useAdminUpdateEngineer,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
+import { useAppMarkProfileFileUploaded } from "@/shared/apiServices/commonOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { useState, useEffect } from "react";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { EngineerFormData } from "../types";
+import type {
+  AdminGetEngineerResponse,
+  AdminUpdateEngineerData,
+  AppMarkProfileFileUploadedData,
+} from "@/api";
 import BasicInformation from "../addEngineer/BasicInformation";
-import Documents from "../addEngineer/Documents";
 import ExperienceDetails from "../addEngineer/ExperienceDetails";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminGetEngineerById } from "@/shared/apiServices/admin/adminOpenApiService";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import Documents from "../userDetails/Documents";
+import type { EngineerFormData } from "../types";
+
+const toOptionalString = (value: unknown) =>
+  value === null || value === undefined ? "" : String(value);
+
+const mapEngineerToFormData = (
+  engineerData: AdminGetEngineerResponse,
+): EngineerFormData => {
+  const skills = engineerData.skills?.map((s) => String(s.id)) ?? [];
+
+  return {
+    name: engineerData.name ?? "",
+    email: engineerData.email ?? "",
+    phoneNumber: engineerData.phoneNumber ?? "",
+    profileImage: engineerData.documents?.profileImage?.url ?? null,
+    address: engineerData.address ?? "",
+    skills,
+    price: toOptionalString(engineerData.pricePerHour),
+    serviceCategory: engineerData.serviceCategory
+      ? String(engineerData.serviceCategory)
+      : "",
+    portfolio: engineerData.portfolioLink ?? "",
+    designation: engineerData.currentDesignation ?? "",
+    location: engineerData.location?.city ?? engineerData.city?.name ?? "",
+    employer: engineerData.employer ?? "",
+    experience: toOptionalString(engineerData.totalExperience),
+    resume: engineerData.documents?.resume?.url ?? null,
+    governmentId: engineerData.documents?.governmentId?.url ?? null,
+    certificate: engineerData.documents?.qualificationCertificate?.url ?? null,
+  };
+};
 
 /**
  * EditEngineer component for editing an existing engineer.
- * Fetches engineer data via API.
+ * - GET: fetches engineer data (including document URLs) and hydrates the form
+ * - PUT: submits updated fields, optionally returning presigned upload URLs for files
  */
 export default function EditEngineer() {
   const [activeTab, setActiveTab] = useState("Basic Information");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { showPopup } = usePopupStore();
+  const queryClient = useQueryClient();
 
-  // Fetch engineer data
+  const { mutateAsync: updateEngineer } = useAdminUpdateEngineer();
+  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
+
+  const engineerId = Number(id);
+
   const { data: engineerData, isLoading } = useAdminGetEngineerById(
-    Number(id),
-    !!id,
+    engineerId,
+    Number.isFinite(engineerId),
   );
 
-  // Initialize form
   const methods = useForm<EngineerFormData>({
     defaultValues: {
       name: "",
@@ -47,49 +94,83 @@ export default function EditEngineer() {
       location: "",
       employer: "",
       experience: "",
-      resume: "",
-      governmentId: "",
-      certificate: "",
+      resume: null,
+      governmentId: null,
+      certificate: null,
     },
     mode: "onChange",
     reValidateMode: "onChange",
   });
 
-  // Update defaultValues when data is loaded
-  useEffect(() => {
-    if (!engineerData) return;
-
-    methods.reset({
-      name: engineerData.name ?? "",
-      email: engineerData.email ?? "",
-      phoneNumber: engineerData.phoneNumber,
-      profileImage: null,
-      address: engineerData.address ?? "",
-      skills: [],
-      price:
-        engineerData.pricePerHour !== undefined &&
-        engineerData.pricePerHour !== null
-          ? String(engineerData.pricePerHour)
-          : "",
-      serviceCategory: engineerData.serviceCategory
-        ? String(engineerData.serviceCategory)
-        : "",
-      portfolio: engineerData.portfolioLink ?? "",
-      designation: engineerData.currentDesignation ?? "",
-      location: "",
-      employer: engineerData.employer ?? "",
-      experience: engineerData.totalExperience
-        ? String(engineerData.totalExperience)
-        : "",
-      resume: "",
-      governmentId: "",
-      certificate: "",
-    });
-  }, [engineerData, methods]);
-
   const { trigger, getValues, reset } = methods;
 
-  // Tab navigation
+  useEffect(() => {
+    if (!engineerData) return;
+    methods.reset(mapEngineerToFormData(engineerData));
+  }, [engineerData, methods]);
+
+  type UploadKey =
+    | "profilePicture"
+    | "govIdDoc"
+    | "certificateDoc"
+    | "resumeFile";
+
+  const extractFile = (value: unknown) =>
+    value instanceof File
+      ? value
+      : (value instanceof FileList && value[0]) || null;
+
+  const buildPayload = (data: EngineerFormData) => {
+    const files: Record<UploadKey, File | null> = {
+      profilePicture: extractFile(data.profileImage),
+      govIdDoc: extractFile(data.governmentId),
+      certificateDoc: extractFile(data.certificate),
+      resumeFile: extractFile(data.resume),
+    };
+
+    const skillsArray =
+      typeof data.skills === "string"
+        ? data.skills.split(",").map((s) => s.trim())
+        : data.skills;
+
+    const body: NonNullable<AdminUpdateEngineerData["body"]> = {
+      name: data.name,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+
+      address: data.address || undefined,
+      serviceCategoryId: data.serviceCategory
+        ? Number(data.serviceCategory)
+        : undefined,
+
+      hourlyRate:
+        data.price !== null && data.price !== ""
+          ? Number(data.price)
+          : undefined,
+
+      portfolioLink: data.portfolio || "",
+      employer: data.employer || undefined,
+      currentDesignation: data.designation || undefined,
+
+      experienceYears: data.experience ? Number(data.experience) : null,
+
+      skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
+    };
+
+    (Object.entries(files) as [UploadKey, File | null][]).forEach(
+      ([key, file]) => {
+        if (!file) return;
+        body[key] = {
+          filename: file.name,
+          size: file.size,
+          mimeType: file.type,
+        };
+      },
+    );
+
+    return { body, files };
+  };
+
   const handleNext = async () => {
     let isValid = false;
     if (activeTab === "Basic Information") {
@@ -103,7 +184,10 @@ export default function EditEngineer() {
         "serviceCategory",
       ]);
       if (isValid) setActiveTab("Experience Details");
-    } else if (activeTab === "Experience Details") {
+      return;
+    }
+
+    if (activeTab === "Experience Details") {
       isValid = await trigger([
         "designation",
         "location",
@@ -115,12 +199,11 @@ export default function EditEngineer() {
     }
   };
 
-  const handlePrevious = async () => {
+  const handlePrevious = () => {
     if (activeTab === "Experience Details") setActiveTab("Basic Information");
     else if (activeTab === "Documents") setActiveTab("Experience Details");
   };
 
-  // Update confirmation popup
   const handleUpdateConfirmation = async (data: EngineerFormData) => {
     await showPopup({
       title: "Update Engineer",
@@ -132,27 +215,71 @@ export default function EditEngineer() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Updated data:", data);
-            toast.success("Engineer updated successfully!");
-            navigate(absoluteUrls.admin.home.manage_engineer);
-            reset();
-            close(true);
+            try {
+              const { body, files } = buildPayload(data);
+
+              const res = await updateEngineer({
+                path: { userId: engineerId },
+                body,
+              } as AdminUpdateEngineerData);
+
+              if (res && "uploadUrls" in res && res.uploadUrls) {
+                const uploadUrls = res.uploadUrls as Record<
+                  string,
+                  { uploadUrl: string; fileId: number }
+                >;
+
+                for (const [key, { uploadUrl, fileId }] of Object.entries(
+                  uploadUrls,
+                )) {
+                  const file = files[key as keyof typeof files];
+                  if (!file) continue;
+
+                  const upload = await fetch(uploadUrl, {
+                    method: "PUT",
+                    body: file,
+                    headers: { "Content-Type": file.type },
+                  });
+
+                  if (upload.ok) {
+                    await markFileUploaded({
+                      body: { fileId },
+                    } as AppMarkProfileFileUploadedData);
+                  }
+                }
+              }
+
+              await queryClient.invalidateQueries({
+                queryKey: queryKeys.admin.manageEngineers,
+              });
+
+              toast.success("Engineer updated successfully!");
+              reset();
+              navigate(absoluteUrls.admin.home.manage_engineer);
+              close(true);
+            } catch (error) {
+              console.error(error);
+              toast.error("Failed to update engineer");
+              close(false);
+            }
           },
         },
       ],
     });
   };
 
-  // Save handler
   const handleSave = async () => {
-    const isValid = await trigger();
-    if (isValid) {
-      setIsSubmitting(true);
-      try {
-        handleUpdateConfirmation(getValues());
-      } finally {
-        setIsSubmitting(false);
-      }
+    if (!Number.isFinite(engineerId)) {
+      toast.error("Invalid engineer id");
+      return;
+    }
+    if (!(await trigger())) return;
+
+    setIsSubmitting(true);
+    try {
+      await handleUpdateConfirmation(getValues());
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -204,7 +331,7 @@ export default function EditEngineer() {
               disabled={isSubmitting}
               className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 disabled:opacity-50"
             >
-              {isSubmitting ? "Saving…" : isLastTab ? "Save" : "Next"}
+              {isSubmitting ? "Saving..." : isLastTab ? "Save" : "Next"}
             </Button>
           </div>
         </div>

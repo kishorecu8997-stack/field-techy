@@ -1,7 +1,8 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
 import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
 import { useFormContext } from "react-hook-form";
-import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+import DocumentCard from "@/shared/components/DocumentCard";
+import type { EngineerFormData } from "../types";
 
 import {
   validateCompany,
@@ -43,18 +44,59 @@ import {
  * @returns {JSX.Element} A form section component with professional experience fields
  */
 export default function ExperienceDetails() {
-  const methods = useFormContext();
+  const methods = useFormContext<EngineerFormData>();
+  const resume = methods.watch("resume");
+
+  const isExistingFile = (value: unknown): value is string =>
+    typeof value === "string" && value.startsWith("http");
+
+  const getDisplayFileName = (value: string) => {
+    try {
+      const parsed = new URL(value);
+      const last = parsed.pathname.split("/").pop() || "resume.pdf";
+      return decodeURIComponent(last);
+    } catch {
+      return value.split("/").pop()?.split("?")[0] || "resume.pdf";
+    }
+  };
 
   return (
     <div>
       <div className="w-60">
-        <FileUpload
-          name="resume"
-          label="Resume"
-          placeholder="Resume"
-          required
-          accept=".pdf"
-        />
+        {isExistingFile(resume) ? (
+          <div className="flex flex-col gap-2">
+            <DocumentCard
+              id={1}
+              document={{
+                title: "Resume",
+                fileName: getDisplayFileName(resume),
+                fileType: "PDF",
+                previewUrl: resume,
+              }}
+              onEdit={() =>
+                methods.setValue("resume", null, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }
+              onDelete={() =>
+                methods.setValue("resume", null, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }
+              onDownload={() => window.open(resume, "_blank")}
+            />
+          </div>
+        ) : (
+          <FileUpload
+            name="resume"
+            label="Resume"
+            placeholder="Resume"
+            required
+            accept=".pdf"
+          />
+        )}
       </div>
       <div className="grid md:flex gap-4 w-full">
         <div className="gap-4 w-1/2 space-y-2">
@@ -95,7 +137,7 @@ export default function ExperienceDetails() {
         </div>
       </div>
 
-      <div className="w-full flex items-center gap-2 mt-2 justify-start">
+      {/* <div className="w-full flex items-center gap-2 mt-2 justify-start">
         <CheckboxInput
           name="isCurrent"
           label="I currently work here"
@@ -108,7 +150,7 @@ export default function ExperienceDetails() {
             },
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 }
