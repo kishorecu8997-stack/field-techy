@@ -32,8 +32,7 @@ const ProcessTracking = () => {
     { key: "logType", label: "Work Log Type" },
     { key: "status", label: "Status" },
     { key: "details", label: "Details" },
-    { key: "updatedAt", label: "Updated At" }
-  
+    { key: "updatedAt", label: "Updated At" },
   ];
 
   if (!shouldFetch) {
@@ -45,9 +44,7 @@ const ProcessTracking = () => {
   }
 
   if (isLoading) {
-    return (
-    <LoaderComponent />
-    );
+    return <LoaderComponent />;
   }
 
   if (error) {

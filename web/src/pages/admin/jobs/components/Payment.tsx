@@ -14,13 +14,13 @@ const Payment = () => {
   const jobIdParam = searchParams.get("jobId");
   const jobId = jobIdParam ? Number(jobIdParam) : NaN;
   const shouldFetch = Number.isFinite(jobId);
-  
+
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const { showPopup } = usePopupStore();
 
   const { data, isLoading, error } = useAdminGetPaymentTransactions(
     shouldFetch ? { jobId, page: 1, limit: 10 } : undefined,
-    { enabled: shouldFetch }
+    { enabled: shouldFetch },
   );
 
   const handleStatusChange = async (data: any) => {
@@ -94,9 +94,7 @@ const Payment = () => {
   }
 
   if (isLoading) {
-    return (
-       <LoaderComponent />
-    );
+    return <LoaderComponent />;
   }
 
   if (error) {

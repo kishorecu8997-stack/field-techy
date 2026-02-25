@@ -2,10 +2,7 @@ import ContactDetailsCard from "@/shared/components/manage_job_components/Contac
 import JobStatusCard from "@/shared/components/manage_job_components/JobStatusCard";
 import ManageJobDetails from "./ManageJobDetails";
 import { useSearchParams } from "react-router-dom";
-import {
-  JOB_STATUSES,
-  type JobStatus,
-} from "@/constants/jobStatus";
+import { JOB_STATUSES, type JobStatus } from "@/constants/jobStatus";
 import { useAdminGetJobDetails } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 

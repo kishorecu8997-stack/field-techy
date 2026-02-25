@@ -419,13 +419,13 @@ export function useAdminUpdateJobStatus(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (() => {
-          const key = query.queryKey[0] as { _id?: string };
-          return (
-            key._id === "adminGetJobs" ||
-            key._id === "adminGetJobDetails" ||
-            key._id === "adminGetJobLogs"
-          );
-        })(),
+            const key = query.queryKey[0] as { _id?: string };
+            return (
+              key._id === "adminGetJobs" ||
+              key._id === "adminGetJobDetails" ||
+              key._id === "adminGetJobLogs"
+            );
+          })(),
       });
       options?.onSuccess?.(data);
     },
@@ -731,7 +731,8 @@ export function useAdminGetJobLogs(
 
 // Payment Transactions API
 
-export type PaymentTransaction = AdminGetJobTransactionsResponses[200]["data"][number];
+export type PaymentTransaction =
+  AdminGetJobTransactionsResponses[200]["data"][number];
 
 export type PaymentTransactionsResponse = AdminGetJobTransactionsResponses[200];
 
@@ -753,7 +754,7 @@ export function useAdminGetPaymentTransactions(
       query: query ?? { jobId: 0 },
     }),
     ...options,
-    });
+  });
 }
 export function useAdminDeleteClientMutation(options?: {
   onSuccess?: (data: AdminDeleteClientResponse) => void;

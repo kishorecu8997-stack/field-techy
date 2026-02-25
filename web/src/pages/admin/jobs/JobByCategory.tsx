@@ -248,7 +248,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
         return <span className="capitalize">{row.status || "N/A"}</span>;
       },
     },
-{
+    {
       key: "action",
       label: "Action",
       renderCell: (row: JobItem) => (
