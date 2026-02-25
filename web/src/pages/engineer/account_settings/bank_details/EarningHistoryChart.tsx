@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   LineChart,
   Line,
@@ -9,48 +9,55 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { BiLineChart, BiChevronDown, BiChevronUp } from "react-icons/bi";
-import { formatCurrency, getMonthlyEarnings } from "@/shared/libs/utils";
-import { transactions } from "@/dummy_data/bankDetails";
+import { formatCurrency } from "@/shared/libs/utils";
 import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
-import type { MonthlyData } from "@/shared/libs/utils";
-
+import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenApiService";
+interface ChartData {
+  month: string;
+  earnings: number;
+}
 /**
  * EarningHistoryChart Component
- * Displays a line chart of the user's monthly earnings history with an expandable view.
+ *
+ * Renders a line chart showing the user's monthly earnings history using
+ * data fetched from the engineer earnings API.
+ *
+ * The component:
+ * - Retrieves earnings history via `useEngineerEarnings`
+ * - Transforms API response into chart-friendly data (month, earnings)
+ * - Displays the latest month’s earnings summary
+ * - Supports an expandable/collapsible chart view
+ *
+ * Currency formatting is derived from the API response (`currencyCode` and
+ * `currencySymbol`) and applied consistently across the chart and labels.
  *
  * @component
- * @example
- * <EarningHistoryChart />
- *  @returns {JSX.Element} The rendered EarningHistoryChart component.
- *
+ * @returns {JSX.Element} A collapsible earnings history line chart.
  */
 const EarningHistoryChart: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { data, isLoading, error } = useEngineerEarnings();
+  const currencyCode = data?.currencyCode;
+  const currencySymbol = data?.currencySymbol || "$";
 
-  // Safely convert dates to string format
-  const data: MonthlyData[] = getMonthlyEarnings(
-    transactions.map((tx) => ({
-      date:
-        typeof tx.date === "string"
-          ? tx.date
-          : (tx.date as Date).toISOString().split("T")[0],
-      amount: tx.amount,
-    })),
-  );
+  const chartData: ChartData[] = useMemo(() => {
+    if (!data?.earningsHistory) return [];
 
-  const latest = data.length
-    ? data[data.length - 1]
+    return data.earningsHistory.map((item) => {
+      const date = new Date(item.date);
+      return {
+        month: date.toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric",
+        }),
+        earnings: Number(item.amount),
+      };
+    });
+  }, [data]);
+
+  const latest = chartData.length
+    ? chartData[chartData.length - 1]
     : { earnings: 0, month: "No data" };
-
-  if (!data.length) {
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 text-center">
-        <p className="text-gray-500 dark:text-gray-400">
-          No earnings history yet. Start completing jobs!
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
@@ -70,7 +77,7 @@ const EarningHistoryChart: React.FC = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Latest:{" "}
               <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(latest.earnings)}
+                {formatCurrency(latest.earnings, currencyCode ?? "USD")}
               </span>{" "}
               in {latest.month}
             </p>
@@ -96,40 +103,60 @@ const EarningHistoryChart: React.FC = () => {
         }`}
       >
         <div className="px-6 pb-6">
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              data={data}
-              margin={{ top: 10, right: 20, left: 20, bottom: 10 }}
-            >
-              <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
-              <XAxis
-                dataKey="month"
-                tick={{ fontSize: 13, fill: "#6b7280" }}
-                stroke="#9ca3af"
-              />
-              <YAxis
-                tick={{ fontSize: 13, fill: "#6b7280" }}
-                stroke="#9ca3af"
-                tickFormatter={(value: number) =>
-                  value >= 1000 ? `$${(value / 1000).toFixed(0)}k` : `$${value}`
-                }
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Line
-                type="monotone"
-                dataKey="earnings"
-                stroke="#10b981"
-                strokeWidth={4}
-                dot={{ fill: "#10b981", r: 6, strokeWidth: 2 }}
-                activeDot={{ r: 9, stroke: "#059669", strokeWidth: 3 }}
-                animationDuration={1800}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          {isLoading ? (
+            <p className="text-center text-gray-500 mt-6">Loading chart...</p>
+          ) : error ? (
+            <p className="text-center text-rose-500 mt-6">
+              Failed to load earnings history
+            </p>
+          ) : chartData.length === 0 ? (
+            <p className="text-center text-gray-500 mt-6">
+              No earnings history yet.
+            </p>
+          ) : (
+            <>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart
+                  data={chartData}
+                  margin={{ top: 10, right: 20, left: 20, bottom: 10 }}
+                >
+                  <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
+                  <XAxis
+                    dataKey="month"
+                    tick={{ fontSize: 13, fill: "#6b7280" }}
+                    stroke="#9ca3af"
+                  />
+                  <YAxis
+                    tick={{ fontSize: 13, fill: "#6b7280" }}
+                    stroke="#9ca3af"
+                    tickFormatter={(value: number) =>
+                      value >= 1000
+                        ? `${currencySymbol}${(value / 1000).toFixed(0)}k`
+                        : `${currencySymbol}${value}`
+                    }
+                  />
+                  <Tooltip
+                    content={
+                      <CustomTooltip currencyCode={currencyCode ?? "USD"} />
+                    }
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="earnings"
+                    stroke="#10b981"
+                    strokeWidth={4}
+                    dot={{ fill: "#10b981", r: 6, strokeWidth: 2 }}
+                    activeDot={{ r: 9, stroke: "#059669", strokeWidth: 3 }}
+                    animationDuration={1800}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
 
-          <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-5">
-            Monthly earnings trend • {data.length} months tracked
-          </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-5">
+                Monthly earnings trend • {chartData.length} months tracked
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>
