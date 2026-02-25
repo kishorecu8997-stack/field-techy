@@ -32,9 +32,16 @@ const BasicInformation: React.FC<CompanyInfo> = ({
       </div>
       <div className="w-24 h-24 bg-transparent rounded-full mb-6 overflow-hidden border-2 border-gray-100 dark:border-gray-700 shadow-sm">
         <img
-          src={profileImage || placeholdr_user}
+          src={
+            profileImage && profileImage !== "null"
+              ? profileImage
+              : placeholdr_user
+          }
           alt="Profile"
           className="w-full h-full object-cover"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = placeholdr_user;
+          }}
         />
       </div>
       <div className="flex flex-col lg:flex-row gap-10">

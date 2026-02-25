@@ -127,7 +127,6 @@ const ClientViewForm: React.FC = () => {
           isBlockClient={isBlockPopupOpen} 
           setIsBlockClient={setIsBlockPopupOpen}
           onSuccess={() => {
-            // Refetch or redirect if needed
             navigate(absoluteUrls.admin.home.manage_client);
           }}
         />

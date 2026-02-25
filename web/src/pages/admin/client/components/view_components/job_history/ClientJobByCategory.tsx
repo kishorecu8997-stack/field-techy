@@ -13,6 +13,7 @@ import { days } from "@/dummy_data/adminDashboard";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { useAdminGetJobGraph } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useSearchParams } from "react-router-dom";
+import { formatDate } from "@/utils/formatDate";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];
@@ -64,7 +65,6 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
       setSearchParams(newParams, { replace: true });
     }
   };
-
 
   const filteredData = useMemo(() => {
     // If we have external search, the data is already filtered by the parent
@@ -121,7 +121,11 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
           (page - 1) * limit + index + 1,
       },
       { key: "jobCode", label: "Job ID" },
-      {key: "postedBy", label: "Posted By", renderCell: (row: JobItem) => row.postedBy?.name},
+      {
+        key: "postedBy",
+        label: "Posted By",
+        renderCell: (row: JobItem) => row.postedBy?.name,
+      },
       { key: "jobTitle", label: "Job Title" },
       {
         key: "jobDescription",
@@ -143,15 +147,13 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
         key: "startDate",
         label: "Start Date/Time",
         renderCell: (row: JobItem) =>
-          row.startDate
-            ? dayjs(row.startDate).format("DD/MM/YYYY HH:mm")
-            : "N/A",
+          row.startDate ? formatDate(row.startDate) : "N/A",
       },
       {
         key: "createdAt",
         label: "Created Date",
         renderCell: (row: JobItem) =>
-          row.createdAt ? dayjs(row.createdAt).format("DD/MM/YYYY") : "N/A",
+          row.createdAt ? formatDate(row.createdAt) : "N/A",
       },
       {
         key: "action",

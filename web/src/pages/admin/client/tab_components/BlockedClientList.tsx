@@ -24,13 +24,19 @@ interface BlockedClientTableProps {
  * Displays a table of blocked clients for a specific client type (home or corporate).
  * Provides search functionality and the ability to unblock clients.
  */
-const BlockedClientTable: React.FC<BlockedClientTableProps> = ({ clientType }) => {
+const BlockedClientTable: React.FC<BlockedClientTableProps> = ({
+  clientType,
+}) => {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data: manageClient, refetch: refetchClients, isLoading } = useAdminManageClients({
+  const {
+    data: manageClient,
+    refetch: refetchClients,
+    isLoading,
+  } = useAdminManageClients({
     clientType,
     query: { page, limit, status: "blocked" },
   });
@@ -43,12 +49,13 @@ const BlockedClientTable: React.FC<BlockedClientTableProps> = ({ clientType }) =
   const blockedClients = useMemo(() => {
     if (!search) return rawData;
     const query = search.toLowerCase();
-    return rawData.filter((row) =>
-      row.name?.toLowerCase().includes(query) ||
-      row.companyName?.toLowerCase().includes(query) ||
-      row.email?.toLowerCase().includes(query) ||
-      row.clientCode?.toLowerCase().includes(query) ||
-      row.phoneNumber?.includes(query)
+    return rawData.filter(
+      (row) =>
+        row.name?.toLowerCase().includes(query) ||
+        row.companyName?.toLowerCase().includes(query) ||
+        row.email?.toLowerCase().includes(query) ||
+        row.clientCode?.toLowerCase().includes(query) ||
+        row.phoneNumber?.includes(query),
     );
   }, [rawData, search]);
 
@@ -57,129 +64,152 @@ const BlockedClientTable: React.FC<BlockedClientTableProps> = ({ clientType }) =
     setPage(1);
   };
 
-  const handleUnblock = useCallback(async (client: ManageClientProps) => {
-    await showPopup({
-      title: "Unblock Client",
-      body: `Are you sure you want to unblock client ${client.companyName || client.name}?`,
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Unblock",
-          value: "unblock",
-          variant: "primary",
-          action: async (close) => {
-            try {
-              await updateClientStatus({
-                path: { userId: client.userId },
-                body: { userStatus: "active" },
-              });
-              toast.success("Client unblocked successfully!");
-              refetchClients();
-              close(true);
-            } catch (error) {
-              toast.error("Failed to unblock client");
-              console.error(error);
-            }
+  const handleUnblock = useCallback(
+    async (client: ManageClientProps) => {
+      await showPopup({
+        title: "Unblock Client",
+        body: `Are you sure you want to unblock client ${client.companyName || client.name}?`,
+        actionButtons: [
+          {
+            label: "Cancel",
+            value: null,
+            variant: "outline",
           },
+          {
+            label: "Unblock",
+            value: "unblock",
+            variant: "primary",
+            action: async (close) => {
+              try {
+                await updateClientStatus({
+                  path: { userId: client.userId },
+                  body: { userStatus: "active" },
+                });
+                toast.success("Client unblocked successfully!");
+                refetchClients();
+                close(true);
+              } catch (error) {
+                toast.error("Failed to unblock client");
+                console.error(error);
+              }
+            },
+          },
+        ],
+      });
+    },
+    [showPopup, updateClientStatus, refetchClients],
+  );
+
+  const columns: Column<ManageClientProps>[] = useMemo(
+    () => [
+      {
+        label: "Sr.No.",
+        renderCell: (_row: ManageClientProps, index: number) =>
+          (page - 1) * limit + index + 1,
+      },
+      {
+        key: "clientCode",
+        label: "Client ID",
+        renderCell: (row: ManageClientProps) => (
+          <span className="flex-nowrap text-nowrap">
+            {(row.clientCode || "N/A").toUpperCase()}
+          </span>
+        ),
+      },
+      {
+        key: "details",
+        label: "Details",
+        renderCell: (row: ManageClientProps) => {
+          const displayName =
+            clientType === "corporate" ? row.companyName || row.name : row.name;
+          const initials = (displayName || "C").charAt(0).toUpperCase();
+          const avatarUrl = row.profilePicture?.url;
+
+          return (
+            <div className="flex gap-2 items-center w-[200px]">
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={displayName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  initials
+                )}
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <span className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                  {displayName}
+                </span>
+                <span className="text-xs text-gray-500 truncate">
+                  {row.email}
+                </span>
+                <span className="text-xs text-gray-500">{row.phoneNumber}</span>
+              </div>
+            </div>
+          );
         },
-      ],
-    });
-  }, [showPopup, updateClientStatus, refetchClients]);
-
-  const columns: Column<ManageClientProps>[] = useMemo(() => [
-    {
-      label: "Sr.No.",
-      renderCell: (_row: ManageClientProps, index: number) =>
-        (page - 1) * limit + index + 1,
-    },
-    {
-      key: "clientCode",
-      label: "Client ID",
-      renderCell: (row: ManageClientProps) => (
-        <span className="flex-nowrap text-nowrap">{(row.clientCode || "N/A").toUpperCase()}</span>
-      ),
-    },
-    {
-      key: "details",
-      label: "Details",
-      renderCell: (row: ManageClientProps) => {
-        const displayName = clientType === "corporate"
-          ? (row.companyName || row.name)
-          : row.name;
-        const initials = (displayName || "C").charAt(0).toUpperCase();
-        const avatarUrl = row.profilePicture?.url;
-
-        return (
-          <div className="flex gap-2 items-center w-[200px]">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
-              ) : (
-                initials
-              )}
-            </div>
-            <div className="flex flex-col overflow-hidden">
-              <span className="font-medium text-gray-900 dark:text-gray-100 truncate">
-                {displayName}
-              </span>
-              <span className="text-xs text-gray-500 truncate">{row.email}</span>
-              <span className="text-xs text-gray-500">{row.phoneNumber}</span>
-            </div>
+      },
+      {
+        key: "reason",
+        label: "Reason for Block",
+        renderCell: (row: ManageClientProps) => {
+          const lastBlock = row.statusHistory
+            ?.filter((h) => h.type === "block")
+            .pop();
+          return lastBlock?.reason || "N/A";
+        },
+      },
+      {
+        key: "registrationDate",
+        label: "Blocked On",
+        renderCell: (row: ManageClientProps) => {
+          const lastBlock = row.statusHistory
+            ?.filter((h) => h.type === "block")
+            .pop();
+          return lastBlock?.actionDate
+            ? dayjs(lastBlock.actionDate).format("DD/MM/YYYY")
+            : "N/A";
+        },
+      },
+      {
+        key: "blockedBy",
+        label: "Blocked By",
+        renderCell: (row: ManageClientProps) => {
+          const lastBlock = row.statusHistory
+            ?.filter((h) => h.type === "block")
+            .pop();
+          return lastBlock?.adminName || "N/A";
+        },
+      },
+      {
+        key: "userStatus",
+        label: "Current Status",
+        renderCell: (row: ManageClientProps) => (
+          <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 capitalize">
+            {row.userStatus}
+          </span>
+        ),
+      },
+      {
+        key: "action",
+        label: "Actions",
+        align: "center",
+        renderCell: (row: ManageClientProps) => (
+          <div className="mx-auto text-center">
+            <Button
+              className="w-fit bg-gradient-to-r from-teal-800 to-teal-900 text-white shadow-sm hover:opacity-90"
+              onClick={() => handleUnblock(row)}
+            >
+              Unblock
+            </Button>
           </div>
-        );
+        ),
       },
-    },
-    {
-      key: "reason",
-      label: "Reason for Block",
-      renderCell: (row: ManageClientProps) => {
-        const lastBlock = row.statusHistory?.filter(h => h.type === "block").pop();
-        return lastBlock?.reason || "N/A";
-      },
-    },
-    {
-      key: "registrationDate",
-      label: "Blocked On",
-      renderCell: (row: ManageClientProps) => {
-        const lastBlock = row.statusHistory?.filter(h => h.type === "block").pop();
-        return lastBlock?.actionDate ? dayjs(lastBlock.actionDate).format("DD/MM/YYYY") : "N/A";
-      },
-    },
-    {
-      key: "blockedBy",
-      label: "Blocked By",
-      renderCell: (row: ManageClientProps) => {
-        const lastBlock = row.statusHistory?.filter(h => h.type === "block").pop();
-        return lastBlock?.adminName || "N/A";
-      },
-    },
-    {
-      key: "userStatus",
-      label: "Current Status",
-      renderCell: (row: ManageClientProps) => (
-        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 capitalize">
-          {row.userStatus}
-        </span>
-      ),
-    },
-    {
-      key: "action",
-      label: "Actions",
-      align: "center",
-      renderCell: (row: ManageClientProps) => (
-        <Button
-          className="w-fit bg-gradient-to-r from-teal-800 to-teal-900 text-white shadow-sm hover:opacity-90"
-          onClick={() => handleUnblock(row)}
-        >
-          Unblock
-        </Button>
-      ),
-    },
-  ], [clientType, page, limit, handleUnblock]);
+    ],
+    [clientType, page, limit, handleUnblock],
+  );
 
   return (
     <div className="h-full w-full flex flex-1 overflow-hidden flex-col bg-white dark:bg-gray-800 rounded-md p-4">
