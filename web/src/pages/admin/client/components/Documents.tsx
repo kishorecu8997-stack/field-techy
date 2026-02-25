@@ -79,7 +79,9 @@ export default function Documents({ isView = false }: DocumentsProps) {
                   previewUrl: certificate,
                 }}
                 onEdit={isView ? undefined! : () => handleEdit("certificate")}
-                onDelete={isView ? undefined! : () => handleDelete("certificate")}
+                onDelete={
+                  isView ? undefined! : () => handleDelete("certificate")
+                }
                 onDownload={() => window.open(certificate, "_blank")}
               />
             </div>

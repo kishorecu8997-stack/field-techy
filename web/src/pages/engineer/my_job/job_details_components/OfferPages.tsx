@@ -31,7 +31,7 @@ const OfferPages = () => {
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
-  const [activeTab, setActiveTab] = useState("Job Information");
+  const [activeTab, setActiveTab] = useState("Timeline");
   const [offerJobStatus, setOfferJobStatus] = useState<
     AssignmentStatus | undefined
   >();
