@@ -114,7 +114,11 @@ export default function FaqForm({
             className="w-fit bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2.5 px-6 rounded-lg hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
-            {isLoading ? "Saving..." : faqMode === "Add" ? "Add FAQ" : "Update FAQ"}
+            {isLoading
+              ? "Saving..."
+              : faqMode === "Add"
+                ? "Add FAQ"
+                : "Update FAQ"}
           </Button>
         </div>
       </div>
