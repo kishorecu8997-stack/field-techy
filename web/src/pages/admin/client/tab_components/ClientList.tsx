@@ -186,6 +186,7 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
           onChange={(value) => onStatusChange(row, value)}
           options={JobStatus}
           badge
+          disableSelected
         />
       ),
     },

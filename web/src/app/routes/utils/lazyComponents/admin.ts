@@ -66,6 +66,13 @@ export const AdminManagePayment = React.lazy(
 export const AdminManageTransactions = React.lazy(
   () => import("@/pages/admin/transactions"),
 );
+export const AdminManageCurrencyConversion = React.lazy(
+  () => import("@/pages/admin/manage_currency_conversion"),
+);
+export const AdminEditExchangeRate = React.lazy(
+  () =>
+    import("@/pages/admin/manage_currency_conversion/components/EditCurrencyRates"),
+);
 export const WalletOverview = React.lazy(
   () => import("@/pages/admin/wallet_management/wallet_overview"),
 );
@@ -95,6 +102,9 @@ export const EditSubAdmin = React.lazy(
 );
 export const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
 export const Settings = React.lazy(() => import("@/pages/admin/settings"));
+export const AdminReportIssue = React.lazy(
+  () => import("@/pages/admin/report_issue"),
+);
 export const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
 export const ReceivedNotification = React.lazy(
   () => import("@/pages/admin/received_notification"),
@@ -114,30 +124,6 @@ export const HomeClientView = React.lazy(
   () =>
     import("@/pages/admin/client/components/view_components/ClientViewForm"),
 );
-export const AdminEditRolePage = React.lazy(
-  () => import("@/pages/admin/sub_admin/role_pages/PermissionList"),
-);
-export const RoleListPage = React.lazy(
-  () => import("@/pages/admin/sub_admin/role_pages/RolePage"),
-);
-export const AddRolePage = React.lazy(
-  () => import("@/pages/admin/sub_admin/role_pages/PermissionList"),
-);
 export const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView"),
-);
-export const ManageGroups = React.lazy(
-  () => import("@/pages/admin/manage_groups"),
-);
-export const ManageGroupsAdd = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/AddGroup"),
-);
-export const ManageGroupsEdit = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/EditGroup"),
-);
-export const ManageGroupsView = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/ViewGroup"),
-);
-export const ManageGroupsAddEngineer = React.lazy(
-  () => import("@/pages/admin/manage_groups/components/SelectEngineers"),
 );

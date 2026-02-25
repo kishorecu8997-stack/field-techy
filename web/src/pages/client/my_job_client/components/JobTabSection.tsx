@@ -1,196 +1,201 @@
-import React, { useState } from "react";
-import {
-  job,
-  logs,
-  otherProposal,
-  paymentTerms,
-  requirements,
-  termsData,
-  workSubmissions,
-} from "@/dummy_data/jobDetailsClient";
-import { engineerJobOverview } from "@/dummy_data/engineerJobOverview";
-import { networkEngineerProposals } from "@/dummy_data/jobTabs/networkEngineerProposals";
-import {
-  DUMMY_TABS_LABELS,
-  PROPOSAL_POPUP_COPY,
-  PROPOSAL_TOAST_MESSAGES,
-} from "@/dummy_data/jobTabs/jobsectiondata";
-import { JOB_STATUSES } from "@/pages/client/search_result/types";
-import type { JobTabSectionProps } from "../types";
-import SendProposal from "@/pages/engineer/home/components/SendProposal";
-import Proposal from "@/shared/components/Proposal";
-import JobOverviewSection from "@/shared/components/JobOverviewSection";
+import { useClientGetAssignmentDetails } from "@/shared/apiServices/client/clientOpenApiService";
 import TabComponent from "@/shared/components/TabComponent";
-import WorkLocationMap from "@/shared/components/WorkLocationMap";
-import { MAP_DEFAULTS } from "@/shared/constants/mapDefaults";
-import { usePopupStore } from "@/shared/store/popupStore";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { useEffect, useState } from "react";
+import type {
+  JobInfoSectionProps,
+  JobTabSectionProps,
+  paymentTermsProps,
+} from "../types";
 import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
-import LogComponent from "./tab_components/LogComponent";
-import TimelineSection from "./tab_components/TimelineSection";
-import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
 import ManageProposalsTab from "./tab_components/ManageProposalsTab";
-import { toast } from "react-toastify";
+import TimelineSection from "./tab_components/timeline_section/TimelineSection";
 
 /**
- * Client job tab section with conditional  rendering for real jobs vs. dummy network engineer flows.
- * Supports proposal accept/reject popups with centralized copy and toasts.
- * Renders different tab layouts (baseTabs for real jobs, dummyTabs for dummy engineers).
- * Tracks accepted/rejected proposals and manages remaining proposal count per session.
- * Uses dummy data for tabs, proposals, overviews, and location/map defaults.
- * Integrates with shared popup store and react-toastify for UX feedback.
+ * Maps API job data to JobInfoSectionProps format for the Job Overview tab
+ * Uses job prop fields for backward compatibility
+ */
+const mapClientJobToJobInfo = (
+  job: JobTabSectionProps["job"],
+): JobInfoSectionProps => {
+  const termsItems: Array<{ text: string }> = [];
+
+  // Add job description as first term item if available
+  if (job?.jobDescription) {
+    termsItems.push({ text: job.jobDescription });
+  }
+
+  // Add start and end dates (from API response or fallback)
+  const startDate = (job as Record<string, unknown>)?.startDate as
+    | string
+    | null
+    | undefined;
+  const endDate = (job as Record<string, unknown>)?.endDate as
+    | string
+    | null
+    | undefined;
+
+  if (startDate) {
+    termsItems.push({
+      text: `Start Date: ${new Date(startDate).toLocaleDateString()}`,
+    });
+  }
+  if (endDate) {
+    termsItems.push({
+      text: `End Date: ${new Date(endDate).toLocaleDateString()}`,
+    });
+  }
+
+  // Add total price/budget
+  const totalPrice = (job as Record<string, unknown>)?.totalPrice as
+    | string
+    | null
+    | undefined;
+  const currencySymbol = (job as Record<string, unknown>)?.currencySymbol as
+    | string
+    | null
+    | undefined;
+  if (totalPrice && currencySymbol) {
+    termsItems.push({ text: `Budget: ${currencySymbol}${totalPrice}` });
+  }
+
+  // Add work location
+  const workLocationName = (job as Record<string, unknown>)
+    ?.workLocationName as string | null | undefined;
+  if (workLocationName) {
+    termsItems.push({ text: `Location: ${workLocationName}` });
+  }
+
+  // Add job type
+  const jobType = (job as Record<string, unknown>)?.jobType as
+    | string
+    | null
+    | undefined;
+  if (jobType) {
+    termsItems.push({ text: `Work Type: ${jobType}` });
+  }
+
+  // Add additional details if available
+  const additionalDetails = (job as Record<string, unknown>)
+    ?.additionalDetails as string | null | undefined;
+  if (additionalDetails) {
+    termsItems.push({ text: additionalDetails });
+  }
+
+  // Handle attachment as file if available
+  const files: string[] = [];
+  const attachmentUrl = (job as Record<string, unknown>)?.attachmentUrl as
+    | string
+    | null
+    | undefined;
+  if (attachmentUrl) {
+    // Extract filename from URL if it's a full URL
+    const urlParts = attachmentUrl.split("/");
+    const fileName = urlParts[urlParts.length - 1] || "Job Attachment";
+    files.push(fileName);
+  }
+
+  return {
+    jobTitle: job?.jobTitle || job?.title || "",
+    terms: {
+      title: "Job Details",
+      items: termsItems,
+    },
+    files,
+  };
+};
+
+/**
+ * Maps API job data to paymentTermsProps format
+ * Uses job prop fields for backward compatibility
+ */
+const mapClientJobToPayInfo = (
+  job: JobTabSectionProps["job"],
+): paymentTermsProps => {
+  const totalPrice = (job as Record<string, unknown>)?.totalPrice as
+    | string
+    | null
+    | undefined;
+  const currencySymbol = (job as Record<string, unknown>)?.currencySymbol as
+    | string
+    | null
+    | undefined;
+
+  return {
+    title: "Payment Terms",
+    amount:
+      totalPrice && currencySymbol ? `${currencySymbol}${totalPrice}` : "",
+    priceType: "Fixed",
+  };
+};
+
+/**
+ * Client Job Tab Section with simplified 3-tab layout:
+ * - Timeline
+ * - Job Overview
+ * - Work Location
+ * - Manage Proposals (when showManageProposals is true)
  */
 const JobTabSection: React.FC<JobTabSectionProps> = ({
-  status,
-  isWorkSubmitted,
-  isSendProposal,
+  // status - kept for future use
   activeTab,
-  isDummyNetworkEngineer,
-  showManageProposals = true,
+  job,
+  assignmentId,
+  showManageProposals,
   jobID,
 }) => {
-  const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
-  const [rejectedProposals, setRejectedProposals] = useState<string[]>([]);
-  const { showPopup } = usePopupStore();
-
-  const remainingProposals = Math.max(
-    networkEngineerProposals.length -
-      acceptedProposals.length -
-      rejectedProposals.length,
-    0,
+  const [selectedTab, setSelectedTab] = useState<string>(
+    activeTab || JOB_TAB_LABELS.timeline,
   );
 
-  const handleAcceptProposal = async (proposalId: string) => {
-    await showPopup({
-      title: PROPOSAL_POPUP_COPY.acceptTitle,
-      body: PROPOSAL_POPUP_COPY.acceptBody,
-      actionButtons: [
-        {
-          label: PROPOSAL_POPUP_COPY.cancelLabel,
-          value: "cancel",
-          variant: "secondary",
-          action: async (close) => close(true),
-        },
-        {
-          label: PROPOSAL_POPUP_COPY.acceptLabel,
-          value: "accept",
-          variant: "primary",
-          action: async (close) => {
-            if (!acceptedProposals.includes(proposalId)) {
-              setAcceptedProposals([...acceptedProposals, proposalId]);
-              toast.success(PROPOSAL_TOAST_MESSAGES.accepted, {
-                position: "top-right",
-              });
-            }
-            close(true);
-          },
-        },
-      ],
-    });
-  };
+  // Fetch assignments/proposals for this job when showManageProposals is true
+  const { data: assignmentsData, isLoading: isLoadingAssignments } =
+    useClientGetAssignmentDetails(
+      { jobId: Number(jobID) },
+      !!(showManageProposals && jobID),
+    );
 
-  const handleRejectProposal = async (proposalId: string) => {
-    await showPopup({
-      title: PROPOSAL_POPUP_COPY.rejectTitle,
-      body: PROPOSAL_POPUP_COPY.rejectBody,
-      actionButtons: [
-        {
-          label: PROPOSAL_POPUP_COPY.cancelLabel,
-          value: "cancel",
-          variant: "secondary",
-          action: async (close) => close(true),
-        },
-        {
-          label: PROPOSAL_POPUP_COPY.rejectLabel,
-          value: "reject",
-          variant: "danger",
-          action: async (close) => {
-            if (!rejectedProposals.includes(proposalId)) {
-              setRejectedProposals([...rejectedProposals, proposalId]);
-              toast.error(PROPOSAL_TOAST_MESSAGES.rejected, {
-                position: "top-right",
-              });
-            }
-            close(true);
-          },
-        },
-      ],
-    });
-  };
+  useEffect(() => {
+    if (selectedTab !== activeTab) {
+      setSelectedTab?.(activeTab || "");
+    }
+  }, [selectedTab, activeTab]);
 
-  const baseTabs = [
+  // Prepare job info for JobInfoSection using real API data
+  const jobInfo = mapClientJobToJobInfo(job);
+  const payInfo = mapClientJobToPayInfo(job);
+
+  // Simplified 3 tabs: Timeline, Job Overview, Work Location, Manage Proposals
+  const tabs = [
     {
-      label: "Logs",
-      content: <LogComponent logs={logs} />,
-      hide: status === JOB_STATUSES.posted,
-    },
-    {
-      label: "Work Submissions",
+      label: JOB_TAB_LABELS.timeline,
       content: (
-        <WorkSubmissionComponent
-          workSubmissions={workSubmissions}
-          isWorkSubmitted={isWorkSubmitted}
-        />
-      ),
-      hide: status === JOB_STATUSES.posted,
-    },
-    {
-      label: "Job Information",
-      content: <JobInfoSection jobInfo={job} payInfo={paymentTerms} />,
-    },
-    {
-      label: "Requirement",
-      content: (
-        <Proposal jobTitle={requirements.jobTitle} terms={requirements.terms} />
-      ),
-    },
-    { label: "SPOC", content: <LocationMap /> },
-    {
-      label: "Other",
-      content: (
-        <Proposal
-          jobTitle={otherProposal.jobTitle}
-          terms={otherProposal.terms}
+        <TimelineSection
+          assignmentId={assignmentId}
+          jobId={Number(jobID)}
+          hasProposals={!!assignmentsData?.length}
         />
       ),
     },
     {
-      label: "Proposal's Terms & Conditions",
-      content: (
-        <Proposal jobTitle={termsData.jobTitle} terms={termsData.terms} />
-      ),
-    },
-  ];
-
-  // Simplified tab set for the dummy Network Engineer job
-  const dummyTabs = [
-    { label: DUMMY_TABS_LABELS.timeline, content: <TimelineSection /> },
-    {
-      label: DUMMY_TABS_LABELS.jobOverview,
-      content: <JobOverviewSection {...engineerJobOverview} />,
+      label: JOB_TAB_LABELS.jobOverview,
+      content: <JobInfoSection jobInfo={jobInfo} payInfo={payInfo} />,
     },
     {
-      label: DUMMY_TABS_LABELS.workLocation,
-      content: (
-        <WorkLocationMap
-          latitude={MAP_DEFAULTS.latitude}
-          longitude={MAP_DEFAULTS.longitude}
-          locationName={MAP_DEFAULTS.locationName}
-          address={MAP_DEFAULTS.address}
-        />
-      ),
+      label: JOB_TAB_LABELS.workLocation,
+      content: <LocationMap />,
     },
+    // Add Manage Proposals tab when showManageProposals is true
     ...(showManageProposals
       ? [
           {
-            label: DUMMY_TABS_LABELS.manageProposals,
+            label: JOB_TAB_LABELS.manageProposals || "Manage Proposals",
             content: (
               <ManageProposalsTab
-                remainingProposals={remainingProposals}
-                acceptedProposals={acceptedProposals}
-                rejectedProposals={rejectedProposals}
-                onAcceptProposal={handleAcceptProposal}
-                onRejectProposal={handleRejectProposal}
+                assignments={assignmentsData}
+                isLoading={isLoadingAssignments}
+                jobId={Number(jobID)}
               />
             ),
           },
@@ -198,18 +203,15 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       : []),
   ];
 
-  const tabs = isDummyNetworkEngineer ? dummyTabs : baseTabs;
-  const defaultTab = isDummyNetworkEngineer
-    ? DUMMY_TABS_LABELS.defaultTab
-    : "Job Information";
-
   return (
     <div>
-      {isSendProposal ? (
-        <SendProposal jobId={Number(jobID)} />
-      ) : (
-        <TabComponent tabs={tabs} defaultActiveTab={activeTab || defaultTab} />
-      )}
+      <TabComponent
+        tabs={tabs}
+        defaultActiveTab={activeTab || JOB_TAB_LABELS.timeline}
+        onTabChange={(tabLabel) => {
+          setSelectedTab(tabLabel);
+        }}
+      />
     </div>
   );
 };

@@ -22,6 +22,7 @@ const App = () => {
   useOfflineSync();
   useJobExpirationNotification();
   useTokenExpiration();
+
   return (
     <>
       <TourProvider

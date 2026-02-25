@@ -8,7 +8,7 @@ import type { EngineerFormData } from "../types";
 import DisputeReports from "./DisputeReports";
 import Previlage from "./Privilege";
 import Wallet from "./Wallet";
-import EngineerJobCatagory from "./jobCatagory";
+import EngineerJobCategory from "./jobCategory";
 /**
  * UserDetails Component
  *
@@ -67,7 +67,7 @@ export default function UserDetails() {
     },
     {
       label: "Job History",
-      content: <EngineerJobCatagory />,
+      content: <EngineerJobCategory />,
       hide: false,
     },
   ];

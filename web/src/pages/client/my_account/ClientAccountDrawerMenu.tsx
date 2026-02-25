@@ -24,7 +24,7 @@ import {
   useClientDisplayName,
 } from "@/shared/store/useClientStore";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
-import { scrollToTop } from "@/utils";
+// import { scrollToTop } from "@/utils";
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
   onClose: () => void;
@@ -131,16 +131,17 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   );
 
   const menuItems: ClientMenuItems[] = [
-    {
-      label: "Manage Proposal",
-      icon: IoDocumentText,
-      key: "proposal",
-      onClick: () => {
-        onClose();
-        scrollToTop();
-        navigate(absoluteUrls.client.home.manage_proposal);
-      },
-    },
+    //This is commented out because the Manage Proposal feature is planned to be included under the "My Jobs" section.
+    // {
+    //   label: "Manage Proposal",
+    //   icon: IoDocumentText,
+    //   key: "proposal",
+    //   onClick: () => {
+    //     onClose();
+    //     scrollToTop();
+    //     navigate(absoluteUrls.client.home.manage_proposal);
+    //   },
+    // },
     { label: "Company Information", icon: FaUser, key: "company" },
     { label: "Documents", icon: IoDocumentText, key: "document" },
     { label: "Payment Methods", icon: FaWallet, key: "payment" },

@@ -80,10 +80,18 @@ const RequirementsSection = ({
   }, [tools, budget, images]);
 
   const handleAddToolEntry = () => {
-    const toolId = (watch("tools") as string | undefined)?.trim();
-    const budget = (watch("toolBudgetNotes") as string | undefined)
-      ?.replace(/\D+/g, "")
-      ?.trim();
+    const toolVal = watch("tools");
+    const toolId =
+      typeof toolVal === "string"
+        ? toolVal.trim()
+        : toolVal
+          ? String(toolVal).trim()
+          : undefined;
+
+    const budgetVal = watch("toolBudgetNotes");
+    const budget = budgetVal
+      ? String(budgetVal).replace(/\D+/g, "").trim()
+      : undefined;
     const files = watch("toolImages") as FileList | undefined;
     const hasAnyField =
       !!toolId ||

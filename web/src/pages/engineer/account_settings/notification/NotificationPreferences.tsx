@@ -47,7 +47,7 @@ export interface NotificationFormdata {
  * - API integration can be added inside `handlesubmit`
  */
 const NotificationPreferences = () => {
-  const handlesubmit = (_: NotificationFormdata) => {
+  const handlesubmit = () => {
     // TODO: Implement submission logic (e.g., call an API to persist notification preferences).
     // This placeholder keeps the handler intentionally empty while the integration is pending.
   };

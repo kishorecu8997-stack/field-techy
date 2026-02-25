@@ -57,6 +57,7 @@ import {
   adminUpdateClientMutation,
   adminGetClientOptions,
   adminDeleteClientMutation,
+  adminGetEngineerOptions,
   adminCreateServiceCategoryMutation,
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
@@ -481,6 +482,17 @@ export function useAdminGetClientByUserId(
     ...options,
   });
 }
+
+export function useAdminGetEngineerById(userId: number, enabled = true) {
+  const isValidId = Number.isFinite(userId);
+  return useQuery({
+    ...adminGetEngineerOptions({
+      client: apiClient,
+      path: { userId: isValidId ? userId : 0 },
+    }),
+    enabled: enabled && isValidId,
+  });
+}
 export type AdminGetServiceCategoriesQuery = NonNullable<
   AdminGetServiceCategoriesData["query"]
 >;
@@ -520,7 +532,9 @@ export function useAdminDeleteClientMutation(options?: {
   });
 }
 
-export type AdminGetClientHistoryQuery = NonNullable<AdminGetClientHistoryData["query"]>;
+export type AdminGetClientHistoryQuery = NonNullable<
+  AdminGetClientHistoryData["query"]
+>;
 
 export function useAdminGetClientHistory(
   userId: number,
@@ -529,7 +543,7 @@ export function useAdminGetClientHistory(
     enabled?: boolean;
     onSuccess?: (data: AdminGetClientHistoryResponse) => void;
     onError?: (error: unknown) => void;
-  }
+  },
 ) {
   return useQuery({
     ...adminGetClientHistoryOptions({
@@ -555,7 +569,7 @@ export function useAdminGetJobGraph(
   query: AdminGetJobGraphQuery,
   options?: {
     enabled?: boolean;
-  }
+  },
 ) {
   return useQuery({
     ...adminGetJobGraphOptions({

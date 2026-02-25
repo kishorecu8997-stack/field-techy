@@ -11,7 +11,6 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
 import { FiEye } from "react-icons/fi";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import type { AdminGetJobsQuery } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
@@ -22,6 +21,7 @@ import {
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { JobByCategoryProps, JobItem } from "./types";
+import { toast } from "react-toastify";
 
 /**
  * Renders the "All Jobs" tab content within the manage jobs page.
@@ -92,32 +92,8 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
               ...prev,
               [job.id]: status,
             }));
-
+            toast.success(`Job Status has been set to ${status}`);
             console.log("Updating status for job", job.id, "to", status);
-            close(true);
-          },
-        },
-      ],
-    });
-  };
-
-  const handleDeleteJob = async (job: JobItem) => {
-    await showPopup({
-      title: "Delete Job",
-      body: "Are you sure you want to delete this job?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Delete",
-          value: "delete",
-          variant: "danger",
-          action: async (close: (v: boolean) => void) => {
-            console.log("Deleting job:", job.id);
-            // TODO: call delete API
             close(true);
           },
         },
@@ -216,19 +192,13 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
     {
       key: "action",
       label: "Action",
-      renderCell: (row: JobItem) => (
+      renderCell: () => (
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
             onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
           >
             <FiEye className="text-yellow-600" />
-          </div>
-          <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteJob(row)}
-          >
-            <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
       ),
