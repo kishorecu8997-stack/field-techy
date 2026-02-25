@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
       setCompanyInfo(clientInfo);
     }
   }, [clientInfo, companyInfo, setCompanyInfo]);
-  const { data: ClientJobOverview, refetch } = useClientJobOverviewDashboard();
+  const { data: ClientJobOverview } = useClientJobOverviewDashboard();
   const summary = ClientJobOverview?.summary;
 
   const jobOverview: JobOverview[] = [
@@ -54,10 +54,9 @@ const Dashboard: React.FC = () => {
   );
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
-    refetch();
     checkLocationPermission();
     checkNotificationPermission();
-  }, [checkLocationPermission, checkNotificationPermission, refetch]);
+  }, [checkLocationPermission, checkNotificationPermission]);
 
   useEffect(() => {
     if (

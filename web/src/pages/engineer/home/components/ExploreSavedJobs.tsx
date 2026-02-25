@@ -42,7 +42,7 @@ const ExploreSavedJobs = () => {
     jobTypeEnum: "",
   });
 
-  const { data, refetch } = useGetEngineerSavedJobs({
+  const { data } = useGetEngineerSavedJobs({
     limit: 10,
     page: currentPage,
     jobType: (filters.jobTypeEnum as JobType) || null,
@@ -56,9 +56,7 @@ const ExploreSavedJobs = () => {
 
   useEffect(() => {
     scrollToTop();
-    refetch();
   }, [filters, currentPage]);
-  console.log(filters.jobTypeEnum);
 
   const savedJobs: JobItem[] = useMemo(() => {
     return (data?.data ?? []).map(
@@ -124,7 +122,7 @@ const ExploreSavedJobs = () => {
               : null,
       }),
     );
-  }, [data]);
+  }, [data, skillsData, toolsData]);
 
   const totalCount = data?.total ?? 0;
 
