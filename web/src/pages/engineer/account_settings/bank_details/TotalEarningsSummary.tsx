@@ -94,7 +94,7 @@ const TotalEarningsSummary: React.FC = () => {
               Total Earnings
             </span>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {showBalance
               ? formatCurrency(totalEarnings, currencyCode)
               : "******"}
@@ -111,7 +111,7 @@ const TotalEarningsSummary: React.FC = () => {
               This Month
             </span>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {showBalance
               ? formatCurrency(thisMonthEarnings, currencyCode)
               : "******"}
@@ -132,7 +132,7 @@ const TotalEarningsSummary: React.FC = () => {
               Withdrawn
             </span>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {showBalance
               ? formatCurrency(totalWithdrawn, currencyCode)
               : "******"}

@@ -93,7 +93,7 @@ const MonthlyComparison: React.FC = () => {
               <p className="text-lg text-gray-700 dark:text-gray-300">
                 {lastMonthName}
               </p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
                 {formatCurrency(lastMonthAmount, currencyCode)}
               </p>
             </div>
@@ -109,7 +109,7 @@ const MonthlyComparison: React.FC = () => {
               ) : (
                 <>
                   <div
-                    className={`w-24 h-24 rounded-full flex items-center justify-center shadow-xl ${
+                    className={`w-18 h-18 rounded-full flex items-center justify-center shadow-xl ${
                       isIncrease
                         ? "bg-emerald-100 dark:bg-emerald-900/40"
                         : "bg-rose-100 dark:bg-rose-900/40"
@@ -123,7 +123,7 @@ const MonthlyComparison: React.FC = () => {
                   </div>
                   <div>
                     <p
-                      className={`text-5xl font-bold ${
+                      className={`text-2xl font-bold ${
                         isIncrease
                           ? "text-emerald-600 dark:text-emerald-400"
                           : "text-rose-600 dark:text-rose-400"
@@ -148,7 +148,7 @@ const MonthlyComparison: React.FC = () => {
               <p className="text-lg text-gray-700 dark:text-gray-300">
                 {thisMonthName}
               </p>
-              <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
+              <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
                 {formatCurrency(currentMonthAmount, currencyCode)}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-500 mt-3">
