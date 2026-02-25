@@ -1,9 +1,14 @@
 import React, { useState, useMemo } from "react";
-import TimelineList from "@/shared/components/TimelineList";
+import TimelineSectionHeader from "@/pages/client/my_job_client/components/tab_components/timeline_section/TimelineSectionHeader";
+import ActionRequiredBadge from "@/pages/client/my_job_client/components/tab_components/timeline_section/ActionRequiredBadge";
+// import TimelineList from "@/shared/components/TimelineList";
 import {
   formatApiDate,
   transformLogsToTimelineItems,
+  transformBreakRequestsToItems,
+  transformSignOffsToItems,
 } from "@/utils/timelineUtils";
+// import { formatNow } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
 import Popup from "@/shared/components/Popup";
 import RevisionRequestUpdateForm from "../jobHeaderComponents/RevisionRequestUpdateForm";
@@ -16,52 +21,7 @@ import {
   useGetJobLogs,
   useEngineerGetMyJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import type { GetJobLogsResponse, EngineerGetMyJobsResponse } from "@/api";
-
-/**
- * Transform break requests to timeline items
- */
-const transformBreakRequestsToItems = (
-  breakRequests: GetJobLogsResponse["breakRequests"],
-) => {
-  return breakRequests.map((br) => ({
-    title: `${br.type === "short_term" ? "Short Term" : "Long Term"} Break`,
-    timestamp: formatApiDate(br.createdAt),
-    statusText: br.status.charAt(0).toUpperCase() + br.status.slice(1),
-    statusColor:
-      br.status === "approved"
-        ? "#22c55e"
-        : br.status === "rejected"
-          ? "#ef4444"
-          : "#f59e0b",
-    accentColor: "#8b5cf6",
-    details: br.reason,
-    startDate: br.startAt,
-    endDate: br.endAt,
-  }));
-};
-
-/**
- * Transform sign-off sheets to timeline items
- */
-const transformSignOffsToItems = (
-  signOffs: GetJobLogsResponse["signOffSheets"],
-) => {
-  if (!signOffs) return [];
-  return signOffs.map((so) => ({
-    title: "Final Statement",
-    timestamp: formatApiDate(so.createdAt),
-    statusText: so.status.charAt(0).toUpperCase() + so.status.slice(1),
-    statusColor:
-      so.status === "approved"
-        ? "#22c55e"
-        : so.status === "rejected"
-          ? "#ef4444"
-          : "#f59e0b",
-    accentColor: "#10b981",
-    details: so.details,
-  }));
-};
+import type { EngineerGetMyJobsResponse } from "@/api";
 
 /**
  * Transform engineer's job/proposal data to timeline items
@@ -85,6 +45,7 @@ const transformProposalToTimelineItems = (
     accentColor: string;
     details: string | null;
     attachmentUrl?: string | null;
+    attachmentName?: string;
     sortOrder: number;
   }> = [];
 
@@ -101,7 +62,7 @@ const transformProposalToTimelineItems = (
           statusText: "",
           statusColor: "#ef4444",
           accentColor: "#ef4444",
-          details: `Your proposal for "${job.jobTitle}" was rejected`,
+          details: "",
           sortOrder: 100,
         });
       }
@@ -117,7 +78,7 @@ const transformProposalToTimelineItems = (
           statusText: "Approved",
           statusColor: "#22c55e",
           accentColor: "#22c55e",
-          details: `Job "${job.jobTitle}" has started`,
+          details: "",
           sortOrder: 100,
         });
       }
@@ -133,7 +94,7 @@ const transformProposalToTimelineItems = (
           statusText: "Waiting for approval",
           statusColor: "#f59e0b",
           accentColor: "#f59e0b",
-          details: `Start request submitted for "${job.jobTitle}" - waiting for client approval`,
+          details: "",
           sortOrder: 100,
         });
       }
@@ -156,7 +117,7 @@ const transformProposalToTimelineItems = (
           statusText: "",
           statusColor: "#22c55e",
           accentColor: "#22c55e",
-          details: `Your proposal for "${job.jobTitle}" was accepted!`,
+          details: "",
           sortOrder: 50,
         });
       }
@@ -186,8 +147,7 @@ const transformProposalToTimelineItems = (
           statusText: "",
           statusColor: "#f59e0b",
           accentColor: "#3b82f6",
-          details: proposalDetails.trim(),
-          attachmentUrl: job.proposalAttachmentUrl || undefined,
+          details: proposalDetails,
           sortOrder: 25,
         });
       }
@@ -201,7 +161,7 @@ const transformProposalToTimelineItems = (
         statusText: "",
         statusColor: "#3b82f6",
         accentColor: "#3b82f6",
-        details: `New job posted: ${job.jobTitle}`,
+        details: "",
         sortOrder: 0,
       });
     }
@@ -267,19 +227,64 @@ const TimelineSection: React.FC<{
   const apiTimelineItems = useMemo(() => {
     if (!jobLogs) return [];
 
-    const logItems = transformLogsToTimelineItems(jobLogs.logs || [], false);
+    const logItems = transformLogsToTimelineItems(jobLogs.logs || []);
     const breakItems = transformBreakRequestsToItems(
       jobLogs.breakRequests || [],
     );
     const signOffItems = transformSignOffsToItems(jobLogs.signOffSheets || []);
 
     const allItems = [...logItems, ...breakItems, ...signOffItems];
-    // Sort by timestamp descending (newest first)
+    // Sort by effectiveTimestamp descending (newest first)
     return allItems.sort((a, b) => {
-      const dateA = new Date(a.timestamp).getTime();
-      const dateB = new Date(b.timestamp).getTime();
+      const dateA = a.effectiveTimestamp
+        ? new Date(a.effectiveTimestamp).getTime()
+        : 0;
+      const dateB = b.effectiveTimestamp
+        ? new Date(b.effectiveTimestamp).getTime()
+        : 0;
       return dateB - dateA;
     });
+  }, [jobLogs]);
+
+  // Extract revision updates from jobLogs for TimelineSectionHeader
+  const apiRevisionUpdateDataList = useMemo(() => {
+    if (!jobLogs?.logs?.length) return [];
+
+    const revisionDataList: any[] = [];
+
+    // Find all progress update logs that have revisions
+    for (const log of jobLogs.logs) {
+      if (
+        (log.logType === "progress_update" || log.logType === "SUBMISSION") &&
+        log.revisions &&
+        log.revisions.length > 0
+      ) {
+        const revisions = log.revisions.map((rev) => ({
+          revisionId: rev.revisionId,
+          logId: log.id,
+          content: rev.content,
+          attachmentUrl: rev.attachmentUrl,
+          clientComment: rev.clientComment,
+          clientAttachmentUrl: rev.clientAttachmentUrl,
+          createdAt: rev.createdAt,
+          updatedAt: rev.updatedAt,
+          status: rev.status,
+        }));
+
+        revisionDataList.push({
+          id: `revision-update-${log.id}`,
+          logId: log.id,
+          revisionId: revisions[0]?.revisionId,
+          type: "revisionRequestUpdate" as const,
+          title: "Revision Request",
+          description: revisions[0]?.clientComment || "",
+          timestamp: formatApiDate(revisions[0]?.createdAt),
+          revisions: revisions,
+        });
+      }
+    }
+
+    return revisionDataList;
   }, [jobLogs]);
 
   // Build timeline items - combines API logs with proposal data
@@ -287,12 +292,18 @@ const TimelineSection: React.FC<{
     const allItems: Array<{
       title: string;
       timestamp: string;
+      effectiveTimestamp?: string | null;
       statusText: string;
       statusColor: string;
       accentColor: string;
       details: string | null;
+      detailsType?: string;
       attachmentUrl?: string | null;
+      attachmentName?: string;
       sortOrder: number;
+      logId?: number;
+      logType?: string;
+      approverComment?: string | null;
     }> = [];
 
     if (proposalTimelineItems.length > 0) {
@@ -306,7 +317,16 @@ const TimelineSection: React.FC<{
       }));
       allItems.push(...apiItemsWithSortOrder);
     }
-    return allItems.sort((a, b) => (b.sortOrder || 0) - (a.sortOrder || 0));
+    // Sort by effectiveTimestamp descending (newest first)
+    return allItems.sort((a, b) => {
+      const dateA = a.effectiveTimestamp
+        ? new Date(a.effectiveTimestamp).getTime()
+        : new Date(a.timestamp).getTime();
+      const dateB = b.effectiveTimestamp
+        ? new Date(b.effectiveTimestamp).getTime()
+        : new Date(b.timestamp).getTime();
+      return dateB - dateA;
+    });
   }, [apiTimelineItems, proposalTimelineItems]);
 
   const revisionUpdateEntry = progressUpdates.find(
@@ -354,38 +374,67 @@ const TimelineSection: React.FC<{
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-      {/* Show progress updates (streamed data) */}
+      {/* Action Required - Show ONLY progress updates requiring engineer action (revision_requested or pending) */}
       {progressUpdates.length > 0 && (
         <div className="space-y-3 mb-4">
-          {progressUpdates.map((update, idx) => {
-            if (update.title === REVISION_UPDATE_LABELS.title) return null;
-            const updateKey = `${update.title || "update"}-${idx}`;
-            const isCollapsed = collapsedUpdates[updateKey] ?? false;
+          {/* Calculate action required count once */}
+          {(() => {
+            const actionRequiredUpdates = progressUpdates.filter((update) => {
+              if (update.title !== "Progress Update") return false;
+              const statusLower = String(update.statusText || "").toLowerCase();
+              return (
+                statusLower === "pending" ||
+                statusLower === "revision requested" ||
+                statusLower === "revision_requested"
+              );
+            });
+            const actionRequiredCount = actionRequiredUpdates.length;
 
-            return (
-              <ProgressUpdateItem
-                key={`${update.title}-${idx}`}
-                update={update}
-                index={idx}
-                isCollapsed={isCollapsed}
-                onToggleCollapse={(_, collapsed) =>
-                  setCollapsedUpdates((prev) => ({
-                    ...prev,
-                    [updateKey]: !collapsed,
-                  }))
-                }
-                onOpenBreakDetails={handleOpenBreakDetails}
-                onStartRevisionUpdate={handleStartRevisionUpdate}
-                revisionUpdateEntry={revisionUpdateEntry}
-                STATUS={ENGINEER_TIMELINE_STATUS}
-              />
-            );
-          })}
+            return actionRequiredCount > 0 ? (
+              <>
+                <ActionRequiredBadge count={actionRequiredCount} />
+                {actionRequiredUpdates.map((update, idx) => {
+                  if (update.title === REVISION_UPDATE_LABELS.title)
+                    return null;
+                  const updateKey = `${update.title || "update"}-${idx}`;
+                  const isCollapsed = collapsedUpdates[updateKey] ?? false;
+
+                  return (
+                    <ProgressUpdateItem
+                      key={`${update.title}-${idx}`}
+                      update={update}
+                      index={idx}
+                      isCollapsed={isCollapsed}
+                      onToggleCollapse={(_, collapsed) =>
+                        setCollapsedUpdates((prev) => ({
+                          ...prev,
+                          [updateKey]: !collapsed,
+                        }))
+                      }
+                      onOpenBreakDetails={handleOpenBreakDetails}
+                      onStartRevisionUpdate={handleStartRevisionUpdate}
+                      revisionUpdateEntry={revisionUpdateEntry}
+                      STATUS={ENGINEER_TIMELINE_STATUS}
+                    />
+                  );
+                })}
+              </>
+            ) : null;
+          })()}
         </div>
       )}
 
-      {/* Show API timeline data */}
-      <TimelineList items={timelineItems} />
+      {/* Activity Timeline - Show ALL items using TimelineSectionHeader for expandable revision conversations */}
+      {timelineItems.length > 0 && (
+        <TimelineSectionHeader
+          items={timelineItems.map((item) => ({
+            ...item,
+            logId: item.logId,
+            logType: item.logType || "progress_update",
+          }))}
+          apiRevisionUpdateDataList={apiRevisionUpdateDataList}
+        />
+      )}
 
       {/* This message won't show now since we always have at least Job Posted */}
       {timelineItems.length === 0 && (
@@ -410,6 +459,14 @@ const TimelineSection: React.FC<{
         <RevisionRequestUpdateForm
           onClose={handleCloseRevisionUpdateForm}
           onAddProgressUpdate={onAddProgressUpdate}
+          assignmentId={assignmentId}
+          // API returns jobLogId in revisions, not logId - check both for compatibility
+          logId={
+            activeRevision?.revisions?.[0]?.jobLogId ??
+            activeRevision?.revisions?.[0]?.logId ??
+            activeRevision?.logId
+          }
+          revisionId={activeRevision?.revisions?.[0]?.revisionId}
         />
       </Popup>
 

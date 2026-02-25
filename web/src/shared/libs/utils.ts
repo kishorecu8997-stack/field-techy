@@ -434,7 +434,10 @@ export const validateOtp = {
  * @param fallback - A fallback message if no specific error message is found
  * @returns A string containing the error message
  */
-export const extractErrorMessage = (error: unknown, fallback = "Something went wrong"): string => {
+export const extractErrorMessage = (
+  error: unknown,
+  fallback = "Something went wrong",
+): string => {
   const apiError = error as {
     body?: { error?: string; message?: string };
     response?: { data?: { error?: string } };

@@ -108,6 +108,7 @@ export interface JobHeaderCardProps {
   duration: string;
   type?: WorkingType | string;
   status?: JobStatus | AssignmentStatus | string;
+  isWorkSubmitted?: boolean;
   setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   isSendProposal?: boolean;
@@ -130,6 +131,7 @@ export interface JobHeaderCardProps {
   onOpenViewClientFeedback?: () => void;
   allCardsApproved?: boolean;
   assignmentId?: number;
+  progressUpdates?: ProgressUpdate[];
   jobId: string;
   onToggleChat?: (jobId: string) => void;
   onCloseChat?: () => void;
@@ -191,6 +193,7 @@ export interface ProgressUpdate {
   title: string;
   description: string;
   attachmentName?: string;
+  attachmentUrl?: string | null;
   timestamp: string;
   statusText?: string;
   statusColor?: string;
@@ -204,6 +207,24 @@ export interface ProgressUpdate {
   duration?: string;
   reason?: string;
   requestType?: string;
+  // Log ID from the original API log (used for revision updates)
+  logId?: number;
+  revisions?: Array<{
+    revisionId: number;
+    // API returns jobLogId, but some places may use logId
+    jobLogId: number;
+    // Also keep logId for compatibility with auto-generated types
+    logId?: number;
+    content: string | null;
+    attachmentId: number | null;
+    attachmentUrl?: string | null;
+    status: string;
+    clientComment: string | null;
+    clientAttachmentId: number | null;
+    clientAttachmentUrl?: string | null;
+    createdAt: string | null;
+    updatedAt: string | null;
+  }>;
 }
 
 // Break request form fields used in break request modal/form
@@ -353,6 +374,9 @@ export interface WorkSubmissionComponentProps {
 export interface RevisionRequestUpdateFormProps {
   onClose: () => void;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
+  assignmentId?: number;
+  logId?: number;
+  revisionId?: number;
 }
 
 /**

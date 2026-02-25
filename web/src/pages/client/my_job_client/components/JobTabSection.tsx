@@ -150,10 +150,14 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   );
 
   // Fetch assignments/proposals for this job when showManageProposals is true
+  // Convert jobID to number, but handle invalid values properly
+  const parsedJobId = jobID ? Number(jobID) : undefined;
+  const validJobId =
+    parsedJobId && !isNaN(parsedJobId) ? parsedJobId : undefined;
   const { data: assignmentsData, isLoading: isLoadingAssignments } =
     useClientGetAssignmentDetails(
-      { jobId: Number(jobID) },
-      !!(showManageProposals && jobID),
+      { jobId: validJobId, assignmentId },
+      !!(showManageProposals && (validJobId || assignmentId)),
     );
 
   useEffect(() => {
@@ -166,6 +170,25 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   const jobInfo = mapClientJobToJobInfo(job);
   const payInfo = mapClientJobToPayInfo(job);
 
+  // Calculate unprocessed proposals count for badge notification
+  const processedStatuses = [
+    "accepted",
+    "assigned",
+    "approved",
+    "start_pending_approval",
+    "started",
+    "submit_pending_approval",
+    "submitted",
+    "rejected",
+  ];
+  const unprocessedProposalsCount =
+    assignmentsData?.filter(
+      (proposal) =>
+        !processedStatuses.includes(
+          (proposal.assignmentStatus || "").toLowerCase(),
+        ),
+    ).length || 0;
+
   // Simplified 3 tabs: Timeline, Job Overview, Work Location, Manage Proposals
   const tabs = [
     {
@@ -173,7 +196,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       content: (
         <TimelineSection
           assignmentId={assignmentId}
-          jobId={Number(jobID)}
+          jobId={validJobId}
           hasProposals={!!assignmentsData?.length}
         />
       ),
@@ -191,6 +214,10 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       ? [
           {
             label: JOB_TAB_LABELS.manageProposals || "Manage Proposals",
+            badge:
+              unprocessedProposalsCount > 0
+                ? unprocessedProposalsCount
+                : undefined,
             content: (
               <ManageProposalsTab
                 assignments={assignmentsData}
