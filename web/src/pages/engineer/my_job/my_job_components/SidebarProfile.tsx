@@ -82,7 +82,7 @@ const ProfileCard = () => {
             <p className="text-xs opacity-80">{serviceCategoryName}</p>
           </div>
         </div>
-        <button
+        <Button
           type="button"
           onClick={() => {
             setNavigationSource("profilecompletion", "profileCompletion");
@@ -92,7 +92,7 @@ const ProfileCard = () => {
           className="mt-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 h-fit"
         >
           Complete Now
-        </button>
+        </Button>
       </div>
       <div className="mt-4">
         <div className="flex justify-between text-xs opacity-90 mb-1">
