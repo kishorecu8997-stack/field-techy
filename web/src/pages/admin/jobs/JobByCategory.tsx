@@ -253,16 +253,18 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       label: "Action",
       renderCell: (row: JobItem) => (
         <div className="flex items-center gap-2">
-          <div
-            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
+          <button
+            type="button"
+            className="p-2 bg-yellow-100 rounded-md cursor-pointer hover:bg-yellow-200 transition-colors"
             onClick={() =>
               navigate(
                 `${absoluteUrls.admin.home.manage_jobs_view}?jobId=${row.id}`,
               )
             }
+            aria-label={`View job details for job ${row.id}`}
           >
             <FiEye className="text-yellow-600" />
-          </div>
+          </button>
         </div>
       ),
     },

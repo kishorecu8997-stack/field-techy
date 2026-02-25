@@ -415,7 +415,14 @@ export function useAdminUpdateJobStatus(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "adminGetJobs",
+          (() => {
+          const key = query.queryKey[0] as { _id?: string };
+          return (
+            key._id === "adminGetJobs" ||
+            key._id === "adminGetJobDetails" ||
+            key._id === "adminGetJobLogs"
+          );
+        })(),
       });
       options?.onSuccess?.(data);
     },
@@ -596,11 +603,13 @@ export function useAdminGetJobDetails(
     onError?: (error: unknown) => void;
   },
 ) {
+  const isValidJobId = query?.jobId && Number.isFinite(query.jobId);
   return useQuery({
     ...adminGetJobDetailsOptions({
       client: apiClient,
-      query: query ?? { jobId: 0 },
-      }),
+      query: isValidJobId ? query : { jobId: 0 },
+    }),
+    enabled: isValidJobId ? options?.enabled : false,
     ...options,
   });
 }
@@ -706,11 +715,13 @@ export function useAdminGetJobLogs(
     onError?: (error: unknown) => void;
   },
 ) {
+  const isValidJobId = query?.jobId && Number.isFinite(query.jobId);
   return useQuery({
     ...adminGetJobLogsOptions({
       client: apiClient,
-      query: query ?? { jobId: 0 },
+      query: isValidJobId ? query : { jobId: 0 },
     }),
+    enabled: isValidJobId ? options?.enabled : false,
     ...options,
   });
 }

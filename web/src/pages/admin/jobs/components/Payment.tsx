@@ -108,7 +108,10 @@ const Payment = () => {
     );
   }
 
-  const tableData = data?.data ?? [];
+  const tableData = (data?.data ?? []).map((transaction) => ({
+    ...transaction,
+    clientStatus: transaction.type, // Map 'type' field to 'clientStatus' for table display
+  }));
 
   return (
     <div>
