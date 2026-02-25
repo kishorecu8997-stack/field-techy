@@ -77,7 +77,7 @@ const PolicyPage = () => {
                  prose-ol:text-gray-700 dark:prose-ol:text-gray-300
                  break-words              
                  overflow-x-hidden         
-                 w-full " 
+                 w-full "
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(cmsData.data.content),
             }}
