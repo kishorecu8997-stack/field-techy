@@ -2,7 +2,10 @@ import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 import { useReverseGeocoding } from "@/hooks/useReverseGeocoding";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
-import { useStoreEngineerSaveJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useGetEngineerSavedJobs,
+  useStoreEngineerSaveJobs,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { getExperienceLevel } from "@/utils";
 import { getCurrencyFromStorage } from "@/utils/currency";
 import { calculateMatchScore } from "@/utils/matchCalculator";
@@ -109,8 +112,13 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
   const job = props as JobItem;
   const matchScore = props.matchScore;
   const { data: engagementModels } = useLookupData("engagementModels");
+  const { refetch } = useGetEngineerSavedJobs({
+    limit: 10,
+    page: 1,
+  });
   const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
     onSuccess: (response) => {
+      refetch();
       toast.success(
         response?.status === "saved"
           ? "Job saved successfully"
@@ -388,6 +396,5 @@ const FeatureJobCardMemo = React.memo(FeatureJobCard);
 
 export {
   FeaturedJobsMemo as FeaturedJobs,
-  FeatureJobCardMemo as FeatureJobCard
+  FeatureJobCardMemo as FeatureJobCard,
 };
-
