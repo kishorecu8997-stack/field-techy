@@ -39,7 +39,7 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
     (brk) => brk.status === "Pending",
   );
 
-  const handleReject = async (brk: Break) => {
+  const handleReject = async (_brk: Break) => {
     await showPopup({
       title: "",
       body: (
@@ -47,8 +47,7 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
           title="Leave Rejection"
           label="Reason for Reject"
           submitLabel="Submit"
-          onSubmit={async ({ reason }) => {
-            console.log(`Break ID ${brk.id} rejected with reason:`, reason);
+          onSubmit={async ({ reason: _reason }) => {
             toast.success("Break rejected!");
             onClose();
           }}
@@ -58,7 +57,7 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
       actionButtons: [],
     });
   };
-  const handleApprovel = async (brk: Break) => {
+  const handleApprovel = async (_brk: Break) => {
     await showPopup({
       title: "",
       body: (
@@ -66,8 +65,7 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
           title="Leave Approval"
           label="Reason for Approve"
           submitLabel="Submit"
-          onSubmit={async ({ reason }) => {
-            console.log(`Break ID ${brk.id} approved with reason:`, reason);
+          onSubmit={async ({ reason: _reason }) => {
             toast.success("Break approved!");
             onClose();
           }}

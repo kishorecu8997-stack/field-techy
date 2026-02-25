@@ -7,17 +7,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { ContactSupportFormData } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
+import {
+  useAddAndUpdateContactSupport,
+  useGetCmsPages,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * @component ContactSupport
- * @description This component renders a form for updating contact support information,
- * including an email address and a phone number. It uses react-hook-form for form handling
- * and displays a success message upon submission.
- *
- * @returns {JSX.Element} The rendered contact support form.
- *
- * @example
- * return <ContactSupport />;
+ * @description Form for updating contact support information
  */
 export default function ContactSupport() {
   const methods = useForm<ContactSupportFormData>({
@@ -29,11 +26,33 @@ export default function ContactSupport() {
 
   const { showPopup } = usePopupStore();
 
+  const { refetch } = useGetCmsPages({
+    onError: () => {
+      toast.error("Failed to load existing contact support content");
+    },
+  });
+
+  const mutation = useAddAndUpdateContactSupport({
+    onSuccess: async (data) => {
+      toast.success(data.message || "Contact support updated successfully!");
+      methods.reset();
+      await refetch();
+    },
+
+    onError: (error: unknown) => {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to update contact support";
+
+      toast.error(errorMessage);
+    },
+  });
+
   const handleSaveConfirmation = async (data: ContactSupportFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Contact Support",
-      body: "Are you sure you want to add this details?",
+      body: "Are you sure you want to save these details?",
       actionButtons: [
         {
           label: "Cancel",
@@ -44,13 +63,18 @@ export default function ContactSupport() {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Contact Support added successfully!");
-            close(true);
+          action: async (close) => {
+            try {
+              await mutation.mutateAsync({
+                body: {
+                  email: data.email,
+                  phone: data.phoneNumber,
+                },
+              });
+              close(true);
+            } catch (err) {
+              toast.error(`Could not save. Please try again. ${err}`);
+            }
           },
         },
       ],
@@ -58,9 +82,9 @@ export default function ContactSupport() {
   };
 
   const handleSubmit = (data: ContactSupportFormData) => {
-    console.log("Contact Support Form Submitted", data);
     handleSaveConfirmation(data);
   };
+
   return (
     <div>
       <FormContainer
@@ -87,12 +111,14 @@ export default function ContactSupport() {
             />
           </div>
         </div>
+
         <div className="flex justify-end mt-2">
           <Button
             type="submit"
             className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            disabled={mutation.isPending}
           >
-            Save
+            {mutation.isPending ? "Saving..." : "Save"}
           </Button>
         </div>
       </FormContainer>

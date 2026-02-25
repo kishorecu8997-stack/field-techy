@@ -1,6 +1,7 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
+  getCmsContent,
   adminGetClientsForManagement,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
@@ -23,6 +24,16 @@ import {
   type AdminGetEngineersForManagementData,
   type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
+  type CreateOrUpdatePageResponses,
+  type AddAndUpdateContactSupportResponses,
+  type GetCmsPagesResponses,
+  type GetCmsContentData,
+  type GetCmsContentResponses,
+  type CreateFaqData,
+  type CreateFaqResponses,
+  type UpdateFaqData,
+  type UpdateFaqResponses,
+  type DeleteFaqResponses,
   type AdminCreateClientData,
   type AdminCreateClientResponse,
   type AdminUpdateClientData,
@@ -47,7 +58,13 @@ import {
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetEngineersForManagementOptions,
-   adminCreateClientMutation,
+  createOrUpdatePageMutation,
+  addAndUpdateContactSupportMutation,
+  getCmsPagesOptions,
+  createFaqMutation,
+  updateFaqMutation,
+  deleteFaqMutation,
+  adminCreateClientMutation,
   adminUpdateClientMutation,
   adminGetClientOptions,
   adminDeleteClientMutation,
@@ -389,6 +406,123 @@ export async function updateAdminPersonalInfo(body: AdminPersonalInfoBody) {
   });
   return response.data as AdminUpdatePersonalInfoResponse;
 }
+
+export function useCreateOrUpdateCMSPage(options?: {
+  onSuccess?: (data: CreateOrUpdatePageResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...createOrUpdatePageMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAddAndUpdateContactSupport(options?: {
+  onSuccess?: (data: AddAndUpdateContactSupportResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...addAndUpdateContactSupportMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useGetCmsPages(options?: {
+  enabled?: boolean;
+  onSuccess?: (data: GetCmsPagesResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useQuery({
+    ...getCmsPagesOptions({ client: apiClient }),
+    ...options,
+  });
+}
+
+export function useGetCmsContent(
+  key: GetCmsContentData["query"]["key"],
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: GetCmsContentResponses[200]) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: ["cms-content", key],
+    queryFn: async () => {
+      const response = await getCmsContent({
+        client: apiClient,
+        query: { key },
+      });
+      return response.data;
+    },
+    staleTime: 10 * 1000,
+    gcTime: 30 * 1000,
+    retry: 2,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchInterval: 30 * 1000,
+    refetchIntervalInBackground: false,
+    ...options,
+  });
+}
+
+export function useCreateFaq(options?: {
+  onSuccess?: (data: CreateFaqResponses[201]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...createFaqMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["cms-content", "faq"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useUpdateFaq(options?: {
+  onSuccess?: (data: UpdateFaqResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...updateFaqMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["cms-content", "faq"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useDeleteFaq(options?: {
+  onSuccess?: (data: DeleteFaqResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...deleteFaqMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["cms-content", "faq"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type CreateFaqBody = NonNullable<CreateFaqData["body"]>;
+export type UpdateFaqBody = NonNullable<UpdateFaqData["body"]>;
 
 export type { AdminGetJobsResponse };
 

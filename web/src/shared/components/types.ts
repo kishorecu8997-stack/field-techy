@@ -47,6 +47,11 @@ export type TimelineItem = {
   accentColor?: string;
   statusText?: string;
   statusColor?: string;
+  attachmentUrl?: string | null;
+  attachmentName?: string;
+  details?: string | null;
+  description?: string | null;
+  attachments?: Array<{ name: string; url: string }>;
 };
 
 /**
