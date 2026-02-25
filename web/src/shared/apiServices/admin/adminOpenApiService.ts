@@ -35,6 +35,8 @@ import {
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
   type AdminDeleteServiceCategoryResponse,
+  type AdminCreateEngineerResponse,
+  type AdminCreateEngineerData,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -56,6 +58,7 @@ import {
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
+  adminCreateEngineerMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -512,6 +515,27 @@ export function useAdminDeleteClientMutation(options?: {
   return useMutation({
     ...adminDeleteClientMutation({ client: apiClient }),
     onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageClients,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminAddEngineerResponse = AdminCreateEngineerResponse;
+export type AdminAddEngineerBody = AdminCreateEngineerData["body"];
+
+export function useAdminAddEngineer(options?: {
+  onSuccess?: (data: AdminAddEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateEngineerMutation({ client: apiClient }),
+    onSuccess: (data: AdminAddClientResponse) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,

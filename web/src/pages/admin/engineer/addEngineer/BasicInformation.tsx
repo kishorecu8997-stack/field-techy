@@ -1,5 +1,5 @@
-import serviceCategories from "@/dummy_data/serviceCategories";
-import skills from "@/dummy_data/skills";
+// import serviceCategories from "@/dummy_data/serviceCategories";
+// import skills from "@/dummy_data/skills";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
@@ -12,6 +12,10 @@ import {
   validatePortfolioLink,
   validatePricePerHour,
 } from "@/utils/validate";
+import {
+  LookupTable,
+  useAppGetLookupData,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * BasicInformation component handles the first step of the engineer registration form.
@@ -42,7 +46,13 @@ import {
  *
  * @returns {JSX.Element} A form section component with basic information fields
  */
+  // const { data: businessTypes } = useAppGetLookupData(
+  //   LookupTable.BusinessTypes,
+  // );
+
 export default function BasicInformation() {
+    const { data: skills } = useAppGetLookupData(LookupTable.Skills);
+    const { data: serviceCategories } = useAppGetLookupData(LookupTable.ServiceCategories);
   return (
     <div>
       <div className="mb-6 mt-2 w-fit">
@@ -64,14 +74,24 @@ export default function BasicInformation() {
             label="Skills"
             placeholder="Add your skills"
             required
-            options={skills}
+              options={
+              skills?.map((item) => ({
+                value: item.id,
+                label: item.name,
+              })) ?? []
+            }
             maxTags={15}
           />
           <SelectField
             name="serviceCategory"
             label="Service Category"
             placeholder="Select Category"
-            options={serviceCategories}
+              options={
+              serviceCategories?.map((item) => ({
+                value: item.id,
+                label: item.name,
+              })) ?? []
+            }
             required
           />
         </div>
