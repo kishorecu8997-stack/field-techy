@@ -18,7 +18,7 @@ import SuspendEngineer from "./SuspendEngineer";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import BlockEngineer from "./BlockEngineer";
 import ActionsMenu from "./ActionMenu";
-import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminManageEngineers, useAdminDeleteEngineerMutation } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import ViewFileComponent from "./ViewFileComponent";
 import SelectMenu from "@/shared/components/SelectMenu";
@@ -51,38 +51,43 @@ export default function InactiveUser() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+  const { data: engineersResponse, isLoading, refetch } = useAdminManageEngineers({
     page: currentPage,
     limit: pageSize,
     status: "inactive",
   });
 
+  const { mutateAsync: deleteEngineer } = useAdminDeleteEngineerMutation();
+
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   //Delete confirmation
-  const handleDeleteEngineer = async (job: ManageEngineerProps) => {
-    await showPopup({
-      title: "Delete Engineer",
-      body: "Are you sure you want to delete this engineer?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Delete",
-          value: "delete",
-          variant: "danger",
-          action: async (close) => {
-            console.log("Deleting engineer:", job.id);
+const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
+  await showPopup({
+    title: "Delete Engineer",
+    body: "Are you sure you want to delete this engineer?",
+    actionButtons: [
+      { label: "Cancel", value: null, variant: "outline" },
+      {
+        label: "Delete",
+        value: "delete",
+        variant: "danger",
+        action: async (close) => {
+          try {
+            await deleteEngineer({ path: { userId: engineerData.userId } });
             toast.success("Engineer deleted successfully!");
+            // Refetch table data
+            await refetch();
             close(true);
-          },
+          } catch (error) {
+            toast.error("Failed to delete engineer. Please try again.");
+            console.error(error);
+          }
         },
-      ],
-    });
-  };
+      },
+    ],
+  });
+};
 
   const columns: Column<ManageEngineerProps>[] = [
     {
