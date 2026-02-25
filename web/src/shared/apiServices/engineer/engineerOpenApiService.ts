@@ -503,12 +503,18 @@ export function useEngineerMarkProposalFileUploaded(options?: {
 export function useEngineerRequestStart(options?: {
   onSuccess?: (data: EngineerRequestStartResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerRequestStartMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -518,12 +524,18 @@ export function useEngineerRequestStart(options?: {
 export function useEngineerSubmitSignOff(options?: {
   onSuccess?: (data: EngineerSubmitSignOffResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerSubmitSignOffMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -533,12 +545,18 @@ export function useEngineerSubmitSignOff(options?: {
 export function useEngineerAddWorkLog(options?: {
   onSuccess?: (data: EngineerAddWorkLogResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerAddWorkLogMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -548,12 +566,18 @@ export function useEngineerAddWorkLog(options?: {
 export function useEngineerSubmitRevision(options?: {
   onSuccess?: (data: EngineerSubmitRevisionResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerSubmitRevisionMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -563,12 +587,18 @@ export function useEngineerSubmitRevision(options?: {
 export function useEngineerRequestBreak(options?: {
   onSuccess?: (data: EngineerRequestBreakResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerRequestBreakMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format to invalidate timeline queries
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

@@ -17,23 +17,40 @@ import {
   REVISION_UPDATE_STATUS,
   REVISION_UPDATE_COLORS,
 } from "@/constants/revisionUpdateConstants";
+import { useEngineerSubmitRevision } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * Revision request/update form for engineers to send notes and optional attachments.
  * Uses react-hook-form with shared inputs for validation and file uploads.
  * Shows a confirmation popup before emitting progress updates to the timeline.
+ * Calls the API to submit revision when assignmentId, logId, and revisionId are provided.
  * Emits waiting/approved status updates with timestamps and accent colors.
  * Surfaces success toast and supports optional onClose callback to dismiss.
  */
 const RevisionRequestUpdateForm = ({
   onClose,
   onAddProgressUpdate,
+  assignmentId,
+  logId,
+  revisionId,
 }: RevisionRequestUpdateFormProps) => {
   const formCtx = useForm<RevisionUpdateFields>({
     defaultValues: REVISION_UPDATE_DEFAULTS,
   });
 
   const { showPopup } = usePopupStore();
+
+  // Mutation for submitting revision
+  const { mutate: submitRevision } = useEngineerSubmitRevision({
+    onSuccess: () => {
+      toast.success("Revision submitted successfully!");
+      onClose();
+    },
+    onError: (error) => {
+      console.error("Failed to submit revision:", error);
+      toast.error("Failed to submit revision. Please try again.");
+    },
+  });
 
   const handleSubmit = async (_data: RevisionUpdateFields) => {
     void _data;
@@ -51,27 +68,49 @@ const RevisionRequestUpdateForm = ({
           value: "submit",
           variant: "primary",
           action: async (close) => {
-            const attachmentName = formCtx.getValues().attachments?.[0]?.name;
+            const attachment = formCtx.getValues().attachments?.[0];
+            const attachmentName = attachment?.name;
             const notes = formCtx.getValues().notes;
-            toast.success(REVISION_UPDATE_MESSAGES.submitSuccess);
-            onAddProgressUpdate?.({
-              title: REVISION_UPDATE_LABELS.title,
-              description: notes,
-              attachmentName,
-              timestamp: formatDateTime(),
-              statusText: REVISION_UPDATE_STATUS.approved,
-              statusColor: REVISION_UPDATE_COLORS.approved,
-              accentColor: REVISION_UPDATE_COLORS.accent,
-            });
-            onAddProgressUpdate?.({
-              title: REVISION_UPDATE_LABELS.title,
-              description: notes,
-              attachmentName,
-              timestamp: formatDateTime(),
-              statusText: REVISION_UPDATE_STATUS.waiting,
-              statusColor: REVISION_UPDATE_COLORS.waiting,
-              accentColor: REVISION_UPDATE_COLORS.accent,
-            });
+
+            // Call the API if we have all required IDs
+            if (assignmentId && logId && revisionId) {
+              submitRevision({
+                body: {
+                  assignmentId,
+                  logId,
+                  revisionId,
+                  content: notes,
+                  attachment: attachment
+                    ? {
+                        filename: attachment.name,
+                        size: attachment.size,
+                        mimeType: attachment.type,
+                      }
+                    : undefined,
+                },
+              });
+            } else {
+              // Fallback to local state update if no API data available
+              toast.success(REVISION_UPDATE_MESSAGES.submitSuccess);
+              onAddProgressUpdate?.({
+                title: REVISION_UPDATE_LABELS.title,
+                description: notes,
+                attachmentName,
+                timestamp: formatDateTime(),
+                statusText: REVISION_UPDATE_STATUS.approved,
+                statusColor: REVISION_UPDATE_COLORS.approved,
+                accentColor: REVISION_UPDATE_COLORS.accent,
+              });
+              onAddProgressUpdate?.({
+                title: REVISION_UPDATE_LABELS.title,
+                description: notes,
+                attachmentName,
+                timestamp: formatDateTime(),
+                statusText: REVISION_UPDATE_STATUS.waiting,
+                statusColor: REVISION_UPDATE_COLORS.waiting,
+                accentColor: REVISION_UPDATE_COLORS.accent,
+              });
+            }
             close(true);
             onClose();
           },
