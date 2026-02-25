@@ -571,14 +571,18 @@ export function useAdminGetJobGraph(
     enabled?: boolean;
   },
 ) {
+  const { userId, ...restQuery } = query;
+  const isValidId = typeof userId === "number" && userId > 0;
   return useQuery({
     ...adminGetJobGraphOptions({
       client: apiClient,
       query: {
-        ...query,
-        userId: query.userId ?? 0,
+        ...restQuery,
+        userId: isValidId ? (userId as number) : 0,
       },
     }),
     ...options,
+    enabled: (options?.enabled ?? true) && isValidId,
   });
 }
+

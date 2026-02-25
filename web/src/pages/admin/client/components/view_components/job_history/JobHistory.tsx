@@ -60,20 +60,20 @@ const JobHistory: React.FC<JobHistoryProps> = ({ userId }) => {
     );
   });
 
-  const handleClearFilters = () => {
-    setSearch("");
-    setPage(1);
-  };
-
   const handleTabChange = (tabLabel: string) => {
     setActiveTabLabel(tabLabel);
-    setPage(1); // Reset page on tab change
+    setPage(1);
   };
 
   const handlePageChange = (newPage: number) => setPage(newPage);
 
   const handlePageSizeChange = (newSize: number) => {
     setLimit(newSize);
+    setPage(1);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
     setPage(1);
   };
 
@@ -85,8 +85,7 @@ const JobHistory: React.FC<JobHistoryProps> = ({ userId }) => {
         isLoading={isLoading}
         error={error}
         search={search}
-        setSearch={setSearch}
-        onClearFilters={handleClearFilters}
+        setSearch={handleSearchChange}
         page={page}
         limit={limit}
         total={historyResponse?.total || 0}

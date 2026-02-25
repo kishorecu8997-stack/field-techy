@@ -31,10 +31,25 @@ const ClientViewForm: React.FC = () => {
     enabled: !!userId,
   });
 
+  const parsedUserId = Number(userId);
+  const isValidUserId = !!userId && !isNaN(parsedUserId) && parsedUserId > 0;
+
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-700"></div>
+      </div>
+    );
+  }
+
+  if (!isValidUserId) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center gap-4 bg-white dark:bg-gray-800 rounded-md p-6">
+        <div className="text-red-500 text-lg font-medium">Invalid Client ID</div>
+        <p className="text-gray-500">The client identifier is missing or invalid. Please go back and try again.</p>
+        <Button onClick={() => navigate(absoluteUrls.admin.home.manage_client)}>
+          Back to Manage Clients
+        </Button>
       </div>
     );
   }
@@ -57,6 +72,7 @@ const ClientViewForm: React.FC = () => {
     documentNumber: clientData?.documentNumber || "N/A",
   };
 
+
   const tabs = [
     {
       label: "Basic Information",
@@ -64,11 +80,11 @@ const ClientViewForm: React.FC = () => {
     },
     {
       label: "Job History",
-      content: <JobHistory userId={Number(userId)} />,
+      content: <JobHistory userId={parsedUserId} />,
     },
     {
       label: "Wallet",
-      content: <WalletTab userId={Number(userId)} walletBalance={clientData?.balance} />,
+      content: <WalletTab userId={parsedUserId} walletBalance={clientData?.balance} />,
     },
     {
       label: "Documents",
@@ -107,7 +123,7 @@ const ClientViewForm: React.FC = () => {
 
       <FormContainer methods={blockFormMethods} onSubmit={() => {}}>
         <BlockClient 
-          userId={userId ? Number(userId) : undefined}
+          userId={parsedUserId}
           isBlockClient={isBlockPopupOpen} 
           setIsBlockClient={setIsBlockPopupOpen}
           onSuccess={() => {

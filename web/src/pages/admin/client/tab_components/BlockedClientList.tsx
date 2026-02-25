@@ -52,6 +52,11 @@ const BlockedClientTable: React.FC<BlockedClientTableProps> = ({ clientType }) =
     );
   }, [rawData, search]);
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
   const handleUnblock = useCallback(async (client: ManageClientProps) => {
     await showPopup({
       title: "Unblock Client",
@@ -85,7 +90,7 @@ const BlockedClientTable: React.FC<BlockedClientTableProps> = ({ clientType }) =
     });
   }, [showPopup, updateClientStatus, refetchClients]);
 
-  const columns: Column<ManageClientProps>[] = [
+  const columns: Column<ManageClientProps>[] = useMemo(() => [
     {
       label: "Sr.No.",
       renderCell: (_row: ManageClientProps, index: number) =>
@@ -174,12 +179,12 @@ const BlockedClientTable: React.FC<BlockedClientTableProps> = ({ clientType }) =
         </Button>
       ),
     },
-  ];
+  ], [clientType, page, limit, handleUnblock]);
 
   return (
     <div className="h-full w-full flex flex-1 overflow-hidden flex-col bg-white dark:bg-gray-800 rounded-md p-4">
       <div className="mb-4 flex flex-wrap gap-4 items-center">
-        <SearchInput value={search} onChange={setSearch} />
+        <SearchInput value={search} onChange={handleSearchChange} />
       </div>
       <div className="h-full flex-1 overflow-hidden">
         <CustomTable<ManageClientProps>

@@ -5,7 +5,6 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import type { JobItem } from "@/pages/admin/jobs/types";
 import GeneralChart from "@/shared/components/AdminChart";
@@ -27,7 +26,6 @@ interface ClientJobByCategoryProps {
   userId?: number;
   search?: string;
   setSearch?: (value: string) => void;
-  onClearFilters?: () => void;
 }
 
 /**
@@ -46,7 +44,6 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
   userId,
   search: externalSearch,
   setSearch: externalSetSearch,
-  onClearFilters: externalOnClearFilters,
 }) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,13 +65,6 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
     }
   };
 
-  const onClearFilters = () => {
-    if (externalOnClearFilters) {
-      externalOnClearFilters();
-    } else {
-      setSearch("");
-    }
-  };
 
   const filteredData = useMemo(() => {
     // If we have external search, the data is already filtered by the parent
@@ -122,80 +112,69 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
     }
     return [];
   }, [graphResponse]);
-  const columns: Column<JobItem>[] = [
-    {
-      label: "Sr.No.",
-      renderCell: (_row: JobItem, index: number) =>
-        (page - 1) * limit + index + 1,
-    },
-    { key: "jobCode", label: "Job ID" },
-    { key: "jobTitle", label: "Job Title" },
-    {
-      key: "jobDescription",
-      label: "Job Description",
-      renderCell: (row: JobItem) => (
-        <p className="text-sm max-w-xs truncate" title={row.jobDescription ?? ""}>
-          {row.jobDescription || "N/A"}
-        </p>
-      ),
-    },
-    { key: "categoryName", label: "Category" },
-    { key: "jobType", label: "Job Type" },
-    {
-      key: "totalPrice",
-      label: "Job Price",
-      renderCell: (row: JobItem) =>
-        row.totalPrice ? `₹${row.totalPrice}` : "N/A",
-    },
-    { key: "countryName", label: "Country" },
-    { key: "stateName", label: "State" },
-    { key: "cityName", label: "City" },
-    {
-      key: "startDate",
-      label: "Start Date/Time",
-      renderCell: (row: JobItem) =>
-        row.startDate ? dayjs(row.startDate).format("DD/MM/YYYY HH:mm") : "N/A",
-    },
-    {
-      key: "createdAt",
-      label: "Created Date",
-      renderCell: (row: JobItem) =>
-        row.createdAt ? dayjs(row.createdAt).format("DD/MM/YYYY") : "N/A",
-    },
-    {
-      key: "status",
-      label: "Status",
-      renderCell: (row: JobItem) => {
-        return <span className="capitalize">{row.status || "N/A"}</span>;
-      },
-    },
-    {
-      key: "action",
-      label: "Action",
-      renderCell: () => (
-        <div className="flex items-center gap-2">
-          <div
-            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
-            onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
-          >
-            <FiEye className="text-yellow-600" />
-          </div>
-        </div>
-      ),
-    },
-  ];
 
-  const hasSelectedFilters = Boolean(search);
+  const columns: Column<JobItem>[] = useMemo(
+    () => [
+      {
+        label: "Sr.No.",
+        renderCell: (_row: JobItem, index: number) =>
+          (page - 1) * limit + index + 1,
+      },
+      { key: "jobCode", label: "Job ID" },
+      {key: "postedBy", label: "Posted By", renderCell: (row: JobItem) => row.postedBy?.name},
+      { key: "jobTitle", label: "Job Title" },
+      {
+        key: "jobDescription",
+        label: "Job Description",
+        renderCell: (row: JobItem) => (
+          <p
+            className="text-sm max-w-xs truncate"
+            title={row.jobDescription ?? ""}
+          >
+            {row.jobDescription || "N/A"}
+          </p>
+        ),
+      },
+      { key: "jobType", label: "Job Type" },
+      { key: "countryName", label: "Country" },
+      { key: "stateName", label: "State" },
+      { key: "cityName", label: "City" },
+      {
+        key: "startDate",
+        label: "Start Date/Time",
+        renderCell: (row: JobItem) =>
+          row.startDate
+            ? dayjs(row.startDate).format("DD/MM/YYYY HH:mm")
+            : "N/A",
+      },
+      {
+        key: "createdAt",
+        label: "Created Date",
+        renderCell: (row: JobItem) =>
+          row.createdAt ? dayjs(row.createdAt).format("DD/MM/YYYY") : "N/A",
+      },
+      {
+        key: "action",
+        label: "Action",
+        renderCell: () => (
+          <div className="flex items-center gap-2">
+            <div
+              className="p-2 bg-yellow-100 rounded-md cursor-pointer"
+              onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
+            >
+              <FiEye className="text-yellow-600" />
+            </div>
+          </div>
+        ),
+      },
+    ],
+    [page, limit, navigate],
+  );
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
       <div className="flex flex-wrap gap-4 items-center">
         <SearchInput value={search} onChange={setSearch} />
-        {hasSelectedFilters && (
-          <Button variant="danger" onClick={onClearFilters}>
-            Cancel Filters
-          </Button>
-        )}
       </div>
       <div className="h-full flex-1 overflow-y-auto mt-4">
         <CustomTable<JobItem>
@@ -241,7 +220,11 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
               height={400}
               showLegend={false}
               isLoading={isGraphLoading}
-              error={graphError ? "An error occurred while fetching graph data." : null}
+              error={
+                graphError
+                  ? "An error occurred while fetching graph data."
+                  : null
+              }
             />
           </div>
         </div>

@@ -86,6 +86,11 @@ const ClientList: React.FC<ClientListProps> = ({
     );
   }, [rawData, search]);
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
       title: "Delete Client",
@@ -263,7 +268,7 @@ const ClientList: React.FC<ClientListProps> = ({
   return (
     <div className="h-full w-full flex flex-1 overflow-hidden flex-col bg-white dark:bg-gray-800 rounded-md p-4">
       <div className="mb-4 flex justify-between items-center gap-2">
-        <SearchInput value={search} onChange={setSearch} />
+        <SearchInput value={search} onChange={handleSearchChange} />
         <Button
           className="w-fit bg-gradient-to-r from-teal-700 to-teal-900 text-white shadow-md hover:shadow-lg transition-all"
           onClick={() => {
