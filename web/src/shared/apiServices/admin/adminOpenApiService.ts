@@ -40,6 +40,8 @@ import {
   type AdminUpdateEngineerData,
   type AdminUpdateEngineerResponse,
   type AdminDeleteEngineerResponse,
+  type AdminGetEngineerHistoryData,
+  type AdminGetEngineerHistoryResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -64,6 +66,7 @@ import {
   adminCreateEngineerMutation,
   adminUpdateEngineerMutation,
   adminDeleteEngineerMutation,
+  adminGetEngineerHistoryOptions,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -586,5 +589,28 @@ export function useAdminDeleteEngineerMutation(options?: {
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+}
+
+export type AdminGetEngineerHistoryQuery = NonNullable<
+  AdminGetEngineerHistoryData["query"]
+>;
+
+export function useAdminGetEngineerHistory(
+  userId: number,
+  query: AdminGetEngineerHistoryQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetEngineerHistoryResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetEngineerHistoryOptions({
+      client: apiClient,
+      path: { userId },
+      query,
+    }),
+    ...options,
   });
 }

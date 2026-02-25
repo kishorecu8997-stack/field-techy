@@ -256,7 +256,9 @@ const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(absoluteUrls.admin.home.manage_engineer_view)
+              navigate(
+                `${absoluteUrls.admin.home.manage_engineer_view}/${row.userId}`,
+              )
             }
           >
             <FiEye className="text-yellow-600" />

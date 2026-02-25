@@ -1,182 +1,195 @@
-import { absoluteUrls } from "@/config/urls";
-import {
-  chartData,
-  days,
-  jobs,
-  TOGGLE_STATUS,
-  type JobProps,
-} from "@/dummy_data/admin/manageEngineer";
+import { chartData, days } from "@/dummy_data/admin/manageEngineer";
 import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { usePopupStore } from "@/shared/store/popupStore";
-import React, { useState } from "react";
-import { CiEdit } from "react-icons/ci";
-import { FiEye } from "react-icons/fi";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
+import { useAdminGetEngineerHistory } from "@/shared/apiServices/admin/adminOpenApiService";
+import React, { useMemo, useState } from "react";
+import {  useParams } from "react-router-dom";
+import type { EngineerAssignment } from "./types"
+
 /**
- * AppliedJob
+ * AppliedJob Component
  *
- * Displays a searchable table of jobs applied by or assigned to an engineer,
- * alongside a small analytics chart showing jobs completed over a selectable
- * time window.
+ * Displays:
+ * - Applied jobs table for a selected engineer
+ * - Search functionality
+ * - Delete confirmation popup
+ * - Jobs completed analytics chart
  *
- * Features:
- * - Search input to filter table rows
- * - Custom table with columns for job metadata and actions
- * - Per-row status toggling (On/Off) managed in local state
- * - Chart summary using `GeneralChart` with a configurable series and tooltip
- *
- * Notes:
- * - This component uses local dummy data from `@/dummy_data/admin/manageEngineer`.
- * - No props are accepted; state and data are internal. In future it can be
- *   adapted to accept `data` and handlers via props for reusability.
+ * Design Decisions:
+ * - API data is NOT transformed beforehand.
+ * - All UI formatting happens inside `renderCell`.
+ * - Keeps component aligned with backend response.
  *
  * @component
- * @returns {JSX.Element} The applied jobs table and chart section
+ * @returns {JSX.Element}
  */
 const AppliedJob: React.FC = () => {
-  const [statuses, setStatuses] = useState<Record<number, "On" | "Off">>({});
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const { showPopup } = usePopupStore();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  const getStatus = (row: JobProps) => {
-    return statuses[row.id] ?? row.status;
-  };
+  // const navigate = useNavigate();
+  const params = useParams();
 
-  const toggleStatus = (id: number, current: "On" | "Off") => {
-    const newStatus = current === "On" ? "Off" : "On";
-    setStatuses((prev) => ({ ...prev, [id]: newStatus }));
-  };
+  const userId = Number(params.id);
+  const hasValidUserId = Number.isFinite(userId) && userId > 0;
 
-  //Delete confirmation
-  const handleDeleteJob = async (job: JobProps) => {
-    await showPopup({
-      title: "Delete Job",
-      body: "Are you sure you want to delete this job?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Delete",
-          value: "delete",
-          variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", job.id);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            close(true);
-          },
-        },
-      ],
-    });
-  };
+  const { data: engineerHistory, isLoading, error } =
+    useAdminGetEngineerHistory(
+      hasValidUserId ? userId : 0,
+      {
+        page,
+        limit,
+        type: "jobs",
+        statusGroup: "applied",
+      },
+      { enabled: hasValidUserId },
+    );
 
-  const columns: Column<JobProps>[] = [
-    { key: "id", label: "Job ID" },
+  /** Raw API data */
+  const assignments = (engineerHistory?.data ?? []) as EngineerAssignment[];
+
+  /**
+   * Filters assignments based on search input.
+   */
+  const filteredJobs = useMemo(() => {
+    if (!search) return assignments;
+
+    const query = search.toLowerCase();
+
+    return assignments.filter(
+      (item) =>
+        String(item.jobId).includes(query) ||
+        item.engineer?.name?.toLowerCase().includes(query) ||
+        item.engineer?.email?.toLowerCase().includes(query),
+    );
+  }, [assignments, search]);
+
+  /**
+   * Table column configuration.
+   * All data formatting is handled inside renderCell.
+   */
+  const columns: Column<EngineerAssignment>[] = [
     {
-      key: "postedBy",
-      label: "Posted By",
-      renderCell: (row: JobProps) => (
+      key: "jobId",
+      label: "Job ID",
+      renderCell: (row) => <span>{row.jobId}</span>,
+    },
+    {
+      key: "engineer",
+      label: "Engineer",
+      renderCell: (row) => (
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
             <span className="text-xs font-medium text-gray-600">
-              {row?.postedBy?.name?.charAt(0).toUpperCase()}
+              {row.engineer?.name?.charAt(0)?.toUpperCase() ?? "N"}
             </span>
           </div>
+
           <div>
-            <p className="font-semibold text-sm">{row?.postedBy?.name}</p>
-            <p className="text-xs text-gray-500">{row?.postedBy?.email}</p>
+            <p className="font-semibold text-sm">
+              {row.engineer?.name ?? "N/A"}
+            </p>
+            <p className="text-xs text-gray-500">
+              {row.engineer?.email ?? "N/A"}
+            </p>
           </div>
         </div>
       ),
     },
-    { key: "jobTitle", label: "Job Title" },
     {
-      key: "jobDescription",
-      label: "Job Description",
-      renderCell: (row: JobProps) => (
-        <p className="text-sm max-w-xs truncate">{row.jobDescription}</p>
+      key: "assignmentType",
+      label: "Type",
+      renderCell: (row) => <span>{row.assignmentType}</span>,
+    },
+    {
+      key: "proposalDetail",
+      label: "Proposal",
+      renderCell: (row) => (
+        <p className="text-sm max-w-xs truncate">
+          {row.proposalDetail || "N/A"}
+        </p>
       ),
     },
-    { key: "jobType", label: "Job Type" },
-    { key: "country", label: "Country" },
-    { key: "state", label: "State" },
-    { key: "city", label: "City" },
-    { key: "startDate", label: "Start Date/Time" },
-    { key: "createdDate", label: "Created Date" },
     {
-      key: "status",
-      label: "Status",
-      renderCell: (row: JobProps) => {
-        const currentStatus = getStatus(row);
-        const isOn = currentStatus === TOGGLE_STATUS.on;
+      key: "location",
+      label: "Location",
+      renderCell: (row) => (
+        <span>
+          {row.engineer?.city ?? "N/A"},{" "}
+          {row.engineer?.state ?? ""}
+        </span>
+      ),
+    },
+    {
+      key: "appliedAt",
+      label: "Applied Date",
+      renderCell: (row) => (
+        <span>
+          {row.appliedAt
+            ? new Date(row.appliedAt).toLocaleString()
+            : "N/A"}
+        </span>
+      ),
+    },
+    {
+      key: "jobStatus",
+      label: "Job Status",
+      renderCell: (row) => {
+        const isCancelled = row.jobStatus === "Cancelled";
+
         return (
           <div
-            onClick={() => toggleStatus(row.id, currentStatus)}
-            className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-              isOn ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              isCancelled
+                ? "bg-red-100 text-red-700"
+                : "bg-green-100 text-green-700"
             }`}
           >
-            {currentStatus}
+            {row.jobStatus}
           </div>
         );
       },
-    },
-    {
-      key: "action",
-      label: "Action",
-      renderCell: (row: JobProps) => (
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-yellow-100 rounded-md cursor-pointer">
-            <FiEye
-              className="text-yellow-600"
-              onClick={() => navigate(absoluteUrls.admin.home.manage_jobs)}
-            />
-          </div>
-          <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
-            <CiEdit
-              className="text-blue-600"
-              onClick={() =>
-                navigate(absoluteUrls.admin.home.manage_categories_edit)
-              }
-            />
-          </div>
-          <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteJob(row)}
-          >
-            <RiDeleteBin6Line className="text-red-600" />
-          </div>
-        </div>
-      ),
     },
   ];
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
-      <div>
-        <SearchInput />
-      </div>
+      <SearchInput value={search} onChange={setSearch} />
+
       <div className="h-full flex-1 overflow-y-auto my-4">
-        <CustomTable<JobProps>
+        <CustomTable<EngineerAssignment>
           columns={columns}
-          data={jobs}
-          initialPageSize={10}
+          data={filteredJobs}
+          initialPageSize={limit}
+          loading={isLoading}
+          error={
+            !hasValidUserId
+              ? "Missing engineer id in the URL."
+              : error
+                ? "An error occurred while fetching applied jobs."
+                : null
+          }
+          totalCount={engineerHistory?.total ?? 0}
+          currentPage={page}
+          onPageChange={setPage}
+          onPageSizeChange={(size) => {
+            setLimit(size);
+            setPage(1);
+          }}
         />
       </div>
+
+      {/* Analytics Chart */}
       <div className="w-1/2">
-        <div className="flex justify-between items-center mt-2 md:mb-2 md:flex gap-4">
+        <div className="flex justify-between items-center mt-2 md:mb-2 gap-4">
           <p className="font-bold">Total Jobs Completed</p>
+
           <SelectMenu
             placeholder="Filter By"
             className="md:w-32"
@@ -185,6 +198,7 @@ const AppliedJob: React.FC = () => {
             onChange={setSelectedDay}
           />
         </div>
+
         <GeneralChart
           data={chartData}
           chartType="line"
@@ -199,11 +213,14 @@ const AppliedJob: React.FC = () => {
           ]}
           customTooltip={CustomTooltip}
           height={400}
-          showLegend={true}
+          showLegend
           legend={{
             verticalAlign: "top",
             align: "center",
-            wrapperStyle: { paddingTop: "5px", paddingBottom: "5px" },
+            wrapperStyle: {
+              paddingTop: "5px",
+              paddingBottom: "5px",
+            },
           }}
         />
       </div>
