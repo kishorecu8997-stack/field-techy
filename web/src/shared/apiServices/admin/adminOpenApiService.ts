@@ -4,6 +4,7 @@ import {
   getCmsContent,
   adminGetClientsForManagement,
   getExchangeRates,
+  updateExchangeRate,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -57,6 +58,8 @@ import {
   type AdminGetJobTransactionsResponses,
   type GetExchangeRatesData,
   type GetExchangeRatesResponse,
+  type UpdateExchangeRateData,
+  type UpdateExchangeRateResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -88,6 +91,7 @@ import {
   adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
+  updateExchangeRateMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -801,5 +805,34 @@ export function useAdminExchangeRates(
       return data as GetExchangeRatesResponse;
     },
     ...options,
+  });
+}
+
+export type UpdateExchangeRateBody = NonNullable<
+  UpdateExchangeRateData["body"]
+>;
+
+export function useUpdateExchangeRate(options?: {
+  onSuccess?: (data: UpdateExchangeRateResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: { currencyId: number; rate: string }) => {
+      const { data } = await updateExchangeRate({
+        client: apiClient,
+        path: { currencyId: params.currencyId },
+        body: { rate: params.rate },
+        throwOnError: true,
+      });
+      return data as UpdateExchangeRateResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.exchangeRates,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
   });
 }

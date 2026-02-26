@@ -1,8 +1,8 @@
 import { absoluteUrls } from "@/config/urls";
-import { CurrencyConversionData } from "@/dummy_data/admin/currencyConversion";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useUpdateExchangeRate } from "@/shared/apiServices/admin/adminOpenApiService";
 import { usePopupStore } from "@/shared/store/popupStore";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -12,16 +12,16 @@ import { toast } from "react-toastify";
 import type { CurrencyConversionRow } from "../types";
 
 type FormValues = {
-  country: string;
+  countryName: string;
   currencyPair: string;
-  exchangeRate: string;
+  rate: string;
 };
 
 /**
  * EditCurrencyRates
  *
  * Form page used to edit an existing currency exchange rate.
- * Retrieves row data from router state or fallback dummy data,
+ * Retrieves row data from router state,
  * allows updating the exchange rate, and confirms the action
  * through a popup before saving.
  *
@@ -34,26 +34,36 @@ const EditCurrencyRates: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { showPopup } = usePopupStore();
+  const { mutate: updateExchangeRate, isPending } = useUpdateExchangeRate({
+    onSuccess: (data) => {
+      toast.success(data.message || "Exchange rate updated successfully!");
+      navigate(absoluteUrls.admin.home.manage_currency_conversion);
+    },
+    onError: (error) => {
+      toast.error("Failed to update exchange rate");
+    },
+  });
 
   const stateRow = location.state as CurrencyConversionRow | null;
-  const id = params.id;
+  const currencyId = params.id ? Number(params.id) : 0;
 
-  const row: CurrencyConversionRow = stateRow ??
-    CurrencyConversionData.find((r) => r.id === id) ?? {
-      id: "sample",
-      country: "Afghanistan",
-      currencyPair: "AFN → INR",
-      baseCurrency: "INR",
-      exchangeRate: 1.02,
-      lastUpdated: "—",
-      lastUpdatedBy: "—",
-    };
+  const row: CurrencyConversionRow = stateRow ?? {
+    id: null,
+    countryName: "",
+    currencyId: currencyId,
+    currencyCode: "",
+    currencySymbol: null,
+    currencyPair: "",
+    rate: null,
+    lastUpdated: null,
+    lastUpdatedBy: null,
+  };
 
   const methods = useForm<FormValues>({
     defaultValues: {
-      country: row.country,
+      countryName: row.countryName,
       currencyPair: row.currencyPair,
-      exchangeRate: String(row.exchangeRate ?? ""),
+      rate: row.rate ?? "",
     },
   });
 
@@ -68,9 +78,7 @@ const EditCurrencyRates: React.FC = () => {
           value: "submit",
           variant: "primary",
           action: async (close) => {
-            console.log("Saving exchange rate:", { id: row.id, ...data });
-            toast.success("Exchange rate updated successfully!");
-            navigate(absoluteUrls.admin.home.manage_currency_conversion);
+            updateExchangeRate({ currencyId: row.currencyId, rate: data.rate });
             close(true);
           },
         },
@@ -109,7 +117,7 @@ const EditCurrencyRates: React.FC = () => {
             <div className="p-5">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <InputField
-                  name="country"
+                  name="countryName"
                   label="Country"
                   disabled
                   containerClassName="flex flex-col gap-2"
@@ -126,8 +134,8 @@ const EditCurrencyRates: React.FC = () => {
 
                 <div className="flex flex-col gap-2">
                   <InputField
-                    name="exchangeRate"
-                    label={`Exchange Rate (Base: ${row.baseCurrency})`}
+                    name="rate"
+                    label="Exchange Rate (Base: INR)"
                     type="text"
                     required="Exchange rate is required"
                     allowedCharacters="numbers-dot"
@@ -146,8 +154,9 @@ const EditCurrencyRates: React.FC = () => {
               <Button
                 type="submit"
                 className="bg-teal-900 hover:bg-teal-950 px-8 py-3"
+                disabled={isPending}
               >
-                Save
+                {isPending ? "Saving..." : "Save"}
               </Button>
             </div>
           </div>
