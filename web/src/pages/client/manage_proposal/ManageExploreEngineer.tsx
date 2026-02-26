@@ -33,13 +33,17 @@ const ManageExploreEngineer = () => {
       id: proposal.assignmentId,
       engineerName: proposal.engineer?.name || "Unknown Engineer",
       ratings: proposal.engineer?.averageRating || "N/A",
-      reviewCount: "0", // Not available in API response yet
+      reviewCount: proposal.engineer?.reviewCount || "0",
       bitAmount: proposal.engineer?.hourlyRate?.toString() || "N/A",
       payType: "Hourly", // Default or derived
+      jobId: proposal.jobId,
       availability: proposal.assignmentStatus || "Unknown",
-      jobName: (proposal as any).jobTitle || "Job", // Accessing extra prop we know exists
+      jobName: (proposal as any).jobTitle || "Job",
       proposal: proposal.proposalDetail || "No details",
-      portfolioDoc: "Portfolio", // Placeholder
+      imageUrl: proposal.engineer?.profilePictureUrl || "",
+      location: [proposal.engineer?.city, proposal.engineer?.state].filter(Boolean).join(", ") || "Location not specified",
+      skills: proposal.engineer?.skills || [],
+      portfolioDoc: proposal.proposalAttachmentUrl || "No attachment provided",
     };
   };
   const { showPopup } = usePopupStore();
@@ -75,7 +79,7 @@ const ManageExploreEngineer = () => {
                 },
               });
               navigate(
-                `${absoluteUrls.client.home.job_details}/${getProposal()?.id}`,
+                `${absoluteUrls.client.home.job_details}/${getProposal()?.jobId}`,
               );
               close(true);
             } catch (error) {
@@ -136,7 +140,7 @@ const ManageExploreEngineer = () => {
             description={`${10}+ jobs found`}
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 bg">
           <div className="lg:col-span-2">
             <ExploreEngineerHeaderCard
               name={getProposal()?.engineerName as string}
@@ -146,6 +150,7 @@ const ManageExploreEngineer = () => {
               payType={getProposal()?.payType as string}
               availability={getProposal()?.availability as string}
               onAccept={handleAccept}
+              imageUrl={getProposal()?.imageUrl || ""}
               onDecline={handleDecline}
             />
             <div className=" flex flex-col gap-6 pt-4 px-4">
@@ -157,20 +162,49 @@ const ManageExploreEngineer = () => {
                   {getProposal()?.jobName}
                 </span>
               </span>
-              <span className="flex flex-col text-gray-700   dark:text-gray-200 gap-2">
+              <span className="flex flex-col text-gray-700 dark:text-gray-200 gap-2">
                 <p className="text-gray-700 dark:text-gray-200 text-xl font-semibold">
-                  proposal:
+                  Location:
                 </p>
-                <span className=" ">{getProposal()?.proposal}</span>
+                <span>{getProposal()?.location}</span>
+              </span>
+              {(getProposal()?.skills?.length ?? 0) > 0 && (
+                <span className="flex flex-col text-gray-700 dark:text-gray-200 gap-2">
+                  <p className="text-gray-700 dark:text-gray-200 text-xl font-semibold">
+                    Skills:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {getProposal()?.skills.map((skill: string, index: number) => (
+                      <span key={index} className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-100 rounded-full text-sm font-medium">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </span>
+              )}
+              <span className="flex flex-col text-gray-700 dark:text-gray-200 gap-2">
+                <p className="text-gray-700 dark:text-gray-200 text-xl font-semibold">
+                  Proposal:
+                </p>
+                <span className="whitespace-pre-wrap">{getProposal()?.proposal}</span>
               </span>
               <span>
                 <p className="text-gray-700 dark:text-gray-200 text-xl font-semibold">
                   Past Work & Portfolio
                 </p>
                 <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 pt-2">
-                  <span className="text-gray-700 dark:text-gray-200 font-semibold border border-gray-200 dark:border-gray-700 rounded-md p-2 w-fit">
-                    {getProposal()?.portfolioDoc}
-                  </span>
+                  {getProposal()?.portfolioDoc && getProposal()?.portfolioDoc !== "No attachment provided" ? (
+                    <a
+                      href={getProposal()?.portfolioDoc}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-700 dark:text-emerald-400 font-semibold border border-gray-200 dark:border-gray-700 rounded-md p-2 w-fit hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      View Attachment
+                    </a>
+                  ) : (
+                    <span className="text-gray-500 italic">No attachment provided</span>
+                  )}
                 </div>
               </span>
             </div>
