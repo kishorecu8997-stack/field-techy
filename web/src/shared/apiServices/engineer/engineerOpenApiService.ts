@@ -61,6 +61,7 @@ import {
   getJobLogsOptions,
   engineerGetProfileCompletionOptions,
   engineerGetMyDocumentsOptions,
+  getEngineerEarningsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
@@ -661,6 +662,15 @@ export function useEngineerTransactions(
 export function useEngineerGetMyJobs(enabled: boolean = true) {
   return useQuery({
     ...engineerGetMyJobsOptions({
+      client: apiClient,
+    }),
+    enabled,
+  });
+}
+
+export function useEngineerEarnings(enabled: boolean = true) {
+  return useQuery({
+    ...getEngineerEarningsOptions({
       client: apiClient,
     }),
     enabled,
