@@ -1,6 +1,7 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
+  adminGetSubAdmins,
   getCmsContent,
   adminGetClientsForManagement,
   type AdminUpdatePersonalInfoData,
@@ -48,6 +49,12 @@ import {
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
   type AdminDeleteServiceCategoryResponse,
+  type AdminCreateSubAdminData,
+  type AdminCreateSubAdminResponses,
+  type AdminGetSubAdminsData,
+  type AdminGetSubAdminsResponses,
+  type AdminUpdateSubAdminData,
+  type AdminUpdateSubAdminResponses,
   type AdminGetClientHistoryResponse,
   type AdminGetClientHistoryData,
   type AdminGetJobGraphData,
@@ -88,6 +95,8 @@ import {
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
+  adminCreateSubAdminMutation,
+  adminUpdateSubAdminMutation,
   adminGetClientHistoryOptions,
   adminGetJobGraphOptions,
   adminUpdateJobStatusMutation,
@@ -116,6 +125,7 @@ export const LookupTable = {
   EducationLevels: "educationLevels",
   Courses: "courses",
   BusinessTypes: "businessTypes",
+  Regions: "regions",
 } as const;
 
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
@@ -409,6 +419,69 @@ export function useAdminEngineersByUserIdStatus(options?: {
   });
 }
 
+export type AdminCreateSubAdminBody = NonNullable<
+  AdminCreateSubAdminData["body"]
+>;
+export type AdminGetSubAdminsQuery = NonNullable<
+  AdminGetSubAdminsData["query"]
+>;
+export type AdminUpdateSubAdminBody = NonNullable<
+  AdminUpdateSubAdminData["body"]
+>;
+
+const SUBADMINS_QUERY_KEY = ["admin", "sub-admins"] as const;
+
+export function useAdminGetSubAdmins(
+  query?: AdminGetSubAdminsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetSubAdminsResponses[200]) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: [...SUBADMINS_QUERY_KEY, query],
+    queryFn: async () => {
+      const response = await adminGetSubAdmins({
+        client: apiClient,
+        query,
+        throwOnError: true,
+      });
+      return response.data as AdminGetSubAdminsResponses[200];
+    },
+    ...options,
+  });
+}
+
+export function useAdminCreateSubAdmin(options?: {
+  onSuccess?: (data: AdminCreateSubAdminResponses[201]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateSubAdminMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: SUBADMINS_QUERY_KEY });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateSubAdmin(options?: {
+  onSuccess?: (data: AdminUpdateSubAdminResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateSubAdminMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: SUBADMINS_QUERY_KEY });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
 export type AdminUpdateJobStatusBody = NonNullable<
   AdminUpdateJobStatusData["body"]
 >;
@@ -442,7 +515,6 @@ export function useAdminUpdateJobStatus(options?: {
     onError: options?.onError,
   });
 }
-
 /**
  * Raw API functions for use outside of hooks (e.g. in Zustand stores)
  */
