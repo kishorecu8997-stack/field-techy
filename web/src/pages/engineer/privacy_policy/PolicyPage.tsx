@@ -1,26 +1,88 @@
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import ContentPage from "./ContentPage";
-import { privacySections } from "@/dummy_data/policyDatas";
 import { useLocation } from "react-router-dom";
+import DOMPurify from "dompurify";
+import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * Privacy Policy page that conditionally renders a header based on route context.
- * Displays static privacy policy content from dummy data.
+ * Displays static privacy policy content from CMS.
  */
 const PolicyPage = () => {
   const location = useLocation();
+  const {
+    data: cmsData,
+    isLoading,
+    error,
+  } = useGetCmsContent("privacy-policy");
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <div className="container mx-auto px-4 py-6 md:px-6">
+          {!location.pathname.includes("/auth") && (
+            <MyJobsHeader
+              title="Privacy Policy"
+              onSortChange={() => {}}
+              isShowSort={false}
+            />
+          )}
+          <div className="flex items-center justify-center min-h-[400px]">
+            <p className="text-gray-500">Loading privacy policy...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !cmsData || !("type" in cmsData) || cmsData.type !== "page") {
+    return (
+      <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <div className="container mx-auto px-4 py-6 md:px-6">
+          {!location.pathname.includes("/auth") && (
+            <MyJobsHeader
+              title="Privacy Policy"
+              onSortChange={() => {}}
+              isShowSort={false}
+            />
+          )}
+          <div className="flex items-center justify-center min-h-[400px]">
+            <p className="text-red-500">Failed to load privacy policy</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         {!location.pathname.includes("/auth") && (
           <MyJobsHeader
-            title="Privacy Policy"
+            title={cmsData.data.title || "Privacy Policy"}
             onSortChange={() => {}}
             isShowSort={false}
           />
         )}
-        <ContentPage content={privacySections} />
+
+        {/* Render HTML content directly */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+          <div
+            className="
+                 prose prose-lg dark:prose-invert max-w-none
+                 prose-headings:text-gray-900 dark:prose-headings:text-gray-100
+                 prose-p:text-gray-700 dark:prose-p:text-gray-300
+                 prose-a:text-teal-600 dark:prose-a:text-teal-400
+                 prose-strong:text-gray-900 dark:prose-strong:text-gray-100
+                 prose-ul:text-gray-700 dark:prose-ul:text-gray-300
+                 prose-ol:text-gray-700 dark:prose-ol:text-gray-300
+                 break-words              
+                 overflow-x-hidden         
+                 w-full "
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(cmsData.data.content),
+            }}
+          />
+        </div>
       </div>
     </div>
   );

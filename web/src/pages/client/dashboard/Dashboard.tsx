@@ -2,7 +2,10 @@ import { absoluteUrls } from "@/config/urls";
 import { jobOverviewData, serviceCategoriesData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
-import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useClientGetCompanyInfo,
+  useClientJobOverviewDashboard,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useFCM } from "@/shared/hooks/useFCM";
@@ -17,6 +20,7 @@ import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
 import { scrollToTop } from "@/utils";
+import type { JobOverview } from "./type";
 
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
@@ -35,6 +39,14 @@ const Dashboard: React.FC = () => {
       setCompanyInfo(clientInfo);
     }
   }, [clientInfo, companyInfo, setCompanyInfo]);
+  const { data: ClientJobOverview } = useClientJobOverviewDashboard();
+  const summary = ClientJobOverview?.summary;
+
+  const jobOverview: JobOverview[] = [
+    { ...jobOverviewData[0], count: summary?.activeJobsCount ?? 0 },
+    { ...jobOverviewData[1], count: summary?.completedJobsCount ?? 0 },
+    { ...jobOverviewData[2], count: summary?.cancelledJobsCount ?? 0 },
+  ];
 
   const inProgressJobsData = useMemo(
     () => sampleJobs.filter((job) => job.status === "inprogress"),
@@ -64,7 +76,7 @@ const Dashboard: React.FC = () => {
               <h1 className="text-2xl font-bold">Job Overview</h1>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {jobOverviewData.map((job) => (
+              {jobOverview.map((job) => (
                 <JobOverviewCard
                   key={job.id}
                   id={job.id}

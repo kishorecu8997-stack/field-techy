@@ -92,7 +92,6 @@ const ProfileCompletionCard = () => {
           <h3 className="text-lg font-semibold">Sections to Complete</h3>
           {missingSections.map((section) => {
             const completionPercentage = 100 - section.percentage;
-            const estimatedTime = Math.ceil(section.percentage / 10);
 
             return (
               <div
@@ -148,13 +147,6 @@ const ProfileCompletionCard = () => {
                   >
                     Complete This Section
                   </Button>
-                  <span className="text-gray-500">
-                    ~
-                    {estimatedTime && !isNaN(estimatedTime)
-                      ? estimatedTime
-                      : "—"}{" "}
-                    minutes remaining
-                  </span>
                 </div>
               </div>
             );

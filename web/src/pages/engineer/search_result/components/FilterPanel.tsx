@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { Filters } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useLookupData } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { JOB_TYPES_ARRAY, type JobType } from "@/constants/jobTypes";
 
 /**
  * FilterPanel component provides filtering options for job listings
@@ -18,28 +19,22 @@ const FilterPanel: React.FC<{
   currentFilters: Filters;
 }> = ({ onFilterChange, onClearAll, currentFilters }) => {
   // Fetch lookup data
-  const { data: workLocations, isLoading: isLoadingLocations } =
-    useLookupData("workLocations");
+
   const { data: serviceCategories, isLoading: isLoadingCategories } =
     useLookupData("serviceCategories");
   const { data: skillsData, isLoading: isLoadingSkills } =
     useLookupData("skills");
 
   // Local state for filters
-  const [selectedLocationType, setSelectedLocationType] = useState<string[]>(
-    currentFilters.locationType || [],
+  const [selectedJobType, setSelectedJobType] = useState<string>(
+    (currentFilters.jobTypeEnum as JobType) || "",
   );
   const [selectedCategory, setSelectedCategory] = useState<string[]>(
     currentFilters.category || [],
   );
-  const [selectedRating, setSelectedRating] = useState<number[]>(
-    currentFilters.rating || [],
-  );
+
   const [experience, setExperience] = useState<number>(
     currentFilters.experience || 0,
-  );
-  const [budgetType, setBudgetType] = useState<"hourly" | "fixed" | null>(
-    currentFilters.budgetType || null,
   );
   const [selectedSkills, setSelectedSkills] = useState<string[]>(
     currentFilters.skills || [],
@@ -47,17 +42,11 @@ const FilterPanel: React.FC<{
 
   // Sync local state with currentFilters when they change
   useEffect(() => {
-    setSelectedLocationType(currentFilters.locationType || []);
+    setSelectedJobType((currentFilters.jobTypeEnum as JobType) || "");
     setSelectedCategory(currentFilters.category || []);
-    setSelectedRating(currentFilters.rating || []);
     setExperience(currentFilters.experience || 0);
-    setBudgetType(currentFilters.budgetType || null);
     setSelectedSkills(currentFilters.skills || []);
   }, [currentFilters]);
-
-  // Available filter options
-  const ratingOptions = [1, 2, 3, 4, 5];
-  const budgetOptions = ["Hourly Price", "Fixed Price"];
 
   /**
    * Handle toggle of filter options
@@ -87,25 +76,6 @@ const FilterPanel: React.FC<{
   };
 
   /**
-   * Handle toggle of rating filter
-   * @param {number} rating - Rating to toggle
-   */
-  const toggleRating = (rating: number) => {
-    const newRatings = [...selectedRating];
-    const index = newRatings.indexOf(rating);
-    if (index > -1) {
-      newRatings.splice(index, 1);
-    } else {
-      newRatings.push(rating);
-    }
-    setSelectedRating(newRatings);
-    updateFilters({
-      ...currentFilters,
-      rating: newRatings,
-    });
-  };
-
-  /**
    * Update filters state
    * @param {Filters} newFilters - New filter state
    */
@@ -113,15 +83,23 @@ const FilterPanel: React.FC<{
     onFilterChange(newFilters);
   };
 
+  const handleJobTypeSelect = (value: JobType) => {
+    // If clicking the same one, clear it (optional), otherwise set to new value
+    const newValue = selectedJobType === value ? "" : value;
+    setSelectedJobType(newValue);
+    onFilterChange({
+      ...currentFilters,
+      jobTypeEnum: newValue,
+    });
+  };
+
   /**
    * Clear all filters
    */
   const handleClearAll = () => {
-    setSelectedLocationType([]);
+    setSelectedJobType("");
     setSelectedCategory([]);
-    setSelectedRating([]);
     setExperience(0);
-    setBudgetType(null);
     setSelectedSkills([]);
     onClearAll();
   };
@@ -152,8 +130,7 @@ const FilterPanel: React.FC<{
   };
 
   // Loading state
-  const isLoading =
-    isLoadingLocations || isLoadingCategories || isLoadingSkills;
+  const isLoading = isLoadingCategories || isLoadingSkills;
 
   if (isLoading) {
     return (
@@ -187,26 +164,24 @@ const FilterPanel: React.FC<{
           Job Type
         </h3>
         <div className="flex flex-wrap gap-2">
-          {workLocations?.map((location) => (
-            <button
-              key={location.id}
-              onClick={() =>
-                toggleFilter(
-                  selectedLocationType,
-                  location.name,
-                  setSelectedLocationType,
-                  "locationType",
-                )
-              }
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                selectedLocationType.includes(location.name)
-                  ? "bg-green-700 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-              }`}
-            >
-              {location.name}
-            </button>
-          ))}
+          {JOB_TYPES_ARRAY?.map((jobType, key) => {
+            // Cast the name to your specific JobType
+            const locName = jobType.label;
+
+            return (
+              <button
+                key={key}
+                onClick={() => handleJobTypeSelect(locName as JobType)}
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${
+                  selectedJobType === locName
+                    ? "bg-green-700 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                }`}
+              >
+                {jobType.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -234,28 +209,6 @@ const FilterPanel: React.FC<{
               }`}
             >
               {category.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Rating Filter */}
-      <div className="mb-5">
-        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Rating
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {ratingOptions.map((rating) => (
-            <button
-              key={rating}
-              onClick={() => toggleRating(rating)}
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                selectedRating.includes(rating)
-                  ? "bg-green-700 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-              }`}
-            >
-              {rating} Star
             </button>
           ))}
         </div>
@@ -290,38 +243,6 @@ const FilterPanel: React.FC<{
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 bg-green-700 text-white px-2 py-1 rounded-full text-xs whitespace-nowrap">
             {experience} Years
           </div>
-        </div>
-      </div>
-
-      {/* Budget Filter */}
-      <div className="mb-5">
-        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Budget
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {budgetOptions.map((option) => (
-            <button
-              key={option}
-              onClick={() => {
-                const type = option.toLowerCase().includes("hourly")
-                  ? "hourly"
-                  : "fixed";
-                setBudgetType(type);
-                updateFilters({
-                  ...currentFilters,
-                  budgetType: type,
-                });
-              }}
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                budgetType ===
-                (option.toLowerCase().includes("hourly") ? "hourly" : "fixed")
-                  ? "bg-green-700 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-              }`}
-            >
-              {option}
-            </button>
-          ))}
         </div>
       </div>
 

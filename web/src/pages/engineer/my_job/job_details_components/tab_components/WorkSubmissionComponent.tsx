@@ -9,11 +9,28 @@ import { icons } from "@/config/icons";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import SignatureField from "@/shared/components/commonUI/inputs/SignatureField";
-import { useNavigate } from "react-router-dom";
-import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { scrollToTop } from "@/utils";
+import { useEngineerSubmitSignOff } from "@/shared/apiServices/engineer/engineerOpenApiService";
+
+/**
+ * Form data structure for work submission component.
+ * This interface defines the shape of data collected when an engineer submits their work,
+ * including task details, attachments, notes, and signature.
+ *
+ * @interface WorkSubmissionFormData
+ * @property {string} onsiteTask - Indicates whether the task was carried out at the site (Yes/No)
+ * @property {FileList | null} file - The uploaded completed task file (PDF)
+ * @property {string} notes - Additional notes or comments from the technician
+ * @property {string} signature - Base64 encoded signature image data
+ */
+interface WorkSubmissionFormData {
+  onsiteTask: string;
+  file: FileList | null;
+  notes: string;
+  signature: string;
+}
 
 /**
  * A reusable component displaying a complete work submission panel.
@@ -26,8 +43,8 @@ import { scrollToTop } from "@/utils";
 const WorkSubmissionComponent: React.FC<{
   workSubmissions: WorkSubmissionComponentProps;
   isWorkSubmitted?: boolean;
-}> = ({ workSubmissions, isWorkSubmitted }) => {
-  const navigate = useNavigate();
+  assignmentId?: number;
+}> = ({ workSubmissions, isWorkSubmitted, assignmentId }) => {
   const {
     name,
     workDates,
@@ -45,6 +62,7 @@ const WorkSubmissionComponent: React.FC<{
     reviewComment,
   } = workSubmissions;
   const { showPopup } = usePopupStore();
+  const { mutateAsync: submitSignOff } = useEngineerSubmitSignOff();
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -66,12 +84,19 @@ const WorkSubmissionComponent: React.FC<{
     { label: "Work End Date & Time", value: endTime },
   ];
 
-  const FormCtx = useForm();
+  const FormCtx = useForm<WorkSubmissionFormData>({
+    defaultValues: {
+      onsiteTask: "",
+      file: null,
+      notes: "",
+      signature: "",
+    },
+  });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (data: WorkSubmissionFormData) => {
     await showPopup({
       title: "Submit Work",
-      body: "Are you sure you want to submit this work?",
+      body: "Are you sure you want to submit this work? Once submitted, the client will review and approve or reject it.",
       actionButtons: [
         {
           label: "Cancel",
@@ -83,11 +108,61 @@ const WorkSubmissionComponent: React.FC<{
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Work submission submitted successfully!");
-            close(true);
-            navigate(absoluteUrls.engineer.home.my_jobs);
-            console.log("Submitted");
-            scrollToTop();
+            try {
+              if (!assignmentId) {
+                toast.error("Assignment ID is missing");
+                return;
+              }
+
+              // Get the file from the form if present
+              const fileList = data.file;
+              const file = fileList && fileList.length > 0 ? fileList[0] : null;
+
+              // Prepare attachment metadata if file exists
+              const attachmentMeta = file
+                ? {
+                    filename: file.name,
+                    size: file.size,
+                    mimeType: file.type,
+                  }
+                : undefined;
+
+              // Call the API to submit work
+              await submitSignOff({
+                body: {
+                  assignmentId: Number(assignmentId),
+                  workAttachment: attachmentMeta
+                    ? {
+                        filename: attachmentMeta.filename,
+                        size: attachmentMeta.size,
+                        mimeType: attachmentMeta.mimeType,
+                      }
+                    : {
+                        filename: "",
+                        size: 0,
+                        mimeType: "",
+                      },
+                  signatureAttachment: {
+                    filename: "signature",
+                    size: 0,
+                    mimeType: "image/png",
+                  },
+                  comments: data.notes || "",
+                },
+              });
+
+              toast.success(
+                "Work submitted successfully! The client will review your submission.",
+              );
+              close(true);
+              scrollToTop();
+              // Optionally navigate or refresh
+              // navigate(absoluteUrls.engineer.home.my_jobs);
+            } catch (error) {
+              console.error("Work submission failed:", error);
+              toast.error("Failed to submit work. Please try again.");
+              close(true);
+            }
           },
         },
       ],

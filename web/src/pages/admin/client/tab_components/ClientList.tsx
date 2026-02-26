@@ -36,7 +36,10 @@ interface ClientListProps {
  * @param {ClientListProps} props - The component props
  * @returns {JSX.Element} The rendered ClientList component.
  */
-const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) => {
+const ClientList: React.FC<ClientListProps> = ({
+  clientType,
+  onViewDocument,
+}) => {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const navigate = useNavigate();
   const { handleStatusChange } = useClientStatusChange();
@@ -44,7 +47,11 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data: manageClient, refetch: refetchClients, isLoading } = useAdminManageClients({
+  const {
+    data: manageClient,
+    refetch: refetchClients,
+    isLoading,
+  } = useAdminManageClients({
     clientType,
     query: { page, limit, search: search || undefined },
   });
@@ -63,7 +70,8 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
     handleStatusChange,
   });
 
-  const clientData = (manageClient?.data || []) as unknown as ManageClientProps[];
+  const clientData = (manageClient?.data ||
+    []) as unknown as ManageClientProps[];
 
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
@@ -95,14 +103,17 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
       key: "clientCode",
       label: "Client ID",
       renderCell: (row: ManageClientProps) => (
-        <span className="flex-nowrap text-nowrap">{(row.clientCode || "N/A").toUpperCase()}</span>
+        <span className="flex-nowrap text-nowrap">
+          {(row.clientCode || "N/A").toUpperCase()}
+        </span>
       ),
     },
     {
       key: "details",
       label: "Details",
       renderCell: (row: ManageClientProps) => {
-        const displayName = clientType === "corporate" ? (row.companyName || row.name) : row.name;
+        const displayName =
+          clientType === "corporate" ? row.companyName || row.name : row.name;
         const initials = (displayName || "C").charAt(0).toUpperCase();
         const avatarUrl = row.profilePicture?.url;
 
@@ -110,7 +121,11 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
           <div className="flex gap-2 items-center w-[200px]">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
               {avatarUrl ? (
-                <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+                <img
+                  src={avatarUrl}
+                  alt={displayName}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 initials
               )}
@@ -122,7 +137,10 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
               >
                 {displayName}
               </span>
-              <span className="text-xs text-gray-500 truncate" title={row.email}>
+              <span
+                className="text-xs text-gray-500 truncate"
+                title={row.email}
+              >
                 {row.email}
               </span>
               <span className="text-xs text-gray-500">{row.phoneNumber}</span>
@@ -140,7 +158,9 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
       key: "registrationDate",
       label: "Registration Date",
       renderCell: (row: ManageClientProps) =>
-        row.registrationDate ? dayjs(row.registrationDate).format("DD/MM/YYYY") : "N/A",
+        row.registrationDate
+          ? dayjs(row.registrationDate).format("DD/MM/YYYY")
+          : "N/A",
     },
     {
       key: "documentType",
@@ -181,12 +201,14 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
       key: "action",
       label: "Actions",
       renderCell: (row: ManageClientProps) => {
-        const baseViewUrl = clientType === "corporate" 
-          ? absoluteUrls.admin.home.corporateClientView 
-          : absoluteUrls.admin.home.homeClientView;
-        const baseEditUrl = clientType === "corporate" 
-          ? absoluteUrls.admin.home.corporateClientEdit 
-          : absoluteUrls.admin.home.homeClientEdit;
+        const baseViewUrl =
+          clientType === "corporate"
+            ? absoluteUrls.admin.home.corporateClientView
+            : absoluteUrls.admin.home.homeClientView;
+        const baseEditUrl =
+          clientType === "corporate"
+            ? absoluteUrls.admin.home.corporateClientEdit
+            : absoluteUrls.admin.home.homeClientEdit;
 
         return (
           <div className="flex items-center gap-2">
@@ -194,7 +216,9 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
               className="p-2 bg-yellow-50 hover:bg-yellow-100 rounded-md cursor-pointer transition-colors"
               title="View Details"
               onClick={() =>
-                navigate(`${baseViewUrl}?userId=${row.userId}&id=${row.id}&view=true`)
+                navigate(
+                  `${baseViewUrl}?userId=${row.userId}&id=${row.id}&view=true`,
+                )
               }
             >
               <FiEye className="text-yellow-600" />
@@ -203,7 +227,9 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
               className="p-2 bg-blue-50 hover:bg-blue-100 rounded-md cursor-pointer transition-colors"
               title="Edit Client"
               onClick={() =>
-                navigate(`${baseEditUrl}?userId=${row.userId}&id=${row.id}&type=${clientType}`)
+                navigate(
+                  `${baseEditUrl}?userId=${row.userId}&id=${row.id}&type=${clientType}`,
+                )
               }
             >
               <CiEdit className="text-blue-600" />
@@ -228,9 +254,10 @@ const ClientList: React.FC<ClientListProps> = ({ clientType, onViewDocument }) =
         <Button
           className="w-fit bg-gradient-to-r from-teal-700 to-teal-900 text-white shadow-md hover:shadow-lg transition-all"
           onClick={() => {
-            const addUrl = clientType === "corporate" 
-              ? absoluteUrls.admin.home.corporateClientAdd 
-              : absoluteUrls.admin.home.homeClientAdd;
+            const addUrl =
+              clientType === "corporate"
+                ? absoluteUrls.admin.home.corporateClientAdd
+                : absoluteUrls.admin.home.homeClientAdd;
             navigate(`${addUrl}?type=${clientType}`);
           }}
         >

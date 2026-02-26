@@ -35,6 +35,7 @@ import { toast } from "react-toastify";
  */
 const JobTabSection = ({
   // status - kept for future use
+  // isWorkSubmitted - kept for future use
   isSendProposal,
   setSendProposal,
   activeTab,
@@ -45,9 +46,9 @@ const JobTabSection = ({
   jobInfo,
   assignmentId,
   jobId,
-  // isWorkSubmitted - kept for future use
 }: {
   status: JobStatus;
+  isWorkSubmitted?: boolean;
   isSendProposal?: boolean;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   activeTab?: string;
@@ -58,8 +59,9 @@ const JobTabSection = ({
   jobInfo?: JobInfoSectionProps;
   assignmentId?: number;
   jobId?: number;
-  isWorkSubmitted?: boolean;
 }) => {
+  // isWorkSubmitted is used for prop interface compatibility with other components
+  // Currently kept for future implementation of work submission tracking
   const queryClient = useQueryClient();
 
   const { mutateAsync: applyJob } = useEngineerApplyJob({
@@ -92,7 +94,7 @@ const JobTabSection = ({
   // Track if engineer has applied to show Proposal Info tab
   const [hasApplied, setHasApplied] = useState(false);
   const [selectedTab, setSelectedTab] = useState<string>(
-    activeTab || JOB_TAB_LABELS.jobOverview,
+    activeTab || JOB_TAB_LABELS.timeline,
   );
 
   useEffect(() => {
@@ -246,7 +248,7 @@ const JobTabSection = ({
       {!isSendProposal ? (
         <TabComponent
           tabs={tabs}
-          defaultActiveTab={activeTab || JOB_TAB_LABELS.jobOverview}
+          defaultActiveTab={activeTab || JOB_TAB_LABELS.timeline}
           onTabChange={(tabLabel) => {
             setSelectedTab(tabLabel);
             setActiveTab?.(tabLabel);

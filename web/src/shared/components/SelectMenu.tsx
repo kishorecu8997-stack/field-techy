@@ -100,7 +100,8 @@ const SelectMenu = ({
   }, [isOpen]);
 
   const handleSelect = (option: Option) => {
-    if (option.disabled || (disableSelected && option.value === selectedValue)) return;
+    if (option.disabled || (disableSelected && option.value === selectedValue))
+      return;
     onChange?.(option.value);
     setIsOpen(false);
   };
@@ -158,7 +159,9 @@ const SelectMenu = ({
           border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto`}
         >
           {options.map((option) => {
-            const isDisabled = option.disabled || (disableSelected && option.value === selectedValue);
+            const isDisabled =
+              option.disabled ||
+              (disableSelected && option.value === selectedValue);
             return (
               <li
                 key={option.value}

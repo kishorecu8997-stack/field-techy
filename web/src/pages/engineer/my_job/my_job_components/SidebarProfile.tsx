@@ -3,15 +3,18 @@ import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
-import { BOOKMARK_CHANGE_EVENT, getSavedJobs } from "@/utils/bookmarkUtils";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import { useEngineerBalance } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { useEngineerGetProfileCompletion } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useEngineerGetProfileCompletion,
+  useGetEngineerSavedJobs,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { formatCurrency } from "@/shared/libs/utils";
+import { useCountUp } from "@/shared/hooks/useCountUp";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -79,7 +82,7 @@ const ProfileCard = () => {
             <p className="text-xs opacity-80">{serviceCategoryName}</p>
           </div>
         </div>
-        <button
+        <Button
           type="button"
           onClick={() => {
             setNavigationSource("profilecompletion", "profileCompletion");
@@ -89,7 +92,7 @@ const ProfileCard = () => {
           className="mt-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 h-fit"
         >
           Complete Now
-        </button>
+        </Button>
       </div>
       <div className="mt-4">
         <div className="flex justify-between text-xs opacity-90 mb-1">
@@ -219,66 +222,19 @@ const EarningsCard = () => {
  * Counts update in real-time when jobs are bookmarked or unbookmarked.
  */
 const SavedJobsCard = () => {
+  const { data: savedJobsData } = useGetEngineerSavedJobs({
+    limit: 10,
+    page: 1,
+  });
+  const savedJobs = savedJobsData;
   const navigate = useNavigate();
-  const [total, setTotal] = useState(0);
-  const [active, setActive] = useState(0);
-  const [expired, setExpired] = useState(0);
-
-  useEffect(() => {
-    const updateCounts = () => {
-      const savedJobs = getSavedJobs();
-      const now = new Date();
-
-      let activeCount = 0;
-      let expiredCount = 0;
-
-      savedJobs.forEach((job) => {
-        if (!job.startDate) {
-          console.warn("Missing startDate for job:", job.jobTitle);
-          return;
-        }
-
-        const cleanDate = job.startDate.replace(",", "").trim();
-        const startDate = new Date(cleanDate);
-
-        if (isNaN(startDate.getTime())) {
-          console.warn(
-            "Invalid date format for job:",
-            job.jobTitle,
-            job.startDate,
-          );
-          return;
-        }
-        const nowUTC = Date.UTC(
-          now.getUTCFullYear(),
-          now.getUTCMonth(),
-          now.getUTCDate(),
-        );
-        const startUTC = Date.UTC(
-          startDate.getUTCFullYear(),
-          startDate.getUTCMonth(),
-          startDate.getUTCDate(),
-        );
-
-        if (startUTC >= nowUTC) {
-          activeCount++;
-        } else {
-          expiredCount++;
-        }
-      });
-
-      setTotal(savedJobs.length);
-      setActive(activeCount);
-      setExpired(expiredCount);
-    };
-
-    updateCounts();
-
-    window.addEventListener(BOOKMARK_CHANGE_EVENT, updateCounts);
-    return () =>
-      window.removeEventListener(BOOKMARK_CHANGE_EVENT, updateCounts);
-  }, []);
-
+  const animateTotalCount = useCountUp(savedJobs?.summary?.savedJobsCount ?? 0);
+  const animateActiveCount = useCountUp(
+    savedJobs?.summary?.activeJobsCount ?? 0,
+  );
+  const animateExpireCount =
+    useCountUp(savedJobs?.summary?.activeJobsCount ?? 0) -
+    (savedJobs?.summary?.savedJobsCount ?? 0);
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
       <div className="flex justify-between items-center mb-4">
@@ -297,7 +253,7 @@ const SavedJobsCard = () => {
       {/* Big Total */}
       <div className="text-center mb-6">
         <div className="text-4xl font-bold text-gray-900 dark:text-white">
-          {total}
+          {animateTotalCount}
         </div>
         <div className="text-sm text-gray-500 dark:text-gray-400">
           Total saved
@@ -308,7 +264,7 @@ const SavedJobsCard = () => {
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-green-50 dark:bg-green-900/30 rounded-lg p-4 text-center">
           <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-            {active}
+            {animateActiveCount}
           </div>
           <div className="text-sm text-green-700 dark:text-green-300 mt-1">
             Active
@@ -316,7 +272,7 @@ const SavedJobsCard = () => {
         </div>
         <div className="bg-red-50 dark:bg-red-900/30 rounded-lg p-4 text-center">
           <div className="text-3xl font-bold text-red-600 dark:text-red-400">
-            {expired}
+            {animateExpireCount}
           </div>
           <div className="text-sm text-red-700 dark:text-red-300 mt-1">
             Expired
