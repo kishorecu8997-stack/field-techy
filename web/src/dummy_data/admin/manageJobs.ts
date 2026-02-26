@@ -115,14 +115,14 @@ export const AllJobStatus = [
     icon: icons.hold,
   },
   {
-    value: "Flag",
+    value: "Flagged",
     label: "Flag",
     bg: "bg-orange-100 text-orange-700",
     icon: icons.flagged,
   },
   {
-    value: "Cancel",
-    label: "Cancel",
+    value: "Cancelled",
+    label: "Cancelled",
     bg: "bg-red-500 text-red-900",
     icon: icons.cancel,
   },

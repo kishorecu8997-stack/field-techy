@@ -1,0 +1,309 @@
+import React, { useRef, useEffect, useState } from "react";
+import Draggable from "react-draggable";
+import { FiX } from "react-icons/fi";
+import {
+  MdPerson,
+  MdCallEnd,
+  MdScreenShare,
+  MdVideocam,
+  MdVideocamOff,
+  MdMic,
+  MdMicOff,
+  MdStopScreenShare,
+} from "react-icons/md";
+import SwitchToVideoCallModal from "./SwitchToVideoCallModal";
+import ShareScreen from "./ShareScreen";
+import { assetsConfig } from "@/assets";
+import ShareScreenWindow from "./ShareScreenWindow";
+import VideoCall from "./VideoCall";
+import { Button } from "./commonUI/Buttons";
+/**
+ * Draggable ongoing call UI with timer, mic, video,
+ * screen share, and end call controls.
+ *
+ * @param props - Component props
+ * @returns Ongoing call window or null when hidden
+ */
+interface OngoingCallProps {
+  isVisible?: boolean;
+  callerName?: string;
+  onClose?: () => void;
+  onEndCall?: () => void;
+}
+
+const OngoingCall: React.FC<OngoingCallProps> = ({
+  isVisible = true,
+  callerName = "Helen",
+  onClose,
+  onEndCall,
+}) => {
+  const nodeRef = useRef<HTMLDivElement | null>(null);
+
+  const [secondsElapsed, setSecondsElapsed] = useState(0);
+
+  // toggles
+  const [isVideoOn, setIsVideoOn] = useState(false);
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [isScreenShareOn, setIsScreenShareOn] = useState(false);
+
+  // modals/screens
+  const [showSwitchModal, setShowSwitchModal] = useState(false);
+  const [showShareScreen, setShowShareScreen] = useState(false);
+  const [showShareScreenWindow, setShowShareScreenWindow] = useState(false);
+  const screenShareStreamRef = useRef<MediaStream | null>(null);
+
+  const [showVideoCall, setShowVideoCall] = useState(false);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    setSecondsElapsed(0);
+    const interval = setInterval(() => {
+      setSecondsElapsed((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isVisible]);
+
+  const formatDuration = (sec: number) => {
+    const minutes = Math.floor(sec / 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = (sec % 60).toString().padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/30" />
+
+      <Draggable nodeRef={nodeRef} handle=".drag-handle">
+        <div
+          ref={nodeRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Ongoing call with ${callerName}`}
+          className="relative z-10 w-full max-w-xl mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden"
+        >
+          {/* Header */}
+          <div className="drag-handle cursor-move flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-2">
+              <img
+                src={assetsConfig.logos.ftLogo}
+                alt="Field Techy"
+                className="h-6 w-auto block dark:hidden"
+              />
+              <img
+                src={assetsConfig.logos.ftLogoWhite}
+                alt="Field Techy"
+                className="h-6 w-auto hidden dark:block"
+              />
+            </div>
+
+            <button
+              aria-label="Close"
+              onClick={onClose}
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 rounded cursor-pointer transition-colors"
+            >
+              <FiX size={20} />
+            </button>
+          </div>
+
+          {/* Center */}
+          <div className="px-8 pb-8 pt-4 text-center">
+            <div
+              className="mx-auto rounded-full flex items-center justify-center shadow-md"
+              style={{ width: 120, height: 120, backgroundColor: "#0d9488" }}
+            >
+              <MdPerson size={56} className="text-white" />
+            </div>
+
+            <div className="mt-6">
+              <div className="text-xl font-semibold text-gray-900 dark:text-white">
+                {callerName}
+              </div>
+            </div>
+
+            <div className="mt-2">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {formatDuration(secondsElapsed)}
+              </div>
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-4">
+              <button
+                aria-label={isVideoOn ? "Video On" : "Video Off"}
+                onClick={() => {
+                  setIsVideoOn(true);
+                  setShowVideoCall(true);
+                }}
+                className={`w-20 h-12 rounded-full flex items-center justify-center shadow-sm transition-all ${
+                  isVideoOn
+                    ? "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500"
+                }`}
+              >
+                {isVideoOn ? (
+                  <MdVideocam
+                    className="text-gray-700 dark:text-gray-200"
+                    size={25}
+                  />
+                ) : (
+                  <MdVideocamOff
+                    className="text-gray-700 dark:text-gray-200"
+                    size={25}
+                  />
+                )}
+              </button>
+
+              <Button
+                variant={isMicOn ? "micOn" : "micOff"}
+                aria-label={isMicOn ? "Mute Microphone" : "Unmute Microphone"}
+                onClick={() => setIsMicOn(!isMicOn)}
+              >
+                {isMicOn ? (
+                  <MdMic size={25} className="text-white" />
+                ) : (
+                  <MdMicOff
+                    size={25}
+                    className="text-gray-400 dark:text-gray-500"
+                  />
+                )}
+              </Button>
+
+              <button
+                aria-label={
+                  isScreenShareOn ? "Stop Screen Share" : "Start Screen Share"
+                }
+                onClick={() => setShowSwitchModal(true)}
+                className={`w-20 h-12 rounded-full flex items-center justify-center shadow-sm transition-all ${
+                  isScreenShareOn
+                    ? "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500"
+                }`}
+              >
+                {isScreenShareOn ? (
+                  <MdScreenShare
+                    className="text-gray-700 dark:text-gray-200"
+                    size={25}
+                  />
+                ) : (
+                  <MdStopScreenShare
+                    className="text-gray-700 dark:text-gray-200"
+                    size={25}
+                  />
+                )}
+              </button>
+            </div>
+
+            <button
+              aria-label="End Call"
+              onClick={() => (onEndCall ? onEndCall() : onClose?.())}
+              className="w-20 h-12 rounded-full flex items-center justify-center shadow-md hover:bg-red-700 transition-colors cursor-pointer"
+              style={{ backgroundColor: "#dc2626" }}
+            >
+              <MdCallEnd size={24} className="text-white" />
+            </button>
+          </div>
+        </div>
+      </Draggable>
+
+      {/* Switch to Video Call Modal */}
+      <SwitchToVideoCallModal
+        isVisible={showSwitchModal}
+        onCancel={() => setShowSwitchModal(false)}
+        onConfirm={() => {
+          setShowSwitchModal(false);
+          setShowShareScreen(true);
+        }}
+      />
+
+      {/* Share Screen Modal */}
+      <ShareScreen
+        isVisible={showShareScreen}
+        onCancel={() => setShowShareScreen(false)}
+        onShare={async () => {
+          try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+              video: true,
+              audio: false,
+            });
+            screenShareStreamRef.current = stream;
+            setIsScreenShareOn(true);
+            setShowShareScreen(false);
+            setShowShareScreenWindow(true);
+
+            // Handle when user stops sharing via browser UI
+            stream.getVideoTracks()[0].onended = () => {
+              setIsScreenShareOn(false);
+              setShowShareScreenWindow(false);
+              screenShareStreamRef.current = null;
+            };
+          } catch (err) {
+            // User cancelled or error
+            console.error("Screen share error:", err);
+            setShowShareScreen(false);
+          }
+        }}
+      />
+
+      <ShareScreenWindow
+        isVisible={showShareScreenWindow}
+        callerName={callerName}
+        onClose={() => {
+          setShowShareScreenWindow(false);
+          // Stop the screen share stream
+          if (screenShareStreamRef.current) {
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
+            screenShareStreamRef.current = null;
+          }
+          setIsScreenShareOn(false);
+        }}
+        onStopSharing={() => {
+          if (screenShareStreamRef.current) {
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
+            screenShareStreamRef.current = null;
+          }
+          setIsScreenShareOn(false);
+          setShowShareScreenWindow(false);
+        }}
+        onEndCall={() => {
+          if (screenShareStreamRef.current) {
+            screenShareStreamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
+            screenShareStreamRef.current = null;
+          }
+          setIsScreenShareOn(false);
+          setShowShareScreenWindow(false);
+          (onEndCall || onClose)?.();
+        }}
+      />
+
+      <VideoCall
+        isVisible={showVideoCall}
+        callerName={callerName}
+        onClose={() => {
+          setShowVideoCall(false);
+          setIsVideoOn(false);
+        }}
+        onEndCall={() => {
+          setShowVideoCall(false);
+          setIsVideoOn(false);
+          (onEndCall || onClose)?.();
+        }}
+      />
+    </div>
+  );
+};
+
+export default OngoingCall;

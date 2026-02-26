@@ -50,9 +50,11 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
         ? update.title
         : update.detailsType === "break"
           ? update.title
-          : update.title
-            ? `${LABELS.progressUpdateFallback} - ${update.title}`
-            : LABELS.progressUpdateFallback;
+          : update.detailsType === "revision"
+            ? LABELS.progressUpdateFallback
+            : update.title && update.title !== "Progress Update"
+              ? `${LABELS.progressUpdateFallback} - ${update.title}`
+              : LABELS.progressUpdateFallback;
 
   return (
     <div
@@ -72,14 +74,44 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
             {updateTitle}
           </p>
           {!isCollapsed && update.description && (
-            <p className="text-sm text-gray-700 mt-1 whitespace-pre-line leading-5">
+            <p className="text-sm text-gray-700 mt-1 whitespace-pre-line break-all leading-5">
               {update.description}
             </p>
           )}
           {!isCollapsed && update.attachmentName && (
-            <span className="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
+            <a
+              href={update.attachmentUrl || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 cursor-pointer transition-colors"
+              onClick={(e) => {
+                if (!update.attachmentUrl) {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
               {update.attachmentName}
-            </span>
+            </a>
           )}
         </div>
         <div className="flex flex-col items-end gap-1 whitespace-nowrap">
@@ -133,14 +165,19 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
         </div>
       </div>
 
-      {/* Revision Details Section */}
-      {!isCollapsed && isRevisionRequested && (
-        <RevisionDetails
-          update={update}
-          onStartRevisionUpdate={onStartRevisionUpdate}
-          revisionUpdateEntry={revisionUpdateEntry}
-        />
-      )}
+      {/* Revision Details Section - Show only when there are revisions OR when status is revision_requested */}
+      {!isCollapsed &&
+        (isRevisionRequested ||
+          isApproved ||
+          update.statusText?.toLowerCase().includes("pending")) &&
+        update.revisions &&
+        update.revisions.length > 0 && (
+          <RevisionDetails
+            update={update}
+            onStartRevisionUpdate={onStartRevisionUpdate}
+            revisionUpdateEntry={revisionUpdateEntry}
+          />
+        )}
     </div>
   );
 };

@@ -1,4 +1,6 @@
 import {
+  getEngineerBalance,
+  getEngineerTransactions,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
   type AppLoginResponse,
@@ -11,16 +13,23 @@ import {
   type EngineerDeleteEducationResponse,
   type EngineerDeleteExperienceResponse,
   type EngineerGetMyJobsData,
+  type EngineerGetSavedJobsData,
   type EngineerRequestBreakResponse,
   type EngineerRequestStartResponse,
   type EngineerSearchJobsData,
   type EngineerSubmitRevisionResponse,
   type EngineerSubmitSignOffResponse,
+  type EngineerToggleSaveJobResponse,
   type EngineerUpdateEducationResponse,
   type EngineerUpdateExperienceResponse,
   type EngineerUpdatePersonalInfoResponse,
   type EngineerUpdateSkillsAndToolsResponse,
   type EngineerUpdateWorkPreferenceResponse,
+  type GetEngineerBalanceError,
+  type GetEngineerBalanceResponse,
+  type GetEngineerTransactionsData,
+  type GetEngineerTransactionsError,
+  type GetEngineerTransactionsResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -54,6 +63,9 @@ import {
   getJobLogsOptions,
   engineerGetProfileCompletionOptions,
   engineerGetMyDocumentsOptions,
+  engineerGetSavedJobsOptions,
+  engineerToggleSaveJobMutation,
+  getEngineerEarningsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
@@ -496,12 +508,18 @@ export function useEngineerMarkProposalFileUploaded(options?: {
 export function useEngineerRequestStart(options?: {
   onSuccess?: (data: EngineerRequestStartResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerRequestStartMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -511,12 +529,18 @@ export function useEngineerRequestStart(options?: {
 export function useEngineerSubmitSignOff(options?: {
   onSuccess?: (data: EngineerSubmitSignOffResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerSubmitSignOffMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -526,12 +550,18 @@ export function useEngineerSubmitSignOff(options?: {
 export function useEngineerAddWorkLog(options?: {
   onSuccess?: (data: EngineerAddWorkLogResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerAddWorkLogMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -541,12 +571,18 @@ export function useEngineerAddWorkLog(options?: {
 export function useEngineerSubmitRevision(options?: {
   onSuccess?: (data: EngineerSubmitRevisionResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerSubmitRevisionMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -556,12 +592,18 @@ export function useEngineerSubmitRevision(options?: {
 export function useEngineerRequestBreak(options?: {
   onSuccess?: (data: EngineerRequestBreakResponse) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerRequestBreakMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Use exact query key format to invalidate timeline queries
+      const exactQueryKey = [
+        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
+      ];
+      queryClient.invalidateQueries({ queryKey: exactQueryKey });
+      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -578,6 +620,74 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
   });
 }
 
+export function useStoreEngineerSaveJobs(options?: {
+  onSuccess?: (data: EngineerToggleSaveJobResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerToggleSaveJobMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useGetEngineerSavedJobs(
+  query: EngineerGetSavedJobsData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...engineerGetSavedJobsOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useEngineerBalance(enabled: boolean = true) {
+  return useQuery<GetEngineerBalanceResponse, GetEngineerBalanceError>({
+    queryKey: [...queryKeys.engineer.all, "balance"],
+    queryFn: async () => {
+      const response = await getEngineerBalance({ client: apiClient });
+      if (response.data) {
+        return response.data;
+      }
+      throw response.error ?? { error: "Unknown error" };
+    },
+    enabled,
+    staleTime: 30 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useEngineerTransactions(
+  params: GetEngineerTransactionsData["query"] = {},
+  enabled = true,
+) {
+  const paramsKey = params ? JSON.stringify(params) : "";
+  return useQuery<
+    GetEngineerTransactionsResponse,
+    GetEngineerTransactionsError
+  >({
+    queryKey: [...queryKeys.engineer.all, "transactions", paramsKey],
+    queryFn: async () => {
+      const res = await getEngineerTransactions({
+        client: apiClient,
+        query: params,
+      });
+      if (res.data) return res.data;
+      throw res.error ?? { error: "Unknown error" };
+    },
+    enabled,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
 /**
  * Fetch engineer's jobs with proposal status
  * Returns jobs that the engineer has applied to or been assigned to
@@ -585,6 +695,15 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
 export function useEngineerGetMyJobs(enabled: boolean = true) {
   return useQuery({
     ...engineerGetMyJobsOptions({
+      client: apiClient,
+    }),
+    enabled,
+  });
+}
+
+export function useEngineerEarnings(enabled: boolean = true) {
+  return useQuery({
+    ...getEngineerEarningsOptions({
       client: apiClient,
     }),
     enabled,
