@@ -50,8 +50,13 @@ const ClientJobDetails = () => {
   // Fallback to useClientGetJobs if needed for job details
   const { data: jobsData } = useClientGetJobs(true);
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
-  const job = jobsArray.find(
-    (j: { id?: string | number }) => Number(j.id) === jobId,
+  // Extend the generated type to include clientDetails if it comes from the API but is missing in types
+  type ExtendedJob = (typeof jobsArray)[0] & {
+    clientDetails?: { personName?: string };
+  };
+
+  const job = (jobsArray as ExtendedJob[]).find(
+    (j) => Number(j.id) === jobId,
   );
 
   // Get the first assignment from the assignment data
@@ -190,7 +195,7 @@ const ClientJobDetails = () => {
             <div className="lg:col-span-2 space-y-6">
               <JobHeaderCard
                 title={job.jobTitle}
-                client=""
+                client={job.clientDetails?.personName || ""}
                 duration={durationDisplay}
                 type={job.jobType}
                 status={jobStatus}
