@@ -13,3 +13,14 @@ export type EngineerAssignment = {
     state?: string;
   };
 };
+
+export type ReviewRow = {
+  id: number;
+  reviewerName: string;
+  reviewerPhoneNumber: string;
+  reviewerEmail: string;
+  profileUrl?: string;
+  jobTitle: string;
+  rating: number | null;
+  review: string;
+};
