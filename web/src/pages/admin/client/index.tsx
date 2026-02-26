@@ -4,6 +4,7 @@ import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import ViewFileComponent from "./tab_components/ViewFileComponent";
+import BlockedClientList from "./tab_components/BlockedClientList";
 import type { ManageClientProps } from "./types";
 import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 
@@ -11,7 +12,7 @@ import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService"
  * ManageClient Component
  *
  * This component serves as the main page for managing clients within the admin dashboard.
- * It utilizes a tabbed interface to separate and display "Corporate" and "Home" clients.
+ * It utilizes a tabbed interface to separate and display "Corporate", "Home" and "Blocked" clients.
  * It also manages a shared popup for viewing client documents.
  *
  * @component
@@ -33,8 +34,8 @@ const ManageClient: React.FC = () => {
   };
 
   /**
-   * Defines the tabs for the AdminTabComponent, separating "Corporate" and "Home" clients.
-   * Both tabs use the same consolidated ClientList component with different props.
+   * Defines the tabs for the AdminTabComponent, separating "Corporate", "Home" and "Blocked" clients.
+   *Both tabs use the same consolidated ClientList component with different props.
    */
   const tabs = [
     {
@@ -51,6 +52,10 @@ const ManageClient: React.FC = () => {
       content: (
         <ClientList clientType="home" onViewDocument={handleViewDocument} />
       ),
+    },
+    {
+      label: "Blocked Client",
+      content: <BlockedClientList />,
     },
   ];
 

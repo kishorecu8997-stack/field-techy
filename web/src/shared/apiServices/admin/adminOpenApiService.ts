@@ -55,6 +55,10 @@ import {
   type AdminDeleteEngineerResponse,
   type AdminGetEngineerHistoryData,
   type AdminGetEngineerHistoryResponse,
+  type AdminGetClientHistoryResponse,
+  type AdminGetClientHistoryData,
+  type AdminGetJobGraphData,
+  type AdminGetJobGraphResponses,
   type AdminUpdateJobStatusData,
   type AdminUpdateJobStatusResponses,
   type AdminGetJobLogsData,
@@ -62,6 +66,8 @@ import {
   type AdminGetJobTransactionsData,
   type AdminGetJobTransactionsResponses,
 } from "@/api";
+
+export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
 import {
   adminGetPersonalInfoOptions,
   adminUpdatePersonalInfoMutation,
@@ -93,6 +99,8 @@ import {
   adminUpdateEngineerMutation,
   adminDeleteEngineerMutation,
   adminGetEngineerHistoryOptions,
+  adminGetClientHistoryOptions,
+  adminGetJobGraphOptions,
   adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
@@ -388,6 +396,8 @@ export function useAdminClientsByUserIdStatus(options?: {
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
+        exact: false,
+        refetchType: "all",
       });
       options?.onSuccess?.(data);
     },
@@ -854,15 +864,68 @@ export function useAdminGetEngineerHistory(
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetEngineerHistoryResponse) => void;
-    onError?: (error: unknown) => void;
+        onError?: (error: unknown) => void;
   },
 ) {
   return useQuery({
-    ...adminGetEngineerHistoryOptions({
+        ...adminGetEngineerHistoryOptions({
       client: apiClient,
       path: { userId },
       query,
     }),
     ...options,
+  });
+}
+export type AdminGetClientHistoryQuery = NonNullable<
+  AdminGetClientHistoryData["query"]
+>;
+
+export function useAdminGetClientHistory(
+  userId: number,
+  query: AdminGetClientHistoryQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetClientHistoryResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetClientHistoryOptions({
+      client: apiClient,
+      path: { userId },
+      query,
+    }),
+    ...options,
+  });
+}
+
+export type AdminGetJobGraphQuery = Omit<
+  NonNullable<AdminGetJobGraphData["query"]>,
+  "userId"
+> & {
+  userId?: number;
+};
+export type AdminGetJobGraphResponse = NonNullable<
+  AdminGetJobGraphResponses[200]
+>;
+
+export function useAdminGetJobGraph(
+  query: AdminGetJobGraphQuery,
+  options?: {
+    enabled?: boolean;
+  },
+) {
+  const { userId, ...restQuery } = query;
+  const isValidId = typeof userId === "number" && userId > 0;
+  return useQuery({
+    ...adminGetJobGraphOptions({
+      client: apiClient,
+      query: {
+        ...restQuery,
+        userId: isValidId ? (userId as number) : 0,
+      },
+    }),
+    ...options,
+    enabled: (options?.enabled ?? true) && isValidId,
   });
 }
