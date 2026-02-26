@@ -1,7 +1,6 @@
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validateName } from "@/utils/validate";
@@ -10,7 +9,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { AddSubAdminForm } from "./types";
+import type { EditSubAdminForm } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import {
   LookupTable,
@@ -31,9 +30,8 @@ export default function EditSubAdmin() {
   const { data: subAdminsData, isLoading: isSubAdminsLoading } =
     useAdminGetSubAdmins();
 
-  const subAdmin = subAdminsData?.data?.find(
-    (user) => user.id.toString() === id,
-  );
+  const parsedId = Number(id);
+  const subAdmin = subAdminsData?.data?.find((user) => user.id === parsedId);
 
   const { data: regionsLookup, isLoading: isRegionsLoading } =
     useAppGetLookupData(LookupTable.Regions);
@@ -44,14 +42,12 @@ export default function EditSubAdmin() {
       label: item.name || `Region ${item.id}`,
     })) ?? [];
 
-  const methods = useForm<AddSubAdminForm>({
+  const methods = useForm<EditSubAdminForm>({
     defaultValues: {
-      userId: subAdmin?.userId,
       name: subAdmin?.name || "",
       email: subAdmin?.email || "",
       phoneNumber: subAdmin?.phoneNumber || "",
       region: subAdmin?.regionId?.toString() || "",
-      password: "",
     },
   });
 
@@ -60,17 +56,16 @@ export default function EditSubAdmin() {
 
     const currentValues = methods.getValues();
     const newValues = {
-      userId: subAdmin.userId ?? "",
       name: subAdmin.name || "",
       email: subAdmin.email || "",
       phoneNumber: subAdmin.phoneNumber || "",
       region: subAdmin.regionId?.toString() || "",
-      password: "",
     };
 
     if (
       currentValues.name !== newValues.name ||
       currentValues.email !== newValues.email ||
+      currentValues.phoneNumber !== newValues.phoneNumber ||
       currentValues.region !== newValues.region
     ) {
       methods.reset(newValues);
@@ -83,7 +78,7 @@ export default function EditSubAdmin() {
     },
   });
 
-  const handleSaveConfirmation = async (data: AddSubAdminForm) => {
+  const handleSaveConfirmation = async (data: EditSubAdminForm) => {
     await showPopup({
       title: "Update Sub-Admin",
       body: "Are you sure you want to update this details?",
@@ -98,26 +93,31 @@ export default function EditSubAdmin() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            await updateSubAdmin({
-              path: { userId: Number(data.userId) },
-              body: {
-                name: data.name,
-                email: data.email,
-                phoneNumber: data.phoneNumber,
-                regionId: Number(data.region),
-              },
-            });
-            toast.success("Sub-Admin updated successfully!");
-            navigate(absoluteUrls.admin.home.manage_sub_admin);
-            methods.reset();
-            close(true);
+            try {
+              await updateSubAdmin({
+                path: { userId },
+                body: {
+                  name: data.name,
+                  email: data.email,
+                  phoneNumber: data.phoneNumber,
+                  regionId: Number(data.region),
+                },
+              });
+
+              toast.success("Sub-Admin updated successfully!");
+              navigate(absoluteUrls.admin.home.manage_sub_admin);
+              close?.(true);
+            } catch (err) {
+              toast.error("Failed to update sub-admin. Please try again.");
+              close?.(false);
+            }
           },
         },
       ],
     });
   };
 
-  const onSubmit = (data: AddSubAdminForm) => {
+  const onSubmit = (data: EditSubAdminForm) => {
     handleSaveConfirmation(data);
   };
 
@@ -147,6 +147,8 @@ export default function EditSubAdmin() {
       </div>
     );
   }
+
+  const userId = subAdmin.userId;
 
   return (
     <div className="w-full h-full p-4">

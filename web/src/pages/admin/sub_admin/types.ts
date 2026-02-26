@@ -1,8 +1,14 @@
-export interface AddSubAdminForm {
-  userId: number;
+export interface SubAdminFormBase {
   name: string;
   email: string;
   phoneNumber: string;
   region: string;
-  password: string;
+}
+
+export interface AddSubAdminForm extends SubAdminFormBase {
+  password: string;     
+}
+
+export interface EditSubAdminForm extends SubAdminFormBase {
+ 
 }

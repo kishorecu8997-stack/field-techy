@@ -42,7 +42,7 @@ export default function ManageSubAdmin() {
   const totalCount = data?.total ?? 0;
 
   const handleDisableSubAdmin = async (_row: SubAdminItem) => {
-    await showPopup({
+    const result = await showPopup({
       title: "Disable Sub-Admin",
       body: "Are you sure you want to disable this sub-admin?",
       actionButtons: [
@@ -55,18 +55,24 @@ export default function ManageSubAdmin() {
           label: "Disable",
           value: "disable",
           variant: "danger",
-          action: async () => {
-            // TODO: Add actual API call to disable the sub-admin here
-
-            toast.success("Sub-admin disabled successfully!");
-
-            if (subAdmins.length === 1 && page > 1) {
-              setPage((prev) => prev - 1);
-            }
-          },
         },
       ],
     });
+
+    if (result !== "disable") return;
+
+    try {
+      // TODO: Replace with real API call
+      // await api.disableSubAdmin(row.id);
+
+      toast.success("Sub-admin disabled successfully!");
+
+      if (subAdmins.length === 1 && page > 1) {
+        setPage((prev) => prev - 1);
+      }
+    } catch (err) {
+      toast.error("Failed to disable sub-admin. Please try again.");
+    }
   };
 
   const columns: Column<SubAdminItem>[] = [

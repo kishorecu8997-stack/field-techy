@@ -1,7 +1,6 @@
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField, PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validateName } from "@/utils/validate";

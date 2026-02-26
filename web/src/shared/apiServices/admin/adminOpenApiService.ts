@@ -435,6 +435,7 @@ export function useAdminGetSubAdmins(
       const response = await adminGetSubAdmins({
         client: apiClient,
         query,
+        throwOnError: true,
       });
       return response.data as AdminGetSubAdminsResponses[200];
     },
@@ -450,7 +451,7 @@ export function useAdminCreateSubAdmin(options?: {
   return useMutation({
     ...adminCreateSubAdminMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.removeQueries({ queryKey: SUBADMINS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: SUBADMINS_QUERY_KEY });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -465,8 +466,8 @@ export function useAdminUpdateSubAdmin(options?: {
   return useMutation({
     ...adminUpdateSubAdminMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.removeQueries({ queryKey: SUBADMINS_QUERY_KEY });
-       options?.onSuccess?.(data);
+      queryClient.invalidateQueries({ queryKey: SUBADMINS_QUERY_KEY });
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -504,7 +505,6 @@ export function useAdminUpdateJobStatus(options?: {
     onError: options?.onError,
   });
 }
-      
 /**
  * Raw API functions for use outside of hooks (e.g. in Zustand stores)
  */
