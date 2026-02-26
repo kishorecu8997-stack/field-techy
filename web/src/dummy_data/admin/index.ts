@@ -255,15 +255,13 @@ export const projectNameList = [
 ];
 
 export const regionList = [
-  { label: "Region 1", value: "region1" },
-  { label: "Region 2", value: "region2" },
-  { label: "Region 3", value: "region3" },
+  { label: "South Asia", value: "region1" },
+  { label: "Western Europe", value: "region2" },
 ];
 
 export const countryList = [
-  { label: "Country 1", value: "country1" },
-  { label: "Country 2", value: "country2" },
-  { label: "Country 3", value: "country3" },
+  { label: "India", value: "country1" },
+  { label: "United Kingdom", value: "country2" },
 ];
 
 export const transactionRequest: TransactionRequest[] = [

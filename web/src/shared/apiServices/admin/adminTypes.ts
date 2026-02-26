@@ -111,3 +111,20 @@ export interface RateCardParams {
   limit?: number;
   search?: string;
 }
+
+export interface RateCardSkill {
+  serviceCategoryId: number;
+  experienceLevelId: number;
+  rate: number;
+}
+
+export interface CreateRateCardParams {
+  countryId: number;
+  engagementModelId: number;
+  skills: RateCardSkill[];
+}
+
+export interface CreateRateCardResponse {
+  message: string;
+  id?: number;
+}

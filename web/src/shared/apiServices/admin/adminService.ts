@@ -8,6 +8,8 @@ import type {
   AdminByIdResponse,
   RateCardsResponse,
   RateCardParams,
+  CreateRateCardParams,
+  CreateRateCardResponse,
 } from "./adminTypes";
 import { queryKeys } from "../queryKeys";
 import type { FileDownloadResponse } from "../client/clientTypes";
@@ -243,5 +245,23 @@ export function useGetRateCards(
     queryKey: ["admin-rate-cards", params],
     queryFn: () => AdminAdapter.getRateCards(params),
     enabled: options?.enabled ?? true,
+  });
+}
+
+/** Hook to create a rate card */
+export function useCreateRateCard(options?: {
+  onSuccess?: (data: CreateRateCardResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateRateCardParams) => AdminAdapter.createRateCard(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["admin-rate-cards"] });
+      options?.onSuccess?.(data);
+    },
+    onError: (error) => {
+      options?.onError?.(error);
+    },
   });
 }
