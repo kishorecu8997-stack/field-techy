@@ -94,6 +94,8 @@ export interface ViewFileComponentProps {
   title?: string;
   fileType: ProfileFileType | null;
   fileUrl?: string | null;
+  isShowIcon?: boolean;
+  titleClassName?: string;
 }
 
 export type DocumentType =
@@ -113,6 +115,19 @@ export const documentType: DocumentOption[] = [
   { value: "govIdDoc", label: "Government Document" },
   { value: "certificateDoc", label: "Certificate Document" },
 ];
+
+export type BlockClientForm = {
+  reason: string;
+};
+
+export interface BlockClientProps {
+  userId?: number;
+  isBlockClient: boolean;
+  setIsBlockClient: (isOpen: boolean) => void;
+  onSuccess?: () => void;
+}
+
+
 export interface walletViewData {
   id: number;
   dateTime: string;
@@ -144,6 +159,7 @@ export interface ClientFormData {
 
 export interface CompanyInfo {
   profileImage?: string;
+  clientType?: "corporate" | "home";
   companyName: string;
   businessType: string;
   country: string;
