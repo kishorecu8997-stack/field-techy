@@ -12,7 +12,7 @@ import { useAdminClientsByUserIdStatus } from "@/shared/apiServices/admin/adminO
  * @param userId - ID of the user to be blocked
  * @param isBlockClient - Boolean to control the visibility of the popup
  * @param setIsBlockClient - Function to update the visibility of the popup
- * @param onSuccess - Callback function to be executed after successful submission  
+ * @param onSuccess - Callback function to be executed after successful submission
  */
 export default function BlockClient({
   userId,
@@ -29,7 +29,9 @@ export default function BlockClient({
       if (onSuccess) onSuccess();
     },
     onError: (error) => {
-      const errorMessage = (error as { body?: { error?: string } })?.body?.error || "Failed to block client. Please try again.";
+      const errorMessage =
+        (error as { body?: { error?: string } })?.body?.error ||
+        "Failed to block client. Please try again.";
       toast.error(errorMessage);
     },
   });
@@ -53,7 +55,9 @@ export default function BlockClient({
     <Popup open={isBlockClient} onClose={() => setIsBlockClient(false)}>
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
-          <span className="font-bold text-lg dark:text-white">Block Client</span>
+          <span className="font-bold text-lg dark:text-white">
+            Block Client
+          </span>
           <div
             className="text-xl font-semibold cursor-pointer"
             onClick={() => setIsBlockClient(false)}
@@ -71,8 +75,8 @@ export default function BlockClient({
           />
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => setIsBlockClient(false)}
             className="border-gray-300"
           >

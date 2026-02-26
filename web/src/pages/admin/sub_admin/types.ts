@@ -6,9 +6,7 @@ export interface SubAdminFormBase {
 }
 
 export interface AddSubAdminForm extends SubAdminFormBase {
-  password: string;     
+  password: string;
 }
 
-export interface EditSubAdminForm extends SubAdminFormBase {
- 
-}
+export interface EditSubAdminForm extends SubAdminFormBase {}

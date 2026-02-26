@@ -1,7 +1,10 @@
 import React, { useMemo, useState } from "react";
 import { useAdminGetClientHistory } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
-import { CustomTable, type Column } from "@/shared/components/commonUI/custom_table";
+import {
+  CustomTable,
+  type Column,
+} from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 
 interface WalletTabProps {
@@ -39,11 +42,13 @@ const WalletTab: React.FC<WalletTabProps> = ({ userId }) => {
   const filteredTransactions = useMemo(() => {
     if (!search) return allTransactions;
     const query = search.toLowerCase();
-    return allTransactions.filter((txn) =>
-      txn.transactionType?.toLowerCase().includes(query) ||
-      txn.amount?.toLowerCase().includes(query) ||
-      txn.status?.toLowerCase().includes(query) ||
-      (txn.createdAt && dayjs(txn.createdAt).format("DD-MM-YYYY HH:mm:ss").includes(query))
+    return allTransactions.filter(
+      (txn) =>
+        txn.transactionType?.toLowerCase().includes(query) ||
+        txn.amount?.toLowerCase().includes(query) ||
+        txn.status?.toLowerCase().includes(query) ||
+        (txn.createdAt &&
+          dayjs(txn.createdAt).format("DD-MM-YYYY HH:mm:ss").includes(query)),
     );
   }, [allTransactions, search]);
 
@@ -56,7 +61,9 @@ const WalletTab: React.FC<WalletTabProps> = ({ userId }) => {
       key: "createdAt",
       label: "Date & Time",
       renderCell: (row) =>
-        row.createdAt ? dayjs(row.createdAt).format("DD-MM-YYYY HH:mm:ss") : "N/A",
+        row.createdAt
+          ? dayjs(row.createdAt).format("DD-MM-YYYY HH:mm:ss")
+          : "N/A",
     },
     { key: "transactionType", label: "Transaction Type" },
     {
@@ -88,7 +95,9 @@ const WalletTab: React.FC<WalletTabProps> = ({ userId }) => {
         <CustomTable<WalletTransaction>
           columns={columns}
           data={filteredTransactions}
-          totalCount={search ? filteredTransactions.length : (walletHistory?.total || 0)}
+          totalCount={
+            search ? filteredTransactions.length : walletHistory?.total || 0
+          }
           currentPage={page}
           initialPageSize={limit}
           loading={isLoading}

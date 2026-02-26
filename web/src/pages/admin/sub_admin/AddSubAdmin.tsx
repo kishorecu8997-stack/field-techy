@@ -48,7 +48,7 @@ export default function AddSubAdmin() {
       label: item.name ?? "Unknown",
     })) ?? [];
 
-  const { mutateAsync: createSubAdmin} = useAdminCreateSubAdmin({
+  const { mutateAsync: createSubAdmin } = useAdminCreateSubAdmin({
     onError: (error) => {
       toast.error("Failed to add Sub-Admin. Please try again.");
       console.error("Create sub-admin error:", error);

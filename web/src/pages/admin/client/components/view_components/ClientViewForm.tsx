@@ -27,9 +27,12 @@ const ClientViewForm: React.FC = () => {
     defaultValues: { reason: "" },
   });
 
-  const { data: clientData, isLoading } = useAdminGetClientByUserId(userId || "", {
-    enabled: !!userId,
-  });
+  const { data: clientData, isLoading } = useAdminGetClientByUserId(
+    userId || "",
+    {
+      enabled: !!userId,
+    },
+  );
 
   const parsedUserId = Number(userId);
   const isValidUserId = !!userId && !isNaN(parsedUserId) && parsedUserId > 0;
@@ -45,8 +48,13 @@ const ClientViewForm: React.FC = () => {
   if (!isValidUserId) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center gap-4 bg-white dark:bg-gray-800 rounded-md p-6">
-        <div className="text-red-500 text-lg font-medium">Invalid Client ID</div>
-        <p className="text-gray-500">The client identifier is missing or invalid. Please go back and try again.</p>
+        <div className="text-red-500 text-lg font-medium">
+          Invalid Client ID
+        </div>
+        <p className="text-gray-500">
+          The client identifier is missing or invalid. Please go back and try
+          again.
+        </p>
         <Button onClick={() => navigate(absoluteUrls.admin.home.manage_client)}>
           Back to Manage Clients
         </Button>
@@ -72,7 +80,6 @@ const ClientViewForm: React.FC = () => {
     documentNumber: clientData?.documentNumber || "N/A",
   };
 
-
   const tabs = [
     {
       label: "Basic Information",
@@ -84,21 +91,27 @@ const ClientViewForm: React.FC = () => {
     },
     {
       label: "Wallet",
-      content: <WalletTab userId={parsedUserId} walletBalance={clientData?.balance} />,
+      content: (
+        <WalletTab userId={parsedUserId} walletBalance={clientData?.balance} />
+      ),
     },
     {
       label: "Documents",
-      content: <DocumentView 
-        govIdDoc={clientData?.govIdDoc?.url} 
-        certificateDoc={clientData?.certificateDoc?.url} 
-      />,
+      content: (
+        <DocumentView
+          govIdDoc={clientData?.govIdDoc?.url}
+          certificateDoc={clientData?.certificateDoc?.url}
+        />
+      ),
     },
   ];
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold text-gray-800 dark:text-white">Client Details</h1>
+        <h1 className="font-semibold text-gray-800 dark:text-white">
+          Client Details
+        </h1>
         <div className="flex items-center gap-2">
           <Button
             variant="primary"
@@ -122,9 +135,9 @@ const ClientViewForm: React.FC = () => {
       </div>
 
       <FormContainer methods={blockFormMethods} onSubmit={() => {}}>
-        <BlockClient 
+        <BlockClient
           userId={parsedUserId}
-          isBlockClient={isBlockPopupOpen} 
+          isBlockClient={isBlockPopupOpen}
           setIsBlockClient={setIsBlockPopupOpen}
           onSuccess={() => {
             navigate(absoluteUrls.admin.home.manage_client);
