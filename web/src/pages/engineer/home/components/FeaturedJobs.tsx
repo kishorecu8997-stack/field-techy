@@ -1,19 +1,18 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
-import { getExperienceLevel } from "@/utils";
+import { useReverseGeocoding } from "@/hooks/useReverseGeocoding";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import {
-  BOOKMARK_CHANGE_EVENT,
-  isJobSaved,
-  toggleSavedJob,
-} from "@/utils/bookmarkUtils";
+  useGetEngineerSavedJobs,
+  useStoreEngineerSaveJobs,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { getExperienceLevel } from "@/utils";
 import { getCurrencyFromStorage } from "@/utils/currency";
 import { calculateMatchScore } from "@/utils/matchCalculator";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useReverseGeocoding } from "@/hooks/useReverseGeocoding";
 import type { JobItem } from "../types";
-import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * Renders a circular progress ring for the match score.
@@ -111,9 +110,25 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
  */
 const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
   const job = props as JobItem;
-  const [isSelected, setSelected] = useState(false);
   const matchScore = props.matchScore;
   const { data: engagementModels } = useLookupData("engagementModels");
+  const { refetch } = useGetEngineerSavedJobs({
+    limit: 10,
+    page: 1,
+  });
+  const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
+    onSuccess: (response) => {
+      refetch();
+      toast.success(
+        response?.status === "saved"
+          ? "Job saved successfully"
+          : "Job removed from saved",
+      );
+    },
+    onError: () => {
+      toast.error("Failed to update job status. Please try again.");
+    },
+  });
 
   const engagementModelName = useMemo(() => {
     if (!props.engagementModel || !engagementModels) return "";
@@ -123,36 +138,17 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
     return model?.name || "";
   }, [props.engagementModel, engagementModels]);
 
-  useEffect(() => {
-    if (props.id) {
-      setSelected(isJobSaved(props.id));
-    }
-  }, [props.id]);
-
-  useEffect(() => {
-    const handleBookmarkChange = () => {
-      if (props.id) {
-        setSelected(isJobSaved(props.id));
-      }
-    };
-    window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
-    return () => {
-      window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
-    };
-  }, [props.id]);
-
   const handleBookmarkClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
     e.preventDefault();
-    if (!props.id) return;
-    const wasBookmarked = isSelected;
-    toggleSavedJob(job);
+    e.stopPropagation();
 
-    if (!wasBookmarked) {
-      toast.success("Job saved successfully");
-    } else {
-      toast.error("Job removed from saved");
-    }
+    if (!job.id || isPending) return;
+
+    toggleSaveMutation({
+      body: {
+        jobId: Number(job.id),
+      },
+    });
   };
 
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
@@ -208,9 +204,9 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
             <div
               onClick={handleBookmarkClick}
               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
-              aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
+              aria-label={job.status ? "Remove bookmark" : "Bookmark job"}
             >
-              {isSelected ? (
+              {job.status ? (
                 <icons.bookmarkFilled className="h-5 w-5 text-teal-600 dark:text-teal-400" />
               ) : (
                 <icons.bookmark className="h-5 w-5" />

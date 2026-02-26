@@ -37,8 +37,8 @@ export interface JobItem {
   skills: string[] | null;
   tools: string[] | null;
 
-  toolImage: string | null;
-  toolAdditionalBudget: string | null;
+  toolImage?: string | null;
+  toolAdditionalBudget?: string | null;
   postedTime: string;
   jobDuration: string;
   rating?: number;

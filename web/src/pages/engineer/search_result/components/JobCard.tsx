@@ -1,12 +1,14 @@
 import { icons } from "@/config/icons";
-import { scrollToTop } from "@/utils";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import {
-  BOOKMARK_CHANGE_EVENT,
-  isJobSaved,
-  toggleSavedJob,
-} from "@/utils/bookmarkUtils";
+  useGetEngineerSavedJobs,
+  useStoreEngineerSaveJobs,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { scrollToTop } from "@/utils";
 import { calculateMatchScore } from "@/utils/matchCalculator";
-import React, { useEffect, useMemo, useState } from "react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import React, { useMemo, useState } from "react";
 import { BiDollar, BiUser } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
@@ -14,9 +16,6 @@ import { toast } from "react-toastify";
 import type { JobItem } from "../../home/types";
 import { getExperienceLevel, JOB_STATUSES } from "../types";
 import { Badge } from "./BadgeVariant";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 
 dayjs.extend(relativeTime);
 
@@ -168,7 +167,6 @@ const JobCard: React.FC<{
   userSkills = [],
   userTools = [],
 }) => {
-  const [isBookmarked, setIsBookmarked] = useState(isJobSaved(job.id));
   const [showWhyPopover, setShowWhyPopover] = useState(false);
 
   // Fetch lookup data for location
@@ -183,6 +181,23 @@ const JobCard: React.FC<{
     job.stateId ? String(job.stateId) : undefined,
     !!job.stateId,
   );
+  const { refetch } = useGetEngineerSavedJobs({
+    limit: 10,
+    page: 1,
+  });
+  const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
+    onSuccess: (response) => {
+      refetch();
+      toast.success(
+        response?.status === "saved"
+          ? "Job saved successfully"
+          : "Job removed from saved",
+      );
+    },
+    onError: () => {
+      toast.error("Failed to update job status. Please try again.");
+    },
+  });
 
   const jobData = useMemo(() => {
     const jobRecord = job as unknown as Record<string, unknown>;
@@ -192,7 +207,7 @@ const JobCard: React.FC<{
       return typeof value === "string" ? value : undefined;
     };
 
-    const clientName = job.client?.companyName || "-";
+    const clientName = job.client?.contactPersonName || "-";
 
     // Resolve location string from lookups
     const countryName = countries?.find((c) => c.id === job.countryId)?.name;
@@ -233,40 +248,17 @@ const JobCard: React.FC<{
     );
   }, [jobData.skills, jobData.tools, userSkills, userTools]);
 
-  // Sync bookmark state on mount and when job.id changes
-  useEffect(() => {
-    if (jobData.id) {
-      setIsBookmarked(isJobSaved(jobData.id));
-    }
-  }, [jobData.id]);
-
-  // Listen for bookmark changes
-  useEffect(() => {
-    const handleBookmarkChange = () => {
-      if (job.id) {
-        setIsBookmarked(isJobSaved(job.id));
-      }
-    };
-    window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
-    return () => {
-      window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
-    };
-  }, [job.id]);
-
-  // Handle bookmark toggle
   const handleBookmarkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!job.id) return;
-    const wasBookmarked = isBookmarked;
-    toggleSavedJob(job);
-    setIsBookmarked(!wasBookmarked);
 
-    if (!wasBookmarked) {
-      toast.success("Job saved successfully");
-    } else {
-      toast.error("Job removed from saved");
-    }
+    if (!job.id || isPending) return;
+
+    toggleSaveMutation({
+      body: {
+        jobId: Number(job.id),
+      },
+    });
   };
 
   const STATUS_VARIANT_MAP = {
@@ -436,9 +428,11 @@ const JobCard: React.FC<{
               <div
                 onClick={handleBookmarkClick}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+                aria-label={
+                  job?.status === "unsaved" ? "Remove bookmark" : "Add bookmark"
+                }
               >
-                {isBookmarked ? (
+                {job?.status === "unsaved" ? (
                   <icons.bookmarkFilled className="w-4 h-4 text-green-600 dark:text-green-400" />
                 ) : (
                   <icons.bookmark className="w-4 h-4" />
