@@ -840,10 +840,6 @@ export function useAdminGetClientHistory(
   });
 }
 
-
-
-
-
 export type UpdateExchangeRateBody = NonNullable<
   UpdateExchangeRateData["body"]
 >;
@@ -864,11 +860,7 @@ export function useUpdateExchangeRate(options?: {
       return data as UpdateExchangeRateResponse;
     },
     onSuccess: (data) => {
-      queryClient.resetQueries({
-        queryKey: queryKeys.admin.exchangeRates,
-        exact: false,
-      });
-      queryClient.refetchQueries({
+      queryClient.invalidateQueries({
         queryKey: queryKeys.admin.exchangeRates,
         exact: false,
       });

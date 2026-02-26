@@ -47,6 +47,15 @@ const EditCurrencyRates: React.FC = () => {
   const stateRow = location.state as CurrencyConversionRow | null;
   const currencyId = params.id ? Number(params.id) : 0;
 
+  // Validate currencyId - redirect if invalid
+  const isValidCurrencyId = currencyId > 0 && !isNaN(currencyId);
+  React.useEffect(() => {
+    if (!isValidCurrencyId && !stateRow) {
+      toast.error("Invalid currency ID. Please select a currency from the list.");
+      navigate(absoluteUrls.admin.home.manage_currency_conversion);
+    }
+  }, [isValidCurrencyId, stateRow, navigate]);
+
   const row: CurrencyConversionRow = stateRow ?? {
     id: null,
     countryName: "",
@@ -68,6 +77,12 @@ const EditCurrencyRates: React.FC = () => {
   });
 
   const handleSaveConfirmation = async (data: FormValues) => {
+    // Validate currencyId before submitting
+    if (!isValidCurrencyId || row.currencyId === 0) {
+      toast.error("Invalid currency ID. Please try again from the list.");
+      return;
+    }
+    
     await showPopup({
       title: "Exchange Rate",
       body: "Are you sure you want to save this exchange rate?",

@@ -174,7 +174,6 @@ const EditRateCard = () => {
             <Button
               type="submit"
               className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700"
-              onClick={() => console.log("Submit button clicked")}
             >
               Submit
             </Button>

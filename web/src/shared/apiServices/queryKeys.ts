@@ -40,6 +40,10 @@ export const queryKeys = {
     manageClients: ["adminManageClients"] as const,
     adminGetClient: ["adminGetClient"] as const,
     exchangeRates: ["adminExchangeRates"] as const,
+    rateCards: {
+      all: ["admin", "rateCards"] as const,
+      detail: (id: number) => ["admin", "rateCards", id] as const,
+    },
     notifications: {
       all: ["admin", "notifications"] as const,
       detail: (id: string | number) =>

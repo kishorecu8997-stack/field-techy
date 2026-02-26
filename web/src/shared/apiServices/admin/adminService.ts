@@ -245,7 +245,7 @@ export function useGetRateCards(
   options?: { enabled?: boolean },
 ) {
   return useQuery<RateCardsResponse>({
-    queryKey: ["admin-rate-cards", params],
+    queryKey: [...queryKeys.admin.rateCards.all, params],
     queryFn: () => AdminAdapter.getRateCards(params),
     enabled: options?.enabled ?? true,
   });
@@ -260,7 +260,7 @@ export function useCreateRateCard(options?: {
   return useMutation({
     mutationFn: (data: CreateRateCardParams) => AdminAdapter.createRateCard(data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-rate-cards"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
       options?.onSuccess?.(data);
     },
     onError: (error) => {
@@ -279,7 +279,7 @@ export function useUpdateRateCard(options?: {
     mutationFn: ({ id, data }: { id: number; data: UpdateRateCardParams }) =>
       AdminAdapter.updateRateCard(id, data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-rate-cards"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
       options?.onSuccess?.(data);
     },
     onError: (error) => {
@@ -297,7 +297,7 @@ export function useDeleteRateCard(options?: {
   return useMutation({
     mutationFn: (id: number) => AdminAdapter.deleteRateCard(id),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-rate-cards"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
       options?.onSuccess?.(data);
     },
     onError: (error) => {

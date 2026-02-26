@@ -39,11 +39,15 @@ const ManageCurrencyConversion: React.FC = () => {
     {
       key: "rate",
       label: "Exchange Rates (Base: INR)",
-      renderCell: (row: CurrencyConversionRow) => (
-        <div className="whitespace-nowrap">
-          {row.rate ? parseFloat(row.rate).toFixed(4) : "-"}
-        </div>
-      ),
+      renderCell: (row: CurrencyConversionRow) => {
+        const parsedRate = Number(row.rate);
+        const displayRate = Number.isFinite(parsedRate) ? parsedRate.toFixed(4) : "-";
+        return (
+          <div className="whitespace-nowrap">
+            {displayRate}
+          </div>
+        );
+      },
     },
     {
       key: "lastUpdated",
