@@ -136,21 +136,6 @@ export default function ExperienceDetails() {
           />
         </div>
       </div>
-
-      {/* <div className="w-full flex items-center gap-2 mt-2 justify-start">
-        <CheckboxInput
-          name="isCurrent"
-          label="I currently work here"
-          isShowLabel={true}
-          rules={{
-            onChange: () => {
-              if (methods.getValues("isCurrent")) {
-                methods.setValue("endDate", null);
-              }
-            },
-          }}
-        />
-      </div> */}
     </div>
   );
 }

@@ -88,7 +88,6 @@ const AppliedJob: React.FC = () => {
               {row.engineer?.name?.charAt(0)?.toUpperCase() ?? "N"}
             </span>
           </div>
-
           <div>
             <p className="font-semibold text-sm">
               {row.engineer?.name ?? "N/A"}
