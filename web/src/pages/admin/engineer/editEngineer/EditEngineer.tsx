@@ -73,10 +73,11 @@ export default function EditEngineer() {
   const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
 
   const engineerId = Number(id);
+  const hasValidEngineerId = Number.isFinite(engineerId) && engineerId > 0;
 
-  const { data: engineerData, isLoading } = useAdminGetEngineerById(
+  const { data: engineerData, isLoading, error } = useAdminGetEngineerById(
     engineerId,
-    Number.isFinite(engineerId),
+    hasValidEngineerId,
   );
 
   const methods = useForm<EngineerFormData>({
@@ -103,6 +104,22 @@ export default function EditEngineer() {
   });
 
   const { trigger, getValues, reset } = methods;
+
+  const validateBasicInformation = () =>
+    trigger([
+      "name",
+      "email",
+      "phoneNumber",
+      "address",
+      "skills",
+      "price",
+      "serviceCategory",
+    ]);
+
+  const validateExperienceDetails = () =>
+    trigger(["designation", "location", "resume", "employer", "experience"]);
+
+  const validateDocuments = () => trigger(["governmentId", "certificate"]);
 
   useEffect(() => {
     if (!engineerData) return;
@@ -174,27 +191,13 @@ export default function EditEngineer() {
   const handleNext = async () => {
     let isValid = false;
     if (activeTab === "Basic Information") {
-      isValid = await trigger([
-        "name",
-        "email",
-        "phoneNumber",
-        "address",
-        "skills",
-        "price",
-        "serviceCategory",
-      ]);
+      isValid = await validateBasicInformation();
       if (isValid) setActiveTab("Experience Details");
       return;
     }
 
     if (activeTab === "Experience Details") {
-      isValid = await trigger([
-        "designation",
-        "location",
-        "resume",
-        "employer",
-        "experience",
-      ]);
+      isValid = await validateExperienceDetails();
       if (isValid) setActiveTab("Documents");
     }
   };
@@ -273,11 +276,18 @@ export default function EditEngineer() {
   };
 
   const handleSave = async () => {
-    if (!Number.isFinite(engineerId)) {
+    if (!hasValidEngineerId) {
       toast.error("Invalid engineer id");
       return;
     }
-    if (!(await trigger())) return;
+    const isValidBasic = await validateBasicInformation();
+    if (!isValidBasic) return;
+
+    const isValidExperience = await validateExperienceDetails();
+    if (!isValidExperience) return;
+
+    const isValidDocs = await validateDocuments();
+    if (!isValidDocs) return;
 
     setIsSubmitting(true);
     try {
@@ -288,11 +298,7 @@ export default function EditEngineer() {
   };
 
   const tabs = [
-    {
-      label: "Basic Information",
-      content: <BasicInformation showPasswordFields={false} />,
-      hide: false,
-    },
+    { label: "Basic Information", content: <BasicInformation />, hide: false },
     {
       label: "Experience Details",
       content: <ExperienceDetails />,
@@ -303,7 +309,63 @@ export default function EditEngineer() {
 
   const isLastTab = activeTab === "Documents";
 
+  const handleTabChange = async (nextTab: string) => {
+    if (nextTab === activeTab) return;
+
+    const order = ["Basic Information", "Experience Details", "Documents"];
+    const currentIndex = order.indexOf(activeTab);
+    const nextIndex = order.indexOf(nextTab);
+
+    if (nextIndex === -1) return;
+    if (nextIndex <= currentIndex) {
+      setActiveTab(nextTab);
+      return;
+    }
+
+    if (currentIndex < 1 && nextIndex >= 1) {
+      const ok = await validateBasicInformation();
+      if (!ok) return;
+    }
+
+    if (currentIndex < 2 && nextIndex >= 2) {
+      const ok = await validateExperienceDetails();
+      if (!ok) return;
+    }
+
+    setActiveTab(nextTab);
+  };
+
   if (isLoading) return <LoaderComponent />;
+
+  if (!hasValidEngineerId) {
+    return (
+      <div className="w-full px-4 h-full mt-6">
+        <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
+          Missing engineer id in the URL.
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full px-4 h-full mt-6">
+        <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
+          An error occurred while fetching engineer details.
+        </div>
+      </div>
+    );
+  }
+
+  if (!engineerData) {
+    return (
+      <div className="w-full px-4 h-full mt-6">
+        <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
+          Engineer details not found.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full px-4 h-full mt-6">
@@ -319,7 +381,7 @@ export default function EditEngineer() {
           <AdminTabComponent
             tabs={tabs}
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={handleTabChange}
           />
 
           <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">

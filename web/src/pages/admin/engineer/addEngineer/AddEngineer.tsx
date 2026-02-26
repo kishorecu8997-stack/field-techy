@@ -57,8 +57,6 @@ export default function AddEngineer() {
     defaultValues: {
       name: "",
       email: "",
-      password: "",
-      confirmPassword: "",
       phoneNumber: "",
       profileImage: null,
       address: "",
@@ -76,7 +74,6 @@ export default function AddEngineer() {
     },
     mode: "onChange",
     reValidateMode: "onChange",
-    shouldUnregister: false,
   });
 
   const { trigger, getValues, reset } = methods;
@@ -86,8 +83,6 @@ export default function AddEngineer() {
       "name",
       "email",
       "phoneNumber",
-      "password",
-      "confirmPassword",
       "address",
       "skills",
       "price",
@@ -118,7 +113,6 @@ export default function AddEngineer() {
       name: data.name,
       email: data.email,
       phoneNumber: data.phoneNumber,
-      password: data.password!,
 
       address: data.address || undefined,
       serviceCategoryId: data.serviceCategory

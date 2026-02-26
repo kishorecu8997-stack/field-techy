@@ -1,8 +1,6 @@
 export interface BasicInformation {
   name: string;
   email: string;
-  password?: string;
-  confirmPassword?: string;
   phoneNumber: string;
   profileImage: File | FileList | string | null;
   address: string;

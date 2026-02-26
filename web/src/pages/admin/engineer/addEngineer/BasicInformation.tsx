@@ -1,5 +1,5 @@
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
-import { InputField, PasswordInput } from "@/shared/components/commonUI/inputs";
+import { InputField } from "@/shared/components/commonUI/inputs";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import PhoneInputWithValidation from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
@@ -17,12 +17,6 @@ import {
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { EngineerFormData } from "../types";
-import { validatePassword } from "@/shared/libs/utils";
-import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPassword";
-
-type BasicInformationProps = {
-  showPasswordFields?: boolean;
-};
 
 /**
  * BasicInformation component handles the first step of the engineer registration form.
@@ -57,9 +51,7 @@ type BasicInformationProps = {
 //   LookupTable.BusinessTypes,
 // );
 
-export default function BasicInformation({
-  showPasswordFields = true,
-}: BasicInformationProps) {
+export default function BasicInformation() {
   const { watch, setValue } = useFormContext<EngineerFormData>();
   const serviceCategoryValue = watch("serviceCategory");
 
@@ -147,14 +139,7 @@ export default function BasicInformation({
             }
             maxTags={15}
           />
-          <SelectField
-            name="serviceCategory"
-            label="Service Category"
-            placeholder="Select Category"
-            options={serviceCategoryOptions}
-            required
-          />
-          {showPasswordFields ? priceField : null}
+          {priceField}
         </div>
 
         <div className="space-y-2">
@@ -165,31 +150,19 @@ export default function BasicInformation({
             required
             rules={validateEmailRules}
           />
-          {showPasswordFields ? (
-            <>
-              <PasswordInput
-                name="password"
-                label="Password"
-                required
-                rules={{
-                  required: "Password is required",
-                  validate: (v: string) => validatePassword(v),
-                }}
-              />
-              <ConfirmPassword
-                name="confirmPassword"
-                label="Confirm Password"
-                passwordField="password"
-                required
-              />
-            </>
-          ) : null}
           <InputField
             name="address"
             label="Address"
             type="text"
             required
             rules={{ validate: (v: string) => validateAddress(v) }}
+          />
+          <SelectField
+            name="serviceCategory"
+            label="Service Category"
+            placeholder="Select Category"
+            options={serviceCategoryOptions}
+            required
           />
           <InputField
             name="portfolio"
@@ -198,7 +171,6 @@ export default function BasicInformation({
             placeholder="Portfolio Link"
             rules={{ validate: (v: string) => validatePortfolioLink(v) }}
           />
-          {!showPasswordFields ? priceField : null}
         </div>
       </div>
     </div>
