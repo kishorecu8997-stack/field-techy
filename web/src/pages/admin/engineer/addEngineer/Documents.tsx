@@ -3,8 +3,26 @@ import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import DocumentCard from "@/shared/components/DocumentCard";
 import type { EngineerFormData } from "../types";
 
+/**
+ * Documents Component
+ *
+ * Displays upload or preview sections for engineer documents
+ * (Government ID and Qualification Certificate) using
+ * React Hook Form context.
+ *
+ * - Shows `DocumentCard` when a document URL exists
+ * - Shows `FileUpload` when no file is present
+ * - Supports view-only mode to disable editing actions
+ *
+ * @param {DocumentsProps} props Component props
+ * @param {boolean} [props.isView=false] Enables view-only mode
+ *
+ * @returns {JSX.Element} Documents upload/preview UI
+ */
+
+
 interface DocumentsProps {
-  isView?: boolean; // toggle view-only mode
+  isView?: boolean;
 }
 
 export default function Documents({ isView = false }: DocumentsProps) {

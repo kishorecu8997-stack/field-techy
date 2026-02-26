@@ -32,8 +32,6 @@ const AppliedJob: React.FC = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-
-  // const navigate = useNavigate();
   const params = useParams();
 
   const userId = Number(params.id);
@@ -105,7 +103,7 @@ const AppliedJob: React.FC = () => {
     {
       key: "assignmentType",
       label: "Type",
-      renderCell: (row) => <span>{row.assignmentType}</span>,
+      renderCell: (row) => <span>{row.assignmentType || "N/A"}</span>,
     },
     {
       key: "proposalDetail",

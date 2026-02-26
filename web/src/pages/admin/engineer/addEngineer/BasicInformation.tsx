@@ -47,9 +47,6 @@ import type { EngineerFormData } from "../types";
  *
  * @returns {JSX.Element} A form section component with basic information fields
  */
-// const { data: businessTypes } = useAppGetLookupData(
-//   LookupTable.BusinessTypes,
-// );
 
 export default function BasicInformation() {
   const { watch, setValue } = useFormContext<EngineerFormData>();
