@@ -38,7 +38,7 @@ const AddRateCard = () => {
   const { showPopup } = usePopupStore();
 
   const createRateCardMutation = useCreateRateCard({
-    onSuccess: (data: CreateRateCardResponse) => {
+    onSuccess: (_data: CreateRateCardResponse) => {
       toast.success("Rate card created successfully!");
       navigate(absoluteUrls.admin.home.manage_rate_card);
       methods.reset();

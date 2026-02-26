@@ -3,12 +3,13 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import RateCardForm from "./RateCardForm";
 import PricingModel from "./PricingModel";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import RateCardDetails from "./RateCardDetails";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useUpdateRateCard } from "@/shared/apiServices/admin/adminService";
 
 /**
  * EditRateCard Component
@@ -31,6 +32,9 @@ const EditRateCard = () => {
   const path = useLocation().pathname;
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+  const { id } = useParams<{ id: string }>();
+  const rateCardId = id ? parseInt(id, 10) : 0;
+  console.log("Rate Card ID:", rateCardId, "from param:", id);
 
   const methods = useForm({
     defaultValues: {
@@ -77,10 +81,30 @@ const EditRateCard = () => {
     },
   });
 
+  const updateRateCardMutation = useUpdateRateCard({
+    onSuccess: () => {
+      toast.success("Rate card updated successfully!");
+      navigate(absoluteUrls.admin.home.manage_rate_card);
+      methods.reset();
+    },
+    onError: (error: unknown) => {
+      console.error("Failed to update rate card:", error);
+      toast.error("Failed to update rate card. Please try again.");
+    },
+  });
+
   const handleSaveConfirmation = async (data: any) => {
+    console.log("handleSaveConfirmation called with data:", data);
+    
+    // Validate rate card ID
+    if (!rateCardId || rateCardId === 0) {
+      toast.error("Invalid rate card ID. Please try again from the list.");
+      return;
+    }
+    
     await showPopup({
-      title: "Add Rate Card",
-      body: "Are you sure you want to save this details?",
+      title: "Update Rate Card",
+      body: "Are you sure you want to update this rate card?",
       actionButtons: [
         {
           label: "Cancel",
@@ -92,12 +116,18 @@ const EditRateCard = () => {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Deleting job:", data);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Rate card updated successfully!");
-            navigate(absoluteUrls.admin.home.manage_rate_card);
-            methods.reset();
+            // Transform form data to API format
+            // Based on the API body { "rate": 1 }, we send the primary rate value
+            // For now, we'll use the monthly rate from the first tier as the rate
+            const firstSkill = data.skills?.[0];
+            const firstTier = firstSkill?.tiers?.[0];
+            const rate = firstTier?.monthly || firstTier?.hourly || firstTier?.halfDay || 
+                         firstTier?.fullDay || firstTier?.weekly || 0;
+            
+            updateRateCardMutation.mutate({
+              id: rateCardId,
+              data: { rate: parseFloat(rate) },
+            });
             close(true);
           },
         },
@@ -106,6 +136,7 @@ const EditRateCard = () => {
   };
 
   const onSubmit = (data: any) => {
+    console.log("Form submitted with data:", data);
     handleSaveConfirmation(data);
   };
 
@@ -143,6 +174,7 @@ const EditRateCard = () => {
             <Button
               type="submit"
               className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700"
+              onClick={() => console.log("Submit button clicked")}
             >
               Submit
             </Button>

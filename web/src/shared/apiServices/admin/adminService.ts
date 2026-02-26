@@ -10,6 +10,8 @@ import type {
   RateCardParams,
   CreateRateCardParams,
   CreateRateCardResponse,
+  UpdateRateCardParams,
+  UpdateRateCardResponse,
 } from "./adminTypes";
 import { queryKeys } from "../queryKeys";
 import type { FileDownloadResponse } from "../client/clientTypes";
@@ -256,6 +258,25 @@ export function useCreateRateCard(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateRateCardParams) => AdminAdapter.createRateCard(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["admin-rate-cards"] });
+      options?.onSuccess?.(data);
+    },
+    onError: (error) => {
+      options?.onError?.(error);
+    },
+  });
+}
+
+/** Hook to update a rate card */
+export function useUpdateRateCard(options?: {
+  onSuccess?: (data: UpdateRateCardResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateRateCardParams }) =>
+      AdminAdapter.updateRateCard(id, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["admin-rate-cards"] });
       options?.onSuccess?.(data);

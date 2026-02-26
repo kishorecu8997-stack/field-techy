@@ -128,3 +128,11 @@ export interface CreateRateCardResponse {
   message: string;
   id?: number;
 }
+
+export interface UpdateRateCardParams {
+  rate: number;
+}
+
+export interface UpdateRateCardResponse {
+  message: string;
+}

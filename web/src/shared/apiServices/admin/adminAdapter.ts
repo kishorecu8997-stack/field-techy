@@ -16,7 +16,7 @@ import type {
   FileDownloadResponse,
   FileUploadResponse,
 } from "../client/clientTypes";
-import type { RateCardsResponse, RateCardParams, CreateRateCardParams, CreateRateCardResponse } from "./adminTypes";
+import type { RateCardsResponse, RateCardParams, CreateRateCardParams, CreateRateCardResponse, UpdateRateCardParams, UpdateRateCardResponse } from "./adminTypes";
 
 /*
  * AdminAdapter
@@ -367,6 +367,22 @@ export class AdminAdapter {
     try {
       const response = await axiosInstance.post(
         ADMIN_ROUTER_PATHS.CREATE_RATE_CARD,
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Update Rate Card */
+  static async updateRateCard(
+    id: number,
+    data: UpdateRateCardParams,
+  ): Promise<UpdateRateCardResponse> {
+    try {
+      const response = await axiosInstance.put(
+        ADMIN_ROUTER_PATHS.UPDATE_RATE_CARD(id),
         data,
       );
       return response.data;

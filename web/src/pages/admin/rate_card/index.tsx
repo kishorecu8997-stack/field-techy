@@ -155,7 +155,7 @@ const ManageRateCards: React.FC = () => {
           </div>
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
-            onClick={() => navigate(absoluteUrls.admin.home.edit_rate_card)}
+            onClick={() => navigate(absoluteUrls.admin.home.edit_rate_card.replace(":id", String(row.id)))}
           >
             <CiEdit className="text-blue-600" />
           </div>
