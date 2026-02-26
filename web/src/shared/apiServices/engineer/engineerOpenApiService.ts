@@ -30,6 +30,7 @@ import {
   type GetEngineerTransactionsData,
   type GetEngineerTransactionsError,
   type GetEngineerTransactionsResponse,
+  type GetUserReportsData,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -66,6 +67,8 @@ import {
   engineerGetSavedJobsOptions,
   engineerToggleSaveJobMutation,
   getEngineerEarningsOptions,
+  submitReportMutation,
+  getUserReportsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
@@ -641,6 +644,34 @@ export function useGetEngineerSavedJobs(
 ) {
   return useQuery({
     ...engineerGetSavedJobsOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useSaveReportEngineer(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...submitReportMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useGetReportEngineer(
+  query: GetUserReportsData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...getUserReportsOptions({
       client: apiClient,
       query,
     }),
