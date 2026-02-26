@@ -16,6 +16,7 @@ export const queryKeys = {
     all: ["engineers"] as const,
     detail: (id: string | number) =>
       [...queryKeys.engineer.all, String(id)] as const,
+    adminById: (id: number) => ["admin", "engineer", id] as const,
   },
   auth: {
     all: ["auth"] as const,

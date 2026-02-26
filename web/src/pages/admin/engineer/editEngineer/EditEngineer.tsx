@@ -253,6 +253,10 @@ export default function EditEngineer() {
                 queryKey: queryKeys.admin.manageEngineers,
               });
 
+              await queryClient.invalidateQueries({
+                queryKey: queryKeys.engineer.adminById(engineerId),
+              });
+
               toast.success("Engineer updated successfully!");
               reset();
               navigate(absoluteUrls.admin.home.manage_engineer);
@@ -284,7 +288,11 @@ export default function EditEngineer() {
   };
 
   const tabs = [
-    { label: "Basic Information", content: <BasicInformation />, hide: false },
+    {
+      label: "Basic Information",
+      content: <BasicInformation showPasswordFields={false} />,
+      hide: false,
+    },
     {
       label: "Experience Details",
       content: <ExperienceDetails />,

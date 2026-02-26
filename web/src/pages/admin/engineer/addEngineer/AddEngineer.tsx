@@ -57,6 +57,8 @@ export default function AddEngineer() {
     defaultValues: {
       name: "",
       email: "",
+      password: "",
+      confirmPassword: "",
       phoneNumber: "",
       profileImage: null,
       address: "",
@@ -74,9 +76,29 @@ export default function AddEngineer() {
     },
     mode: "onChange",
     reValidateMode: "onChange",
+    shouldUnregister: false,
   });
 
   const { trigger, getValues, reset } = methods;
+
+  const validateBasicInformation = () =>
+    trigger([
+      "name",
+      "email",
+      "phoneNumber",
+      "password",
+      "confirmPassword",
+      "address",
+      "skills",
+      "price",
+      "serviceCategory",
+    ]);
+
+  const validateExperienceDetails = () =>
+    trigger(["designation", "resume", "location", "employer", "experience"]);
+
+  const validateDocuments = () => trigger(["governmentId", "certificate"]);
+
   const extractFile = (v: unknown) =>
     v instanceof File ? v : (v instanceof FileList && v[0]) || null;
   const buildPayload = (data: EngineerFormData) => {
@@ -96,9 +118,7 @@ export default function AddEngineer() {
       name: data.name,
       email: data.email,
       phoneNumber: data.phoneNumber,
-
-      // TODO: replace later
-      password: "Temp@123",
+      password: data.password!,
 
       address: data.address || undefined,
       serviceCategoryId: data.serviceCategory
@@ -138,24 +158,10 @@ export default function AddEngineer() {
     let isValid = false;
 
     if (activeTab === "Basic Information") {
-      isValid = await trigger([
-        "name",
-        "email",
-        "phoneNumber",
-        "address",
-        "skills",
-        "price",
-        "serviceCategory",
-      ]);
+      isValid = await validateBasicInformation();
       if (isValid) setActiveTab("Experience Details");
     } else if (activeTab === "Experience Details") {
-      isValid = await trigger([
-        "designation",
-        "resume",
-        "location",
-        "employer",
-        "experience",
-      ]);
+      isValid = await validateExperienceDetails();
       if (isValid) setActiveTab("Documents");
     }
   };
@@ -224,8 +230,14 @@ export default function AddEngineer() {
   };
 
   const handleSave = async () => {
-    const isValid = await trigger();
-    if (!isValid) return;
+    const isValidBasic = await validateBasicInformation();
+    if (!isValidBasic) return;
+
+    const isValidExperience = await validateExperienceDetails();
+    if (!isValidExperience) return;
+
+    const isValidDocs = await validateDocuments();
+    if (!isValidDocs) return;
     setIsSubmitting(true);
     try {
       await handleSaveConfirmation(getValues());
@@ -240,6 +252,32 @@ export default function AddEngineer() {
   ];
 
   const isLastTab = activeTab === "Documents";
+
+  const handleTabChange = async (nextTab: string) => {
+    if (nextTab === activeTab) return;
+
+    const order = ["Basic Information", "Experience Details", "Documents"];
+    const currentIndex = order.indexOf(activeTab);
+    const nextIndex = order.indexOf(nextTab);
+
+    if (nextIndex === -1) return;
+    if (nextIndex <= currentIndex) {
+      setActiveTab(nextTab);
+      return;
+    }
+
+    if (currentIndex < 1 && nextIndex >= 1) {
+      const ok = await validateBasicInformation();
+      if (!ok) return;
+    }
+
+    if (currentIndex < 2 && nextIndex >= 2) {
+      const ok = await validateExperienceDetails();
+      if (!ok) return;
+    }
+
+    setActiveTab(nextTab);
+  };
 
   return (
     <div className="w-full px-4 h-full mt-6">
@@ -257,7 +295,7 @@ export default function AddEngineer() {
           <AdminTabComponent
             tabs={tabs}
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={handleTabChange}
           />
 
           <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">

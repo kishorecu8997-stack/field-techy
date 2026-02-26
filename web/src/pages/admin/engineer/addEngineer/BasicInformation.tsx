@@ -1,5 +1,5 @@
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
-import { InputField } from "@/shared/components/commonUI/inputs";
+import { InputField, PasswordInput } from "@/shared/components/commonUI/inputs";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import PhoneInputWithValidation from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
@@ -17,6 +17,12 @@ import {
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { EngineerFormData } from "../types";
+import { validatePassword } from "@/shared/libs/utils";
+import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPassword";
+
+type BasicInformationProps = {
+  showPasswordFields?: boolean;
+};
 
 /**
  * BasicInformation component handles the first step of the engineer registration form.
@@ -51,7 +57,9 @@ import type { EngineerFormData } from "../types";
 //   LookupTable.BusinessTypes,
 // );
 
-export default function BasicInformation() {
+export default function BasicInformation({
+  showPasswordFields = true,
+}: BasicInformationProps) {
   const { watch, setValue } = useFormContext<EngineerFormData>();
   const serviceCategoryValue = watch("serviceCategory");
 
@@ -99,13 +107,24 @@ export default function BasicInformation() {
     }
   }, [serviceCategoryOptions, serviceCategoryValue, setValue]);
 
+  const priceField = (
+    <InputField
+      name="price"
+      label="Price per/hour"
+      type="text"
+      placeholder="Enter Price per/hour"
+      required
+      rules={{ validate: (v: string) => validatePricePerHour(v) }}
+    />
+  );
+
   return (
     <div>
       <div className="mb-6 mt-2 w-fit">
         <ImageUploaderField label="Profile Image" name="profileImage" />
       </div>
-      <div className="grid md:flex gap-4 w-full">
-        <div className="gap-4 w-1/2 space-y-2">
+      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="space-y-2">
           <InputField
             name="name"
             label="Full Name"
@@ -135,9 +154,10 @@ export default function BasicInformation() {
             options={serviceCategoryOptions}
             required
           />
+          {showPasswordFields ? priceField : null}
         </div>
 
-        <div className="w-1/2 space-y-2">
+        <div className="space-y-2">
           <InputField
             name="email"
             label="Email Address"
@@ -145,6 +165,25 @@ export default function BasicInformation() {
             required
             rules={validateEmailRules}
           />
+          {showPasswordFields ? (
+            <>
+              <PasswordInput
+                name="password"
+                label="Password"
+                required
+                rules={{
+                  required: "Password is required",
+                  validate: (v: string) => validatePassword(v),
+                }}
+              />
+              <ConfirmPassword
+                name="confirmPassword"
+                label="Confirm Password"
+                passwordField="password"
+                required
+              />
+            </>
+          ) : null}
           <InputField
             name="address"
             label="Address"
@@ -159,14 +198,7 @@ export default function BasicInformation() {
             placeholder="Portfolio Link"
             rules={{ validate: (v: string) => validatePortfolioLink(v) }}
           />
-          <InputField
-            name="price"
-            label="Price per/hour"
-            type="text"
-            placeholder="Enter Price per/hour"
-            required
-            rules={{ validate: (v: string) => validatePricePerHour(v) }}
-          />
+          {!showPasswordFields ? priceField : null}
         </div>
       </div>
     </div>
