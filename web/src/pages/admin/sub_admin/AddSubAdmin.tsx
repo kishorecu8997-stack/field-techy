@@ -41,7 +41,7 @@ export default function AddSubAdmin() {
 
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const { data: regionsLookup } = useAppGetLookupData(LookupTable.Countries);
+  const { data: regionsLookup } = useAppGetLookupData(LookupTable.Regions);
 
   const regionOptions =
     regionsLookup?.map((item) => ({

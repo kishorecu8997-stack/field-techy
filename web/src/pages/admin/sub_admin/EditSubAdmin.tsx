@@ -36,7 +36,7 @@ export default function EditSubAdmin() {
   );
 
   const { data: regionsLookup, isLoading: isRegionsLoading } =
-    useAppGetLookupData(LookupTable.Countries);
+    useAppGetLookupData(LookupTable.Regions);
 
   const regionOptions: { value: string; label: string }[] =
     regionsLookup?.map((item) => ({

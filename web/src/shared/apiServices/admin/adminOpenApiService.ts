@@ -105,6 +105,7 @@ export const LookupTable = {
   EducationLevels: "educationLevels",
   Courses: "courses",
   BusinessTypes: "businessTypes",
+  Regions: "regions",
 } as const;
 
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
