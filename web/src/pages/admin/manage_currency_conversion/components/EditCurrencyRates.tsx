@@ -39,7 +39,7 @@ const EditCurrencyRates: React.FC = () => {
       toast.success(data.message || "Exchange rate updated successfully!");
       navigate(absoluteUrls.admin.home.manage_currency_conversion);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to update exchange rate");
     },
   });

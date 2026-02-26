@@ -91,7 +91,6 @@ import {
   adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
-  updateExchangeRateMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
