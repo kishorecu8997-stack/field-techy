@@ -134,6 +134,8 @@ export interface GeneralChartProps<
   className?: string;
   series: SeriesConfig[];
   legend?: LegendConfig;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 export type ChartType = "line" | "bar";
