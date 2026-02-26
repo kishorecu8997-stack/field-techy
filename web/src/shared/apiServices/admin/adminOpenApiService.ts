@@ -827,8 +827,13 @@ export function useUpdateExchangeRate(options?: {
       return data as UpdateExchangeRateResponse;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
+      queryClient.resetQueries({
         queryKey: queryKeys.admin.exchangeRates,
+        exact: false,
+      });
+      queryClient.refetchQueries({
+        queryKey: queryKeys.admin.exchangeRates,
+        exact: false,
       });
       options?.onSuccess?.(data);
     },
