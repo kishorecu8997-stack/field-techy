@@ -21,6 +21,8 @@ import {
   type AdminUpdatePersonalInfoResponse,
   type AdminGetJobsData,
   type AdminGetJobsResponse,
+  type AdminGetJobDetailsData,
+  type AdminGetJobDetailsResponse,
   type AdminGetEngineersForManagementData,
   type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
@@ -46,6 +48,12 @@ import {
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
   type AdminDeleteServiceCategoryResponse,
+  type AdminUpdateJobStatusData,
+  type AdminUpdateJobStatusResponses,
+  type AdminGetJobLogsData,
+  type AdminGetJobLogsResponse,
+  type AdminGetJobTransactionsData,
+  type AdminGetJobTransactionsResponses,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -57,6 +65,7 @@ import {
   appResetPasswordMutation,
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
+  adminGetJobDetailsOptions,
   adminGetEngineersForManagementOptions,
   createOrUpdatePageMutation,
   addAndUpdateContactSupportMutation,
@@ -73,6 +82,9 @@ import {
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
+  adminUpdateJobStatusMutation,
+  adminGetJobLogsOptions,
+  adminGetJobTransactionsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -387,6 +399,40 @@ export function useAdminEngineersByUserIdStatus(options?: {
   });
 }
 
+export type AdminUpdateJobStatusBody = NonNullable<
+  AdminUpdateJobStatusData["body"]
+>;
+
+export type AdminUpdateJobStatusSuccess = AdminUpdateJobStatusResponses[200];
+
+export function useAdminUpdateJobStatus(options?: {
+  onSuccess?: (data: AdminUpdateJobStatusSuccess) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateJobStatusMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (() => {
+            const key = query.queryKey[0] as { _id?: string };
+            return (
+              key._id === "adminGetJobs" ||
+              key._id === "adminGetJobDetails" ||
+              key._id === "adminGetJobLogs"
+            );
+          })(),
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
 /**
  * Raw API functions for use outside of hooks (e.g. in Zustand stores)
  */
@@ -407,6 +453,7 @@ export async function updateAdminPersonalInfo(body: AdminPersonalInfoBody) {
   return response.data as AdminUpdatePersonalInfoResponse;
 }
 
+export type { AdminGetJobDetailsResponse };
 export function useCreateOrUpdateCMSPage(options?: {
   onSuccess?: (data: CreateOrUpdatePageResponses[200]) => void;
   onError?: (error: unknown) => void;
@@ -547,6 +594,29 @@ export function useAdminGetJobs(
   });
 }
 
+export type AdminGetJobDetailsQuery = NonNullable<
+  AdminGetJobDetailsData["query"]
+>;
+
+export function useAdminGetJobDetails(
+  query?: AdminGetJobDetailsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetJobDetailsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const isValidJobId = query?.jobId && Number.isFinite(query.jobId);
+  return useQuery({
+    ...adminGetJobDetailsOptions({
+      client: apiClient,
+      query: isValidJobId ? query : { jobId: 0 },
+    }),
+    enabled: isValidJobId ? options?.enabled : false,
+    ...options,
+  });
+}
+
 export type AdminAddClientResponse = AdminCreateClientResponse;
 export type AdminAddClientBody = AdminCreateClientData["body"];
 
@@ -638,6 +708,54 @@ export function useAdminGetServiceCategories(
   });
 }
 
+export type AdminGetJobLogsQuery = NonNullable<AdminGetJobLogsData["query"]>;
+
+export function useAdminGetJobLogs(
+  query?: AdminGetJobLogsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetJobLogsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const isValidJobId = query?.jobId && Number.isFinite(query.jobId);
+  return useQuery({
+    ...adminGetJobLogsOptions({
+      client: apiClient,
+      query: isValidJobId ? query : { jobId: 0 },
+    }),
+    enabled: isValidJobId ? options?.enabled : false,
+    ...options,
+  });
+}
+
+// Payment Transactions API
+
+export type PaymentTransaction =
+  AdminGetJobTransactionsResponses[200]["data"][number];
+
+export type PaymentTransactionsResponse = AdminGetJobTransactionsResponses[200];
+
+export type AdminGetPaymentTransactionsQuery = NonNullable<
+  AdminGetJobTransactionsData["query"]
+>;
+
+export function useAdminGetPaymentTransactions(
+  query?: AdminGetPaymentTransactionsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: PaymentTransactionsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetJobTransactionsOptions({
+      client: apiClient,
+      query: query ?? { jobId: 0 },
+    }),
+    ...options,
+  });
+}
 export function useAdminDeleteClientMutation(options?: {
   onSuccess?: (data: AdminDeleteClientResponse) => void;
   onError?: (error: unknown) => void;
