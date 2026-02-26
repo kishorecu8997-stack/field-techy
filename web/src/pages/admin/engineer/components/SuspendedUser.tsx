@@ -7,7 +7,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminEngineersByUserIdStatus,
+  useAdminManageEngineers,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * SuspendedUser Component
@@ -31,13 +34,17 @@ export default function SuspendedUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
-    page: currentPage,
-    limit: pageSize,
-    status: "suspended",
-  });
+  const { data: engineersResponse, isLoading, refetch } =
+    useAdminManageEngineers({
+      page: currentPage,
+      limit: pageSize,
+      status: "suspended",
+    });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const { mutateAsync: updateEngineerStatus } =
+    useAdminEngineersByUserIdStatus();
 
   const latestSuspensionMap = useMemo<
     Record<string, StatusHistoryType | undefined>
@@ -83,9 +90,24 @@ export default function SuspendedUser() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Revoking engineer:", engineer.id);
-            toast.success("Suspension revoked successfully!");
-            close(true);
+            try {
+              await updateEngineerStatus({
+                path: { userId: engineer.userId },
+                body: { userStatus: "active" },
+              });
+              toast.success("Suspension revoked successfully!");
+              await refetch();
+              close(true);
+            } catch (error) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : typeof error === "string"
+                    ? error
+                    : "Failed to revoke suspension",
+              );
+              close(true);
+            }
           },
         },
       ],

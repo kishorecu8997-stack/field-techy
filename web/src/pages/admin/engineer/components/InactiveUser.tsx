@@ -2,7 +2,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import {
   documentType,
@@ -18,7 +18,10 @@ import SuspendEngineer from "./SuspendEngineer";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import BlockEngineer from "./BlockEngineer";
 import ActionsMenu from "./ActionMenu";
-import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminEngineersByUserIdStatus,
+  useAdminManageEngineers,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import ViewFileComponent from "./ViewFileComponent";
 import SelectMenu from "@/shared/components/SelectMenu";
@@ -41,6 +44,8 @@ export default function InactiveUser() {
   const { showPopup } = usePopupStore();
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
   const [activeUserId, setActiveUserId] = useState<number | null>(null);
+  const [activeEngineer, setActiveEngineer] =
+    useState<ManageEngineerProps | null>(null);
   const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
     null,
   );
@@ -51,13 +56,24 @@ export default function InactiveUser() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
-    page: currentPage,
-    limit: pageSize,
-    status: "inactive",
-  });
+
+  useEffect(() => {
+    if (!isSuspendEngineer && !isBlockEngineer) {
+      setActiveEngineer(null);
+    }
+  }, [isSuspendEngineer, isBlockEngineer]);
+
+  const { data: engineersResponse, isLoading, refetch } =
+    useAdminManageEngineers({
+      page: currentPage,
+      limit: pageSize,
+      status: "inactive",
+    });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const { mutateAsync: updateEngineerStatus } =
+    useAdminEngineersByUserIdStatus();
 
   //Delete confirmation
   const handleDeleteEngineer = async (job: ManageEngineerProps) => {
@@ -198,8 +214,16 @@ export default function InactiveUser() {
           showAction={showAction}
           setShowAction={setShowAction}
           handleDelete={handleDeleteEngineer}
-          setIsSuspend={setIsSuspendEngineer}
-          setIsBlock={setIsBlockEngineer}
+          setIsSuspend={(v) => {
+            if (v) setActiveEngineer(row);
+            if (!v) setActiveEngineer(null);
+            setIsSuspendEngineer(v);
+          }}
+          setIsBlock={(v) => {
+            if (v) setActiveEngineer(row);
+            if (!v) setActiveEngineer(null);
+            setIsBlockEngineer(v);
+          }}
         />
       ),
     },
@@ -216,6 +240,19 @@ export default function InactiveUser() {
   };
 
   const handleSuspendSubmit = async (data: SuspendEngineerFormData) => {
+    if (!activeEngineer) {
+      toast.error("Please select an engineer to suspend.");
+      return;
+    }
+
+    const startDate = data.suspendStartDate;
+    const endDate = data.suspendEndDate;
+
+    if (!startDate || !endDate) {
+      toast.error("Please select both start and end dates.");
+      return;
+    }
+
     await showPopup({
       title: "Suspend Engineer",
       body: "Are you sure you want to suspend this engineer?",
@@ -226,11 +263,33 @@ export default function InactiveUser() {
           value: "save",
           variant: "danger",
           action: async (close) => {
-            console.log("Suspend data:", data);
-            close(true);
-            methods.reset();
-            setIsSuspendEngineer(false);
-            toast.success("Engineer suspended successfully!");
+            try {
+              await updateEngineerStatus({
+                path: { userId: activeEngineer.userId },
+                body: {
+                  userStatus: "suspended",
+                  reason: data.reason,
+                  startDate: startDate.toISOString(),
+                  endDate: endDate.toISOString(),
+                },
+              });
+
+              toast.success("Engineer suspended successfully!");
+              methods.reset();
+              setIsSuspendEngineer(false);
+              setActiveEngineer(null);
+              await refetch();
+              close(true);
+            } catch (error) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : typeof error === "string"
+                    ? error
+                    : "Failed to suspend engineer",
+              );
+              close(true);
+            }
           },
         },
       ],
@@ -238,6 +297,11 @@ export default function InactiveUser() {
   };
 
   const handleBlockSubmit = async (data: BlockEngineerFormData) => {
+    if (!activeEngineer) {
+      toast.error("Please select an engineer to block.");
+      return;
+    }
+
     await showPopup({
       title: "Block Engineer",
       body: "Are you sure you want to block this engineer?",
@@ -248,11 +312,31 @@ export default function InactiveUser() {
           value: "save",
           variant: "danger",
           action: async (close) => {
-            console.log("Block data:", data);
-            close(true);
-            methods.reset();
-            setIsBlockEngineer(false);
-            toast.success("Engineer blocked successfully!");
+            try {
+              await updateEngineerStatus({
+                path: { userId: activeEngineer.userId },
+                body: {
+                  userStatus: "blocked",
+                  reason: data.reason,
+                },
+              });
+
+              toast.success("Engineer blocked successfully!");
+              methods.reset();
+              setIsBlockEngineer(false);
+              setActiveEngineer(null);
+              await refetch();
+              close(true);
+            } catch (error) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : typeof error === "string"
+                    ? error
+                    : "Failed to block engineer",
+              );
+              close(true);
+            }
           },
         },
       ],
@@ -290,12 +374,14 @@ export default function InactiveUser() {
           <SuspendEngineer
             isSuspendEngineer={isSuspendEngineer}
             setIsSuspendEngineer={setIsSuspendEngineer}
+            onSubmit={handleSuspendSubmit}
           />
         )}
         {isBlockEngineer && (
           <BlockEngineer
             isBlockEngineer={isBlockEngineer}
             setIsBlockEngineer={setIsBlockEngineer}
+            onSubmit={handleBlockSubmit}
           />
         )}
       </FormContainer>

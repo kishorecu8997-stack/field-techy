@@ -7,7 +7,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminEngineersByUserIdStatus,
+  useAdminManageEngineers,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * BlockedUser Component
@@ -31,13 +34,17 @@ export default function BlockedUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
-    page: currentPage,
-    limit: pageSize,
-    status: "blocked",
-  });
+  const { data: engineersResponse, isLoading, refetch } =
+    useAdminManageEngineers({
+      page: currentPage,
+      limit: pageSize,
+      status: "blocked",
+    });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const { mutateAsync: updateEngineerStatus } =
+    useAdminEngineersByUserIdStatus();
 
   const latestBlockMap = useMemo<
     Record<string, StatusHistoryType | undefined>
@@ -81,9 +88,24 @@ export default function BlockedUser() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Unlocking engineer:", engineer.id);
-            toast.success("Engineer unblocked successfully!");
-            close(true);
+            try {
+              await updateEngineerStatus({
+                path: { userId: engineer.userId },
+                body: { userStatus: "active" },
+              });
+              toast.success("Engineer unblocked successfully!");
+              await refetch();
+              close(true);
+            } catch (error) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : typeof error === "string"
+                    ? error
+                    : "Failed to unblock engineer",
+              );
+              close(true);
+            }
           },
         },
       ],

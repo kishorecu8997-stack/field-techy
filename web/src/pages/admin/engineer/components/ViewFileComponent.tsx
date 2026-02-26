@@ -15,6 +15,7 @@ interface ViewFileComponentProps {
   title?: string;
   fileType: ProfileFileType | null;
   userId?: number | null;
+  fileUrl?: string | null;
 }
 
 /**
