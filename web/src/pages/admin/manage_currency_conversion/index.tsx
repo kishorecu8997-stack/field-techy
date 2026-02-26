@@ -1,8 +1,8 @@
 import { absoluteUrls } from "@/config/urls";
-import { CurrencyConversionData } from "@/dummy_data/admin/currencyConversion";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
+import { useAdminExchangeRates } from "@/shared/apiServices/admin/adminOpenApiService";
 import React from "react";
 import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +20,12 @@ const ManageCurrencyConversion: React.FC = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
+  const { data: exchangeRatesData, isLoading } = useAdminExchangeRates({
+    search: search || undefined,
+  });
+
+  const tableData = exchangeRatesData?.data ?? [];
+
   const columns: Column<CurrencyConversionRow>[] = [
     {
       key: "id",
@@ -28,10 +34,26 @@ const ManageCurrencyConversion: React.FC = () => {
         <div className="whitespace-nowrap">{row.id}</div>
       ),
     },
-    { key: "country", label: "Country" },
+    { key: "countryName", label: "Country" },
     { key: "currencyPair", label: "Currency Pair" },
-    { key: "exchangeRate", label: "Exchange Rates (Base: INR)" },
-    { key: "lastUpdated", label: "Last Updated" },
+    {
+      key: "rate",
+      label: "Exchange Rates (Base: INR)",
+      renderCell: (row: CurrencyConversionRow) => (
+        <div className="whitespace-nowrap">
+          {row.rate ? parseFloat(row.rate).toFixed(4) : "-"}
+        </div>
+      ),
+    },
+    {
+      key: "lastUpdated",
+      label: "Last Updated",
+      renderCell: (row: CurrencyConversionRow) => (
+        <div className="whitespace-nowrap">
+          {row.lastUpdated ? new Date(row.lastUpdated).toLocaleDateString() : "-"}
+        </div>
+      ),
+    },
     { key: "lastUpdatedBy", label: "Last Updated By" },
 
     {
@@ -44,7 +66,7 @@ const ManageCurrencyConversion: React.FC = () => {
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() => {
               navigate(
-                `${absoluteUrls.admin.home.edit_exchange_rate}/${row.id}`,
+                `${absoluteUrls.admin.home.edit_exchange_rate}/${row.currencyId}`,
                 { state: row },
               );
             }}
@@ -68,8 +90,9 @@ const ManageCurrencyConversion: React.FC = () => {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<CurrencyConversionRow>
             columns={columns}
-            data={CurrencyConversionData}
+            data={tableData}
             initialPageSize={10}
+            loading={isLoading}
           />
         </div>
       </div>

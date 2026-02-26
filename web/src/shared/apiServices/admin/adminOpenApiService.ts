@@ -3,6 +3,7 @@ import {
   adminUpdatePersonalInfo,
   getCmsContent,
   adminGetClientsForManagement,
+  getExchangeRates,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -54,6 +55,8 @@ import {
   type AdminGetJobLogsResponse,
   type AdminGetJobTransactionsData,
   type AdminGetJobTransactionsResponses,
+  type GetExchangeRatesData,
+  type GetExchangeRatesResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -771,5 +774,32 @@ export function useAdminDeleteClientMutation(options?: {
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+}
+
+export type AdminExchangeRatesQuery = NonNullable<
+  GetExchangeRatesData["query"]
+>;
+
+export function useAdminExchangeRates(
+  query?: AdminExchangeRatesQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: GetExchangeRatesResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: [...queryKeys.admin.exchangeRates, query],
+    queryFn: async ({ signal }) => {
+      const { data } = await getExchangeRates({
+        client: apiClient,
+        query,
+        signal,
+        throwOnError: true,
+      });
+      return data as GetExchangeRatesResponse;
+    },
+    ...options,
   });
 }
