@@ -92,8 +92,8 @@ export function useClientGetCompanyInfo(enabled: boolean = true) {
   return useQuery({
     ...clientGetCompanyInfoOptions({
       client: apiClient,
-      headers: { Authorization: "" },
     }),
+    queryKey: queryKeys.client.companyInfo as any,
     enabled: enabled,
     staleTime: 5 * 60 * 1000,
   });
@@ -114,7 +114,13 @@ export function useClientUpdateCompanyInfo(options?: {
   return useMutation({
     ...clientUpdateCompanyInfoMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.client.companyInfo });
+      // Force an immediate refetch of company info
+      void queryClient.refetchQueries({
+        queryKey: queryKeys.client.companyInfo,
+        exact: true,
+      });
+      // Invalidate everything else related to clients
+      void queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -362,7 +368,7 @@ export function useClientFiles(_clientId: string | number) {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => {},
+    refetch: () => { },
   };
 }
 

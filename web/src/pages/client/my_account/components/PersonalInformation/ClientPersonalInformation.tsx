@@ -1,15 +1,17 @@
-import { useClientUpdateCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
-import { useVatOptions } from "@/shared/apiServices/client/clientOpenApiService";
+import { useClientGetCompanyInfo, useClientUpdateCompanyInfo, useVatOptions } from "@/shared/apiServices/client/clientOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import type { LookupItem } from "@/shared/hooks/useLookup";
 import {
   useCities,
   useCountries,
   useIndustries,
+  useLookup,
   useStates,
 } from "@/shared/hooks/useLookup";
 import { useClientCompanyInfoStore } from "@/shared/store/useClientCompanyInfoStore";
@@ -19,14 +21,13 @@ import { CiLocationOn } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
 import { toast } from "react-toastify";
-import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import {
   validateAddress,
+  validateCompany,
   validateIsPhoneVerified,
   validateName,
   validateVatNumber,
   validateZipcode,
-  validateCompany,
 } from "../../Validate";
 
 interface ClientPersonalInformationProps {
@@ -41,7 +42,27 @@ interface ClientPersonalInformationProps {
 const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   onMenuItemClick,
 }) => {
-  const { companyInfo } = useClientCompanyInfoStore();
+  const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
+
+  // Fetch company info
+  const { data: clientInfo, isLoading: isFetchingInfo, isFetching } = useClientGetCompanyInfo(true);
+
+  useEffect(() => {
+    if (clientInfo) {
+      setCompanyInfo(clientInfo);
+    }
+  }, [clientInfo, setCompanyInfo]);
+
+  const { data: businessTypesData } = useLookup("businessTypes");
+
+  const businessTypes = useMemo(
+    () =>
+      (businessTypesData || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [businessTypesData],
+  );
 
   const { mutateAsync: updateClient } = useClientUpdateCompanyInfo({
     onSuccess: () => {
@@ -89,8 +110,8 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
 
   const parentStateId =
     typeof selectedStateValue === "object" &&
-    selectedStateValue !== null &&
-    "value" in selectedStateValue
+      selectedStateValue !== null &&
+      "value" in selectedStateValue
       ? (selectedStateValue as any).value
       : selectedStateValue;
 
@@ -143,7 +164,9 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
             ? companyInfo.personName
             : companyInfo.name) || "",
         phoneNumber: companyInfo.phoneNumber || "",
-        businessType: "PRIVATE", // Default or map if exists
+        businessType:
+          ("businessTypeId" in companyInfo ? companyInfo.businessTypeId : "") ||
+          "PRIVATE",
         industry:
           ("industryId" in companyInfo ? companyInfo.industryId : "") || "",
         address: ("address" in companyInfo ? companyInfo.address : "") || "",
@@ -163,12 +186,35 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     }
   }, [companyInfo, reset]);
 
+  const showLoader = (isFetchingInfo || isFetching) && !companyInfo;
+
+  useEffect(() => {
+    if (isPhoneVerified) {
+      trigger("phoneNumber");
+    }
+  }, [isPhoneVerified, trigger]);
+
+  if (showLoader) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
+        <LoaderComponent />
+        <p className="mt-4 text-gray-500 animate-pulse">
+          Refreshing company information...
+        </p>
+      </div>
+    );
+  }
+
   const handleSubmit = async (data: PersonalInfo) => {
     const isCorporate = companyInfo?.clientType === "corporate";
 
     // Helper to get ID
     const getId = (val: any) => {
-      if (!val) return undefined;
+      if (val === null || val === undefined || val === "") return undefined;
+      // Handle object case if SelectField somehow returns one
+      if (typeof val === "object" && val !== null && "value" in val) {
+        return Number(val.value);
+      }
       const num = Number(val);
       return isNaN(num) ? undefined : num;
     };
@@ -185,17 +231,12 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
         cityId: getId(data.city),
         postalCode: data.postalCode,
         industryId: isCorporate ? getId(data.industry) : undefined,
+        businessTypeId: isCorporate ? getId(data.businessType) : undefined,
         documentType: isCorporate ? data.taxDocument : undefined,
         documentNumber: isCorporate ? data.vatRegistrationNumber : undefined,
       },
     });
   };
-
-  useEffect(() => {
-    if (isPhoneVerified) {
-      trigger("phoneNumber");
-    }
-  }, [isPhoneVerified, trigger]);
 
   return (
     <FormContainer
@@ -241,12 +282,16 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           name="businessType"
           placeholder="Business Type"
           leftIcon={<TbFileText className="text-lg text-gray-500" />}
-          options={[
-            { value: "PRIVATE", label: "Private" },
-            { value: "GOVERNMENT", label: "Government" },
-            { value: "NGO", label: "NGO" },
-            { value: "OTHER", label: "Other" },
-          ]}
+          options={
+            businessTypes.length > 0
+              ? businessTypes
+              : [
+                { value: "PRIVATE", label: "Private" },
+                { value: "GOVERNMENT", label: "Government" },
+                { value: "NGO", label: "NGO" },
+                { value: "OTHER", label: "Other" },
+              ]
+          }
           required
         />
 
@@ -304,7 +349,9 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
             validate: (value: string) =>
               validateZipcode(
                 value,
-                typeof country === "string" ? country : (country as any)?.value,
+                typeof country === "string"
+                  ? country
+                  : (country as any)?.value || String(country),
               ),
           }}
         />

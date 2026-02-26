@@ -2,7 +2,7 @@ interface PersonalInfo {
   companyName: string;
   contactPersonName: string;
   phoneNumber: string;
-  businessType: string;
+  businessType: string | number;
   industry: string | number;
   address: string;
   country: string | number;

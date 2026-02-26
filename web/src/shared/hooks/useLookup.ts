@@ -23,7 +23,8 @@ export type LookupTable =
   | "workLocations"
   | "educationLevels"
   | "courses"
-  | "engagementModels";
+  | "engagementModels"
+  | "businessTypes";
 
 type QueryKey = readonly unknown[];
 type LookupQueryOptions = UseQueryOptions<
