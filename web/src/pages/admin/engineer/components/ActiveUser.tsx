@@ -3,7 +3,6 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
 import { useEffect, useState } from "react";
-import { FaUserCircle } from "react-icons/fa";
 import {
   documentType,
   SUSPEND_ENGINEER_DEFAULT_VALUES,
@@ -47,15 +46,14 @@ export default function ActiveUser() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [activeRowId, setActiveRowId] = useState<number | null>(null);
-  const [activeUserId, setActiveUserId] = useState<number | null>(null);
   const [activeEngineer, setActiveEngineer] = useState<ManageEngineerProps | null>(
     null,
   );
-  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
-    null,
-  );
-  const [isOpen, setIsOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<{
+    engineer: ManageEngineerProps;
+    type: ProfileFileType;
+  } | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   useEffect(() => {
     if (!isSuspendEngineer && !isBlockEngineer) {
@@ -71,6 +69,24 @@ export default function ActiveUser() {
     });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const getFileUrl = () => {
+    if (!selectedFile) return null;
+    const { engineer, type } = selectedFile;
+
+    switch (type) {
+      case "profilePicture":
+        return engineer.profilePicture?.url;
+      case "resumeFile":
+        return engineer.resumeFile?.url;
+      case "govIdDoc":
+        return engineer.govIdDoc?.url;
+      case "certificateDoc":
+        return engineer.certificateDoc?.url;
+      default:
+        return null;
+    }
+  };
 
   const { mutateAsync: updateEngineerStatus } =
     useAdminEngineersByUserIdStatus();
@@ -124,12 +140,21 @@ export default function ActiveUser() {
       key: "details",
       label: "Details",
       renderCell: (row: ManageEngineerProps) => {
+        const initials = row.name?.charAt(0).toUpperCase() || "E";
         return (
-          <div className="text-sm flex items-center gap-2">
-            <div>
-              <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
+              {row.profilePicture?.url ? (
+                <img
+                  src={row.profilePicture.url}
+                  alt={row.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initials
+              )}
             </div>
-            <div>
+            <div className="flex flex-col">
               <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
                 {row.phoneNumber}
@@ -156,12 +181,14 @@ export default function ActiveUser() {
                 label: item.label ?? "",
               })) ?? []
             }
-            value={activeRowId === row.id ? selectedType : null}
+            value={selectedFile?.engineer.id === row.id ? selectedFile.type : null}
             onChange={(value) => {
-              setActiveRowId(row.id);
-              setActiveUserId(row.userId);
-              setSelectedType(value as ProfileFileType | null);
-              setIsOpen(true);
+              if (!value) return;
+              setSelectedFile({
+                engineer: row,
+                type: value as ProfileFileType,
+              });
+              setIsPreviewOpen(true);
             }}
           />
         );
@@ -364,12 +391,16 @@ export default function ActiveUser() {
           />
         </div>
       </div>
-      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <ViewFileComponent
-          onClose={() => setIsOpen(false)}
-          userId={activeUserId}
-          fileType={selectedType}
-        />
+      <Popup open={isPreviewOpen} onClose={() => setIsPreviewOpen(false)}>
+        {selectedFile && (
+          <ViewFileComponent
+            onClose={() => setIsPreviewOpen(false)}
+            fileType={selectedFile.type}
+            userId={selectedFile.engineer.userId}
+            fileUrl={getFileUrl()}
+            title={`${selectedFile.engineer.name}'s`}
+          />
+        )}
       </Popup>
       <FormContainer methods={methods} onSubmit={onSubmit}>
         {isSuspendEngineer && (

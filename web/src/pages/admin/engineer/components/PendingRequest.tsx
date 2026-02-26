@@ -7,7 +7,6 @@ import Popup from "@/shared/components/Popup";
 import SelectMenu from "@/shared/components/SelectMenu";
 import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
@@ -31,12 +30,11 @@ export default function PendingRequest() {
     Record<number, EngineerStatusType>
   >({});
   const [search, setSearch] = useState("");
-  const [activeRowId, setActiveRowId] = useState<number | null>(null);
-  const [activeUserId, setActiveUserId] = useState<number | null>(null);
-  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
-    null,
-  );
-  const [isOpen, setIsOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<{
+    engineer: ManageEngineerProps;
+    type: ProfileFileType;
+  } | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -75,6 +73,24 @@ export default function PendingRequest() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
+  const getFileUrl = () => {
+    if (!selectedFile) return null;
+    const { engineer, type } = selectedFile;
+
+    switch (type) {
+      case "profilePicture":
+        return engineer.profilePicture?.url;
+      case "resumeFile":
+        return engineer.resumeFile?.url;
+      case "govIdDoc":
+        return engineer.govIdDoc?.url;
+      case "certificateDoc":
+        return engineer.certificateDoc?.url;
+      default:
+        return null;
+    }
+  };
+
   const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
@@ -87,7 +103,6 @@ export default function PendingRequest() {
           variant: "danger",
           action: async (close) => {
             toast.success("Engineer deleted successfully!");
-            // Here you would call the API to delete the engineer using engineerData.id
             console.log("Deleting engineer:", engineerData.id);
             close(true);
           },
@@ -117,36 +132,33 @@ export default function PendingRequest() {
     {
       key: "details",
       label: "Details",
-      renderCell: (row) => (
-        <div className="text-sm flex items-center gap-2">
-          <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
-          <div>
-            <div className="font-semibold">{row.name}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {row.phoneNumber}
+      renderCell: (row) => {
+        const initials = row.name?.charAt(0).toUpperCase() || "E";
+        return (
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
+              {row.profilePicture?.url ? (
+                <img
+                  src={row.profilePicture.url}
+                  alt={row.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initials
+              )}
             </div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {row.email}
+            <div className="flex flex-col">
+              <div className="font-semibold">{row.name}</div>
+              <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                {row.phoneNumber}
+              </div>
+              <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                {row.email}
+              </div>
             </div>
           </div>
-        </div>
-      ),
-    },
-    {
-      key: "submittedDocuments",
-      label: "Submitted Documents",
-      renderCell: (row) => (
-        <div className="text-sm flex flex-col gap-1">
-          {row.submittedDocuments?.map((doc, idx) => (
-            <span
-              key={idx}
-              className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200"
-            >
-              {doc}
-            </span>
-          ))}
-        </div>
-      ),
+        );
+      },
     },
     {
       key: "documentType",
@@ -162,12 +174,14 @@ export default function PendingRequest() {
                 label: item.label ?? "",
               })) ?? []
             }
-            value={activeRowId === row.id ? selectedType : null}
+            value={selectedFile?.engineer.id === row.id ? selectedFile.type : null}
             onChange={(value) => {
-              setActiveRowId(row.id);
-              setActiveUserId(row.userId);
-              setSelectedType(value as ProfileFileType | null);
-              setIsOpen(true);
+              if (!value) return;
+              setSelectedFile({
+                engineer: row,
+                type: value as ProfileFileType,
+              });
+              setIsPreviewOpen(true);
             }}
           />
         );
@@ -292,12 +306,16 @@ export default function PendingRequest() {
           />
         </div>
       </div>
-      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <ViewFileComponent
-          onClose={() => setIsOpen(false)}
-          userId={activeUserId}
-          fileType={selectedType}
-        />
+      <Popup open={isPreviewOpen} onClose={() => setIsPreviewOpen(false)}>
+        {selectedFile && (
+          <ViewFileComponent
+            onClose={() => setIsPreviewOpen(false)}
+            fileType={selectedFile.type}
+            userId={selectedFile.engineer.userId}
+            fileUrl={getFileUrl()}
+            title={`${selectedFile.engineer.name}'s`}
+          />
+        )}
       </Popup>
     </div>
   );

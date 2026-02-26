@@ -202,6 +202,7 @@ export default function AllUsers() {
           <ViewFileComponent
             onClose={() => setIsPreviewOpen(false)}
             fileType={selectedFile.type}
+            userId={selectedFile.engineer.userId}
             fileUrl={getFileUrl()}
             title={`${selectedFile.engineer.name}'s`}
           />

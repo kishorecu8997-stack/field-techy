@@ -1,8 +1,9 @@
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { FaUserCircle } from "react-icons/fa";
+import Popup from "@/shared/components/Popup";
 import type { ManageEngineerProps, StatusHistoryType } from "../types";
+import { documentType } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useMemo, useState } from "react";
@@ -11,6 +12,9 @@ import {
   useAdminEngineersByUserIdStatus,
   useAdminManageEngineers,
 } from "@/shared/apiServices/admin/adminOpenApiService";
+import SelectMenu from "@/shared/components/SelectMenu";
+import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
+import ViewFileComponent from "@/pages/admin/engineer/components/ViewFileComponent";
 
 /**
  * SuspendedUser Component
@@ -31,6 +35,11 @@ import {
 export default function SuspendedUser() {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
+  const [selectedFile, setSelectedFile] = useState<{
+    engineer: ManageEngineerProps;
+    type: ProfileFileType;
+  } | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -45,6 +54,24 @@ export default function SuspendedUser() {
 
   const { mutateAsync: updateEngineerStatus } =
     useAdminEngineersByUserIdStatus();
+
+  const getFileUrl = () => {
+    if (!selectedFile) return null;
+    const { engineer, type } = selectedFile;
+
+    switch (type) {
+      case "profilePicture":
+        return engineer.profilePicture?.url;
+      case "resumeFile":
+        return engineer.resumeFile?.url;
+      case "govIdDoc":
+        return engineer.govIdDoc?.url;
+      case "certificateDoc":
+        return engineer.certificateDoc?.url;
+      default:
+        return null;
+    }
+  };
 
   const latestSuspensionMap = useMemo<
     Record<string, StatusHistoryType | undefined>
@@ -136,12 +163,21 @@ export default function SuspendedUser() {
       key: "details",
       label: "Details",
       renderCell: (row: ManageEngineerProps) => {
+        const initials = row.name?.charAt(0).toUpperCase() || "E";
         return (
-          <div className="text-sm flex items-center gap-2">
-            <div>
-              <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
+              {row.profilePicture?.url ? (
+                <img
+                  src={row.profilePicture.url}
+                  alt={row.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initials
+              )}
             </div>
-            <div>
+            <div className="flex flex-col">
               <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
                 {row.phoneNumber}
@@ -153,6 +189,28 @@ export default function SuspendedUser() {
           </div>
         );
       },
+    },
+    {
+      key: "documentType",
+      label: "View Documents",
+      renderCell: (row: ManageEngineerProps) => (
+        <SelectMenu
+          placeholder="Select Document"
+          className="w-36"
+          options={
+            documentType?.map((item) => ({
+              value: item.value ?? "",
+              label: item.label ?? "",
+            })) ?? []
+          }
+          value={selectedFile?.engineer.id === row.id ? selectedFile.type : null}
+          onChange={(value) => {
+            if (!value) return;
+            setSelectedFile({ engineer: row, type: value as ProfileFileType });
+            setIsPreviewOpen(true);
+          }}
+        />
+      ),
     },
     {
       key: "suspendReason",
@@ -221,6 +279,17 @@ export default function SuspendedUser() {
           />
         </div>
       </div>
+      <Popup open={isPreviewOpen} onClose={() => setIsPreviewOpen(false)}>
+        {selectedFile && (
+          <ViewFileComponent
+            onClose={() => setIsPreviewOpen(false)}
+            fileType={selectedFile.type}
+            userId={selectedFile.engineer.userId}
+            fileUrl={getFileUrl()}
+            title={`${selectedFile.engineer.name}'s`}
+          />
+        )}
+      </Popup>
     </div>
   );
 }
