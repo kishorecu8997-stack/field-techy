@@ -1,6 +1,6 @@
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useLocation } from "react-router-dom";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 
 const TermsAndConditionsPage = () => {
@@ -26,7 +26,7 @@ const TermsAndConditionsPage = () => {
     );
   }
 
-  if (error || !cmsData || !('type' in cmsData) || cmsData.type !== "page") {
+  if (error || !cmsData || !("type" in cmsData) || cmsData.type !== "page") {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
@@ -55,10 +55,10 @@ const TermsAndConditionsPage = () => {
             isShowSort={false}
           />
         )}
-        
+
         {/* Render HTML content directly */}
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-          <div 
+          <div
             className="prose prose-lg dark:prose-invert max-w-none
                        prose-headings:text-gray-900 dark:prose-headings:text-gray-100
                        prose-p:text-gray-700 dark:prose-p:text-gray-300
@@ -69,8 +69,8 @@ const TermsAndConditionsPage = () => {
                       break-words              
                       overflow-x-hidden         
                       w-full"
-            dangerouslySetInnerHTML={{ 
-              __html: DOMPurify.sanitize(cmsData.data.content) 
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(cmsData.data.content),
             }}
           />
         </div>
