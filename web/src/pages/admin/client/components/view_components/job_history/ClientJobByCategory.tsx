@@ -158,11 +158,15 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
       {
         key: "action",
         label: "Action",
-        renderCell: () => (
+        renderCell: (row: JobItem) => (
           <div className="flex items-center gap-2">
             <div
               className="p-2 bg-yellow-100 rounded-md cursor-pointer"
-              onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
+              onClick={() =>
+                navigate(
+                  `${absoluteUrls.admin.home.manage_jobs_view}?jobId=${row.id}`,
+                )
+              }
             >
               <FiEye className="text-yellow-600" />
             </div>
