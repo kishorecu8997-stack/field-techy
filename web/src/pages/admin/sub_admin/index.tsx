@@ -7,7 +7,7 @@ import CustomTable, {
 } from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState  } from "react";
+import { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserShield } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -24,17 +24,24 @@ export default function ManageSubAdmin() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  const { data } = useAdminGetSubAdmins({
+  useEffect(() => {
+    setPage(1);
+  }, [search, limit]);
+
+  const { data, isLoading } = useAdminGetSubAdmins({
     page,
-    limit: 10,
-    search: search || undefined,
+    limit,
+    search: search.trim() || undefined,
   });
 
   const subAdmins = data?.data ?? [];
   type SubAdminItem = AdminGetSubAdminsResponses[200]["data"][number];
-  const handleDisableSubAdmin = async (row: SubAdminItem) => {
+  const totalCount = data?.total ?? 0;
+
+  const handleDisableSubAdmin = async (_row: SubAdminItem) => {
     await showPopup({
       title: "Disable Sub-Admin",
       body: "Are you sure you want to disable this sub-admin?",
@@ -48,10 +55,14 @@ export default function ManageSubAdmin() {
           label: "Disable",
           value: "disable",
           variant: "danger",
-          action: async (close) => {
-            console.log("Disabling sub-admin:", row.id);
+          action: async () => {
+            // TODO: Add actual API call to disable the sub-admin here
+
             toast.success("Sub-admin disabled successfully!");
-            close(true);
+
+            if (subAdmins.length === 1 && page > 1) {
+              setPage((prev) => prev - 1);
+            }
           },
         },
       ],
@@ -60,9 +71,9 @@ export default function ManageSubAdmin() {
 
   const columns: Column<SubAdminItem>[] = [
     {
-      key: "id",
+      key: "srNo",
       label: "Sr.No.",
-      renderCell: (row) => <span>{row.id}</span>,
+      renderCell: (_row, index) => (page - 1) * limit + index + 1,
     },
     {
       key: "name",
@@ -84,12 +95,12 @@ export default function ManageSubAdmin() {
     {
       key: "phoneNumber",
       label: "Phone Number",
-      renderCell: (row) => <span>{row.phoneNumber}</span>,
+      renderCell: (row) => <span>{row.phoneNumber || "—"}</span>,
     },
     {
       key: "regionName",
       label: "Region",
-      renderCell: (row) => <span>{row.regionName ?? "—"}</span>,
+      renderCell: (row) => <span>{row.regionName || "—"}</span>,
     },
     {
       key: "action",
@@ -142,7 +153,12 @@ export default function ManageSubAdmin() {
           <CustomTable<SubAdminItem>
             columns={columns}
             data={subAdmins}
-            initialPageSize={10}
+            loading={isLoading}
+            initialPageSize={limit}
+            onPageSizeChange={setLimit}
+            totalCount={totalCount}
+            currentPage={page}
+            onPageChange={setPage}
           />
         </div>
       </div>
