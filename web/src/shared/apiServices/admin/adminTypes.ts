@@ -82,3 +82,32 @@ export interface UploadFile {
     percentage?: number;
   }) => void;
 }
+
+export interface RateCardItem {
+  id: number;
+  skillSet: string;
+  region: string;
+  location: string;
+  rate: string;
+  rateType: string;
+  createdAt: string;
+  lastUpdated: string | null;
+  lastUpdatedBy: string | null;
+  countryId: number;
+  serviceCategoryId: number;
+  experienceLevelId: number;
+  engagementModelId: number;
+}
+
+export interface RateCardsResponse {
+  data: RateCardItem[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface RateCardParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+}

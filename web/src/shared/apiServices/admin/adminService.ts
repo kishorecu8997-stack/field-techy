@@ -6,6 +6,8 @@ import type {
   UpdateNotificationParams,
   PagedNotificationsParams,
   AdminByIdResponse,
+  RateCardsResponse,
+  RateCardParams,
 } from "./adminTypes";
 import { queryKeys } from "../queryKeys";
 import type { FileDownloadResponse } from "../client/clientTypes";
@@ -229,5 +231,17 @@ export function useAdminFileStream(
     queryFn: () => AdminAdapter.downloadFileStream(fileKey!),
     enabled: !!fileKey && (options?.enabled ?? true),
     staleTime: Infinity,
+  });
+}
+
+/** Hook to get all rate cards */
+export function useGetRateCards(
+  params?: RateCardParams,
+  options?: { enabled?: boolean },
+) {
+  return useQuery<RateCardsResponse>({
+    queryKey: ["admin-rate-cards", params],
+    queryFn: () => AdminAdapter.getRateCards(params),
+    enabled: options?.enabled ?? true,
   });
 }

@@ -23,4 +23,7 @@ export const ADMIN_ROUTER_PATHS = {
   DELETE_NOTIFICATION: (id: string) =>
     `/admin/api/v1/admin/notification/delete/${id}`,
   GET_PAGED_NOTIFICATIONS: "/admin/api/v1/admin/notification/paged",
+
+  /*For Rate Cards */
+  GET_RATE_CARDS: "/admin/finance/rate-cards",
 } as const;

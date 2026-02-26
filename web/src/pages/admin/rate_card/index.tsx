@@ -1,10 +1,9 @@
 import { absoluteUrls } from "@/config/urls";
-import { RateCardData } from "@/dummy_data/admin";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -12,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useToggleStatus from "@/shared/components/ToggleStatus";
+import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * ManageRateCards Component
@@ -33,14 +34,51 @@ import useToggleStatus from "@/shared/components/ToggleStatus";
 const ManageRateCards: React.FC = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Fetch rate cards from API
+  const { data: rateCardsResponse, isLoading, isError, refetch } = useGetRateCards({
+    page: 1,
+    limit: 100,
+  });
+
+  // Transform API data to match table format
+  const tableData: RateCardProps[] = useMemo(() => {
+    if (!rateCardsResponse?.data) return [];
+    
+    return rateCardsResponse.data.map((item) => ({
+      id: String(item.id),
+      skillSet: item.skillSet,
+      region: item.region,
+      location: item.location,
+      rate: item.rate,
+      rateType: item.rateType,
+      project: "-", // Project field not available in API response
+      createdDate: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-",
+      status: true, // Default status
+    }));
+  }, [rateCardsResponse]);
+
+  // Filter data based on search term
+  const filteredData = useMemo(() => {
+    if (!searchTerm) return tableData;
+    const search = searchTerm.toLowerCase();
+    return tableData.filter(
+      (item) =>
+        item.skillSet.toLowerCase().includes(search) ||
+        item.region.toLowerCase().includes(search) ||
+        item.location.toLowerCase().includes(search) ||
+        item.rateType.toLowerCase().includes(search)
+    );
+  }, [tableData, searchTerm]);
 
   const initialStatus = React.useMemo(() => {
     const initial: Record<string, boolean> = {};
-    RateCardData.forEach((rateCard) => {
-      initial[rateCard.id] = Boolean(rateCard.status);
+    tableData.forEach((rateCard) => {
+      initial[rateCard.id] = rateCard.status;
     });
     return initial;
-  }, []);
+  }, [tableData]);
   const { get, toggle } = useToggleStatus(initialStatus);
 
   //Delete confirmation
@@ -136,7 +174,10 @@ const ManageRateCards: React.FC = () => {
       <h1 className="font-semibold ">Manage Rate Cards</h1>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex justify-between">
-          <SearchInput />
+          <SearchInput
+            value={searchTerm}
+            onChange={(value) => setSearchTerm(value)}
+          />
           <Button
             className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             onClick={() => navigate(absoluteUrls.admin.home.add_rate_card)}
@@ -145,11 +186,28 @@ const ManageRateCards: React.FC = () => {
           </Button>
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
-          <CustomTable<RateCardProps>
-            columns={columns}
-            data={RateCardData}
-            initialPageSize={10}
-          />
+          {isLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <LoaderComponent />
+            </div>
+          ) : isError ? (
+            <div className="flex flex-col items-center justify-center h-full gap-4">
+              <p className="text-red-500">Failed to load rate cards</p>
+              <Button onClick={() => refetch()}>
+                Retry
+              </Button>
+            </div>
+          ) : filteredData.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full gap-4">
+              <p className="text-gray-500">No rate cards found</p>
+            </div>
+          ) : (
+            <CustomTable<RateCardProps>
+              columns={columns}
+              data={filteredData}
+              initialPageSize={10}
+            />
+          )}
         </div>
       </div>
     </div>
