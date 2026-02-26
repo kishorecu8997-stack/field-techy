@@ -16,7 +16,7 @@ import type {
   FileDownloadResponse,
   FileUploadResponse,
 } from "../client/clientTypes";
-import type { RateCardsResponse, RateCardParams, CreateRateCardParams, CreateRateCardResponse, UpdateRateCardParams, UpdateRateCardResponse } from "./adminTypes";
+import type { RateCardsResponse, RateCardParams, CreateRateCardParams, CreateRateCardResponse, UpdateRateCardParams, UpdateRateCardResponse, DeleteRateCardResponse } from "./adminTypes";
 
 /*
  * AdminAdapter
@@ -384,6 +384,20 @@ export class AdminAdapter {
       const response = await axiosInstance.put(
         ADMIN_ROUTER_PATHS.UPDATE_RATE_CARD(id),
         data,
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Delete Rate Card */
+  static async deleteRateCard(
+    id: number,
+  ): Promise<DeleteRateCardResponse> {
+    try {
+      const response = await axiosInstance.delete(
+        ADMIN_ROUTER_PATHS.DELETE_RATE_CARD(id),
       );
       return response.data;
     } catch (error) {

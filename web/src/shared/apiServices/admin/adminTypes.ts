@@ -136,3 +136,7 @@ export interface UpdateRateCardParams {
 export interface UpdateRateCardResponse {
   message: string;
 }
+
+export interface DeleteRateCardResponse {
+  message: string;
+}

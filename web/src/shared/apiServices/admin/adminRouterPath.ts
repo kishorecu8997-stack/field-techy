@@ -28,4 +28,5 @@ export const ADMIN_ROUTER_PATHS = {
   GET_RATE_CARDS: "/admin/finance/rate-cards",
   CREATE_RATE_CARD: "/admin/finance/rate-cards",
   UPDATE_RATE_CARD: (id: number) => `/admin/finance/rate-cards/${id}`,
+  DELETE_RATE_CARD: (id: number) => `/admin/finance/rate-cards/${id}`,
 } as const;

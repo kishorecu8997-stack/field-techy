@@ -11,8 +11,9 @@ import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useToggleStatus from "@/shared/components/ToggleStatus";
-import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
+import { useGetRateCards, useDeleteRateCard } from "@/shared/apiServices/admin/adminService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { toast } from "react-toastify";
 
 /**
  * ManageRateCards Component
@@ -40,6 +41,17 @@ const ManageRateCards: React.FC = () => {
   const { data: rateCardsResponse, isLoading, isError, refetch } = useGetRateCards({
     page: 1,
     limit: 100,
+  });
+
+  const deleteRateCardMutation = useDeleteRateCard({
+    onSuccess: () => {
+      toast.success("Rate card deleted successfully!");
+      refetch();
+    },
+    onError: (error: unknown) => {
+      console.error("Failed to delete rate card:", error);
+      toast.error("Failed to delete rate card. Please try again.");
+    },
   });
 
   // Transform API data to match table format
@@ -83,6 +95,8 @@ const ManageRateCards: React.FC = () => {
 
   //Delete confirmation
   const handleDeleteJob = async (job: RateCardProps) => {
+    const rateCardId = parseInt(job.id, 10);
+    
     await showPopup({
       title: "Rate Card",
       body: "Are you sure you want to delete this rate card?",
@@ -98,9 +112,7 @@ const ManageRateCards: React.FC = () => {
           variant: "danger",
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
-            console.log("Deleting job:", job.id);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
+            deleteRateCardMutation.mutate(rateCardId);
             close(true);
           },
         },
