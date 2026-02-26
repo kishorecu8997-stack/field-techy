@@ -33,10 +33,12 @@ export default function ManageJobs() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const handleFilterChange = <T,>(setter: (val: T) => void) => (val: T) => {
-    setter(val);
-    setPage(1);
-  };
+  const handleFilterChange =
+    <T,>(setter: (val: T) => void) =>
+    (val: T) => {
+      setter(val);
+      setPage(1);
+    };
 
   const tabsConfig: Array<{
     label: string;
