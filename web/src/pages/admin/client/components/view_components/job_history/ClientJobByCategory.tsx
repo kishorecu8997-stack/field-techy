@@ -211,7 +211,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
               </h3>
               <SelectMenu
                 placeholder="Select Filter"
-                className="w-32"
+                className="w-32 z-20"
                 options={days}
                 value={selectedDay}
                 onChange={setSelectedDay}
