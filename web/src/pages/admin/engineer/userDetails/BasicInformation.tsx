@@ -131,7 +131,7 @@ export default function BasicInformation({
               <label className="block text-sm text-gray-500 mb-1">
                 Employment Type
               </label>
-              <p className="font-semibold">{employmentType}</p>
+              <p className="font-semibold">{employmentType || "N/A"}</p>
             </div>
           </div>
         </div>
