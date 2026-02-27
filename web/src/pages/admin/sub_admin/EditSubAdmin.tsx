@@ -1,8 +1,6 @@
-import { SubAdminRegions, userList } from "@/dummy_data/admin/manageSubAdmin";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validateName } from "@/utils/validate";
@@ -11,35 +9,76 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { AddSubAdminForm } from "./types";
+import type { EditSubAdminForm } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
+import {
+  LookupTable,
+  useAppGetLookupData,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminGetSubAdmins,
+  useAdminUpdateSubAdmin,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { useEffect } from "react";
 
-/**
- * `EditSubAdmin` is a page component for editing an existing sub-admin user.
- * It provides a form pre-filled with the sub-admin's current data, including fields
- * for name, email, phone number, role, and profile image.
- * The form includes validation for each field. On successful submission, it displays a success toast.
- * @returns {JSX.Element} The rendered page component.
- */
 export default function EditSubAdmin() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
 
-  // Find the category by ID (replace with real API call if needed)
-  const subAdmin = userList.find((user) => user.id.toString() === id);
+  const { data: subAdminsData, isLoading: isSubAdminsLoading } =
+    useAdminGetSubAdmins();
 
-  const methods = useForm<AddSubAdminForm>({
+  const parsedId = Number(id);
+  const subAdmin = subAdminsData?.data?.find((user) => user.id === parsedId);
+
+  const { data: regionsLookup, isLoading: isRegionsLoading } =
+    useAppGetLookupData(LookupTable.Regions);
+
+  const regionOptions: { value: string; label: string }[] =
+    regionsLookup?.map((item) => ({
+      value: String(item.id),
+      label: item.name || `Region ${item.id}`,
+    })) ?? [];
+
+  const methods = useForm<EditSubAdminForm>({
     defaultValues: {
       name: subAdmin?.name || "",
       email: subAdmin?.email || "",
       phoneNumber: subAdmin?.phoneNumber || "",
-      region: subAdmin?.region || "",
+      region: subAdmin?.regionId?.toString() || "",
     },
   });
 
-  const navigate = useNavigate();
-  const { showPopup } = usePopupStore();
+  useEffect(() => {
+    if (!subAdmin) return;
 
-  const handleSaveConfirmation = async (data: AddSubAdminForm) => {
+    const currentValues = methods.getValues();
+    const newValues = {
+      name: subAdmin.name || "",
+      email: subAdmin.email || "",
+      phoneNumber: subAdmin.phoneNumber || "",
+      region: subAdmin.regionId?.toString() || "",
+    };
+
+    if (
+      currentValues.name !== newValues.name ||
+      currentValues.email !== newValues.email ||
+      currentValues.phoneNumber !== newValues.phoneNumber ||
+      currentValues.region !== newValues.region
+    ) {
+      methods.reset(newValues);
+    }
+  }, [subAdmin, methods]);
+
+  const { mutateAsync: updateSubAdmin, isPending } = useAdminUpdateSubAdmin({
+    onError: () => {
+      toast.error("Failed to update Sub-Admin. Please try again.");
+    },
+  });
+
+  const handleSaveConfirmation = async (data: EditSubAdminForm) => {
     await showPopup({
       title: "Update Sub-Admin",
       body: "Are you sure you want to update this details?",
@@ -54,22 +93,62 @@ export default function EditSubAdmin() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("data :", data);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Sub-Admin updated successfully!");
-            navigate(absoluteUrls.admin.home.manage_sub_admin);
-            methods.reset();
-            close(true);
+            try {
+              await updateSubAdmin({
+                path: { userId },
+                body: {
+                  name: data.name,
+                  email: data.email,
+                  phoneNumber: data.phoneNumber,
+                  regionId: Number(data.region),
+                },
+              });
+
+              toast.success("Sub-Admin updated successfully!");
+              navigate(absoluteUrls.admin.home.manage_sub_admin);
+              close?.(true);
+            } catch (err) {
+              toast.error("Failed to update sub-admin. Please try again.");
+              close?.(false);
+            }
           },
         },
       ],
     });
   };
 
-  const handleSubmit = (data: AddSubAdminForm) => {
+  const onSubmit = (data: EditSubAdminForm) => {
     handleSaveConfirmation(data);
   };
+
+  if (isSubAdminsLoading || isRegionsLoading) {
+    return (
+      <div className="w-full h-full p-4 flex items-center justify-center min-h-[60vh]">
+        <LoaderComponent />
+      </div>
+    );
+  }
+
+  if (!subAdmin) {
+    return (
+      <div className="w-full h-full p-4">
+        <div className="flex justify-between">
+          <p className="mt-2 mb-6 font-semibold">Edit Sub-Admin</p>
+          <Button
+            variant="solid"
+            onClick={() => navigate(absoluteUrls.admin.home.manage_sub_admin)}
+          >
+            Back
+          </Button>
+        </div>
+        <div className="bg-white dark:bg-gray-700 rounded-lg p-8 text-center text-red-600">
+          Sub-admin not found
+        </div>
+      </div>
+    );
+  }
+
+  const userId = subAdmin.userId;
 
   return (
     <div className="w-full h-full p-4">
@@ -77,19 +156,16 @@ export default function EditSubAdmin() {
         <p className="mt-2 mb-6 font-semibold">Edit Sub-Admin</p>
         <Button
           variant="solid"
-          className=""
           onClick={() => navigate(absoluteUrls.admin.home.manage_sub_admin)}
         >
           Back
         </Button>
       </div>
+
       <div className="bg-white dark:bg-gray-700 rounded-lg p-4">
-        <FormContainer methods={methods} onSubmit={handleSubmit}>
-          <div className="mb-6 mt-2 w-fit">
-            <ImageUploaderField label="Profile Image" name="profileImage" />
-          </div>
+        <FormContainer methods={methods} onSubmit={onSubmit}>
           <div className="grid md:flex gap-4 w-full">
-            <div className="gap-4 w-1/2 space-y-2">
+            <div className="gap-4 w-full md:w-1/2 space-y-2">
               <InputField
                 name="name"
                 label="Full Name"
@@ -97,7 +173,7 @@ export default function EditSubAdmin() {
                 placeholder="Enter Name"
                 required
                 allowedCharacters="string"
-                rules={{ validate: (v: string) => validateName(v) }}
+                rules={{ validate: validateName }}
               />
               <PhoneInputField
                 name="phoneNumber"
@@ -105,30 +181,40 @@ export default function EditSubAdmin() {
                 required
               />
             </div>
-            <div className="gap-4 w-1/2 space-y-2">
+
+            <div className="gap-4 w-full md:w-1/2 space-y-2">
               <InputField
                 name="email"
                 label="Email Address"
-                type="text"
+                type="email"
                 required
                 rules={validateEmailRules}
               />
 
               <SelectField
-                name="role"
+                name="region"
                 label="Select Region"
-                placeholder="Select Region"
-                options={SubAdminRegions}
+                placeholder={
+                  !regionsLookup
+                    ? "Loading regions..."
+                    : regionOptions.length === 0
+                      ? "No regions available"
+                      : "Select Region"
+                }
+                options={regionOptions}
                 required
+                disabled={!regionsLookup || regionOptions.length === 0}
               />
             </div>
           </div>
-          <div className="my-4 flex justify-end">
+
+          <div className="my-6 flex justify-end">
             <Button
               type="submit"
-              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+              disabled={isPending || !regionsLookup}
+              className="w-fit bg-gradient-to-r from-teal-900 to-teal-700 text-white py-2 px-6 rounded-lg hover:opacity-90 transition"
             >
-              Save
+              {isPending ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </FormContainer>

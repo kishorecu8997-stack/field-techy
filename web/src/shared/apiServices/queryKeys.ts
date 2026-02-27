@@ -44,6 +44,11 @@ export const queryKeys = {
       detail: (id: string | number) =>
         ["admin", "notifications", String(id)] as const,
     },
+    paymentTransactions: {
+      all: ["admin", "paymentTransactions"] as const,
+      detail: (id: string | number) =>
+        ["admin", "paymentTransactions", String(id)] as const,
+    },
   },
   notifications: {
     all: ["notifications"] as const,

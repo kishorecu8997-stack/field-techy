@@ -13,3 +13,16 @@ export interface FaqItem {
   question: string;
   answer: string;
 }
+
+export interface FaqItem {
+  id: number;
+  question: string;
+  answer: string;
+  sortOrder: number;
+}
+
+export interface FaqAddFormData {
+  question: string;
+  answer: string;
+  sortOrder?: number;
+}

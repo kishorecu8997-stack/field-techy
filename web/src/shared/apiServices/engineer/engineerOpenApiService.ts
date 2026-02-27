@@ -13,11 +13,13 @@ import {
   type EngineerDeleteEducationResponse,
   type EngineerDeleteExperienceResponse,
   type EngineerGetMyJobsData,
+  type EngineerGetSavedJobsData,
   type EngineerRequestBreakResponse,
   type EngineerRequestStartResponse,
   type EngineerSearchJobsData,
   type EngineerSubmitRevisionResponse,
   type EngineerSubmitSignOffResponse,
+  type EngineerToggleSaveJobResponse,
   type EngineerUpdateEducationResponse,
   type EngineerUpdateExperienceResponse,
   type EngineerUpdatePersonalInfoResponse,
@@ -61,6 +63,9 @@ import {
   getJobLogsOptions,
   engineerGetProfileCompletionOptions,
   engineerGetMyDocumentsOptions,
+  engineerGetSavedJobsOptions,
+  engineerToggleSaveJobMutation,
+  getEngineerEarningsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
@@ -620,6 +625,34 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
   });
 }
 
+export function useStoreEngineerSaveJobs(options?: {
+  onSuccess?: (data: EngineerToggleSaveJobResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerToggleSaveJobMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useGetEngineerSavedJobs(
+  query: EngineerGetSavedJobsData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...engineerGetSavedJobsOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
 export function useEngineerBalance(enabled: boolean = true) {
   return useQuery<GetEngineerBalanceResponse, GetEngineerBalanceError>({
     queryKey: [...queryKeys.engineer.all, "balance"],
@@ -635,6 +668,7 @@ export function useEngineerBalance(enabled: boolean = true) {
     refetchOnWindowFocus: false,
   });
 }
+
 export function useEngineerTransactions(
   params: GetEngineerTransactionsData["query"] = {},
   enabled = true,
@@ -666,6 +700,15 @@ export function useEngineerTransactions(
 export function useEngineerGetMyJobs(enabled: boolean = true) {
   return useQuery({
     ...engineerGetMyJobsOptions({
+      client: apiClient,
+    }),
+    enabled,
+  });
+}
+
+export function useEngineerEarnings(enabled: boolean = true) {
+  return useQuery({
+    ...getEngineerEarningsOptions({
       client: apiClient,
     }),
     enabled,
