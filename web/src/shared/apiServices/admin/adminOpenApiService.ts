@@ -93,7 +93,6 @@ import {
   useQueryClient,
   type QueryKey,
 } from "@tanstack/react-query";
-import { useMemo } from "react";
 import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 
@@ -306,22 +305,6 @@ export type AdminGetEngineersQuery = NonNullable<
 export type AdminManageEngineersResponse =
   AdminGetEngineersForManagementResponses[200];
 
-const stableStringify = (value: unknown): string => {
-  if (value === null) return "null";
-  const valueType = typeof value;
-  if (valueType !== "object") return JSON.stringify(value);
-  if (Array.isArray(value)) {
-    return `[${value.map(stableStringify).join(",")}]`;
-  }
-  const record = value as Record<string, unknown>;
-  const entries = Object.entries(record)
-    .filter(([, v]) => v !== undefined)
-    .sort(([a], [b]) => a.localeCompare(b));
-  return `{${entries
-    .map(([k, v]) => `${JSON.stringify(k)}:${stableStringify(v)}`)
-    .join(",")}}`;
-};
-
 export function useAdminManageEngineers(
   query?: AdminGetEngineersQuery,
   options?: {
@@ -330,29 +313,17 @@ export function useAdminManageEngineers(
     onError?: (error: unknown) => void;
   },
 ) {
-  const queryParams = useMemo(
-    () => {
-      if (!query) return {} as AdminGetEngineersQuery;
-      const normalizedEntries = Object.entries(query)
-        .filter(([, v]) => v !== undefined)
-        .sort(([a], [b]) => a.localeCompare(b));
-      return Object.fromEntries(normalizedEntries) as AdminGetEngineersQuery;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [stableStringify(query)],
-  );
-
   return useQuery<
     AdminManageEngineersResponse,
     AdminGetEngineersForManagementError,
     AdminManageEngineersResponse,
     QueryKey
   >({
-    queryKey: [...queryKeys.admin.manageEngineers, queryParams],
+    queryKey: [...queryKeys.admin.manageEngineers, query ?? {}],
     queryFn: async ({ signal }) => {
       const { data } = await adminGetEngineersForManagement({
         client: apiClient,
-        query: queryParams,
+        query,
         signal,
         throwOnError: true,
       });
