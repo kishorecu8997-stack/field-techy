@@ -73,6 +73,10 @@ const ProposalForm = ({
                 required
                 rules={{
                   required: JOB_TAB_COPY.proposalDescriptionRequired,
+                  maxLength: {
+                  value: 50,
+                  message: "Proposal description cannot exceed 50 characters",
+    },
                 }}
               />
 
@@ -137,14 +141,14 @@ const ProposalForm = ({
                       className="bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-full text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2"
                     >
                       {fileName}
-                      <Button
+                      {/* <Button
                         variant="no_style"
                         type="button"
                         className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-400"
                         aria-label="Remove attachment"
                       >
                         <IoClose size={16} />
-                      </Button>
+                      </Button> */}
                     </div>
                   ))}
                 </div>

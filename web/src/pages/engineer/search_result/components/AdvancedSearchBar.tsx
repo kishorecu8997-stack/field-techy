@@ -35,7 +35,7 @@ const AdvancedSearchBar: React.FC<{
   const serviceTypeOptions = ["Dedicated", "Dispatch", "Scheduled"];
   const experienceLevelOptions = ["Entry", "Mid", "Senior", "Lead"];
   const jobTypeOptions = ["Full-time", "Part-time", "Contract"];
-  const locationTypeOptions = ["On-site", "Remote", "Hybrid"];
+  const locationTypeOptions = ["On site", "Remote", "Hybrid"];
   const locationOptions = [
     "New York",
     "Los Angeles",

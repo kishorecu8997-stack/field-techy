@@ -24,8 +24,15 @@ import { toast } from "react-toastify";
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   const { jobId } = useParams<{ jobId: string }>();
 
-  const { mutateAsync: requestStart } = useEngineerRequestStart();
-  const { mutateAsync: addWorkLog } = useEngineerAddWorkLog();
+  // Use jobId as assignmentId since that's what the API expects
+  const assignmentId = jobId ? Number(jobId) : undefined;
+
+  const { mutateAsync: requestStart } = useEngineerRequestStart({
+    assignmentId,
+  });
+  const { mutateAsync: addWorkLog } = useEngineerAddWorkLog({
+    assignmentId,
+  });
 
   // This will also replaced once the API is ready
   // const { mutateAsync: uploadFile } = useAppUploadProfileFile();

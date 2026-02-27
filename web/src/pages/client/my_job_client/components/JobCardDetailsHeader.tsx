@@ -126,7 +126,6 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job }) => {
 
         <div className="mt-3 flex flex-wrap gap-4 text-sm">
           <span className="flex items-center gap-1">🕒 {job.duration}</span>
-          <span>Client: {job.client}</span>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3 justify-end">

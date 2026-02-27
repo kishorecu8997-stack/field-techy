@@ -69,6 +69,8 @@ const EngineersActions = ({
   assignmentId,
   isSendProposal,
   progressUpdates,
+  numberOfVacancy,
+  numberOfApprovedProposals,
 }: {
   setOfferJobStatus?: Dispatch<
     SetStateAction<OfferedJobStatusType | undefined>
@@ -90,6 +92,8 @@ const EngineersActions = ({
   onOpenViewClientFeedback?: () => void;
   assignmentId?: number;
   progressUpdates?: ProgressUpdate[];
+  numberOfVacancy?: number;
+  numberOfApprovedProposals?: number;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
@@ -119,6 +123,7 @@ const EngineersActions = ({
   // Hook for requesting to start a job
   const { mutateAsync: requestStartJob, isPending: isStartingJob } =
     useEngineerRequestStart({
+      assignmentId,
       onSuccess: () => {
         toast.success("Job start request submitted successfully");
         // Query invalidation is handled by the mutation hook
@@ -300,30 +305,29 @@ const EngineersActions = ({
     </div>
   );
 
-  const isApplied =
-    (status === JOB_STATUSES.applied || OfferJobStatus === "applied") &&
-    OfferJobStatus !== "accepted" &&
-    OfferJobStatus !== "assigned";
-  const isRejected =
-    OfferJobStatus === "rejected" || mappedOfferStatus === "declined";
-  const isJobStarted =
-    OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
+  // Check if THIS specific engineer has applied using assignmentId from API
+  const hasAssignment = !!assignmentId;
+
+  // Determine engineer's proposal status - ONLY from assignment data, not job status
+  // This ensures each engineer sees only their own proposal status
+  const isApplied = hasAssignment && OfferJobStatus === "applied";
+  const isRejected = hasAssignment && (OfferJobStatus === "rejected" || mappedOfferStatus === "declined");
+  const isJobStarted = OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
+  const isProposalAccepted = hasAssignment && (
+    OfferJobStatus === "accepted" ||
+    OfferJobStatus === "assigned" ||
+    mappedOfferStatus === "accepted"
+  );
+
+  // Job-level status checks - these determine what ACTIONS are available
+  // NOT the engineer's proposal status
   const isNew = status === JOB_STATUSES.new || status === "new";
   const isOffer = status === JOB_STATUSES.offer || status === "offer";
   const isPosted = status === JOB_STATUSES.posted;
   const isCancelled = status === JOB_STATUSES.cancelled;
   const isClosed = status === JOB_STATUSES.closed;
 
-  // Check if proposal is accepted (Start Job should show when proposal is accepted or assigned)
-  const isProposalAccepted =
-    OfferJobStatus === "accepted" ||
-    OfferJobStatus === "assigned" ||
-    mappedOfferStatus === "accepted";
-
-  // Check if assignment exists - show Start Job whenever there's an assignmentId
-  const hasAssignment = !!assignmentId;
-
-  // Check if job has actually started (only true when assignment status is 'started', not 'start_pending_approval')
+  // Check if job has actually started
   const hasJobStarted = OfferJobStatus === "started";
 
   // Check if there's a pending start request
@@ -335,18 +339,26 @@ const EngineersActions = ({
     !hasStartPending &&
     !hasJobStarted;
 
-  // Check if proposal already submitted via API
+  // Check if proposal already submitted via API (based on assignment status)
+  // Only considers this specific engineer's proposal status, not other engineers
   const hasSubmittedProposal =
-    OfferJobStatus === "applied" ||
-    OfferJobStatus === "submitted" ||
-    OfferJobStatus === "assigned" ||
-    OfferJobStatus === "accepted" ||
-    OfferJobStatus === "start_pending_approval" ||
-    OfferJobStatus === "started" ||
-    OfferJobStatus === "rejected" ||
-    mappedOfferStatus === "initial" ||
-    mappedOfferStatus === "checked-in" ||
-    mappedOfferStatus === "declined";
+    hasAssignment &&
+    (OfferJobStatus === "applied" ||
+      OfferJobStatus === "submitted" ||
+      OfferJobStatus === "assigned" ||
+      OfferJobStatus === "accepted" ||
+      OfferJobStatus === "start_pending_approval" ||
+      OfferJobStatus === "started" ||
+      OfferJobStatus === "rejected" ||
+      mappedOfferStatus === "initial" ||
+      mappedOfferStatus === "checked-in" ||
+      mappedOfferStatus === "declined");
+
+  // Check if job is fully filled (approved proposals >= vacancies)
+  const isJobFullyFilled =
+    numberOfVacancy !== undefined &&
+    numberOfApprovedProposals !== undefined &&
+    numberOfApprovedProposals >= numberOfVacancy;
 
   // Extracted shared button logic to avoid duplication
   const renderJobActionButtons = () => {
@@ -400,7 +412,26 @@ const EngineersActions = ({
     }
 
     // Default: Send Proposal / View Job Posting
-    if (!isSendProposal && !hasSubmittedProposal) {
+    // Use assignmentId from API to determine if engineer has applied
+    // This ensures each engineer sees only their own proposal status
+    if (!hasAssignment) {
+      // Engineer has not applied yet - show Send Proposal button
+      // Check if job is fully filled - disable proposal submission
+      if (isJobFullyFilled) {
+        return (
+          <div className="flex flex-col items-end gap-2">
+            <span className="text-red-400 text-sm font-medium">
+              Applications are closed. All available vacancies for this job have been filled.
+            </span>
+            <Button
+              className="bg-gray-500 text-white px-6 py-2 rounded-md font-medium border border-gray-400 cursor-not-allowed opacity-50"
+              disabled={true}
+            >
+              Send Proposal
+            </Button>
+          </div>
+        );
+      }
       return (
         <Button
           className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -410,6 +441,9 @@ const EngineersActions = ({
         </Button>
       );
     }
+
+    // Engineer has applied - show View Job Posting or status
+    // This correctly reflects the engineer's own proposal status from the API
 
     return (
       <div

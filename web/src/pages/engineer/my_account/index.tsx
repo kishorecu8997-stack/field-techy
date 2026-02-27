@@ -24,6 +24,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "../account_settings/types";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -65,6 +66,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   });
 
   const { setValue } = methods;
+  const queryClient = useQueryClient();
 
   /*
    * Sync the profile image URL from the store to the form state.
@@ -146,17 +148,18 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           key={"myAccount"}
           className="h-full"
         />
-        <LogoutConfirmationPopup
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          onConfirm={() => {
-            logout();
-            clearEngineerProfile();
-            onClose();
-            navigate(absoluteUrls.engineer.auth.login);
-          }}
-          onCancel={() => setIsOpen(false)}
-        />
+       <LogoutConfirmationPopup
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  onConfirm={() => {
+    logout();
+    clearEngineerProfile();
+    queryClient.clear();     // Clears React Query cache so next login fetches fresh data
+    onClose();
+    navigate(absoluteUrls.engineer.auth.login);
+  }}
+  onCancel={() => setIsOpen(false)}
+/>
       </FormContainer>
     </>
   );

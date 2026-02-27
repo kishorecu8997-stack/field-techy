@@ -204,7 +204,7 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
           </div>
 
           <div className="flex items-center space-x-2">
-            {matchScore !== undefined && <MatchScoreRing score={matchScore} />}
+            {/* Match score ring hidden - keeping space for bookmark only */}
             <div
               onClick={handleBookmarkClick}
               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"

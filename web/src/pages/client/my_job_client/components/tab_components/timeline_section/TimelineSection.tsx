@@ -8,21 +8,17 @@ import {
   formatApiDate,
   transformLogsToTimelineItems,
 } from "@/utils/timelineUtils";
-// import TimelineList from "@/shared/components/TimelineList";
 import type {
   CardButtonType,
   TimelineRevisionData,
 } from "@/pages/client/my_job_client/types";
 import type { RevisionData } from "./TimelineSectionHeader";
-import {} from // createRevisionUpdateCardData,
-"@/dummy_data/clientTimelineDummyData";
 import {
   TIMELINE_STATUS,
   TIMELINE_CARD_COLORS,
   MODAL_TITLES,
   MODAL_MESSAGES,
   TOAST_MESSAGES,
-  // jobStartedCardData,
 } from "@/constants/timelineConstants";
 import type { TimelineStatus } from "@/constants/timelineConstants";
 import ProgressUpdateCard from "./ProgressUpdateCard";
@@ -36,6 +32,7 @@ import ActionRequiredBadge from "./ActionRequiredBadge";
 import TimelineSectionHeader from "./TimelineSectionHeader";
 import TimelineToggleButton from "../TimelineToggleButton";
 import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
+import type { ClientGetAssignmentDetailsResponse } from "@/api";
 import type {
   RevisionFormData,
   RevisionRequestDetails,
@@ -47,7 +44,6 @@ import {
   useClientActionOnWorkLog,
   useClientActionOnBreak,
 } from "@/shared/apiServices/client/clientOpenApiService";
-// import type { GetJobLogsResponse } from "@/api";
 
 const FormMode = {
   Revision: "revision",
@@ -70,7 +66,8 @@ const TimelineSection: React.FC<{
   assignmentId?: number;
   jobId?: number;
   hasProposals?: boolean;
-}> = ({ assignmentId, jobId, hasProposals = false }) => {
+  assignments?: ClientGetAssignmentDetailsResponse;
+}> = ({ assignmentId, jobId, hasProposals = false, assignments }) => {
   const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
   const [isShortBreakCollapsed, setIsShortBreakCollapsed] = useState(false);
   const [isFinalStatementCollapsed, setIsFinalStatementCollapsed] =
@@ -126,19 +123,33 @@ const TimelineSection: React.FC<{
     },
   });
 
-  // Fetch job logs from real API
-  const { data: jobLogs, isLoading: isLoadingLogs } = useGetJobLogs(
-    assignmentId ?? 0,
-    !!assignmentId,
-  );
-
   // Fetch assignment details - pass both jobId and assignmentId to API
   // API accepts both parameters, so we can use either one or both
   // Ensure jobId is valid (not NaN) before passing
   const validJobId = jobId && !isNaN(jobId) ? jobId : undefined;
-  const { data: assignmentDetails } = useClientGetAssignmentDetails(
+
+  // Use passed assignments if provided, otherwise use fetched data
+  const fetchedAssignmentsProp = useMemo(() => {
+    return assignments;
+  }, [assignments]);
+
+  const { data: fetchedAssignmentDetailsFromApi } = useClientGetAssignmentDetails(
     { jobId: validJobId, assignmentId },
-    !!(validJobId || assignmentId),
+    !!(validJobId || assignmentId) && !assignments,
+  );
+
+  const assignmentDetails = fetchedAssignmentsProp || fetchedAssignmentDetailsFromApi || [];
+
+  // Get assignmentId from props or from the first assignment in the assignments array
+  const effectiveAssignmentId = assignmentId || (assignmentDetails?.[0]?.assignmentId ?? 0);
+  const shouldFetchLogs = effectiveAssignmentId > 0;
+
+  // Fetch job logs from real API
+  // Note: The API /jobs/assignments/{assignmentId}/logs requires a VALID assignmentId.
+  // Only fetch logs when we have a valid assignmentId.
+  const { data: jobLogs, isLoading: isLoadingLogs } = useGetJobLogs(
+    effectiveAssignmentId,
+    shouldFetchLogs,
   );
 
   // Mutation for client action on assignment (approve/reject start job and final statement)
@@ -1053,10 +1064,10 @@ const TimelineSection: React.FC<{
 
   const handleProgressApprove = (keepExpanded = false) => {
     // Call API to approve work log if we have valid data
-    if (apiProgressData?.logId && assignmentId) {
+    if (apiProgressData?.logId && effectiveAssignmentId) {
       actionOnWorkLog({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           logId: apiProgressData.logId,
           action: "approve",
         },
@@ -1072,10 +1083,10 @@ const TimelineSection: React.FC<{
 
   const handleProgressReject = (keepExpanded = false) => {
     // Call API to reject work log if we have valid data
-    if (apiProgressData?.logId && assignmentId) {
+    if (apiProgressData?.logId && effectiveAssignmentId) {
       actionOnWorkLog({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           logId: apiProgressData.logId,
           action: "reject",
         },
@@ -1118,12 +1129,12 @@ const TimelineSection: React.FC<{
     // Call API to request revision if we have valid data
     if (
       apiProgressData?.logId &&
-      assignmentId &&
+      effectiveAssignmentId &&
       formMode === FormMode.Revision
     ) {
       actionOnWorkLog({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           logId: apiProgressData.logId,
           action: "request_revision",
           clientComment: notes,
@@ -1142,10 +1153,10 @@ const TimelineSection: React.FC<{
     if (formMode === FormMode.RevisionUpdate) {
       const revisionId = currentRevisionId;
       const logId = currentRevisionLogId;
-      if (logId && revisionId && assignmentId) {
+      if (logId && revisionId && effectiveAssignmentId) {
         actionOnWorkLog({
           body: {
-            assignmentId,
+            assignmentId: effectiveAssignmentId,
             logId: logId,
             revisionId: revisionId,
             action: "request_revision",
@@ -1211,10 +1222,10 @@ const TimelineSection: React.FC<{
     const revId = revisionId || apiRevisionUpdateData?.revisionId;
     const lgId = logId || apiRevisionUpdateData?.logId;
     // Call API to approve revision if we have valid data
-    if (lgId && revId && assignmentId) {
+    if (lgId && revId && effectiveAssignmentId) {
       actionOnWorkLog({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           logId: lgId,
           revisionId: revId,
           action: "approve",
@@ -1240,10 +1251,10 @@ const TimelineSection: React.FC<{
     const revId = revisionId || apiRevisionUpdateData?.revisionId;
     const lgId = logId || apiRevisionUpdateData?.logId;
     // Call API to reject revision if we have valid data
-    if (lgId && revId && assignmentId) {
+    if (lgId && revId && effectiveAssignmentId) {
       actionOnWorkLog({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           logId: lgId,
           revisionId: revId,
           action: "reject",
@@ -1268,10 +1279,10 @@ const TimelineSection: React.FC<{
 
   const handleShortBreakApprovalSubmit = () => {
     // Call API to approve break request if we have valid data
-    if (currentBreakRequestId && assignmentId) {
+    if (currentBreakRequestId && effectiveAssignmentId) {
       actionOnBreak({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           requestId: currentBreakRequestId,
           action: "approve",
           approverComment: shortBreakNotes,
@@ -1298,10 +1309,10 @@ const TimelineSection: React.FC<{
 
   const handleShortBreakReject = (requestId: number) => {
     // Call API to reject break request if we have valid data
-    if (requestId && assignmentId) {
+    if (requestId && effectiveAssignmentId) {
       actionOnBreak({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           requestId: requestId,
           action: "reject",
         },
@@ -1324,10 +1335,10 @@ const TimelineSection: React.FC<{
 
   const handleFinalStatementApproveConfirm = () => {
     // Call API to approve final statement using assignment action
-    if (assignmentId) {
+    if (effectiveAssignmentId) {
       actionOnAssignment({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           pendingApproval: "submission",
           action: "approve",
         },
@@ -1348,10 +1359,10 @@ const TimelineSection: React.FC<{
 
   const handleFinalStatementRejectConfirm = () => {
     // Call API to reject final statement using assignment action
-    if (assignmentId) {
+    if (effectiveAssignmentId) {
       actionOnAssignment({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           pendingApproval: "submission",
           action: "reject",
         },
@@ -1381,10 +1392,10 @@ const TimelineSection: React.FC<{
   };
 
   const handleJobApproveConfirmSubmit = () => {
-    if (assignmentId) {
+    if (effectiveAssignmentId) {
       actionOnAssignment({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           pendingApproval: "start",
           action: "approve",
         },
@@ -1405,10 +1416,10 @@ const TimelineSection: React.FC<{
   };
 
   const handleJobRejectConfirmSubmit = () => {
-    if (assignmentId) {
+    if (effectiveAssignmentId) {
       actionOnAssignment({
         body: {
-          assignmentId,
+          assignmentId: effectiveAssignmentId,
           pendingApproval: "start",
           action: "reject",
         },
@@ -1606,32 +1617,35 @@ const TimelineSection: React.FC<{
               )}
 
               {/* Right section - Feedback and expand */}
-              <div className="flex items-center gap-3">
-                {/* Show feedback button in header when work is completed */}
-                {isWorkCompleted ? (
-                  <GiveFeedbackButton
-                    label="Give Feedback On Engineer"
-                    targetName={engineerData?.name || "Unknown"}
-                    targetRole="Engineer"
-                    assignmentId={
-                      engineerData?.assignmentId || assignmentId || 0
-                    }
-                    stopPropagation
-                    textClassName="cursor-pointer font-medium text-amber-600 dark:text-amber-500"
-                  />
-                ) : (
-                  <HiChevronDown className="h-5 w-5 text-gray-400" />
-                )}
-                <button
-                  type="button"
-                  className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                  onClick={() => setIsSectionCollapsed(!isSectionCollapsed)}
-                >
-                  <HiChevronDown
-                    className={`h-5 w-5 transition-transform ${isSectionCollapsed ? "" : "rotate-180"}`}
-                  />
-                </button>
-              </div>
+              {/* Right section - Feedback (when completed) + functional collapse chevron */}
+<div className="flex items-center gap-3">
+  {isWorkCompleted && (
+    <GiveFeedbackButton
+      label="Give Feedback On Engineer"
+      targetName={engineerData?.name || "Unknown"}
+      targetRole="Engineer"
+      assignmentId={
+        engineerData?.assignmentId || assignmentId || 0
+      }
+      stopPropagation
+      textClassName="cursor-pointer font-medium text-amber-600 dark:text-amber-500"
+    />
+  )}
+
+  {/* Always show the real collapse button (or hide it when nothing to collapse - see variant below) */}
+  <button
+    type="button"
+    className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+    onClick={() => setIsSectionCollapsed((prev) => !prev)}
+    aria-label={isSectionCollapsed ? "Expand section" : "Collapse section"}
+  >
+    <HiChevronDown
+      className={`h-5 w-5 text-gray-500 transition-transform ${
+        isSectionCollapsed ? "" : "rotate-180"
+      }`}
+    />
+  </button>
+</div>
             </div>
 
             {/* Collapsible content */}

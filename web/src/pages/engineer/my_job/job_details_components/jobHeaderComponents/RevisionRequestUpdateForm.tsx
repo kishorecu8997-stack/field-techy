@@ -42,6 +42,7 @@ const RevisionRequestUpdateForm = ({
 
   // Mutation for submitting revision
   const { mutate: submitRevision } = useEngineerSubmitRevision({
+    assignmentId,
     onSuccess: () => {
       toast.success("Revision submitted successfully!");
       onClose();

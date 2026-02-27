@@ -122,7 +122,9 @@ export interface JobHeaderCardProps {
   jobLocation?: string;
   numberOfVacancy?: number;
   numberOfApplicants?: number;
+  numberOfApprovedProposals?: number;
   hideDurationAndClient?: boolean;
+  hideClient?: boolean;
   activeTab?: string;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
@@ -160,7 +162,7 @@ export interface JobInfoSectionProps {
     title?: string;
     items: Array<{ text: string }>;
   };
-  files: string[];
+  files: Array<{ name: string; url: string }>;
 }
 
 /**
@@ -346,6 +348,7 @@ export type ProposalInfoTabProps = {
         attachments: FileList | null;
         attachmentUrl?: never;
       };
+  proposalAppliedDate?: string | null;
 };
 
 /**

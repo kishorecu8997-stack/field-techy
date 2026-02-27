@@ -7,6 +7,7 @@ import {
 } from "@/pages/engineer/search_result/types";
 import TabComponent from "@/shared/components/TabComponent";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import JobOverviewSection from "@/shared/components/JobOverviewSection";
 import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import ProposalInfoTab from "./tab_components/ProposalInfoTab";
@@ -19,11 +20,104 @@ import type {
   ProgressUpdate,
   JobInfoSectionProps,
 } from "../types.d";
+import type { JobOverviewProps } from "@/shared/components/types";
 import {
   useEngineerApplyJob,
   useEngineerGetMyJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import type { EngineerSearchJobsResponse } from "@/api";
 import { toast } from "react-toastify";
+
+/**
+ * Maps API job data to JobOverviewProps format for the Job Overview tab
+ * Uses the existing JobOverviewSection component for comprehensive job details display
+ * Similar to the client-side implementation
+ */
+const mapEngineerJobToJobOverview = (
+  job: EngineerSearchJobsResponse[number],
+): JobOverviewProps => {
+  // Helper to safely cast job properties
+  const getJobValue = <T,>(key: string): T | null | undefined => {
+    return (job as Record<string, unknown>)?.[key] as T | null | undefined;
+  };
+
+  // Extract basic job info
+  const jobTitle = job?.jobTitle || "";
+  const jobDescription = job?.jobDescription || "";
+
+  // Extract skills - convert numbers to strings (engineer API returns numbers)
+  const rawSkills = getJobValue<number[]>("skills");
+  let skills: string[] = [];
+  if (Array.isArray(rawSkills)) {
+    skills = rawSkills.map((skill) => String(skill));
+  }
+
+  // Extract tools - convert numbers to strings (engineer API returns numbers)
+  const rawTools = getJobValue<number[]>("tools");
+  let tools: Array<{ name: string; price: string; image?: string }> = [];
+  if (Array.isArray(rawTools)) {
+    tools = rawTools.map((tool) => ({
+      name: String(tool),
+      price: "",
+      image: undefined,
+    }));
+  }
+
+  // Extract duration from startDate and endDate
+  const startDate = getJobValue<string>("startDate");
+  const endDate = getJobValue<string>("endDate");
+  let duration: string | undefined;
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+  } else if (startDate) {
+    duration = `Starts: ${new Date(startDate).toLocaleDateString()}`;
+  }
+
+  // Extract work details
+  const engagementModel = getJobValue<string>("jobType") || undefined;
+  const experienceLevel = getJobValue<number>("experienceLevelId")?.toString() || undefined;
+  const numberOfVacancies = job?.vacancies ?? undefined;
+
+  // Extract earnings info - engineers see totalPrice as total payment
+  const totalPrice = getJobValue<string>("totalPrice");
+  const currencySymbol = getJobValue<string>("currencySymbol") || "$";
+
+  // Format total payment
+  let totalPayment: string | undefined;
+  if (totalPrice) {
+    totalPayment = `${currencySymbol}${totalPrice}`;
+  }
+
+  // Extract additional details
+  const rawAdditionalDetails = getJobValue<string>("additionalDetails");
+  let additionalDetails: string[] = [];
+  if (rawAdditionalDetails) {
+    additionalDetails = [rawAdditionalDetails];
+  }
+
+  // Extract attachments - show as "View Document" with the URL
+  const attachments: Array<{ name: string; url: string }> = [];
+  const attachmentUrl = getJobValue<string | null>("attachmentUrl");
+  if (attachmentUrl) {
+    attachments.push({ name: "View Document", url: attachmentUrl });
+  }
+
+  return {
+    jobTitle,
+    jobDescription,
+    skills,
+    tools,
+    duration,
+    engagementModel,
+    experienceLevel,
+    numberOfVacancies,
+    totalPayment,
+    additionalDetails,
+    attachments,
+  };
+};
 
 /**
  * Engineer Job Tab Section with simplified 3-tab layout:
@@ -44,6 +138,7 @@ const JobTabSection = ({
   progressUpdates = [],
   onAddProgressUpdate,
   jobInfo,
+  jobOverview,
   assignmentId,
   jobId,
 }: {
@@ -57,6 +152,7 @@ const JobTabSection = ({
   progressUpdates?: ProgressUpdate[];
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   jobInfo?: JobInfoSectionProps;
+  jobOverview?: JobOverviewProps;
   assignmentId?: number;
   jobId?: number;
 }) => {
@@ -180,6 +276,7 @@ const JobTabSection = ({
       }
 
       toast.success("Proposal submitted successfully!");
+      window.location.reload()
     } catch (error) {
       console.error("Failed to submit proposal:", error);
       toast.error("Failed to submit proposal. Please try again.");
@@ -207,7 +304,9 @@ const JobTabSection = ({
     },
     {
       label: JOB_TAB_LABELS.jobOverview,
-      content: (
+      content: jobOverview ? (
+        <JobOverviewSection {...jobOverview} />
+      ) : (
         <JobInfoSection
           jobInfo={jobInfo || { jobTitle: "", terms: { items: [] }, files: [] }}
         />
@@ -236,6 +335,7 @@ const JobTabSection = ({
                         attachments: null,
                       })
                 }
+                proposalAppliedDate={apiProposalData?.appliedAt}
               />
             ),
           },

@@ -15,6 +15,7 @@ import JobCard from "./components/JobCard";
 import { scrollToTop } from "@/utils";
 import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 import type { ClientGetJobsResponse } from "@/api";
+import { useServiceCategories } from "@/shared/hooks/useLookup";
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -25,6 +26,35 @@ import type { ClientGetJobsResponse } from "@/api";
 const MyJobsClient: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
   const { data: jobsData } = useClientGetJobs();
+  const { data: serviceCategories } = useServiceCategories();
+
+  // Create a memoized map of service category ID to name
+  const serviceCategoryMap = useMemo(() => {
+    const map = new Map<number, string>();
+    if (serviceCategories) {
+      serviceCategories.forEach((category) => {
+        map.set(Number(category.id), category.name);
+      });
+    }
+    return map;
+  }, [serviceCategories]);
+
+  // Helper function to calculate duration from start and end dates
+  const calculateDuration = (startDate: string | null, endDate: string | null): string => {
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+    } else if (startDate) {
+      return `Starts: ${new Date(startDate).toLocaleDateString()}`;
+    }
+    return "Not specified";
+  };
+
+  // Helper function to get service category name from ID
+  const getServiceCategoryName = (serviceCategoryId: number): string => {
+    return serviceCategoryMap.get(serviceCategoryId) || `Service Category ${serviceCategoryId}`;
+  };
 
   const mapApiJobToUiJob = (apiJob: ClientGetJobsResponse[0]): Job => ({
     id: apiJob.id,
@@ -32,27 +62,35 @@ const MyJobsClient: React.FC = () => {
     type:
       apiJob.jobType === "On site"
         ? WORKING_TYPES.onsite
-        : WORKING_TYPES.remote,
+        : apiJob.jobType === "Remote"
+          ? WORKING_TYPES.remote
+          : apiJob.jobType === "Hybrid"
+            ? WORKING_TYPES.hybrid
+            : apiJob.jobType || "Remote",
     startDate: apiJob.startDate
       ? new Date(apiJob.startDate).toDateString()
       : "N/A",
-    duration: apiJob.endDate ? "Calculated Duration" : "N/A",
+    duration: calculateDuration(apiJob.startDate, apiJob.endDate),
     location:
       apiJob.workLocationName || `${apiJob.cityId}, ${apiJob.countryId}`,
     cityId: apiJob.cityId,
     stateId: apiJob.stateId,
     countryId: apiJob.countryId,
     workLocationName: apiJob.workLocationName,
-    pay: apiJob.totalPrice ? `$${apiJob.totalPrice}` : "N/A",
+    pay: apiJob.totalPrice && apiJob.currencySymbol
+      ? `${apiJob.currencySymbol}${apiJob.totalPrice}`
+      : apiJob.totalPrice
+        ? `${apiJob.totalPrice}`
+        : "N/A",
     status: (apiJob.status?.toLowerCase() as JobStatus) || JOB_STATUSES.posted,
-    serviceType: "Service Category " + apiJob.serviceCategoryId,
+    serviceType: getServiceCategoryName(apiJob.serviceCategoryId),
     description: apiJob.jobDescription || undefined,
     postedTime: apiJob.createdAt || undefined,
   });
 
   const allJobs: Job[] = useMemo(() => {
     return (jobsData || []).map(mapApiJobToUiJob);
-  }, [jobsData]);
+  }, [jobsData, serviceCategoryMap]);
 
   const filteredJobs = useMemo(() => {
     if (activeFilter === jobFilters[0]) {

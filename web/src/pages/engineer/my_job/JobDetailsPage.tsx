@@ -20,6 +20,7 @@ import type {
   OfferedJobStatusType,
   JobInfoSectionProps,
 } from "./types.d";
+import type { JobOverviewProps } from "@/shared/components/types";
 import type { EngineerSearchJobsResponse } from "@/api";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
@@ -65,12 +66,13 @@ const mapJobToJobInfo = (
   }
 
   // Handle attachment as file if available
-  const files: string[] = [];
+  const files: Array<{ name: string; url: string }> = [];
   if (job.attachmentUrl) {
-    // Extract filename from URL if it's a full URL
+    // Extract filename from URL if it's a full URL, removing query string parameters
     const urlParts = job.attachmentUrl.split("/");
-    const fileName = urlParts[urlParts.length - 1] || "Job Attachment";
-    files.push(fileName);
+    const fileNameWithParams = urlParts[urlParts.length - 1] || "Job Attachment";
+    const fileName = fileNameWithParams.split("?")[0] || "Job Attachment";
+    files.push({ name: fileName, url: job.attachmentUrl });
   }
 
   return {
@@ -80,6 +82,76 @@ const mapJobToJobInfo = (
       items: termsItems,
     },
     files,
+  };
+};
+
+/**
+ * Maps API job data to JobOverviewProps format for the Job Overview tab
+ * Uses the same comprehensive format as the client-side implementation
+ */
+const mapJobToJobOverview = (
+  job: EngineerSearchJobsResponse[number],
+): JobOverviewProps => {
+  // Extract basic job info
+  const jobTitle = job?.jobTitle || "";
+  const jobDescription = job?.jobDescription || "";
+
+  // Extract skills - convert numbers to strings (engineer API returns numbers)
+  const skills = Array.isArray(job.skills)
+    ? job.skills.map((skill) => String(skill))
+    : [];
+
+  // Extract tools - convert numbers to strings (engineer API returns numbers)
+  const tools = Array.isArray(job.tools)
+    ? job.tools.map((tool) => ({
+        name: String(tool),
+        price: "",
+        image: undefined,
+      }))
+    : [];
+
+  // Extract duration from startDate and endDate
+  let duration: string | undefined;
+  if (job.startDate && job.endDate) {
+    const start = new Date(job.startDate);
+    const end = new Date(job.endDate);
+    duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+  } else if (job.startDate) {
+    duration = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
+  }
+
+  // Extract work details
+  const engagementModel = job.jobType || undefined;
+  const experienceLevel = job.experienceLevelId?.toString() || undefined;
+  const numberOfVacancies = job.vacancies ?? undefined;
+
+  // Extract earnings info - engineers see totalPrice as total payment
+  const totalPayment =
+    job.totalPrice && job.currencySymbol
+      ? `${job.currencySymbol}${job.totalPrice}`
+      : undefined;
+
+  // Extract additional details
+  const additionalDetails = job.additionalDetails ? [job.additionalDetails] : [];
+
+  // Extract attachments
+  const attachments: Array<{ name: string; url: string }> = [];
+  if (job.attachmentUrl) {
+    attachments.push({ name: "View Document", url: job.attachmentUrl });
+  }
+
+  return {
+    jobTitle,
+    jobDescription,
+    skills,
+    tools,
+    duration,
+    engagementModel,
+    experienceLevel,
+    numberOfVacancies,
+    totalPayment,
+    additionalDetails,
+    attachments,
   };
 };
 
@@ -292,6 +364,7 @@ const JobDetailsPage = () => {
   // Prepare mapped job data from API response - use job as the primary source
   const jobTitle = job?.jobTitle || "";
   const clientId = job?.clientId;
+  const clientName = job?.clientDetails?.companyName || job?.clientDetails?.personName || `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
   const duration = getDurationString({
     startDateStr: job?.startDate || "",
@@ -348,7 +421,7 @@ const JobDetailsPage = () => {
             <div className="lg:col-span-2 space-y-6">
               <JobHeaderCard
                 title={jobTitle}
-                client={`Client #${clientId}`}
+                client={clientName}
                 duration={duration as string}
                 type={engagementType}
                 status={jobStatus}
@@ -360,6 +433,7 @@ const JobDetailsPage = () => {
                 setOfferJobStatus={setOfferJobStatus}
                 jobLocation={jobLocation}
                 numberOfVacancy={job?.vacancies ?? undefined}
+                numberOfApplicants={job?.assignmentId ? 1 : undefined}
                 activeTab={activeTab}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 onOpenFinalStatement={handleOpenFinalStatement}
@@ -390,6 +464,7 @@ const JobDetailsPage = () => {
                         files: [],
                       }
                 }
+                jobOverview={job ? mapJobToJobOverview(job) : undefined}
               />
 
               {showFinalStatement && (
@@ -403,7 +478,7 @@ const JobDetailsPage = () => {
             </div>
             <div className="lg:col-span-1">
               <ClientInfoCard
-                name={`Client #${clientId}`}
+                name={clientName}
                 memberSince={"-"}
                 location={jobLocation}
                 rating={0}
@@ -420,7 +495,7 @@ const JobDetailsPage = () => {
         <ReviewClientModal
           isOpen={isReviewOpen}
           onClose={() => setIsReviewOpen(false)}
-          clientName={`Client #${clientId}`}
+          clientName={clientName}
           // onSubmit={handleSubmitReview}
         />
       )}

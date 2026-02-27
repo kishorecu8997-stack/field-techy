@@ -82,12 +82,14 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           className={`px-2.5 py-1 rounded-md text-xs font-medium bg-teal-800 text-white dark:bg-teal-700 whitespace-nowrap`}
         >
           {(() => {
-            switch (jobType) {
-              case WORKING_TYPES_PROPERTY.onsite:
+            // Normalize jobType for comparison (handle case differences between API and constants)
+            const normalizedJobType = jobType?.toLowerCase();
+            switch (normalizedJobType) {
+              case WORKING_TYPES_PROPERTY.onsite.toLowerCase():
                 return WORKING_TYPES_PROPERTY.onsite;
-              case WORKING_TYPES_PROPERTY.remote:
+              case WORKING_TYPES_PROPERTY.remote.toLowerCase():
                 return WORKING_TYPES_PROPERTY.remote;
-              case WORKING_TYPES_PROPERTY.hybrid:
+              case WORKING_TYPES_PROPERTY.hybrid.toLowerCase():
                 return WORKING_TYPES_PROPERTY.hybrid;
               default:
                 return jobType || "Unknown";

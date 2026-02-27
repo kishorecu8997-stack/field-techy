@@ -330,9 +330,8 @@ const JobCard: React.FC<{
                   </>
                 )}
                 {jobData.duration && <span>| {jobData.duration}</span>}
-                {/* Right-aligned: Match score & help button */}
+                {/* Right-aligned: help button only - match score hidden */}
                 <div className="flex items-center gap-2">
-                  {matchScore > 0 && <MatchScoreRing score={matchScore} />}
                   {matchScore > 0 && (
                     <button
                       onClick={(e) => {

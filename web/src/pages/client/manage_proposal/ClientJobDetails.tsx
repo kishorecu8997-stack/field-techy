@@ -59,6 +59,22 @@ const ClientJobDetails = () => {
   const firstAssignment = assignments[0];
   const assignmentId = firstAssignment?.assignmentId;
 
+  // Calculate approved proposals count and check if job is fully filled
+  // Includes all statuses from initial assignment through final statement submission
+  const approvedStatuses = [
+    "assigned",
+    "accepted",
+    "started",
+    "start_pending_approval",
+    "submitted",
+    "submit_pending_approval",
+  ];
+  const numberOfApprovedProposals = assignments.filter((a) =>
+    approvedStatuses.includes((a.assignmentStatus || "").toLowerCase())
+  ).length;
+  const numberOfVacancy = job?.vacancies ?? undefined;
+  const isJobFullyFilled = numberOfVacancy !== undefined && numberOfApprovedProposals >= numberOfVacancy;
+
   // Check if this is the dummy Network Engineer job
   const isDummyNetworkEngineer = job
     ? isDummyNetworkEngineerJob(job.id)
@@ -201,10 +217,11 @@ const ClientJobDetails = () => {
                 setOfferJobStatus={setOfferJobStatus}
                 OfferJobStatus={OfferJobStatus}
                 hideBreakDetails={isDummyNetworkEngineer}
-                hideDurationAndClient={isDummyNetworkEngineer}
+                hideClient={true}
                 jobLocation={undefined}
-                numberOfVacancy={undefined}
-                numberOfApplicants={undefined}
+                numberOfVacancy={numberOfVacancy}
+                numberOfApplicants={assignments.length}
+                numberOfApprovedProposals={numberOfApprovedProposals}
                 jobId={jobIdParam!}
                 onToggleChat={handleToggleChat}
               />
@@ -217,7 +234,8 @@ const ClientJobDetails = () => {
                 isDummyNetworkEngineer={isDummyNetworkEngineer}
                 showManageProposals={true}
                 job={job}
-                assignmentId={assignmentId}
+                jobID={jobIdParam}
+                numberOfVacancy={numberOfVacancy}
               />
             </div>
             <SidebarJobPostWallet earnings={earningsData} />
