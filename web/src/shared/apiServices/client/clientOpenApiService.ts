@@ -22,6 +22,7 @@ import {
   type GetClientTransactionsError,
   getClientTransactions,
   getClientBalance,
+  type GetUserReportsData,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -46,6 +47,8 @@ import {
   getJobLogsOptions,
   clientGetMyDocumentsOptions,
   clientGetDashboardOptions,
+  submitReportMutation,
+  getUserReportsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
@@ -318,6 +321,34 @@ export function useClientCalculateJobPrice(
 ) {
   return useQuery({
     ...clientCalculateJobPriceOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useSaveReportClient(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...submitReportMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useGetReportClient(
+  query: GetUserReportsData["query"],
+  enabled: boolean = false,
+) {
+  return useQuery({
+    ...getUserReportsOptions({
       client: apiClient,
       query,
     }),

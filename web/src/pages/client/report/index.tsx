@@ -1,3 +1,5 @@
+import { useSaveReportClient } from "@/shared/apiServices/client/clientOpenApiService";
+import { useSaveReportEngineer } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FileUpload, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -6,11 +8,14 @@ import Popup from "@/shared/components/Popup";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+
+type PriorityLevel = "high" | "low" | "medium" | "critical";
 
 type PostReportProps = {
   category: string;
-  priority: string;
+  priority: PriorityLevel;
   description: string;
   file: FileList | null;
 };
@@ -23,11 +28,16 @@ const ReportPage = ({
   onClose: () => void;
 }) => {
   const { showPopup } = usePopupStore();
+  const { jobId } = useParams();
+
+  const isClient = location.pathname.includes("client");
+  const { mutate: saveClientReport } = useSaveReportClient();
+  const { mutate: saveEngineerReport } = useSaveReportEngineer();
 
   const formCtx = useForm({
     defaultValues: {
       category: "",
-      priority: "",
+      priority: "" as PriorityLevel,
       description: "",
       file: null,
     },
@@ -49,8 +59,38 @@ const ReportPage = ({
           value: "submit",
           variant: "primary",
           action: async (close) => {
+            const selectedFile =
+              data.file && data.file.length > 0 ? data.file[0] : null;
+
+            const attachmentData = selectedFile
+              ? {
+                  filename: selectedFile.name,
+                  size: selectedFile.size,
+                  mimeType: selectedFile.type,
+                }
+              : undefined;
+
+            const reportPayload = {
+              jobId: Number(jobId),
+              detailedDescription: data.description,
+              issueCategory: data.category,
+              priorityLevel: data.priority,
+              attachment: attachmentData,
+            };
+
             try {
+              if (isClient) {
+                saveClientReport({
+                  body: reportPayload,
+                });
+              } else {
+                saveEngineerReport({
+                  body: reportPayload,
+                });
+              }
+
               console.log("Submitting Report Data:", data);
+
               toast.success("Report submitted successfully!");
               reset();
               close(true);
@@ -91,9 +131,10 @@ const ReportPage = ({
             required
             rules={{ required: "Category is required" }}
             options={[
-              { value: "1", label: "Backend" },
-              { value: "2", label: "Performance" },
-              { value: "3", label: "Accessibility" },
+              { value: "backend", label: "Backend" },
+              { value: "frontend", label: "Frontend" },
+              { value: "performance", label: "Performance" },
+              { value: "accessibility", label: "Accessibility" },
             ]}
           />
           <SelectField
@@ -103,9 +144,10 @@ const ReportPage = ({
             rules={{ required: "Priority level is required" }}
             placeholder="select a priority"
             options={[
-              { value: "1", label: "Level 1" },
-              { value: "2", label: "Level 2" },
-              { value: "3", label: "Level 3" },
+              { value: "low", label: "Low" },
+              { value: "medium", label: "Medium" },
+              { value: "high", label: "High" },
+              { value: "critical", label: "Critical" },
             ]}
           />
           <TextareaInput
