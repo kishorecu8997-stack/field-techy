@@ -1,6 +1,7 @@
 import JobCard from "@/shared/components/JobCard";
 import type { EngineerGetMyJobsResponse } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import ErrorState from "@/shared/components/commonUI/ErrorState";
 
 interface JobListProps {
   jobs: EngineerGetMyJobsResponse;
@@ -29,9 +30,11 @@ const JobList = ({ jobs, isLoading, isError }: JobListProps) => {
   }
   if (isError) {
     return (
-      <div className="col-span-2 text-center py-10 text-red-500">
-        Unable to load jobs. Please check your internet connection and try
-        again.
+      <div className="col-span-2">
+        <ErrorState
+          title="Unable to Load Jobs"
+          message="Something went wrong. Please try again later."
+        />
       </div>
     );
   }

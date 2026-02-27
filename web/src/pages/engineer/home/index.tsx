@@ -15,6 +15,8 @@ import JobExplorationBanner from "./components/JobExplorationBanner";
 import { RecommendedJobs } from "./components/RecommendedJobs";
 import type { JobItem } from "./types";
 import { formatAmount } from "@/utils/currency";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import ErrorState from "@/shared/components/commonUI/ErrorState";
 
 /**
  * Home page component.
@@ -29,7 +31,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   // Use engineer search jobs to fetch available jobs
-  const { data: jobsResponse } = useEngineerSearchJobs({});
+  const { data: jobsResponse, isLoading, isError } = useEngineerSearchJobs({});
 
   // Transform API response to UI model
   const jobs = useMemo(() => {
@@ -125,12 +127,30 @@ const Home = () => {
     scrollToTop();
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoaderComponent />
+      </div>
+    );
+  }
+
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-4">
             <JobExplorationBanner />
+            {isError && <ErrorState
+              title="Unable to Load Jobs"
+              message="Something went wrong. Please try again later."
+            />}
+            {!isError && !jobsResponse?.length
+              && <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
+                <div className="font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 p-20 rounded-lg">No jobs found.</div>
+              </p>
+            }
             {findNewJobs.length > 0 && (
               <FeaturedJobs
                 jobs={findNewJobs}
