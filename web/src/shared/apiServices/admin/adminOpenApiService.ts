@@ -49,6 +49,13 @@ import {
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
   type AdminDeleteServiceCategoryResponse,
+  type AdminCreateEngineerResponse,
+  type AdminCreateEngineerData,
+  type AdminUpdateEngineerData,
+  type AdminUpdateEngineerResponse,
+  type AdminDeleteEngineerResponse,
+  type AdminGetEngineerHistoryData,
+  type AdminGetEngineerHistoryResponse,
   type AdminCreateSubAdminData,
   type AdminCreateSubAdminResponses,
   type AdminGetSubAdminsData,
@@ -95,6 +102,10 @@ import {
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
+  adminCreateEngineerMutation,
+  adminUpdateEngineerMutation,
+  adminDeleteEngineerMutation,
+  adminGetEngineerHistoryOptions,
   adminCreateSubAdminMutation,
   adminUpdateSubAdminMutation,
   adminGetClientHistoryOptions,
@@ -856,6 +867,87 @@ export function useAdminDeleteClientMutation(options?: {
   });
 }
 
+export type AdminAddEngineerResponse = AdminCreateEngineerResponse;
+export type AdminAddEngineerBody = AdminCreateEngineerData["body"];
+
+export function useAdminAddEngineer(options?: {
+  onSuccess?: (data: AdminAddEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateEngineerMutation({ client: apiClient }),
+    onSuccess: (data: AdminAddEngineerResponse) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminUpdateEngineerBody = AdminUpdateEngineerData["body"];
+
+export function useAdminUpdateEngineer(options?: {
+  onSuccess?: (data: AdminUpdateEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateEngineerMutation({ client: apiClient }),
+    onSuccess: (data: AdminUpdateEngineerResponse) => {
+      queryClient.resetQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminDeleteEngineerMutation(options?: {
+  onSuccess?: (data: AdminDeleteEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminDeleteEngineerMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminGetEngineerHistoryQuery = NonNullable<
+  AdminGetEngineerHistoryData["query"]
+>;
+
+export function useAdminGetEngineerHistory(
+  userId: number,
+  query: AdminGetEngineerHistoryQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetEngineerHistoryResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetEngineerHistoryOptions({
+      client: apiClient,
+      path: { userId },
+      query,
+    }),
+    ...options,
+  });
+}
 export type AdminGetClientHistoryQuery = NonNullable<
   AdminGetClientHistoryData["query"]
 >;
