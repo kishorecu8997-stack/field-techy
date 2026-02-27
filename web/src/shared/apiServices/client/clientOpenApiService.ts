@@ -115,10 +115,11 @@ export function useClientUpdateCompanyInfo(options?: {
   return useMutation({
     ...clientUpdateCompanyInfoMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Force an immediate refetch of company info
-      void queryClient.refetchQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.client.companyInfo,
-        exact: true,
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [{ _id: "clientGetCompanyInfo" }],
       });
       // Invalidate everything else related to clients
       void queryClient.invalidateQueries({ queryKey: queryKeys.client.all });

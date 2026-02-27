@@ -15,6 +15,8 @@ import {
   useStates,
 } from "@/shared/hooks/useLookup";
 import { useClientCompanyInfoStore } from "@/shared/store/useClientCompanyInfoStore";
+import { useClientStore } from "@/shared/store/useClientStore";
+import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { CiLocationOn } from "react-icons/ci";
@@ -42,6 +44,7 @@ interface ClientPersonalInformationProps {
 const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   onMenuItemClick,
 }) => {
+  const { showPopup } = usePopupStore();
   const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
 
   // Fetch company info
@@ -64,9 +67,12 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     [businessTypesData],
   );
 
+  const { fetchClientProfile } = useClientStore();
+
   const { mutateAsync: updateClient } = useClientUpdateCompanyInfo({
     onSuccess: () => {
       toast.success("Profile Updated Successfully");
+      fetchClientProfile();
       onMenuItemClick("clientAccount");
     },
     onError: (error: unknown) => {
@@ -219,24 +225,54 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       return isNaN(num) ? undefined : num;
     };
 
-    await updateClient({
-      body: {
-        clientType: isCorporate ? "corporate" : "home",
-        name: data.contactPersonName,
-        companyName: isCorporate ? data.companyName : undefined,
-        personName: data.contactPersonName,
-        address: data.address,
-        countryId: getId(data.country),
-        stateId: getId(data.state),
-        cityId: getId(data.city),
-        postalCode: data.postalCode,
-        industryId: isCorporate ? getId(data.industry) : undefined,
-        businessTypeId: isCorporate ? getId(data.businessType) : undefined,
-        documentType: isCorporate ? data.taxDocument : undefined,
-        documentNumber: isCorporate ? data.vatRegistrationNumber : undefined,
-      },
+    const updateBody = {
+      clientType: isCorporate ? "corporate" : "home",
+      name: data.contactPersonName,
+      companyName: isCorporate ? data.companyName : undefined,
+      personName: data.contactPersonName,
+      address: data.address,
+      countryId: getId(data.country),
+      stateId: getId(data.state),
+      cityId: getId(data.city),
+      postalCode: data.postalCode,
+      industryId: isCorporate ? getId(data.industry) : undefined,
+      businessTypeId: isCorporate ? getId(data.businessType) : undefined,
+      documentType: isCorporate ? data.taxDocument : undefined,
+      documentNumber: isCorporate ? data.vatRegistrationNumber : undefined,
+    };
+
+    await showPopup({
+      title: "Update Profile",
+      body: "Are you sure you want to update your profile?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "danger",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            try {
+              await updateClient({
+                body: updateBody as any,
+              });
+              close(true);
+            } catch (error: unknown) {
+              console.error("Failed to update profile:", error);
+              close(true);
+            }
+          },
+        },
+      ],
     });
   };
+
 
   return (
     <FormContainer
@@ -377,10 +413,10 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
         )}
       </div>
 
-      <div className="p-3 mt-auto">
+      <div className="bg-white">
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition rounded-none"
         >
           Edit Profile
         </Button>
