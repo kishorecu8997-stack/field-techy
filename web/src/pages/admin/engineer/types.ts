@@ -156,7 +156,6 @@ export interface ManageEngineerProps {
 
   submittedDocuments?: string[];
   documents?: string;
-
   statusHistory?: StatusHistoryType[];
 }
 

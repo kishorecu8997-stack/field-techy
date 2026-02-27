@@ -2,9 +2,11 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useFormContext } from "react-hook-form";
 import type { EngineerFormData } from "../types";
 import { StarIcon } from "lucide-react";
-import ProfileImageWithProgress from "@/shared/components/ProfileImageProgress";
+// import ProfileImageWithProgress from "@/shared/components/ProfileImageProgress";
 import RatingAndReviewTable from "./RatingReviewTable";
 import type { AdminGetEngineerResponse } from "@/api";
+import placeholdr_user from "@/assets/user-image/placeholdr_user.svg";
+
 /**
  * BasicInformation
  *
@@ -53,6 +55,19 @@ export default function BasicInformation({
   const employmentType = engineer?.employmentType ?? "N/A";
   const averageRating = engineer?.averageRating ?? 0;
 
+  const getProfileImageSrc = () => {
+    if (!profileImage || profileImage === "null") return placeholdr_user;
+
+    if (typeof profileImage === "string") return profileImage;
+
+    if (profileImage instanceof File) return URL.createObjectURL(profileImage);
+
+    if (profileImage instanceof FileList && profileImage.length > 0)
+      return URL.createObjectURL(profileImage[0]);
+
+    return placeholdr_user;
+  };
+
   return (
     <div>
       <h1 className="font-bold">Personal Details</h1>
@@ -63,10 +78,16 @@ export default function BasicInformation({
         <label className="block text-sm text-gray-500 mb-1">
           Profile Image
         </label>
-        <ProfileImageWithProgress
-          imageUrl={typeof profileImage === "string" ? profileImage : ""}
-          completionPercent={60}
-        />
+        <div className="w-24 h-24 bg-transparent rounded-full mb-6 overflow-hidden border-2 border-gray-100 dark:border-gray-700 shadow-sm">
+          <img
+            src={getProfileImageSrc()}
+            alt="Profile"
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = placeholdr_user;
+            }}
+          />
+        </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           <div>

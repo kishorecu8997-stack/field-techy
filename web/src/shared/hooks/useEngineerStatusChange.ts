@@ -62,7 +62,6 @@ export const useEngineerStatusChange = ({
                 "Engineer status updated, but failed to refresh the list.",
               );
             }
-
             close(true);
           },
         },
