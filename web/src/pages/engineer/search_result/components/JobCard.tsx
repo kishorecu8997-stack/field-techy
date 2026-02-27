@@ -224,15 +224,13 @@ const JobCard: React.FC<{
       }
 
       const location = locationParts.join(", ") || "-";
-      const currencySymbol = job.currencySymbol || "$";
-      const totalPrice = formatAmount(job.salary, currencySymbol);
 
       return {
         id: job.id,
         title: job.jobTitle || getString("title") || "",
         clientName,
         location,
-        salary: totalPrice || "-",
+        salary: job.salary || "-",
         status: job.status,
         skills: job.skills,
         tools: job.tools,

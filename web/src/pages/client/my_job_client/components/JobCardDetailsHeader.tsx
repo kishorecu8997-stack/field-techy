@@ -10,6 +10,8 @@ import { JOB_STATUSES } from "@/pages/client/search_result/types";
 import { icons } from "@/config/icons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { absoluteUrls } from "@/config/urls";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import ErrorState from "@/shared/components/commonUI/ErrorState";
 
 interface JobCardDetailsHeaderProps {
   job: {
@@ -20,13 +22,16 @@ interface JobCardDetailsHeaderProps {
     type: string;
     status: string;
   };
+  isLoading: boolean;
+  isError: boolean;
+  refetch: () => void;
 }
 
 /*
  * JobCardDetailsHeader component displays the job details header
  * It contains the job title, job status, working type, and job actions
  */
-const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job }) => {
+const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job, isLoading, isError, refetch }) => {
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,10 +45,18 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job }) => {
     "hold",
   );
 
-  if (!job) {
+  if (isLoading) {
     return (
       <div className="p-5 bg-red-50 text-red-700 rounded-lg">
-        Job not found.
+        <LoaderComponent />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-5 bg-red-50 text-red-700 rounded-lg">
+        <ErrorState onRetry={refetch} />
       </div>
     );
   }
@@ -85,11 +98,10 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job }) => {
   return (
     <>
       <div
-        className={`${
-          isSendProposal
-            ? "text-gray-800 bg-yellow-50"
-            : "bg-teal-800 text-white"
-        } p-5 rounded-xl shadow-md`}
+        className={`${isSendProposal
+          ? "text-gray-800 bg-yellow-50"
+          : "bg-teal-800 text-white"
+          } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-center">
           <h1 className="text-xl md:text-2xl font-bold">{job.title}</h1>
@@ -131,8 +143,8 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job }) => {
 
         <div className="mt-4 flex flex-wrap gap-3 justify-end">
           {job.status === JOB_STATUSES.inprogress &&
-          !isWorkApproved &&
-          !isPaymentReleased ? (
+            !isWorkApproved &&
+            !isPaymentReleased ? (
             <div className="flex flex-wrap gap-2">
               <Button
                 className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"

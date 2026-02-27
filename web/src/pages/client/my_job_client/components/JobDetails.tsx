@@ -22,7 +22,7 @@ const JobsDetails: React.FC = () => {
   const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
 
   // Fetch jobs data from API
-  const { data: jobsData, isLoading, error } = useClientGetJobs(true);
+  const { data: jobsData, isLoading, error, isError, refetch } = useClientGetJobs(true);
   // Find the specific job from the API data
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   const job =
@@ -38,7 +38,7 @@ const JobsDetails: React.FC = () => {
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
               isReport
-              onSortChange={() => {}}
+              onSortChange={() => { }}
             />
           </div>
           <div className="flex justify-center items-center h-64">
@@ -61,7 +61,7 @@ const JobsDetails: React.FC = () => {
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
               isReport
-              onSortChange={() => {}}
+              onSortChange={() => { }}
             />
           </div>
           <div className="flex justify-center items-center h-64">
@@ -84,7 +84,7 @@ const JobsDetails: React.FC = () => {
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
               isReport
-              onSortChange={() => {}}
+              onSortChange={() => { }}
             />
           </div>
           <div className="flex justify-center items-center h-64">
@@ -146,7 +146,7 @@ const JobsDetails: React.FC = () => {
             currentSort={SORT_OPTIONS.NEWEST}
             isReport={breadcrumbExtra !== "chats"}
             isShowSort={breadcrumbExtra !== "chats"}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             segments={segments}
             isChatVisible={breadcrumbExtra === "chats"}
             handleCloseChat={handleCloseChat}
@@ -160,7 +160,7 @@ const JobsDetails: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-                <JobCardDetailsHeader job={formattedJob} />
+                <JobCardDetailsHeader job={formattedJob} isLoading={isLoading} isError={isError} refetch={refetch}/>
                 <div className="space-y-6 pt-2">
                   <JobTabSection
                     status={formattedJob.status}

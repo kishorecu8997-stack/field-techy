@@ -31,7 +31,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   // Use engineer search jobs to fetch available jobs
-  const { data: jobsResponse, isLoading, isError } = useEngineerSearchJobs({});
+  const { data: jobsResponse, isLoading, isError, refetch } = useEngineerSearchJobs({});
 
   // Transform API response to UI model
   const jobs = useMemo(() => {
@@ -145,6 +145,7 @@ const Home = () => {
             {isError && <ErrorState
               title="Unable to Load Jobs"
               message="Something went wrong. Please try again later."
+              onRetry={refetch}
             />}
             {!isError && !jobsResponse?.length
               && <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">

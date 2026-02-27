@@ -7,6 +7,7 @@ interface JobListProps {
   jobs: EngineerGetMyJobsResponse;
   isLoading: boolean;
   isError: boolean;
+  refetch: () => void;
 }
 
 /**
@@ -20,7 +21,7 @@ interface JobListProps {
  * @param {boolean} props.isError Error state.
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
-const JobList = ({ jobs, isLoading, isError }: JobListProps) => {
+const JobList = ({ jobs, isLoading, isError, refetch }: JobListProps) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
@@ -34,6 +35,7 @@ const JobList = ({ jobs, isLoading, isError }: JobListProps) => {
         <ErrorState
           title="Unable to Load Jobs"
           message="Something went wrong. Please try again later."
+          onRetry={refetch}
         />
       </div>
     );
