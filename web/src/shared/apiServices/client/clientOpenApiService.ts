@@ -22,6 +22,7 @@ import {
   type GetClientTransactionsError,
   getClientTransactions,
   getClientBalance,
+  type ClientExploreEngineersData,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -46,6 +47,7 @@ import {
   getJobLogsOptions,
   clientGetMyDocumentsOptions,
   clientGetDashboardOptions,
+  clientExploreEngineersOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
@@ -452,6 +454,19 @@ export function useClientJobOverviewDashboard(enabled: boolean = true) {
   return useQuery({
     ...clientGetDashboardOptions({
       client: apiClient,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useClientExploreEngineers(
+  query: ClientExploreEngineersData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...clientExploreEngineersOptions({
+      client: apiClient,
+      query,
     }),
     enabled: enabled,
   });
