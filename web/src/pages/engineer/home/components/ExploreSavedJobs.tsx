@@ -78,6 +78,7 @@ const ExploreSavedJobs = () => {
         numberOfVacancy: job.vacancies ?? 1,
         experience: job.experienceLevelId ?? null,
         salary: job.totalPrice ?? null,
+        currencySymbol: job.currencySymbol ?? "$",
         budgetType: job.rateCardId ? String(job.rateCardId) : null,
 
         status: job.status || "",
@@ -172,9 +173,8 @@ const ExploreSavedJobs = () => {
           title="Saved Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb={false}
-          description={`${data?.summary?.savedJobsCount} saved job${
-            data?.summary?.savedJobsCount !== 1 ? "s" : ""
-          }`}
+          description={`${data?.summary?.savedJobsCount} saved job${data?.summary?.savedJobsCount !== 1 ? "s" : ""
+            }`}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">

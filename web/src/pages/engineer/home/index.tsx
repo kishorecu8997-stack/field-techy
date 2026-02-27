@@ -14,6 +14,7 @@ import { FeaturedJobs } from "./components/FeaturedJobs";
 import JobExplorationBanner from "./components/JobExplorationBanner";
 import { RecommendedJobs } from "./components/RecommendedJobs";
 import type { JobItem } from "./types";
+import { formatAmount } from "@/utils/currency";
 
 /**
  * Home page component.
@@ -36,6 +37,10 @@ const Home = () => {
 
     return jobsResponse.map((job): JobItem => {
       const clientDetails = job.clientDetails;
+      const pay = job.totalPrice;
+      const currencySymbol = job.currencySymbol ?? "$";
+
+      const formattedPay = formatAmount(pay, currencySymbol);
 
       return {
         id: job.id.toString(),
@@ -54,7 +59,7 @@ const Home = () => {
         endDate: job.endDate || null,
         numberOfVacancy: job.vacancies || 1,
         experience: job.experienceLevelId || 0,
-        salary: job.totalPrice,
+        salary: formattedPay,
         status: job.status || "NEW",
         skills: [],
         tools: [],

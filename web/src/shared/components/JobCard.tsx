@@ -1,11 +1,11 @@
 import { absoluteUrls } from "@/config/urls";
 import { WORKING_TYPES_PROPERTY } from "@/pages/engineer/search_result/types";
+import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
 import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";
 import { getDurationString, scrollToTop } from "@/utils";
-import { getCurrencyFromStorage } from "@/utils/currency";
+import { formatAmount } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
-import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
 
 interface JobCardProps {
   id: number;
@@ -16,6 +16,7 @@ interface JobCardProps {
   endDate?: string | null;
   workLocationName?: string | null;
   totalPrice?: string | null;
+  currencySymbol?: string;
   clientId: number;
   clientDetails?: {
     companyName?: string | null;
@@ -42,9 +43,11 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     workLocationName,
     totalPrice,
     clientDetails,
+    currencySymbol,
   } = props;
   const location = useLocation();
   const isClientPath = location.pathname.includes("/client");
+  const formattedPay = formatAmount(totalPrice, currencySymbol);
 
   // Only call this API if we are in the client module to avoid permission errors
   const { data: client } = useClientGetCompanyInfo(
@@ -54,9 +57,9 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   const getDuration =
     startDate && endDate
       ? getDurationString({
-          startDateStr: startDate,
-          endDateStr: endDate,
-        })
+        startDateStr: startDate,
+        endDateStr: endDate,
+      })
       : "N/A";
 
   const companyName =
@@ -115,8 +118,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
           <span>
-            {getCurrencyFromStorage()}
-            {totalPrice || "0.00"}
+            {formattedPay}
           </span>
         </div>
       </div>

@@ -52,6 +52,7 @@ const ExploreJobs: React.FC = () => {
     return apiNewJobs;
   }, [apiJobs]);
 
+
   // Step 2: Apply filters
   const filteredJobs = useMemo<JobItem[]>(() => {
     return allNewJobs.filter((job) => {
@@ -125,7 +126,6 @@ const ExploreJobs: React.FC = () => {
         return match ? parseInt(match[1], 10) * 10080 : 0;
       }
 
-      console.warn(`Unrecognized time format: "${timeStr}"`);
       return 0; // fallback to "now"
     };
 
@@ -232,8 +232,8 @@ const ExploreJobs: React.FC = () => {
             const a =
               Math.sin(dLat / 2) ** 2 +
               Math.cos(toRad(c1.lat)) *
-                Math.cos(toRad(c2.lat)) *
-                Math.sin(dLng / 2) ** 2;
+              Math.cos(toRad(c2.lat)) *
+              Math.sin(dLng / 2) ** 2;
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
           };
@@ -290,14 +290,14 @@ const ExploreJobs: React.FC = () => {
     setSortBy(newSort);
     setCurrentPage(1);
   };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">
         <MyJobsHeader
           title="Explore Jobs"
-          description={`${sortedJobs.length} job${
-            sortedJobs.length !== 1 ? "s" : ""
-          } found`}
+          description={`${sortedJobs.length} job${sortedJobs.length !== 1 ? "s" : ""
+            } found`}
           isShowBreadcrumb={false}
           isShowSort={true}
           isReport={true}

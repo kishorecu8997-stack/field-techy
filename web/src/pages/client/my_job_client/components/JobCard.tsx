@@ -1,22 +1,21 @@
+import { absoluteUrls } from "@/config/urls";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { useServiceCategories } from "@/shared/hooks/useLookup";
+import { formatAmount } from "@/utils/currency";
+import { useMemo } from "react";
 import { IoMdTime } from "react-icons/io";
-import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import {
-  IoLocationOutline,
   IoCalendarOutline,
   IoConstructOutline,
+  IoLocationOutline,
 } from "react-icons/io5";
-import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { Link } from "react-router-dom";
 import {
   WORKING_TYPES,
   WORKING_TYPES_PROPERTY,
   type Job,
 } from "../../search_result/types";
-import { Link } from "react-router-dom";
-import { absoluteUrls } from "@/config/urls";
 import LocationDisplay from "./LocationDisplay";
-import { useServiceCategories } from "@/shared/hooks/useLookup";
-import { useMemo } from "react";
-import { formatAmount } from "@/utils/currency";
 
 interface JobCardProps {
   job: Job;

@@ -7,7 +7,6 @@ import {
   useStoreEngineerSaveJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { getExperienceLevel } from "@/utils";
-import { getCurrencyFromStorage } from "@/utils/currency";
 import { calculateMatchScore } from "@/utils/matchCalculator";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -269,7 +268,6 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
         {/* ✅ Bottom pinned section */}
         <div className="flex justify-between items-end mt-auto pt-4">
           <span className="font-bold text-lg text-gray-900 dark:text-white">
-            {getCurrencyFromStorage()}
             {props.salary || "-"}
           </span>
           <div className="text-right">
@@ -375,9 +373,8 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
             <div
               id="featuredJobs"
               key={job.id || index}
-              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${
-                jobCardGradients[index % jobCardGradients.length]
-              }`}
+              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${jobCardGradients[index % jobCardGradients.length]
+                }`}
               onClick={() => {
                 navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
               }}
@@ -396,5 +393,6 @@ const FeatureJobCardMemo = React.memo(FeatureJobCard);
 
 export {
   FeaturedJobsMemo as FeaturedJobs,
-  FeatureJobCardMemo as FeatureJobCard,
+  FeatureJobCardMemo as FeatureJobCard
 };
+
