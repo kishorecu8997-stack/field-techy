@@ -3,7 +3,6 @@ import { absoluteUrls } from "@/config/urls";
 import { JOB_TYPES } from "@/constants/jobTypes";
 import { TemplateData } from "@/dummy_data/client";
 import {
-  useClientGetJobs,
   useClientGetRateCard,
   useClientMarkJobFileUploaded,
   useClientPostJob,
@@ -49,7 +48,6 @@ const PostJobPage = () => {
     setAmount,
     setCurrencySymbol,
   } = usePostAJobStore();
-  const { refetch: refetchJobs } = useClientGetJobs();
   const billConsentRef = useRef(false);
   const isDisable = false;
 
@@ -347,7 +345,8 @@ const PostJobPage = () => {
           try {
             await uploadAttachmentsAndTools(response, data);
             toast.success("Your job has been successfully posted!");
-            refetchJobs();
+            // NOTE: No need to call refetchJobs() here — useClientPostJob already
+            // invalidates the jobs query. The destination page will refetch on mount.
             navigate(absoluteUrls.client.home.my_jobs);
           } catch {
             const hasFilesToUpload =

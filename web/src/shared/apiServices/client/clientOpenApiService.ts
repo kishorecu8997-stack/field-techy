@@ -1,14 +1,15 @@
 import {
+  clientActionOnAssignment,
+  clientActionOnBreak,
+  clientActionOnWorkLog,
+  clientCancelJob,
   clientGetCompanyInfo,
   clientGetRateCard,
-  clientPostJob,
-  clientCancelJob,
   clientInviteEngineer,
-  clientActionOnAssignment,
-  clientActionOnWorkLog,
-  clientActionOnBreak,
   clientMarksJobFileUploaded,
-  getJobLogs,
+  clientPostJob,
+  getClientBalance,
+  getClientTransactions,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
   type AppLoginResponse,
@@ -16,6 +17,7 @@ import {
   type AppRegisterClientResponse,
   type AppUploadProfileFileResponse,
   type ClientCalculateJobPriceData,
+  type ClientGetAssignmentDetailsData,
   type ClientGetCompanyInfoResponse,
   type ClientGetRateCardData,
   type ClientGetRateCardResponse,
@@ -24,13 +26,11 @@ import {
   type ClientPostJobData,
   type ClientPostJobResponse,
   type ClientUpdateCompanyInfoResponse,
-  type GetClientBalanceResponse,
   type GetClientBalanceError,
+  type GetClientBalanceResponse,
   type GetClientTransactionsData,
-  type GetClientTransactionsResponse,
   type GetClientTransactionsError,
-  getClientTransactions,
-  getClientBalance,
+  type GetClientTransactionsResponse
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -46,20 +46,19 @@ import {
   clientCancelJobMutation,
   clientGetAssignmentDetailsOptions,
   clientGetCompanyInfoOptions,
+  clientGetDashboardOptions,
   clientGetJobsOptions,
-  clientGetJobsQueryKey,
+  clientGetMyDocumentsOptions,
   clientInviteEngineerMutation,
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
   getJobLogsOptions,
-  clientGetMyDocumentsOptions,
-  clientGetDashboardOptions,
+  clientGetJobsQueryKey,
 } from "@/api/@tanstack/react-query.gen";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
-import { type ClientGetAssignmentDetailsData } from "@/api";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
@@ -231,9 +230,13 @@ export function useClientPostJob(options?: {
         return data!;
       },
       onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+        // Best practice: use the generated query key helper + invalidateQueries.
+        // invalidateQueries immediately refetches any mounted observer (e.g. My Jobs
+        // page) and marks the cache as stale for unmounted ones (refetched on next mount).
+        // exact: false ensures it matches regardless of query params / headers options.
         queryClient.invalidateQueries({
           queryKey: clientGetJobsQueryKey({ client: apiClient }),
+          exact: false,
         });
         options?.onSuccess?.(data);
       },
@@ -249,6 +252,7 @@ export function useClientGetJobs(enabled: boolean = true) {
     }),
     enabled: enabled,
     staleTime: 0,
+    refetchOnMount: true,
   });
 }
 
