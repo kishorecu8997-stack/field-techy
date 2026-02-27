@@ -14,6 +14,10 @@ import {
   useUserSessionStore,
   type UserSession,
 } from "@/shared/store/useUserSessionStore";
+import {
+  decodeJwtPayload,
+  type JwtClientPayload,
+} from "@/utils/jwtUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import React from "react";
@@ -52,11 +56,15 @@ const Login = ({
           localStorage.setItem("auth_token", resp.token);
         }
 
+        // Decode the JWT payload to extract claims (e.g. regionId, userId)
+        const payload = decodeJwtPayload<JwtClientPayload>(resp.token);
+
         setUserSession({
           accessToken: resp.token,
-          userId: "uuid-client-123", // TODO: Get actual user ID from token or profile response
+          userId: payload?.userId !== undefined ? String(payload.userId) : "uuid-client-123",
           role: UserRole.CLIENT,
           initiatedAt: Date.now(),
+          regionId: payload?.regionId,
         } as UserSession);
 
         navigate(absoluteUrls.client.home.dashboard);

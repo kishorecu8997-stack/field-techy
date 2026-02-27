@@ -11,6 +11,7 @@ import {
   type AppMarkProfileFileUploadedResponse,
   type AppMarkProfileFileUploadedError,
   type CreateRateAndReviewAssignmentResponse,
+  createRateAndReviewAssignment,
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -28,6 +29,7 @@ import {
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
 
@@ -191,8 +193,23 @@ export function useCreateRateAndReviewAssignment(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const regionId = useUserSessionStore((s) => s.session?.regionId);
   return useMutation({
     ...createRateAndReviewAssignmentMutation({ client: apiClient }),
+    mutationFn: async (fnOptions) => {
+      const body = (
+        regionId !== undefined
+          ? { ...fnOptions?.body, regionId }
+          : fnOptions?.body
+      ) as typeof fnOptions["body"];
+      const { data } = await createRateAndReviewAssignment({
+        client: apiClient,
+        ...fnOptions,
+        body,
+        throwOnError: true,
+      });
+      return data!;
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: getUserRatingAndReviewsQueryKey({ client: apiClient }),
