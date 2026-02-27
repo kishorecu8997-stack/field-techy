@@ -63,8 +63,8 @@ const AppliedJob: React.FC = () => {
     return assignments.filter(
       (item) =>
         String(item.jobId).includes(query) ||
-        item.engineer?.name?.toLowerCase().includes(query) ||
-        item.engineer?.email?.toLowerCase().includes(query),
+        (item.engineer?.name ?? "").toLowerCase().includes(query) ||
+        (item.engineer?.email ?? "").toLowerCase().includes(query),
     );
   }, [assignments, search]);
 
@@ -87,7 +87,7 @@ const AppliedJob: React.FC = () => {
             <span className="text-xs font-medium text-gray-600">
               {row.engineer?.name?.charAt(0)?.toUpperCase() ?? "N"}
             </span>
-          </div>
+          </div> 
           <div>
             <p className="font-semibold text-sm">
               {row.engineer?.name ?? "N/A"}

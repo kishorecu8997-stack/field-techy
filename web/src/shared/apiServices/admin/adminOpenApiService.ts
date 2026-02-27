@@ -877,9 +877,9 @@ export function useAdminAddEngineer(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...adminCreateEngineerMutation({ client: apiClient }),
-    onSuccess: (data: AdminAddClientResponse) => {
+    onSuccess: (data: AdminAddEngineerResponse) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.admin.manageClients,
+        queryKey: queryKeys.admin.manageEngineers,
         exact: false,
       });
       options?.onSuccess?.(data);

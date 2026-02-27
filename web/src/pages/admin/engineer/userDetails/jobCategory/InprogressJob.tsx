@@ -62,8 +62,8 @@ const InprogressJob: React.FC = () => {
     return jobs.filter((job) => {
       return (
         String(job.jobId).includes(query) ||
-        job.engineer?.name?.toLowerCase().includes(query) ||
-        job.engineer?.email?.toLowerCase().includes(query)
+        (job.engineer?.name ?? "").toLowerCase().includes(query) ||
+        (job.engineer?.email ?? "").toLowerCase().includes(query)
       );
     });
   }, [jobs, search]);
