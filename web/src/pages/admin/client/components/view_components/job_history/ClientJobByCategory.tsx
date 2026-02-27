@@ -14,6 +14,8 @@ import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { useAdminGetJobGraph } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useSearchParams } from "react-router-dom";
 import { formatDate } from "@/utils/formatDate";
+import type { AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
+
 
 interface ClientJobByCategoryProps {
   data: JobItem[];
@@ -27,7 +29,9 @@ interface ClientJobByCategoryProps {
   userId?: number;
   search?: string;
   setSearch?: (value: string) => void;
+  status?: AdminGetJobGraphQuery["status"];
 }
+
 
 /**
  * Renders the job history table for a specific client.
@@ -45,7 +49,9 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
   userId,
   search: externalSearch,
   setSearch: externalSetSearch,
+  status,
 }) => {
+
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const internalSearch = searchParams.get("search") || "";
@@ -97,7 +103,9 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
     {
       userId,
       interval: intervalMap[selectedDay || "monthly"],
+      status,
     },
+
     {
       enabled: userId != null,
     },
