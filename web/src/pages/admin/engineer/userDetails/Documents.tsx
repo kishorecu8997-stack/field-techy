@@ -41,7 +41,9 @@ export default function Documents({ isView = false }: DocumentsProps) {
                   previewUrl: governmentId,
                 }}
                 onEdit={isView ? undefined : () => handleEdit("governmentId")}
-                onDelete={isView ? undefined : () => handleDelete("governmentId")}
+                onDelete={
+                  isView ? undefined : () => handleDelete("governmentId")
+                }
                 onDownload={() => window.open(governmentId, "_blank")}
               />
             </div>
@@ -70,7 +72,9 @@ export default function Documents({ isView = false }: DocumentsProps) {
                   previewUrl: certificate,
                 }}
                 onEdit={isView ? undefined : () => handleEdit("certificate")}
-                onDelete={isView ? undefined : () => handleDelete("certificate")}
+                onDelete={
+                  isView ? undefined : () => handleDelete("certificate")
+                }
                 onDownload={() => window.open(certificate, "_blank")}
               />
             </div>

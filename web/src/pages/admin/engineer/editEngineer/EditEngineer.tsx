@@ -75,10 +75,11 @@ export default function EditEngineer() {
   const engineerId = Number(id);
   const hasValidEngineerId = Number.isFinite(engineerId) && engineerId > 0;
 
-  const { data: engineerData, isLoading, error } = useAdminGetEngineerById(
-    engineerId,
-    hasValidEngineerId,
-  );
+  const {
+    data: engineerData,
+    isLoading,
+    error,
+  } = useAdminGetEngineerById(engineerId, hasValidEngineerId);
 
   const methods = useForm<EngineerFormData>({
     defaultValues: {

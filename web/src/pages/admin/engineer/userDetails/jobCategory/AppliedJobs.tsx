@@ -7,8 +7,8 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import SelectMenu from "@/shared/components/SelectMenu";
 import { useAdminGetEngineerHistory } from "@/shared/apiServices/admin/adminOpenApiService";
 import React, { useMemo, useState } from "react";
-import {  useParams } from "react-router-dom";
-import type { EngineerAssignment } from "./types"
+import { useParams } from "react-router-dom";
+import type { EngineerAssignment } from "./types";
 
 /**
  * AppliedJob Component
@@ -37,17 +37,20 @@ const AppliedJob: React.FC = () => {
   const userId = Number(params.id);
   const hasValidUserId = Number.isFinite(userId) && userId > 0;
 
-  const { data: engineerHistory, isLoading, error } =
-    useAdminGetEngineerHistory(
-      hasValidUserId ? userId : 0,
-      {
-        page,
-        limit,
-        type: "jobs",
-        statusGroup: "applied",
-      },
-      { enabled: hasValidUserId },
-    );
+  const {
+    data: engineerHistory,
+    isLoading,
+    error,
+  } = useAdminGetEngineerHistory(
+    hasValidUserId ? userId : 0,
+    {
+      page,
+      limit,
+      type: "jobs",
+      statusGroup: "applied",
+    },
+    { enabled: hasValidUserId },
+  );
 
   /** Raw API data */
   const assignments = (engineerHistory?.data ?? []) as EngineerAssignment[];
@@ -87,7 +90,7 @@ const AppliedJob: React.FC = () => {
             <span className="text-xs font-medium text-gray-600">
               {row.engineer?.name?.charAt(0)?.toUpperCase() ?? "N"}
             </span>
-          </div> 
+          </div>
           <div>
             <p className="font-semibold text-sm">
               {row.engineer?.name ?? "N/A"}
@@ -118,8 +121,7 @@ const AppliedJob: React.FC = () => {
       label: "Location",
       renderCell: (row) => (
         <span>
-          {row.engineer?.city ?? "N/A"},{" "}
-          {row.engineer?.state ?? ""}
+          {row.engineer?.city ?? "N/A"}, {row.engineer?.state ?? ""}
         </span>
       ),
     },
@@ -128,9 +130,7 @@ const AppliedJob: React.FC = () => {
       label: "Applied Date",
       renderCell: (row) => (
         <span>
-          {row.appliedAt
-            ? new Date(row.appliedAt).toLocaleString()
-            : "N/A"}
+          {row.appliedAt ? new Date(row.appliedAt).toLocaleString() : "N/A"}
         </span>
       ),
     },

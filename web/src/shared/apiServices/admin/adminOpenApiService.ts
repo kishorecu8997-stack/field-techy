@@ -936,11 +936,11 @@ export function useAdminGetEngineerHistory(
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetEngineerHistoryResponse) => void;
-        onError?: (error: unknown) => void;
+    onError?: (error: unknown) => void;
   },
 ) {
   return useQuery({
-        ...adminGetEngineerHistoryOptions({
+    ...adminGetEngineerHistoryOptions({
       client: apiClient,
       path: { userId },
       query,

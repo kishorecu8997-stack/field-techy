@@ -40,14 +40,14 @@ interface ProfileImageWithProgressProps {
  * @returns {JSX.Element} Profile image with circular progress indicator and percentage label below.
  */
 
-const ProfileImageWithProgress: React.FC<
-  ProfileImageWithProgressProps
-> = ({ imageUrl, completionPercent }) => {
+const ProfileImageWithProgress: React.FC<ProfileImageWithProgressProps> = ({
+  imageUrl,
+  completionPercent,
+}) => {
   // Circle calculations for SVG progress ring
   const radius = 46;
   const circumference = 2 * Math.PI * radius;
-  const dashOffset =
-    circumference - (completionPercent / 100) * circumference;
+  const dashOffset = circumference - (completionPercent / 100) * circumference;
 
   return (
     <div className="mb-4 flex flex-col">

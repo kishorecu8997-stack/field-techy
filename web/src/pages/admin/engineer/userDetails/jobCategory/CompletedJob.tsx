@@ -34,7 +34,11 @@ const CompletedJob: React.FC = () => {
   const userId = Number(params.id);
   const hasValidUserId = Number.isFinite(userId) && userId > 0;
 
-  const { data: engineerHistory, isLoading, error } = useAdminGetEngineerHistory(
+  const {
+    data: engineerHistory,
+    isLoading,
+    error,
+  } = useAdminGetEngineerHistory(
     hasValidUserId ? userId : 0,
     {
       page,
@@ -42,12 +46,12 @@ const CompletedJob: React.FC = () => {
       type: "jobs",
       statusGroup: "completed",
     },
-    { enabled: hasValidUserId }
+    { enabled: hasValidUserId },
   );
 
   const jobs: EngineerAssignment[] = useMemo(
     () => (engineerHistory?.data ?? []) as EngineerAssignment[],
-    [engineerHistory?.data]
+    [engineerHistory?.data],
   );
 
   const filteredJobs = useMemo(() => {
@@ -63,8 +67,16 @@ const CompletedJob: React.FC = () => {
   }, [jobs, search]);
 
   const columns: Column<EngineerAssignment>[] = [
-    { key: "assignmentId", label: "Assignment ID", renderCell: (row) => <span>{row.assignmentId}</span> },
-    { key: "jobId", label: "Job ID", renderCell: (row) => <span>{row.jobId}</span> },
+    {
+      key: "assignmentId",
+      label: "Assignment ID",
+      renderCell: (row) => <span>{row.assignmentId}</span>,
+    },
+    {
+      key: "jobId",
+      label: "Job ID",
+      renderCell: (row) => <span>{row.jobId}</span>,
+    },
     {
       key: "engineer",
       label: "Engineer",
@@ -76,14 +88,30 @@ const CompletedJob: React.FC = () => {
             </span>
           </div>
           <div>
-            <p className="font-semibold text-sm">{row.engineer?.name ?? "N/A"}</p>
-            <p className="text-xs text-gray-500">{row.engineer?.email ?? "N/A"}</p>
+            <p className="font-semibold text-sm">
+              {row.engineer?.name ?? "N/A"}
+            </p>
+            <p className="text-xs text-gray-500">
+              {row.engineer?.email ?? "N/A"}
+            </p>
           </div>
         </div>
       ),
     },
-    { key: "assignmentType", label: "Type", renderCell: (row) => <span>{row.assignmentType}</span> },
-    { key: "proposalDetail", label: "Proposal", renderCell: (row) => <p className="text-sm max-w-xs truncate">{row.proposalDetail || "N/A"}</p> },
+    {
+      key: "assignmentType",
+      label: "Type",
+      renderCell: (row) => <span>{row.assignmentType}</span>,
+    },
+    {
+      key: "proposalDetail",
+      label: "Proposal",
+      renderCell: (row) => (
+        <p className="text-sm max-w-xs truncate">
+          {row.proposalDetail || "N/A"}
+        </p>
+      ),
+    },
     {
       key: "location",
       label: "Location",
@@ -96,7 +124,11 @@ const CompletedJob: React.FC = () => {
     {
       key: "appliedAt",
       label: "Applied Date",
-      renderCell: (row) => <span>{row.appliedAt ? new Date(row.appliedAt).toLocaleString() : "N/A"}</span>,
+      renderCell: (row) => (
+        <span>
+          {row.appliedAt ? new Date(row.appliedAt).toLocaleString() : "N/A"}
+        </span>
+      ),
     },
     {
       key: "jobStatus",
@@ -104,7 +136,9 @@ const CompletedJob: React.FC = () => {
       renderCell: (row) => (
         <div
           className={`px-3 py-1 rounded-full text-sm font-medium ${
-            row.jobStatus === "Cancelled" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+            row.jobStatus === "Cancelled"
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
           }`}
         >
           {row.jobStatus}

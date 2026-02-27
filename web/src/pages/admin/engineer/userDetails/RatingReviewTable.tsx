@@ -15,10 +15,14 @@ const RatingAndReviewTable: React.FC = () => {
   const userId = Number(params.id);
   const hasValidUserId = Number.isFinite(userId) && userId > 0;
 
-  const { data: engineerHistory, isLoading, error } = useAdminGetEngineerHistory(
+  const {
+    data: engineerHistory,
+    isLoading,
+    error,
+  } = useAdminGetEngineerHistory(
     hasValidUserId ? userId : 0,
     { page: currentPage, limit: pageSize, type: "reviews" },
-    { enabled: hasValidUserId }
+    { enabled: hasValidUserId },
   );
 
   // Map unknown data to ClientReviewProps safely
@@ -40,8 +44,12 @@ const RatingAndReviewTable: React.FC = () => {
   }, [engineerHistory?.data]);
 
   const columns: Column<ReviewRow>[] = [
-    { key: "sr.No", label: "Sr.No.",  renderCell: (_row: ReviewRow, index: number) =>
-            (currentPage - 1) * pageSize + index + 1 },
+    {
+      key: "sr.No",
+      label: "Sr.No.",
+      renderCell: (_row: ReviewRow, index: number) =>
+        (currentPage - 1) * pageSize + index + 1,
+    },
     {
       key: "reviewerName",
       label: "Client Details",
@@ -99,12 +107,12 @@ const RatingAndReviewTable: React.FC = () => {
             !hasValidUserId
               ? "Missing engineer id in the URL."
               : error
-              ? "An error occurred while fetching reviews."
-              : null
+                ? "An error occurred while fetching reviews."
+                : null
           }
           totalCount={engineerHistory?.total ?? 0}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={setPageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
         />
       </div>
     </div>

@@ -166,7 +166,9 @@ const mapEngineerToFormData = (
     address: engineer.address ?? "",
     skills,
     price: toOptionalString(engineer.pricePerHour),
-    serviceCategory: engineer.serviceCategory ? String(engineer.serviceCategory) : "",
+    serviceCategory: engineer.serviceCategory
+      ? String(engineer.serviceCategory)
+      : "",
     portfolio: engineer.portfolioLink ?? "",
     designation: engineer.currentDesignation ?? "",
     location: engineer.location?.city ?? engineer.city?.name ?? "",

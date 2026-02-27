@@ -18,7 +18,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import {
   useAdminManageEngineers,
   useAdminEngineersByUserIdStatus,
-  useAdminDeleteEngineerMutation
+  useAdminDeleteEngineerMutation,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useEngineerStatusChange } from "@/shared/hooks/useEngineerStatusChange";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
@@ -77,33 +77,32 @@ export default function PendingRequest() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
-const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
-  await showPopup({
-    title: "Delete Engineer",
-    body: "Are you sure you want to delete this engineer?",
-    actionButtons: [
-      { label: "Cancel", value: null, variant: "outline" },
-      {
-        label: "Delete",
-        value: "delete",
-        variant: "danger",
-        action: async (close) => {
-          try {
-            await deleteEngineer({ path: { userId: engineerData.userId } });
-            toast.success("Engineer deleted successfully!");
-            // Refetch table data
-            refetch();
-            close(true);
-          } catch (error) {
-            toast.error("Failed to delete engineer. Please try again.");
-            console.error(error);
-          }
+  const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
+    await showPopup({
+      title: "Delete Engineer",
+      body: "Are you sure you want to delete this engineer?",
+      actionButtons: [
+        { label: "Cancel", value: null, variant: "outline" },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          action: async (close) => {
+            try {
+              await deleteEngineer({ path: { userId: engineerData.userId } });
+              toast.success("Engineer deleted successfully!");
+              // Refetch table data
+              refetch();
+              close(true);
+            } catch (error) {
+              toast.error("Failed to delete engineer. Please try again.");
+              console.error(error);
+            }
+          },
         },
-      },
-    ],
-  });
-};
-
+      ],
+    });
+  };
 
   const columns: Column<ManageEngineerProps>[] = [
     {
