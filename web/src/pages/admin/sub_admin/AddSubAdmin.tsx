@@ -1,8 +1,6 @@
-import { SubAdminRegions } from "@/dummy_data/admin/manageSubAdmin";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
-import { InputField } from "@/shared/components/commonUI/inputs";
+import { InputField, PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validateName } from "@/utils/validate";
@@ -13,6 +11,15 @@ import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
+import {
+  useAdminCreateSubAdmin,
+  type AdminCreateSubAdminBody,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import { validatePassword } from "@/shared/libs/utils";
+import {
+  LookupTable,
+  useAppGetLookupData,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * `AddSubAdmin` is a page component for adding a new sub-admin user.
@@ -27,11 +34,26 @@ export default function AddSubAdmin() {
       email: "",
       phoneNumber: "",
       region: "",
+      password: "",
     },
   });
 
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+  const { data: regionsLookup } = useAppGetLookupData(LookupTable.Regions);
+
+  const regionOptions =
+    regionsLookup?.map((item) => ({
+      value: String(item.id),
+      label: item.name ?? "Unknown",
+    })) ?? [];
+
+  const { mutateAsync: createSubAdmin } = useAdminCreateSubAdmin({
+    onError: (error) => {
+      toast.error("Failed to add Sub-Admin. Please try again.");
+      console.error("Create sub-admin error:", error);
+    },
+  });
 
   const handleSaveConfirmation = async (data: AddSubAdminForm) => {
     await showPopup({
@@ -48,9 +70,15 @@ export default function AddSubAdmin() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("data :", data);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
+            const payload: AdminCreateSubAdminBody = {
+              name: data.name,
+              email: data.email,
+              phoneNumber: data.phoneNumber,
+              regionId: Number(data.region),
+              password: data.password,
+            };
+
+            await createSubAdmin({ body: payload });
             toast.success("Sub-Admin added successfully!");
             navigate(absoluteUrls.admin.home.manage_sub_admin);
             methods.reset();
@@ -79,9 +107,6 @@ export default function AddSubAdmin() {
       </div>
       <div className="bg-white dark:bg-gray-700 rounded-lg p-4">
         <FormContainer methods={methods} onSubmit={handleSubmit}>
-          <div className="mb-6 mt-2 w-fit">
-            <ImageUploaderField label="Profile Image" name="profileImage" />
-          </div>
           <div className="grid md:flex gap-4 w-full">
             <div className="gap-4 w-1/2 space-y-2">
               <InputField
@@ -98,6 +123,15 @@ export default function AddSubAdmin() {
                 label="Mobile Number"
                 required
               />
+              <PasswordInput
+                name="password"
+                label="Password"
+                required
+                rules={{
+                  required: "Password is required",
+                  validate: (v) => validatePassword(v, ""),
+                }}
+              />
             </div>
             <div className="gap-4 w-1/2 space-y-2">
               <InputField
@@ -112,7 +146,7 @@ export default function AddSubAdmin() {
                 name="region"
                 label="Select Regions"
                 placeholder="Select Region"
-                options={SubAdminRegions}
+                options={regionOptions}
                 required
               />
             </div>

@@ -33,6 +33,13 @@ export default function ManageJobs() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
+  const handleFilterChange =
+    <T,>(setter: (val: T) => void) =>
+    (val: T) => {
+      setter(val);
+      setPage(1);
+    };
+
   const tabsConfig: Array<{
     label: string;
     status: AdminGetJobsQuery["status"] | undefined;
@@ -123,17 +130,17 @@ export default function ManageJobs() {
         isLoading={isLoading}
         error={error}
         filterType={filterType}
-        setFilterType={setFilterType}
+        setFilterType={handleFilterChange(setFilterType)}
         serviceCategoryId={serviceCategoryId}
-        setServiceCategoryId={setServiceCategoryId}
+        setServiceCategoryId={handleFilterChange(setServiceCategoryId)}
         budget={budget}
-        setBudget={setBudget}
+        setBudget={handleFilterChange(setBudget)}
         search={search}
-        setSearch={setSearch}
+        setSearch={handleFilterChange(setSearch)}
         filterBy={filterBy}
-        setFilterBy={setFilterBy}
+        setFilterBy={handleFilterChange(setFilterBy)}
         filterRegion={filterRegion}
-        setFilterRegion={setFilterRegion}
+        setFilterRegion={handleFilterChange(setFilterRegion)}
         onClearFilters={handleClearFilters}
         showStatusSelect={config.label === "All Jobs"}
         currentStatus={currentStatus}

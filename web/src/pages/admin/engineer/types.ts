@@ -2,27 +2,27 @@ export interface BasicInformation {
   name: string;
   email: string;
   phoneNumber: string;
-  profileImage: File | null;
+  profileImage: File | FileList | string | null;
   address: string;
   skills: string[] | string;
-  price: string | null;
+  price: string | number | null;
   serviceCategory: string;
   portfolio: string;
 }
 
 export interface ExperienceDetails {
-  resume: string;
   designation: string;
   location: string;
   employer: string;
   experience: string;
+  resume: File | FileList | string | null;
 }
 
+// ---------- Documents ----------
 export interface Documents {
-  governmentId: string;
-  certificate: string;
+  governmentId: File | FileList | string | null;
+  certificate: File | FileList | string | null;
 }
-
 export interface DocumentOption {
   value: string;
   label: string;

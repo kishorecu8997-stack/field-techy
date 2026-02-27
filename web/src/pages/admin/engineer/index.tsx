@@ -1,5 +1,6 @@
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PendingRequest from "./components/PendingRequest";
 import ActiveUser from "./components/ActiveUser";
@@ -11,38 +12,63 @@ import AllUsers from "./components/AllUsers";
 
 export default function ManageEngineer() {
   const navigate = useNavigate();
-  const tabs = [
-    {
-      label: "All Users",
-      content: <AllUsers />,
-      hide: false,
-    },
-    {
-      label: "Pending Requests",
-      content: <PendingRequest />,
-      hide: false,
-    },
-    {
-      label: "Active Users",
-      content: <ActiveUser />,
-      hide: false,
-    },
-    {
-      label: "Inactive Users",
-      content: <InactiveUser />,
-      hide: false,
-    },
-    {
-      label: "Suspended Users",
-      content: <SuspendedUser />,
-      hide: false,
-    },
-    {
-      label: "Blocked Users",
-      content: <BlockedUser />,
-      hide: false,
-    },
-  ];
+  const activeTabStorageKey = "admin.manage_engineer.active_tab";
+  const tabs = useMemo(
+    () => [
+      {
+        label: "All Users",
+        content: <AllUsers />,
+        hide: false,
+      },
+      {
+        label: "Pending Requests",
+        content: <PendingRequest />,
+        hide: false,
+      },
+      {
+        label: "Active Users",
+        content: <ActiveUser />,
+        hide: false,
+      },
+      {
+        label: "Inactive Users",
+        content: <InactiveUser />,
+        hide: false,
+      },
+      {
+        label: "Suspended Users",
+        content: <SuspendedUser />,
+        hide: false,
+      },
+      {
+        label: "Blocked Users",
+        content: <BlockedUser />,
+        hide: false,
+      },
+    ],
+    [],
+  );
+
+  const visibleTabLabels = useMemo(
+    () => tabs.filter((tab) => !tab.hide).map((tab) => tab.label),
+    [tabs],
+  );
+
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window === "undefined") return "All Users";
+    const savedTab = window.sessionStorage.getItem(activeTabStorageKey);
+    if (savedTab && visibleTabLabels.includes(savedTab)) return savedTab;
+    return "All Users";
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!visibleTabLabels.includes(activeTab)) {
+      setActiveTab("All Users");
+      return;
+    }
+    window.sessionStorage.setItem(activeTabStorageKey, activeTab);
+  }, [activeTab, activeTabStorageKey, visibleTabLabels]);
 
   return (
     <div className="w-full h-full px-4">
@@ -64,7 +90,11 @@ export default function ManageEngineer() {
         </div>
       </div>
       <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
-        <AdminTabComponent tabs={tabs} defaultActiveTab={"All Users"} />
+        <AdminTabComponent
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
       </div>
     </div>
   );

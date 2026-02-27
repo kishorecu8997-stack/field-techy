@@ -20,6 +20,7 @@ import ActionsMenu from "./ActionMenu";
 import {
   useAdminEngineersByUserIdStatus,
   useAdminManageEngineers,
+  useAdminDeleteEngineerMutation,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import ViewFileComponent from "./ViewFileComponent";
@@ -68,6 +69,8 @@ export default function InactiveUser() {
       status: "inactive",
     });
 
+  const { mutateAsync: deleteEngineer } = useAdminDeleteEngineerMutation();
+
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   const { mutateAsync: updateEngineerStatus } =
@@ -92,24 +95,25 @@ export default function InactiveUser() {
   };
 
   //Delete confirmation
-  const handleDeleteEngineer = async (job: ManageEngineerProps) => {
+  const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
       body: "Are you sure you want to delete this engineer?",
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        { label: "Cancel", value: null, variant: "outline" },
         {
           label: "Delete",
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting engineer:", job.id);
-            toast.success("Engineer deleted successfully!");
-            close(true);
+            try {
+              await deleteEngineer({ path: { userId: engineerData.userId } });
+              toast.success("Engineer deleted successfully!");
+              close(true);
+            } catch (error) {
+              toast.error("Failed to delete engineer. Please try again.");
+              console.error(error);
+            }
           },
         },
       ],
