@@ -152,7 +152,7 @@ export default function AllUsers() {
       label: "Avg Rating",
       renderCell: (row) => (
         <div className="text-center text-sm text-gray-900 dark:text-white">
-          {row.averageRating ?? 0}
+          {row.averageRating.toFixed(1) ?? 0}
         </div>
       ),
     },

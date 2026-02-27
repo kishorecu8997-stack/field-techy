@@ -48,6 +48,7 @@ export const useEngineerStatusChange = ({
             try {
               await mutateAsync({ userId: row.userId, profileStatus: status });
               isSuccess = true;
+              toast.success(`Engineer Status ${status}`)
             } catch (error) {
               toast.error(`Failed to update engineer status: ${error}`);
               close(true);
