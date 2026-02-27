@@ -61,7 +61,7 @@ export default function ActiveUser() {
     }
   }, [isSuspendEngineer, isBlockEngineer]);
 
-  const { data: engineersResponse, isLoading, refetch } =
+  const { data: engineersResponse, isLoading, isFetching } =
     useAdminManageEngineers({
       page: currentPage,
       limit: pageSize,
@@ -307,7 +307,6 @@ export default function ActiveUser() {
               methods.reset();
               setIsSuspendEngineer(false);
               setActiveEngineer(null);
-              await refetch();
               close(true);
             } catch (error) {
               toast.error(
@@ -354,7 +353,6 @@ export default function ActiveUser() {
               methods.reset();
               setIsBlockEngineer(false);
               setActiveEngineer(null);
-              await refetch();
               close(true);
             } catch (error) {
               toast.error(
@@ -385,7 +383,7 @@ export default function ActiveUser() {
             initialPageSize={pageSize}
             currentPage={currentPage}
             totalCount={engineersResponse?.total ?? 0}
-            loading={isLoading}
+            loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}
           />

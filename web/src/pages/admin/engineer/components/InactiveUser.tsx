@@ -61,7 +61,7 @@ export default function InactiveUser() {
     }
   }, [isSuspendEngineer, isBlockEngineer]);
 
-  const { data: engineersResponse, isLoading, refetch } =
+  const { data: engineersResponse, isLoading, isFetching } =
     useAdminManageEngineers({
       page: currentPage,
       limit: pageSize,
@@ -305,7 +305,6 @@ export default function InactiveUser() {
               methods.reset();
               setIsSuspendEngineer(false);
               setActiveEngineer(null);
-              await refetch();
               close(true);
             } catch (error) {
               toast.error(
@@ -352,7 +351,6 @@ export default function InactiveUser() {
               methods.reset();
               setIsBlockEngineer(false);
               setActiveEngineer(null);
-              await refetch();
               close(true);
             } catch (error) {
               toast.error(
@@ -380,7 +378,7 @@ export default function InactiveUser() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={engineerData}
-            loading={isLoading}
+            loading={isLoading || isFetching}
             initialPageSize={pageSize}
             currentPage={currentPage}
             onPageChange={setCurrentPage}

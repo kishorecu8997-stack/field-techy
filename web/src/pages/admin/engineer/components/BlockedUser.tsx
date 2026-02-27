@@ -43,7 +43,7 @@ export default function BlockedUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading, refetch } =
+  const { data: engineersResponse, isLoading, isFetching } =
     useAdminManageEngineers({
       page: currentPage,
       limit: pageSize,
@@ -121,7 +121,6 @@ export default function BlockedUser() {
                 body: { userStatus: "active" },
               });
               toast.success("Engineer unblocked successfully!");
-              await refetch();
               close(true);
             } catch (error) {
               toast.error(
@@ -253,7 +252,7 @@ export default function BlockedUser() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={engineerData}
-            loading={isLoading}
+            loading={isLoading || isFetching}
             initialPageSize={pageSize}
             currentPage={currentPage}
             onPageChange={setCurrentPage}

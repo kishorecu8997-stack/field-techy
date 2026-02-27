@@ -43,7 +43,7 @@ export default function SuspendedUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading, refetch } =
+  const { data: engineersResponse, isLoading, isFetching } =
     useAdminManageEngineers({
       page: currentPage,
       limit: pageSize,
@@ -123,7 +123,6 @@ export default function SuspendedUser() {
                 body: { userStatus: "active" },
               });
               toast.success("Suspension revoked successfully!");
-              await refetch();
               close(true);
             } catch (error) {
               toast.error(
@@ -272,7 +271,7 @@ export default function SuspendedUser() {
             data={engineerData}
             initialPageSize={pageSize}
             currentPage={currentPage}
-            loading={isLoading}
+            loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}
             totalCount={engineersResponse?.total ?? 0}

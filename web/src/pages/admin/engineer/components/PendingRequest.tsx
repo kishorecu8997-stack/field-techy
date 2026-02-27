@@ -41,7 +41,7 @@ export default function PendingRequest() {
   const {
     data: engineersResponse,
     isLoading,
-    refetch,
+    isFetching,
   } = useAdminManageEngineers({
     page: currentPage,
     limit: pageSize,
@@ -68,7 +68,6 @@ export default function PendingRequest() {
         body: { profileStatus },
       }),
     showPopup,
-    refetch,
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
@@ -294,7 +293,7 @@ export default function PendingRequest() {
             initialPageSize={pageSize}
             currentPage={currentPage}
             totalCount={engineersResponse?.total ?? 0}
-            loading={isLoading}
+            loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}
           />

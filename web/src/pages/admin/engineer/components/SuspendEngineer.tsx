@@ -49,7 +49,7 @@ export default function SuspendEngineer({
               label="End Date"
               placeholder="End Date"
               required
-              minDate={suspendStartDate}
+              minDate={suspendStartDate ?? undefined}
             />
             <TextareaInput
               name="reason"

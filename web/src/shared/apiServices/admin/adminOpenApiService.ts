@@ -3,6 +3,7 @@ import {
   adminUpdatePersonalInfo,
   getCmsContent,
   adminGetClientsForManagement,
+  adminGetEngineersForManagement,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -24,6 +25,7 @@ import {
   type AdminGetJobDetailsData,
   type AdminGetJobDetailsResponse,
   type AdminGetEngineersForManagementData,
+  type AdminGetEngineersForManagementError,
   type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
   type CreateOrUpdatePageResponses,
@@ -66,7 +68,6 @@ import {
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetJobDetailsOptions,
-  adminGetEngineersForManagementOptions,
   createOrUpdatePageMutation,
   addAndUpdateContactSupportMutation,
   getCmsPagesOptions,
@@ -92,6 +93,7 @@ import {
   useQueryClient,
   type QueryKey,
 } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 
@@ -301,19 +303,62 @@ export type AdminGetEngineersQuery = NonNullable<
   AdminGetEngineersForManagementData["query"]
 >;
 
+export type AdminManageEngineersResponse =
+  AdminGetEngineersForManagementResponses[200];
+
+const stableStringify = (value: unknown): string => {
+  if (value === null) return "null";
+  const valueType = typeof value;
+  if (valueType !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) {
+    return `[${value.map(stableStringify).join(",")}]`;
+  }
+  const record = value as Record<string, unknown>;
+  const entries = Object.entries(record)
+    .filter(([, v]) => v !== undefined)
+    .sort(([a], [b]) => a.localeCompare(b));
+  return `{${entries
+    .map(([k, v]) => `${JSON.stringify(k)}:${stableStringify(v)}`)
+    .join(",")}}`;
+};
+
 export function useAdminManageEngineers(
   query?: AdminGetEngineersQuery,
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: AdminGetEngineersForManagementResponses) => void;
+    onSuccess?: (data: AdminManageEngineersResponse) => void;
     onError?: (error: unknown) => void;
   },
 ) {
-  return useQuery({
-    ...adminGetEngineersForManagementOptions({
-      client: apiClient,
-      query,
-    }),
+  const queryParams = useMemo(
+    () => {
+      if (!query) return {} as AdminGetEngineersQuery;
+      const normalizedEntries = Object.entries(query)
+        .filter(([, v]) => v !== undefined)
+        .sort(([a], [b]) => a.localeCompare(b));
+      return Object.fromEntries(normalizedEntries) as AdminGetEngineersQuery;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [stableStringify(query)],
+  );
+
+  return useQuery<
+    AdminManageEngineersResponse,
+    AdminGetEngineersForManagementError,
+    AdminManageEngineersResponse,
+    QueryKey
+  >({
+    queryKey: [...queryKeys.admin.manageEngineers, queryParams],
+    queryFn: async ({ signal }) => {
+      const { data } = await adminGetEngineersForManagement({
+        client: apiClient,
+        query: queryParams,
+        signal,
+        throwOnError: true,
+      });
+      return data as AdminManageEngineersResponse;
+    },
+    refetchOnMount: true,
     ...options,
   });
 }
@@ -392,7 +437,19 @@ export function useAdminEngineersByUserIdStatus(options?: {
   return useMutation({
     ...adminUpdateUserStatusMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["adminManageEngineers"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.manageEngineers });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (() => {
+            const key = query.queryKey[0] as { _id?: string };
+            return (
+              key._id === "adminGetEngineer" || key._id === "adminGetEngineerHistory"
+            );
+          })(),
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

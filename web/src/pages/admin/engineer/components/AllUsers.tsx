@@ -38,7 +38,8 @@ export default function AllUsers() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+  const { data: engineersResponse, isLoading, isFetching } =
+    useAdminManageEngineers({
     page: currentPage,
     limit: pageSize,
   });
@@ -191,7 +192,7 @@ export default function AllUsers() {
             initialPageSize={pageSize}
             currentPage={currentPage}
             totalCount={engineersResponse?.total ?? 0}
-            loading={isLoading}
+            loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}
           />
