@@ -68,15 +68,15 @@ const ClientViewForm: React.FC = () => {
     clientType: clientData?.clientType,
     companyName: clientData?.companyName || clientData?.name || "N/A",
     businessType: clientData?.businessTypeName || "N/A",
-    country: String(clientData?.countryId || "N/A"), // IDs for now
+    country: clientData?.country?.name || "N/A",
     postalCode: clientData?.postalCode || "N/A",
     contactPersonName: clientData?.personName || clientData?.name || "N/A",
-    industry: String(clientData?.industryId || "N/A"),
-    state: String(clientData?.stateId || "N/A"),
+    industry: clientData?.industry?.name || "N/A",
+    state: clientData?.state?.name || "N/A",
     taxDocument: clientData?.documentType || "N/A",
     phoneNumber: clientData?.phoneNumber || "N/A",
     address: clientData?.address || "N/A",
-    city: String(clientData?.cityId || "N/A"),
+    city: clientData?.city?.name || "N/A",
     documentNumber: clientData?.documentNumber || "N/A",
   };
 
