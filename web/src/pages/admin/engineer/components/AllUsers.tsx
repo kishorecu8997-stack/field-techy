@@ -112,7 +112,7 @@ export default function AllUsers() {
       key: "location",
       label: "Location",
       renderCell: (row) => (
-        <div className="text-sm font-medium text-gray-900 dark:text-white">
+        <div className="text-sm text-gray-900 dark:text-white">
           {row.location ?? `${row.cityName}, ${row.countryName}`}
         </div>
       ),

@@ -218,13 +218,13 @@ export default function ActiveUser() {
       key: "kycStatus",
       label: "KYC Status",
       dataCellAlign: "center",
-      renderCell: (row) => row.profileStatus || "N/A",
+      renderCell: (row) => row.profileStatus.toUpperCase() || "N/A",
     },
     {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
-      renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed"),
+      renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed").toUpperCase(),
     },
     {
       key: "avgRating",
