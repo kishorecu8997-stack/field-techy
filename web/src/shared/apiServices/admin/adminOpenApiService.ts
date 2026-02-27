@@ -65,6 +65,10 @@ import {
   type AdminGetJobLogsResponse,
   type AdminGetJobTransactionsData,
   type AdminGetJobTransactionsResponses,
+  type AdminGetReportsResponse,
+  type AdminGetReportsData,
+  type AdminUpdateReportResponse,
+  type AdminUpdateReportData,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -102,6 +106,8 @@ import {
   adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
+  adminGetReportsOptions,
+  adminUpdateReportMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -838,6 +844,46 @@ export function useAdminGetPaymentTransactions(
     ...options,
   });
 }
+
+export type AdminGetReportsQuery = NonNullable<AdminGetReportsData["query"]>;
+
+export function useAdminGetReport(
+  query?: AdminGetReportsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetReportsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetReportsOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
+  });
+}
+
+export type AdminUpdateReportBody = AdminUpdateReportData["body"];
+
+export function useAdminResolveReport(options?: {
+  onSuccess?: (data: AdminUpdateReportResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateReportMutation({ client: apiClient }),
+    onSuccess: (data: AdminUpdateReportResponse) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageClients,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
 export function useAdminDeleteClientMutation(options?: {
   onSuccess?: (data: AdminDeleteClientResponse) => void;
   onError?: (error: unknown) => void;
