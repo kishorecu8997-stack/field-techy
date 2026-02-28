@@ -26,7 +26,7 @@ export default function BlockEngineer({
               className="text-xl font-semibold cursor-pointer"
               onClick={() => setIsBlockEngineer(false)}
             >
-              <IoCloseSharp />
+              <IoCloseSharp className="text-black dark:text-white"/>
             </div>
           </div>
 

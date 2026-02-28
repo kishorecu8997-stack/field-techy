@@ -32,7 +32,7 @@ export default function SuspendEngineer({
               className="text-xl font-semibold cursor-pointer"
               onClick={() => setIsSuspendEngineer(false)}
             >
-              <IoCloseSharp />
+              <IoCloseSharp className="text-black dark:text-white"/>
             </div>
           </div>
 

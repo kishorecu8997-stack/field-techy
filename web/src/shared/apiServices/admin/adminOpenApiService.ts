@@ -439,18 +439,10 @@ export function useAdminEngineersByUserIdStatus(options?: {
   return useMutation({
     ...adminUpdateUserStatusMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.manageEngineers });
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          Array.isArray(query.queryKey) &&
-          query.queryKey[0] &&
-          typeof query.queryKey[0] === "object" &&
-          (() => {
-            const key = query.queryKey[0] as { _id?: string };
-            return (
-              key._id === "adminGetEngineer" || key._id === "adminGetEngineerHistory"
-            );
-          })(),
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+        refetchType: "all",
       });
       options?.onSuccess?.(data);
     },
