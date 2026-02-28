@@ -18,6 +18,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import {
   useAdminManageEngineers,
   useAdminEngineersByUserIdStatus,
+  useAdminDeleteEngineerMutation,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useEngineerStatusChange } from "@/shared/hooks/useEngineerStatusChange";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
@@ -53,6 +54,7 @@ export default function PendingRequest() {
   // Mutation for updating status
   const { mutateAsync: updateEngineerStatus } =
     useAdminEngineersByUserIdStatus();
+  const { mutateAsync: deleteEngineer } = useAdminDeleteEngineerMutation();
 
   // Use the hook for status change
   const { onStatusChange } = useEngineerStatusChange({
@@ -86,10 +88,16 @@ export default function PendingRequest() {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            toast.success("Engineer deleted successfully!");
-            // Here you would call the API to delete the engineer using engineerData.id
-            console.log("Deleting engineer:", engineerData.id);
-            close(true);
+            try {
+              await deleteEngineer({ path: { userId: engineerData.userId } });
+              toast.success("Engineer deleted successfully!");
+              // Refetch table data
+              refetch();
+              close(true);
+            } catch (error) {
+              toast.error("Failed to delete engineer. Please try again.");
+              console.error(error);
+            }
           },
         },
       ],
@@ -247,7 +255,9 @@ export default function PendingRequest() {
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(absoluteUrls.admin.home.manage_engineer_view)
+              navigate(
+                `${absoluteUrls.admin.home.manage_engineer_view}/${row.userId}`,
+              )
             }
           >
             <FiEye className="text-yellow-600" />

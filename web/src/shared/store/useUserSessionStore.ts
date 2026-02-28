@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useAdminCountryStore } from "./useAdminCountryStore";
 
 export interface UserSession {
   userId: string;
@@ -28,6 +29,7 @@ export const useUserSessionStore = create<UserSessionStore>()(
       session: null,
       setSession: (session) => set({ session }),
       logout: () => {
+        useAdminCountryStore.getState().clearRegion();
         set({ session: null });
         localStorage.clear();
       },
