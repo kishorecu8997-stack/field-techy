@@ -6,6 +6,7 @@ import { useThemeHook } from "@/shared/hooks/useThemeHook";
 import type { Transaction } from "../types";
 import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
+import AddFundModal from "@/client/addFund/AddFundModal";
 
 interface WalletComponentProps {
   onMenuItemClick: (key: string) => void;
@@ -21,6 +22,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
 }) => {
   const isDarkMode = useThemeHook();
   const [showBalance, setShowBalance] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data: balanceArr } = useClientBalance();
   const balance = balanceArr?.[0];
   const {
@@ -189,15 +191,18 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
           </div>
           <div className="flex justify-end">
             <button
-              onClick={() => onMenuItemClick(WALLET_COMPONENTS.ADD_FUND)}
+              // previously navigated to add fund menu
+              // onClick={() => onMenuItemClick(WALLET_COMPONENTS.ADD_FUND)}
+              onClick={() => setIsOpen(true)}
               className={`mt-4 px-6 py-2 rounded-full font-medium transition-colors cursor-pointer ${
                 isDarkMode
                   ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                   : "bg-emerald-700 hover:bg-emerald-800 text-white"
               }`}
             >
-              Add Fund
+              Add Funds
             </button>
+          {isOpen && <AddFundModal onClose={() => setIsOpen(false)} />}
           </div>
         </div>
       </div>

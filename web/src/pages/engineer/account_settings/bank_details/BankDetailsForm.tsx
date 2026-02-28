@@ -14,14 +14,20 @@ import {
  * Reusable form component for adding or editing bank details, with fields for bank name, account number,
  * SWIFT code, address, IBAN, and account holder name. Submit button text adapts based on `formType`.
  */
-const BankDetailsForm = ({ formType }: { formType?: string }) => {
+const BankDetailsForm = ({
+  formType,
+  isLoading = false,
+}: {
+  formType?: string;
+  isLoading?: boolean;
+}) => {
   return (
     <div className="flex flex-col h-full pb-4">
-      <div className="flex flex-col overflow-auto flex-grow gap-4">
+      <div className="flex flex-col overflow-auto grow gap-4">
         <div className="p-4">
           <SelectField
             name="bankName"
-            label="Bank"
+            label="Bankkkkk"
             options={bankList}
             placeholder="Select a bank"
             required
@@ -68,9 +74,20 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
         <div className="mt-auto flex justify-end">
           <Button
             type="submit"
-            className="w-full bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
+            disabled={isLoading}
+            className={`w-full ${
+              isLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-teal-800 hover:bg-teal-900"
+            } text-white px-6 py-2 rounded`}
           >
-            {formType === "add" ? "Add Account" : "Save Bank Details"}
+            {isLoading
+              ? formType === "add"
+                ? "Adding Account..."
+                : "Saving Details..."
+              : formType === "add"
+                ? "Add Account"
+                : "Save Bank Details"}
           </Button>
         </div>
       </div>

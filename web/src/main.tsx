@@ -9,6 +9,14 @@ import "./shared/apiServices/utils/errorHandlerConfig";
 import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
 import { FCMHandler } from "./shared/components/FCMHandler.tsx";
 
+// Stripe
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+// initialize stripe promise directly
+const pk = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY 
+const stripePromise = loadStripe(pk);
+
 /**
  * Creates a configured QueryClient instance with default query behaviors.
  *
@@ -51,7 +59,9 @@ root.render(
         <GlobalPopup />
         <ToastHandler />
         <FCMHandler />
-        <App />
+        <Elements stripe={stripePromise}>
+          <App />
+        </Elements>
       </ToastProvider>
     </QueryClientProvider>
   </React.StrictMode>,

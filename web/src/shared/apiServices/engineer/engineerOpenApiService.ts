@@ -6,6 +6,8 @@ import {
   type AppLoginResponse,
   type AppMarkProfileFileUploadedResponse,
   type AppRegisterEngineerResponse,
+  type ConnectStripeAccountError,
+  type ConnectStripeAccountResponse,
   type EngineerAddEducationResponse,
   type EngineerAddExperienceResponse,
   type EngineerAddWorkLogResponse,
@@ -28,6 +30,8 @@ import {
   type GetEngineerTransactionsData,
   type GetEngineerTransactionsError,
   type GetEngineerTransactionsResponse,
+  type GetOnboardingLinkResponse,
+  type GetOnboardingLinkError,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -35,6 +39,7 @@ import {
   appLoginMutation,
   appMarkProfileFileUploadedMutation,
   appRegisterEngineerMutation,
+  connectStripeAccountMutation,
   engineerAddEducationMutation,
   engineerAddExperienceMutation,
   engineerAddWorkLogMutation,
@@ -61,6 +66,7 @@ import {
   getJobLogsOptions,
   engineerGetProfileCompletionOptions,
   engineerGetMyDocumentsOptions,
+  getOnboardingLinkMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
@@ -664,6 +670,44 @@ export function useEngineerGetMyJobs(enabled: boolean = true) {
       client: apiClient,
     }),
     enabled,
+  });
+}
+
+/**
+ * Connect Stripe Account for bank details integration
+ * Called when engineer clicks "Add Bank" to initiate Stripe account connection
+ */
+export function useConnectStripeAccount(options?: {
+  onSuccess?: (data: ConnectStripeAccountResponse) => void;
+  onError?: (error: ConnectStripeAccountError | unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...connectStripeAccountMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * Request Stripe onboarding link after account connection.
+ * Called immediately after connectStripeAccount succeeds.
+ */
+export function useGetOnboardingLink(options?: {
+  onSuccess?: (data: GetOnboardingLinkResponse) => void;
+  onError?: (error: GetOnboardingLinkError | unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...getOnboardingLinkMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
   });
 }
 

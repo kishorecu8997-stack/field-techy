@@ -396,7 +396,7 @@ export const sectionConfig: Record<
     title: "Account Setting",
     parent: "clientAccount",
   },
-  clientWallet: { component: ClientWalletComponent, title: "My Wallet" },
+  clientWallet: { component: ClientWalletComponent, title: "My Wallettt" },
   clientAddFund: {
     component: ClientAddFund,
     title: "Add Fund",

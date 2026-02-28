@@ -15,13 +15,12 @@ import {
   type ClientMarksJobFileUploadedResponses,
   type ClientPostJobResponse,
   type ClientUpdateCompanyInfoResponse,
-  type GetClientBalanceResponse,
-  type GetClientBalanceError,
+  type CreatePaymentIntentError,
+  type CreatePaymentIntentResponse,
   type GetClientTransactionsData,
   type GetClientTransactionsResponse,
   type GetClientTransactionsError,
   getClientTransactions,
-  getClientBalance,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -43,8 +42,11 @@ import {
   clientMarksJobFileUploadedMutation,
   clientPostJobMutation,
   clientUpdateCompanyInfoMutation,
+  getClientBalanceQueryKey,
+  getClientBalanceOptions,
   getJobLogsOptions,
   clientGetMyDocumentsOptions,
+  createPaymentIntentMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
@@ -115,6 +117,37 @@ export function useClientUpdateCompanyInfo(options?: {
     ...clientUpdateCompanyInfoMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.companyInfo });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientBalance(enabled: boolean = true) {
+  return useQuery({
+    ...getClientBalanceOptions({
+      client: apiClient,
+    }),
+    enabled,
+    staleTime: 5 * 60 * 1000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: false,
+  });
+}
+
+// create-payment-intent for wallet top-up stripe integration
+export function useCreatePaymentIntent(options?: {
+  onSuccess?: (data: CreatePaymentIntentResponse) => void;
+  onError?: (error: CreatePaymentIntentError | unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...createPaymentIntentMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      queryClient.invalidateQueries({
+        queryKey: getClientBalanceQueryKey({ client: apiClient }),
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -369,7 +402,7 @@ export function useClientActionOnBreak(options?: {
 import type { ClientFile } from "./clientTypes";
 
 // TODO: Hook needs proper investigation of API endpoint
-export function useClientFiles(_clientId: string | number) {
+export function useClientFiles() {
   // Use correct API endpoint if available, for now return empty list
   return {
     data: [] as ClientFile[],
@@ -409,22 +442,6 @@ export async function getClientCompanyInfo() {
     throwOnError: true,
   });
   return response.data as ClientGetCompanyInfoResponse;
-}
-
-export function useClientBalance(enabled: boolean = true) {
-  return useQuery<GetClientBalanceResponse, GetClientBalanceError>({
-    queryKey: [...queryKeys.client.all, "balance"],
-    queryFn: async () => {
-      const response = await getClientBalance({ client: apiClient });
-      if (response.data) {
-        return response.data;
-      }
-      throw response.error ?? { error: "Unknown error" };
-    },
-    enabled,
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
 }
 
 export function useClientTransactions(
