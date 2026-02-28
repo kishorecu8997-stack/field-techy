@@ -226,10 +226,6 @@ export function useClientPostJob(options?: {
         return data!;
       },
       onSuccess: (data) => {
-        // Best practice: use the generated query key helper + invalidateQueries.
-        // invalidateQueries immediately refetches any mounted observer (e.g. My Jobs
-        // page) and marks the cache as stale for unmounted ones (refetched on next mount).
-        // exact: false ensures it matches regardless of query params / headers options.
         queryClient.invalidateQueries({
           queryKey: clientGetJobsQueryKey({ client: apiClient }),
           exact: false,

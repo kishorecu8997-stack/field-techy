@@ -1,15 +1,11 @@
 import { MdErrorOutline } from "react-icons/md";
+import { Button } from "./Buttons";
 
 interface ErrorStateProps {
-    /** Main heading shown in the card. Defaults to "Something Went Wrong". */
     title?: string;
-    /** Descriptive message below the heading. */
     message?: string;
-    /** Label for the retry button. Set to null to hide the button. Defaults to "Retry". */
     retryLabel?: string | null;
-    /** Custom retry handler. Defaults to window.location.reload(). */
     onRetry?: () => void;
-    /** Extra class names for the outer wrapper. */
     className?: string;
 }
 
@@ -47,12 +43,13 @@ const ErrorState: React.FC<ErrorStateProps> = ({
                 </div>
 
                 {retryLabel !== null && (
-                    <button
+                    <Button
+                        variant="no_style"
                         onClick={handleRetry}
                         className="mt-2 px-5 py-2 text-sm font-medium rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors duration-200"
                     >
                         {retryLabel}
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

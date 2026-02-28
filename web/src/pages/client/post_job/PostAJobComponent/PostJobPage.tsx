@@ -345,8 +345,6 @@ const PostJobPage = () => {
           try {
             await uploadAttachmentsAndTools(response, data);
             toast.success("Your job has been successfully posted!");
-            // NOTE: No need to call refetchJobs() here — useClientPostJob already
-            // invalidates the jobs query. The destination page will refetch on mount.
             navigate(absoluteUrls.client.home.my_jobs);
           } catch {
             const hasFilesToUpload =
