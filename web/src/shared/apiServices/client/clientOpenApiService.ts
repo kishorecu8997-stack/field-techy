@@ -46,6 +46,7 @@ import {
   clientCancelJobMutation,
   clientGetAssignmentDetailsOptions,
   clientGetCompanyInfoOptions,
+  clientGetCompanyInfoQueryKey,
   clientGetDashboardOptions,
   clientGetJobsOptions,
   clientGetMyDocumentsOptions,
@@ -110,7 +111,6 @@ export function useClientGetCompanyInfo(enabled: boolean = true) {
     ...clientGetCompanyInfoOptions({
       client: apiClient,
     }),
-    queryKey: queryKeys.client.companyInfo as any,
     enabled: enabled,
     staleTime: 5 * 60 * 1000,
   });
@@ -132,13 +132,9 @@ export function useClientUpdateCompanyInfo(options?: {
     ...clientUpdateCompanyInfoMutation({ client: apiClient }),
     onSuccess: (data) => {
       void queryClient.invalidateQueries({
-        queryKey: queryKeys.client.companyInfo,
+        queryKey: clientGetCompanyInfoQueryKey({ client: apiClient }),
+        exact: false,
       });
-      void queryClient.invalidateQueries({
-        queryKey: [{ _id: "clientGetCompanyInfo" }],
-      });
-      // Invalidate everything else related to clients
-      void queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

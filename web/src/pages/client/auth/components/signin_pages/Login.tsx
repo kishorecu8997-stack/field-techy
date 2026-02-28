@@ -11,8 +11,7 @@ import {
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { UserRole } from "@/shared/enums/users";
 import {
-  useUserSessionStore,
-  type UserSession,
+  useUserSessionStore
 } from "@/shared/store/useUserSessionStore";
 import {
   decodeJwtPayload,
@@ -56,16 +55,22 @@ const Login = ({
           localStorage.setItem("auth_token", resp.token);
         }
 
-        // Decode the JWT payload to extract claims (e.g. regionId, userId)
+        // Decode the JWT payload to extract claims (e.g. regionId, userId).
+        // If decoding fails or userId is absent, abort login — proceeding without
+        // a valid userId would create a broken session (profile won't load, etc.)
         const payload = decodeJwtPayload<JwtClientPayload>(resp.token);
+        if (!payload?.userId) {
+          toast.error("Login failed: unable to verify session. Please try again.");
+          return;
+        }
 
         setUserSession({
           accessToken: resp.token,
-          userId: payload?.userId !== undefined ? String(payload.userId) : "uuid-client-123",
+          userId: String(payload.userId),
           role: UserRole.CLIENT,
           initiatedAt: Date.now(),
           regionId: payload?.regionId,
-        } as UserSession);
+        });
 
         navigate(absoluteUrls.client.home.dashboard);
         toast.success("Logged in successfully");

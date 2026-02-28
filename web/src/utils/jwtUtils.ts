@@ -1,3 +1,10 @@
+export interface JwtClientPayload {
+    userId: number | string;
+    email?: string;
+    role: string;
+    isVerified?: boolean;
+    regionId?: number;
+}
 /**
  * Lightweight JWT payload decoder.
  * Decodes the Base64Url-encoded payload section of a JWT without verifying
@@ -13,7 +20,13 @@ export function decodeJwtPayload<T = Record<string, unknown>>(
         if (parts.length !== 3) return null;
 
         // Base64Url → Base64 → UTF-8
-        const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+        // Restore padding: Base64Url strips trailing "=" chars, but atob requires
+        // the string length to be a multiple of 4. Without this, atob throws a
+        // DOMException for any payload whose length mod 4 is non-zero.
+        const base64 = (parts[1].replace(/-/g, "+").replace(/_/g, "/") + "===").slice(
+            0,
+            parts[1].length + (4 - (parts[1].length % 4)) % 4,
+        );
         const jsonStr = decodeURIComponent(
             Array.from(atob(base64))
                 .map((c) => "%" + c.charCodeAt(0).toString(16).padStart(2, "0"))
@@ -25,10 +38,3 @@ export function decodeJwtPayload<T = Record<string, unknown>>(
     }
 }
 
-export interface JwtClientPayload {
-    userId: number | string;
-    email?: string;
-    role: string;
-    isVerified?: boolean;
-    regionId?: number;
-}
