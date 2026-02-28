@@ -1,18 +1,20 @@
+import { absoluteUrls } from "@/config/urls";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { useServiceCategories } from "@/shared/hooks/useLookup";
+import { formatAmount } from "@/utils/currency";
+import { useMemo } from "react";
 import { IoMdTime } from "react-icons/io";
-import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import {
-  IoLocationOutline,
   IoCalendarOutline,
   IoConstructOutline,
+  IoLocationOutline,
 } from "react-icons/io5";
-import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { Link } from "react-router-dom";
 import {
   WORKING_TYPES,
   WORKING_TYPES_PROPERTY,
   type Job,
 } from "../../search_result/types";
-import { Link } from "react-router-dom";
-import { absoluteUrls } from "@/config/urls";
 import LocationDisplay from "./LocationDisplay";
 
 interface JobCardProps {
@@ -46,8 +48,24 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     location = "N/A",
     pay = "N/A",
     status = "unknown",
-    serviceType = "N/A",
+    serviceType,
+    serviceCategoryId,
+    currencySymbol = "$",
   } = job;
+
+  const { data: serviceCategories = [] } = useServiceCategories();
+
+  const resolvedServiceType = useMemo(() => {
+    if (serviceCategoryId != null) {
+      const match = serviceCategories.find(
+        (c) => String(c.id) === String(serviceCategoryId),
+      );
+      if (match) return match.name;
+    }
+    return serviceType ?? "N/A";
+  }, [serviceCategoryId, serviceCategories, serviceType]);
+
+  const formattedPay = formatAmount(pay);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -121,12 +139,14 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
           <IoConstructOutline className="w-4 h-4 mr-2 flex-shrink-0" />
-          Service Type: {serviceType}
+          {resolvedServiceType}
         </div>
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-          <RiMoneyDollarCircleLine className="w-4 h-4 mr-2 flex-shrink-0" />
-          {pay}
+          <span className="w-4 h-4 mr-2 flex-shrink-0 flex items-center justify-center font-semibold">
+            {currencySymbol}
+          </span>
+          <span className="font-medium">{formattedPay}</span>
         </div>
       </div>
     </Link>

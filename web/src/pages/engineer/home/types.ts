@@ -24,6 +24,7 @@ export interface JobItem {
   experience: string | null | number;
   salary: string | null;
   budgetType: string | null;
+  currencySymbol?: string;
 
   status:
     | "Posted"
