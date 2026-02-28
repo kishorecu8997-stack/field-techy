@@ -6,7 +6,7 @@ import type { ManageEngineerProps, StatusHistoryType } from "../types";
 import { documentType } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import {
   useAdminEngineersByUserIdStatus,
@@ -36,7 +36,7 @@ export default function BlockedUser() {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
   const [selectedFile, setSelectedFile] = useState<{
-    engineer: ManageEngineerProps;
+    engineerId: number;
     type: ProfileFileType;
   } | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -52,22 +52,40 @@ export default function BlockedUser() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
+  useEffect(() => {
+    setSelectedFile(null);
+    setIsPreviewOpen(false);
+  }, [currentPage, pageSize]);
+
+  const selectedEngineer = useMemo(() => {
+    if (!selectedFile) return null;
+    return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
+  }, [engineerData, selectedFile]);
+
+  useEffect(() => {
+    if (!selectedFile) return;
+    if (isLoading || isFetching) return;
+    if (selectedEngineer) return;
+    setSelectedFile(null);
+    setIsPreviewOpen(false);
+  }, [isFetching, isLoading, selectedEngineer, selectedFile]);
+
   const { mutateAsync: updateEngineerStatus } =
     useAdminEngineersByUserIdStatus();
 
   const getFileUrl = () => {
-    if (!selectedFile) return null;
-    const { engineer, type } = selectedFile;
+    if (!selectedFile || !selectedEngineer) return null;
+    const { type } = selectedFile;
 
     switch (type) {
       case "profilePicture":
-        return engineer.profilePicture?.url;
+        return selectedEngineer.profilePicture?.url;
       case "resumeFile":
-        return engineer.resumeFile?.url;
+        return selectedEngineer.resumeFile?.url;
       case "govIdDoc":
-        return engineer.govIdDoc?.url;
+        return selectedEngineer.govIdDoc?.url;
       case "certificateDoc":
-        return engineer.certificateDoc?.url;
+        return selectedEngineer.certificateDoc?.url;
       default:
         return null;
     }
@@ -200,10 +218,15 @@ export default function BlockedUser() {
               label: item.label ?? "",
             })) ?? []
           }
-          value={selectedFile?.engineer.id === row.id ? selectedFile.type : null}
+          value={selectedFile?.engineerId === row.id ? selectedFile.type : null}
           onChange={(value) => {
-            if (!value) return;
-            setSelectedFile({ engineer: row, type: value as ProfileFileType });
+            if (!value) {
+              setSelectedFile(null);
+              setIsPreviewOpen(false);
+              return;
+            }
+
+            setSelectedFile({ engineerId: row.id, type: value as ProfileFileType });
             setIsPreviewOpen(true);
           }}
         />
@@ -262,13 +285,13 @@ export default function BlockedUser() {
         </div>
       </div>
       <Popup open={isPreviewOpen} onClose={() => setIsPreviewOpen(false)}>
-        {selectedFile && (
+        {selectedFile && selectedEngineer && (
           <ViewFileComponent
             onClose={() => setIsPreviewOpen(false)}
             fileType={selectedFile.type}
-            userId={selectedFile.engineer.userId}
+            userId={selectedEngineer.userId}
             fileUrl={getFileUrl()}
-            title={`${selectedFile.engineer.name}'s`}
+            title={`${selectedEngineer.name}'s`}
           />
         )}
       </Popup>

@@ -44,11 +44,8 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   } = useAdminGetEngineerById(userId ?? 0, shouldFetchFromAdmin);
 
   const adminFileUrl = (() => {
-    if (!shouldFetchFromAdmin || !fileType) {
-      return null;
-    }
     const docs = engineerDetails?.documents;
-    if (!docs) return null;
+    if (!docs || !fileType) return null;
 
     switch (fileType) {
       case "profilePicture":
@@ -71,7 +68,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   } = useAppDownloadProfileFile(fileType, !!fileType && !fileUrl && !shouldFetchFromAdmin);
 
   const previewUrl =
-    fileUrl ?? adminFileUrl ?? downloadData?.downloadUrl ?? null;
+    fileUrl ?? adminFileUrl ?? downloadData?.downloadUrl ?? undefined;
 
   const handleDownload = async () => {
     if (previewUrl) {
@@ -128,7 +125,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
 
   const renderImagePreview = () => (
     <img
-      src={previewUrl ?? ""}
+      src={previewUrl}
       alt="Document Preview"
       className="w-full h-full dark:text-white object-contain"
     />
@@ -144,8 +141,8 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
     >
       <div className="w-full flex items-center justify-center">
         <PDFPreview
-          key={previewUrl ?? ""}
-          url={previewUrl ?? ""}
+          key={previewUrl}
+          url={previewUrl}
           className="h-[300px]"
         />
       </div>

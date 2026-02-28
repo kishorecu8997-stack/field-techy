@@ -2,7 +2,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import type { ManageEngineerProps } from "../types";
 import Popup from "@/shared/components/Popup";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 import ViewFileComponent from "@/pages/admin/engineer/components/ViewFileComponent";
@@ -30,7 +30,7 @@ export default function AllUsers() {
   const [search, setSearch] = useState("");
 
   const [selectedFile, setSelectedFile] = useState<{
-    engineer: ManageEngineerProps;
+    engineerId: number;
     type: ProfileFileType;
   } | null>(null);
 
@@ -44,25 +44,43 @@ export default function AllUsers() {
     limit: pageSize,
   });
 
-  const getFileUrl = () => {
+  useEffect(() => {
+    setSelectedFile(null);
+    setIsPreviewOpen(false);
+  }, [currentPage, pageSize]);
+
+  const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const selectedEngineer = useMemo(() => {
     if (!selectedFile) return null;
-    const { engineer, type } = selectedFile;
+    return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
+  }, [engineerData, selectedFile]);
+
+  useEffect(() => {
+    if (!selectedFile) return;
+    if (isLoading || isFetching) return;
+    if (selectedEngineer) return;
+    setSelectedFile(null);
+    setIsPreviewOpen(false);
+  }, [isFetching, isLoading, selectedEngineer, selectedFile]);
+
+  const getFileUrl = () => {
+    if (!selectedFile || !selectedEngineer) return null;
+    const { type } = selectedFile;
 
     switch (type) {
       case "profilePicture":
-        return engineer.profilePicture?.url;
+        return selectedEngineer.profilePicture?.url;
       case "resumeFile":
-        return engineer.resumeFile?.url;
+        return selectedEngineer.resumeFile?.url;
       case "govIdDoc":
-        return engineer.govIdDoc?.url;
+        return selectedEngineer.govIdDoc?.url;
       case "certificateDoc":
-        return engineer.certificateDoc?.url;
+        return selectedEngineer.certificateDoc?.url;
       default:
         return null;
     }
   };
-
-  const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   const columns: Column<ManageEngineerProps>[] = [
     {
@@ -114,7 +132,11 @@ export default function AllUsers() {
       label: "Location",
       renderCell: (row) => (
         <div className="text-sm text-gray-900 dark:text-white">
-          {row.location ?? `${row.cityName}, ${row.countryName}`}
+          {row.location ??
+            ([row.cityName ?? "", row.countryName ?? ""]
+              .filter(Boolean)
+              .join(", ") ||
+              "N/A")}
         </div>
       ),
     },
@@ -152,7 +174,7 @@ export default function AllUsers() {
       label: "Avg Rating",
       renderCell: (row) => (
         <div className="text-center text-sm text-gray-900 dark:text-white">
-          {(row.averageRating ?? 0).toFixed(1)}        
+          {(row.averageRating ?? 0).toFixed(1)}
         </div>
       ),
     },
@@ -167,15 +189,20 @@ export default function AllUsers() {
             value: item.value ?? "",
             label: item.label ?? "",
           }))}
-          value={
-            selectedFile?.engineer.id === row.id ? selectedFile.type : null
-          }
+          value={selectedFile?.engineerId === row.id ? selectedFile.type : null}
           onChange={(value) => {
-            if (value == null || value === "") {
+            if (!value) {
               setSelectedFile(null);
               setIsPreviewOpen(false);
               return;
-            }}}
+            }
+
+            setSelectedFile({
+              engineerId: row.id,
+              type: value as ProfileFileType,
+            });
+            setIsPreviewOpen(true);
+          }}
         />
       ),
     },
@@ -201,13 +228,13 @@ export default function AllUsers() {
         </div>
       </div>
       <Popup open={isPreviewOpen} onClose={() => setIsPreviewOpen(false)}>
-        {selectedFile && (
+        {selectedFile && selectedEngineer && (
           <ViewFileComponent
             onClose={() => setIsPreviewOpen(false)}
             fileType={selectedFile.type}
-            userId={selectedFile.engineer.userId}
+            userId={selectedEngineer.userId}
             fileUrl={getFileUrl()}
-            title={`${selectedFile.engineer.name}'s`}
+            title={`${selectedEngineer.name}'s`}
           />
         )}
       </Popup>

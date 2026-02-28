@@ -2,7 +2,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   documentType,
   SUSPEND_ENGINEER_DEFAULT_VALUES,
@@ -45,7 +45,7 @@ export default function InactiveUser() {
   const [activeEngineer, setActiveEngineer] =
     useState<ManageEngineerProps | null>(null);
   const [selectedFile, setSelectedFile] = useState<{
-    engineer: ManageEngineerProps;
+    engineerId: number;
     type: ProfileFileType;
   } | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -55,12 +55,6 @@ export default function InactiveUser() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-
-  useEffect(() => {
-    if (!isSuspendEngineer && !isBlockEngineer) {
-      setActiveEngineer(null);
-    }
-  }, [isSuspendEngineer, isBlockEngineer]);
 
   const { data: engineersResponse, isLoading, isFetching } =
     useAdminManageEngineers({
@@ -73,22 +67,40 @@ export default function InactiveUser() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
+  useEffect(() => {
+    setSelectedFile(null);
+    setIsPreviewOpen(false);
+  }, [currentPage, pageSize]);
+
+  const selectedEngineer = useMemo(() => {
+    if (!selectedFile) return null;
+    return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
+  }, [engineerData, selectedFile]);
+
+  useEffect(() => {
+    if (!selectedFile) return;
+    if (isLoading || isFetching) return;
+    if (selectedEngineer) return;
+    setSelectedFile(null);
+    setIsPreviewOpen(false);
+  }, [isFetching, isLoading, selectedEngineer, selectedFile]);
+
   const { mutateAsync: updateEngineerStatus } =
     useAdminEngineersByUserIdStatus();
 
   const getFileUrl = () => {
-    if (!selectedFile) return null;
-    const { engineer, type } = selectedFile;
+    if (!selectedFile || !selectedEngineer) return null;
+    const { type } = selectedFile;
 
     switch (type) {
       case "profilePicture":
-        return engineer.profilePicture?.url;
+        return selectedEngineer.profilePicture?.url;
       case "resumeFile":
-        return engineer.resumeFile?.url;
+        return selectedEngineer.resumeFile?.url;
       case "govIdDoc":
-        return engineer.govIdDoc?.url;
+        return selectedEngineer.govIdDoc?.url;
       case "certificateDoc":
-        return engineer.certificateDoc?.url;
+        return selectedEngineer.certificateDoc?.url;
       default:
         return null;
     }
@@ -183,13 +195,15 @@ export default function InactiveUser() {
                 label: item.label ?? "",
               })) ?? []
             }
-            value={selectedFile?.engineer.id === row.id ? selectedFile.type : null}
+            value={selectedFile?.engineerId === row.id ? selectedFile.type : null}
             onChange={(value) => {
-              if (!value) return;
-              setSelectedFile({
-                engineer: row,
-                type: value as ProfileFileType,
-              });
+              if (!value) {
+                setSelectedFile(null);
+                setIsPreviewOpen(false);
+                return;
+              }
+
+              setSelectedFile({ engineerId: row.id, type: value as ProfileFileType });
               setIsPreviewOpen(true);
             }}
           />
@@ -392,13 +406,13 @@ export default function InactiveUser() {
         </div>
       </div>
       <Popup open={isPreviewOpen} onClose={() => setIsPreviewOpen(false)}>
-        {selectedFile && (
+        {selectedFile && selectedEngineer && (
           <ViewFileComponent
             onClose={() => setIsPreviewOpen(false)}
             fileType={selectedFile.type}
-            userId={selectedFile.engineer.userId}
+            userId={selectedEngineer.userId}
             fileUrl={getFileUrl()}
-            title={`${selectedFile.engineer.name}'s`}
+            title={`${selectedEngineer.name}'s`}
           />
         )}
       </Popup>
