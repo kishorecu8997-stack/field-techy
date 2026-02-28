@@ -1,4 +1,4 @@
-import { useClientGetCompanyInfo, useClientUpdateCompanyInfo, useVatOptions } from "@/shared/apiServices/client/clientOpenApiService";
+import { useAppResolveSignupRegion, useClientGetCompanyInfo, useClientUpdateCompanyInfo, useVatOptions } from "@/shared/apiServices/client/clientOpenApiService";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
@@ -14,9 +14,9 @@ import {
   useLookup,
   useStates,
 } from "@/shared/hooks/useLookup";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useClientCompanyInfoStore } from "@/shared/store/useClientCompanyInfoStore";
 import { useClientStore } from "@/shared/store/useClientStore";
-import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { CiLocationOn } from "react-icons/ci";
@@ -49,10 +49,14 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
 
   // Fetch company info
   const { data: clientInfo, isLoading: isFetchingInfo, isFetching } = useClientGetCompanyInfo(true);
+  console.log(clientInfo);
 
   useEffect(() => {
     if (clientInfo) {
       setCompanyInfo(clientInfo);
+      if (clientInfo.phoneNumber) {
+        setIsPhoneVerified(true);
+      }
     }
   }, [clientInfo, setCompanyInfo]);
 
@@ -80,36 +84,44 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     },
   });
 
+  const corporateInfo = clientInfo?.clientType === "corporate" ? clientInfo : null;
+
   const methods = useForm<PersonalInfo>({
+    // useForm reads defaultValues ONCE at mount — clientInfo is null at that
+    // point (async fetch). Actual population is done via setValue in useEffects below.
     defaultValues: {
-      companyName: "",
-      contactPersonName: "",
-      phoneNumber: "",
-      businessType: "PRIVATE",
-      industry: "",
-      address: "",
-      country: "",
-      state: "",
-      city: "",
-      postalCode: "",
-      taxDocument: "",
-      vatRegistrationNumber: "",
+      companyName: corporateInfo?.companyName,
+      contactPersonName: clientInfo?.name,
+      phoneNumber: clientInfo?.phoneNumber,
+      businessType: corporateInfo?.businessTypeId,
+      industry: corporateInfo?.industryId,
+      address: corporateInfo?.address,
+      country: clientInfo?.countryId,
+      state: clientInfo?.stateId,
+      city: clientInfo?.cityId,
+      postalCode: clientInfo?.postalCode,
+      taxDocument: corporateInfo?.documentType,
+      vatRegistrationNumber: corporateInfo?.documentNumber,
     },
     mode: "onChange",
   });
-  const { control, trigger, reset } = methods;
+
+  const { control, trigger } = methods;
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
 
   // Watch values for dependent fields
   const country = useWatch({ control, name: "country" });
   const selectedStateValue = useWatch({ control, name: "state" });
 
+  const { data: signupRegion } = useAppResolveSignupRegion();
+
   // Fetch dropdown data from API
-  const countriesQuery = useCountries();
+  const regionId = signupRegion?.regionId;
+  const countriesQuery = useCountries(regionId);
 
   const parentCountryId =
     typeof country === "object" && country !== null && "value" in country
-      ? (country as any).value
+      ? (country as { value: string | number }).value
       : country;
 
   const statesQuery = useStates(parentCountryId);
@@ -118,7 +130,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     typeof selectedStateValue === "object" &&
       selectedStateValue !== null &&
       "value" in selectedStateValue
-      ? (selectedStateValue as any).value
+      ? (selectedStateValue as { value: string | number }).value
       : selectedStateValue;
 
   const citiesQuery = useCities(parentStateId);
@@ -160,37 +172,6 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
 
   // Sync form with store data
-  useEffect(() => {
-    if (companyInfo) {
-      reset({
-        companyName:
-          ("companyName" in companyInfo && companyInfo.companyName) || "",
-        contactPersonName:
-          ("personName" in companyInfo
-            ? companyInfo.personName
-            : companyInfo.name) || "",
-        phoneNumber: companyInfo.phoneNumber || "",
-        businessType:
-          ("businessTypeId" in companyInfo ? companyInfo.businessTypeId : "") ||
-          "PRIVATE",
-        industry:
-          ("industryId" in companyInfo ? companyInfo.industryId : "") || "",
-        address: ("address" in companyInfo ? companyInfo.address : "") || "",
-        country: companyInfo.countryId || "",
-        state: companyInfo.stateId || "",
-        city: companyInfo.cityId || "",
-        postalCode: companyInfo.postalCode || "",
-        taxDocument:
-          ("documentType" in companyInfo && companyInfo.documentType) || "",
-        vatRegistrationNumber:
-          ("documentNumber" in companyInfo && companyInfo.documentNumber) || "",
-      });
-
-      if (companyInfo.phoneNumber) {
-        setIsPhoneVerified(true);
-      }
-    }
-  }, [companyInfo, reset]);
 
   const showLoader = (isFetchingInfo || isFetching) && !companyInfo;
 
@@ -214,19 +195,15 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   const handleSubmit = async (data: PersonalInfo) => {
     const isCorporate = companyInfo?.clientType === "corporate";
 
-    // Helper to get ID
-    const getId = (val: any) => {
+    // Extract a numeric ID from a raw number/string value (SelectField stores the option's value directly)
+    const getId = (val: string | number | null | undefined): number | undefined => {
       if (val === null || val === undefined || val === "") return undefined;
-      // Handle object case if SelectField somehow returns one
-      if (typeof val === "object" && val !== null && "value" in val) {
-        return Number(val.value);
-      }
       const num = Number(val);
       return isNaN(num) ? undefined : num;
     };
 
     const updateBody = {
-      clientType: isCorporate ? "corporate" : "home",
+      clientType: (isCorporate ? "corporate" : "home") as "corporate" | "home",
       name: data.contactPersonName,
       companyName: isCorporate ? data.companyName : undefined,
       personName: data.contactPersonName,
@@ -237,7 +214,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       postalCode: data.postalCode,
       industryId: isCorporate ? getId(data.industry) : undefined,
       businessTypeId: isCorporate ? getId(data.businessType) : undefined,
-      documentType: isCorporate ? data.taxDocument : undefined,
+      documentType: isCorporate ? (data.taxDocument ?? undefined) : undefined,
       documentNumber: isCorporate ? data.vatRegistrationNumber : undefined,
     };
 
@@ -260,11 +237,11 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           action: async (close) => {
             try {
               await updateClient({
-                body: updateBody as any,
+                body: updateBody,
               });
               close(true);
             } catch (error: unknown) {
-              console.error("Failed to update profile:", error);
+              toast.error(GlobalApiErrorHandler.handle(error).message);
               close(true);
             }
           },
@@ -387,7 +364,13 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
                 value,
                 typeof country === "string"
                   ? country
-                  : (country as any)?.value || String(country),
+                  : String(
+                    country !== null &&
+                      typeof country === "object" &&
+                      "value" in country
+                      ? (country as { value: string | number }).value
+                      : country
+                  ),
               ),
           }}
         />
