@@ -1,6 +1,7 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
+  adminUpdateJobStatus,
   getCmsContent,
   adminGetClientsForManagement,
   type AdminUpdatePersonalInfoData,
@@ -117,7 +118,6 @@ import {
   adminCreateSubAdminMutation,
   adminUpdateSubAdminMutation,
   adminGetJobGraphOptions,
-  adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
   adminGetSubAdminsOptions,
@@ -427,8 +427,14 @@ export function useAdminClientsByUserIdStatus(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminUpdateUserStatusMutation({ client: apiClient }),
+    ...adminUpdateUserStatusMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
@@ -446,8 +452,14 @@ export function useAdminEngineersByUserIdStatus(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminUpdateUserStatusMutation({ client: apiClient }),
+    ...adminUpdateUserStatusMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["adminManageEngineers"] });
       options?.onSuccess?.(data);
@@ -503,8 +515,20 @@ export function useAdminUpdateJobStatus(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminUpdateJobStatusMutation({ client: apiClient }),
+    mutationFn: async (fnOptions: { query: { jobId: number }; body?: AdminUpdateJobStatusBody }) => {
+      const { data } = await adminUpdateJobStatus({
+        client: apiClient,
+        query: {
+          ...fnOptions.query,
+          regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        },
+        body: fnOptions.body,
+        throwOnError: true,
+      });
+      return data as AdminUpdateJobStatusSuccess;
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
@@ -733,8 +757,14 @@ export function useAdminAddClient(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminCreateClientMutation({ client: apiClient }),
+    ...adminCreateClientMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
     onSuccess: (data: AdminAddClientResponse) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
@@ -753,8 +783,14 @@ export function useAdminUpdateClient(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminUpdateClientMutation({ client: apiClient }),
+    ...adminUpdateClientMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
     onSuccess: (data: AdminUpdateClientResponse) => {
       queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
@@ -1138,8 +1174,14 @@ export function useAdminDeleteClientMutation(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminDeleteClientMutation({ client: apiClient }),
+    ...adminDeleteClientMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
@@ -1211,8 +1253,14 @@ export function useAdminDeleteEngineerMutation(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminDeleteEngineerMutation({ client: apiClient }),
+    ...adminDeleteEngineerMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
