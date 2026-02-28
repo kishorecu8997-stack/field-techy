@@ -18,6 +18,8 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   title = "View File",
   fileType,
   fileUrl,
+  isShowIcon = true,
+  titleClassName,
 }) => {
   const downloadUrl = fileUrl;
 
@@ -92,7 +94,9 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg max-w-2xl w-full p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+        <h2
+          className={`text-lg font-semibold text-gray-800 dark:text-white ${titleClassName || ""}`}
+        >
           {title}
         </h2>
         <div className="flex items-center gap-2">
@@ -105,10 +109,12 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
               <FiDownload className="h-5 w-5" />
             </div>
           )}
-          <IoClose
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 h-7 w-7 cursor-pointer"
-            onClick={onClose}
-          />
+          {isShowIcon && (
+            <IoClose
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 h-7 w-7 cursor-pointer"
+              onClick={onClose}
+            />
+          )}
         </div>
       </div>
 

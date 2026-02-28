@@ -1,9 +1,10 @@
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useFormContext } from "react-hook-form";
-import { ENGINEER_PROFILE_DATA, type EngineerFormData } from "../types";
+import type { EngineerFormData } from "../types";
 import { StarIcon } from "lucide-react";
 import ProfileImageWithProgress from "@/shared/components/ProfileImageProgress";
 import RatingAndReviewTable from "./RatingReviewTable";
+import type { AdminGetEngineerResponse } from "@/api";
 /**
  * BasicInformation
  *
@@ -22,9 +23,35 @@ import RatingAndReviewTable from "./RatingReviewTable";
  * @component
  * @returns {JSX.Element} Personal details and rating summary for an engineer
  */
-export default function BasicInformation() {
+export default function BasicInformation({
+  engineer,
+}: {
+  engineer?: AdminGetEngineerResponse;
+}) {
   const methods = useFormContext<EngineerFormData>();
-  const data = ENGINEER_PROFILE_DATA;
+
+  const name = methods.watch("name");
+  const address = methods.watch("address");
+  const phoneNumber = methods.watch("phoneNumber");
+  const emailAddress = methods.watch("email");
+  const profileImage = methods.watch("profileImage");
+
+  const walletBalance =
+    engineer?.walletBalance !== undefined && engineer?.walletBalance !== null
+      ? String(engineer.walletBalance)
+      : "N/A";
+
+  const registrationDate = engineer?.registrationDate
+    ? new Date(engineer.registrationDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "N/A";
+  const kycStatus = engineer?.kycStatus ?? "N/A";
+  const employmentStatus = engineer?.employmentStatus ?? "N/A";
+  const employmentType = engineer?.employmentType ?? "N/A";
+  const averageRating = engineer?.averageRating ?? 0;
 
   return (
     <div>
@@ -37,7 +64,7 @@ export default function BasicInformation() {
           Profile Image
         </label>
         <ProfileImageWithProgress
-          imageUrl="https://example.com/profiles/123.jpg"
+          imageUrl={typeof profileImage === "string" ? profileImage : ""}
           completionPercent={60}
         />
 
@@ -45,21 +72,21 @@ export default function BasicInformation() {
           <div>
             <div className="mb-4">
               <label className="block text-sm text-gray-500 mb-1">Name</label>
-              <p className="font-semibold">{data.name}</p>
+              <p className="font-semibold">{name || "N/A"}</p>
             </div>
 
             <div className="mb-4">
               <label className="block text-sm text-gray-500 mb-1">
                 Address
               </label>
-              <p className="text-sm">{data.address}</p>
+              <p className="font-semibold">{address || "N/A"}</p>
             </div>
 
             <div>
               <label className="block text-sm text-gray-500 mb-1">
                 Wallet balance
               </label>
-              <p className="font-semibold">{data.walletBalance}</p>
+              <p className="font-semibold">{walletBalance}</p>
             </div>
           </div>
 
@@ -68,21 +95,21 @@ export default function BasicInformation() {
               <label className="block text-sm text-gray-500 mb-1">
                 Phone Number
               </label>
-              <p className="font-semibold">{data.phoneNumber}</p>
+              <p className="font-semibold">{phoneNumber || "N/A"}</p>
             </div>
 
             <div className="mb-4">
               <label className="block text-sm text-gray-500 mb-1">
                 Registration Date
               </label>
-              <p className="font-semibold">{data.registrationDate}</p>
+              <p className="font-semibold">{registrationDate}</p>
             </div>
 
             <div>
               <label className="block text-sm text-gray-500 mb-1">
-                Total Earning
+                Employment Status
               </label>
-              <p className="font-semibold">{data.totalEarning}</p>
+              <p className="font-semibold">{employmentStatus}</p>
             </div>
           </div>
 
@@ -91,20 +118,20 @@ export default function BasicInformation() {
               <label className="block text-sm text-gray-500 mb-1">
                 Email Address
               </label>
-              <p className="font-semibold">{data.emailAddress}</p>
+              <p className="font-semibold">{emailAddress || "N/A"}</p>
             </div>
             <div className="mb-4">
               <label className="block text-sm text-gray-500 mb-1">
                 KYC Status
               </label>
-              <p className="font-semibold">{data.kycStatus}</p>
+              <p className="font-semibold">{kycStatus}</p>
             </div>
 
             <div>
               <label className="block text-sm text-gray-500 mb-1">
-                Last login date
+                Employment Type
               </label>
-              <p className="font-semibold">{data.lastLoginDate}</p>
+              <p className="font-semibold">{employmentType}</p>
             </div>
           </div>
         </div>
@@ -117,14 +144,14 @@ export default function BasicInformation() {
               <StarIcon
                 key={i}
                 className={`h-5 w-5 ${
-                  i < Math.floor(data.averageRating)
+                  i < Math.floor(averageRating)
                     ? "text-yellow-400 fill-current"
                     : "text-gray-300"
                 }`}
               />
             ))}
           </div>
-          <p className="text-sm text-gray-600 mt-1">{data.averageRating} / 5</p>
+          <p className="text-sm text-gray-600 mt-1">{averageRating} / 5</p>
         </div>
 
         <div className="border-b px-4 border-gray-200 my-4" />

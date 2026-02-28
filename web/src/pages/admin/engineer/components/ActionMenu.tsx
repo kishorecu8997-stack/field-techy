@@ -108,7 +108,9 @@ export default function ActionsMenu({
           <div
             onClick={() => {
               setShowAction(null);
-              navigate(absoluteUrls.admin.home.manage_engineer_view);
+              navigate(
+                `${absoluteUrls.admin.home.manage_engineer_view}/${row.userId}`,
+              );
             }}
             className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
           >

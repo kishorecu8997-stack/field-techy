@@ -1,6 +1,7 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
+  adminGetSubAdmins,
   getCmsContent,
   adminGetClientsForManagement,
   type AdminUpdatePersonalInfoData,
@@ -56,6 +57,23 @@ import {
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
   type AdminDeleteServiceCategoryResponse,
+  type AdminCreateEngineerResponse,
+  type AdminCreateEngineerData,
+  type AdminUpdateEngineerData,
+  type AdminUpdateEngineerResponse,
+  type AdminDeleteEngineerResponse,
+  type AdminGetEngineerHistoryData,
+  type AdminGetEngineerHistoryResponse,
+  type AdminCreateSubAdminData,
+  type AdminCreateSubAdminResponses,
+  type AdminGetSubAdminsData,
+  type AdminGetSubAdminsResponses,
+  type AdminUpdateSubAdminData,
+  type AdminUpdateSubAdminResponses,
+  type AdminGetClientHistoryResponse,
+  type AdminGetClientHistoryData,
+  type AdminGetJobGraphData,
+  type AdminGetJobGraphResponses,
   type AdminUpdateJobStatusData,
   type AdminUpdateJobStatusResponses,
   type AdminGetJobLogsData,
@@ -71,6 +89,8 @@ import {
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
 } from "@/api";
+
+export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
 import {
   adminGetPersonalInfoOptions,
   adminUpdatePersonalInfoMutation,
@@ -100,6 +120,14 @@ import {
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
+  adminCreateEngineerMutation,
+  adminUpdateEngineerMutation,
+  adminDeleteEngineerMutation,
+  adminGetEngineerHistoryOptions,
+  adminCreateSubAdminMutation,
+  adminUpdateSubAdminMutation,
+  adminGetClientHistoryOptions,
+  adminGetJobGraphOptions,
   adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
@@ -133,6 +161,7 @@ export const LookupTable = {
   EducationLevels: "educationLevels",
   Courses: "courses",
   BusinessTypes: "businessTypes",
+  Regions: "regions",
 } as const;
 
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
@@ -414,6 +443,8 @@ export function useAdminClientsByUserIdStatus(options?: {
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
+        exact: false,
+        refetchType: "all",
       });
       options?.onSuccess?.(data);
     },
@@ -436,6 +467,69 @@ export function useAdminEngineersByUserIdStatus(options?: {
   });
 }
 
+export type AdminCreateSubAdminBody = NonNullable<
+  AdminCreateSubAdminData["body"]
+>;
+export type AdminGetSubAdminsQuery = NonNullable<
+  AdminGetSubAdminsData["query"]
+>;
+export type AdminUpdateSubAdminBody = NonNullable<
+  AdminUpdateSubAdminData["body"]
+>;
+
+const SUBADMINS_QUERY_KEY = ["admin", "sub-admins"] as const;
+
+export function useAdminGetSubAdmins(
+  query?: AdminGetSubAdminsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetSubAdminsResponses[200]) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: [...SUBADMINS_QUERY_KEY, query],
+    queryFn: async () => {
+      const response = await adminGetSubAdmins({
+        client: apiClient,
+        query,
+        throwOnError: true,
+      });
+      return response.data as AdminGetSubAdminsResponses[200];
+    },
+    ...options,
+  });
+}
+
+export function useAdminCreateSubAdmin(options?: {
+  onSuccess?: (data: AdminCreateSubAdminResponses[201]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateSubAdminMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: SUBADMINS_QUERY_KEY });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateSubAdmin(options?: {
+  onSuccess?: (data: AdminUpdateSubAdminResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateSubAdminMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: SUBADMINS_QUERY_KEY });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
 export type AdminUpdateJobStatusBody = NonNullable<
   AdminUpdateJobStatusData["body"]
 >;
@@ -469,7 +563,6 @@ export function useAdminUpdateJobStatus(options?: {
     onError: options?.onError,
   });
 }
-
 /**
  * Raw API functions for use outside of hooks (e.g. in Zustand stores)
  */
@@ -1093,5 +1186,140 @@ export function useAdminDeleteClientMutation(options?: {
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+}
+
+export type AdminAddEngineerResponse = AdminCreateEngineerResponse;
+export type AdminAddEngineerBody = AdminCreateEngineerData["body"];
+
+export function useAdminAddEngineer(options?: {
+  onSuccess?: (data: AdminAddEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateEngineerMutation({ client: apiClient }),
+    onSuccess: (data: AdminAddEngineerResponse) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminUpdateEngineerBody = AdminUpdateEngineerData["body"];
+
+export function useAdminUpdateEngineer(options?: {
+  onSuccess?: (data: AdminUpdateEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateEngineerMutation({ client: apiClient }),
+    onSuccess: (data: AdminUpdateEngineerResponse) => {
+      queryClient.resetQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminDeleteEngineerMutation(options?: {
+  onSuccess?: (data: AdminDeleteEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminDeleteEngineerMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminGetEngineerHistoryQuery = NonNullable<
+  AdminGetEngineerHistoryData["query"]
+>;
+
+export function useAdminGetEngineerHistory(
+  userId: number,
+  query: AdminGetEngineerHistoryQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetEngineerHistoryResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetEngineerHistoryOptions({
+      client: apiClient,
+      path: { userId },
+      query,
+    }),
+    ...options,
+  });
+}
+export type AdminGetClientHistoryQuery = NonNullable<
+  AdminGetClientHistoryData["query"]
+>;
+
+export function useAdminGetClientHistory(
+  userId: number,
+  query: AdminGetClientHistoryQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetClientHistoryResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetClientHistoryOptions({
+      client: apiClient,
+      path: { userId },
+      query,
+    }),
+    ...options,
+  });
+}
+
+export type AdminGetJobGraphQuery = Omit<
+  NonNullable<AdminGetJobGraphData["query"]>,
+  "userId"
+> & {
+  userId?: number;
+};
+export type AdminGetJobGraphResponse = NonNullable<
+  AdminGetJobGraphResponses[200]
+>;
+
+export function useAdminGetJobGraph(
+  query: AdminGetJobGraphQuery,
+  options?: {
+    enabled?: boolean;
+  },
+) {
+  const { userId, ...restQuery } = query;
+  const isValidId = typeof userId === "number" && userId > 0;
+  return useQuery({
+    ...adminGetJobGraphOptions({
+      client: apiClient,
+      query: {
+        ...restQuery,
+        userId: isValidId ? (userId as number) : 0,
+      },
+    }),
+    ...options,
+    enabled: (options?.enabled ?? true) && isValidId,
   });
 }
