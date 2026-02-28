@@ -188,9 +188,24 @@ class FCMService {
       // Request notification permission
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
-        throw new Error(
-          "Notification permission denied. Please allow notifications to receive FCM messages.",
+        // Permission was denied or dismissed — exit gracefully without throwing.
+        // This avoids noisy red console errors; notifications simply won't work
+        // until the user allows them in their browser settings.
+        console.warn(
+          "FCMService: Notification permission not granted. Push notifications are disabled.",
         );
+        operationsStore.updateStep(operationId, "request-permission", {
+          status: "failed",
+          message: "Notification permission denied by user",
+          timestamp: Date.now(),
+        });
+        operationsStore.updateOperation(operationId, {
+          status: "done",
+          completedAt: Date.now(),
+        });
+        // Mark as initialized so React StrictMode's second effect run doesn't retry
+        this.initialized = true;
+        return;
       }
 
       operationsStore.updateStep(operationId, "request-permission", {
