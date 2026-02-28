@@ -14,9 +14,11 @@ import { useNavigate, useParams } from "react-router-dom";
 const ClientActions = ({
   activeTab,
   allCardsApproved = false,
+  jobStatus,
 }: {
   activeTab?: string;
   allCardsApproved?: boolean;
+  jobStatus?: string;
 }) => {
   const navigate = useNavigate();
   const { id, jobId } = useParams();
@@ -52,14 +54,16 @@ const ClientActions = ({
             <span>View Feedback From Engineers</span>
           </Button>
         )}
-        <Button
-          variant="primary"
-          onClick={() => {
-            navigate(URl);
-          }}
-        >
-          Invite to Job
-        </Button>
+        {jobStatus === "Posted" && (
+          <Button
+            variant="primary"
+            onClick={() => {
+              navigate(URl);
+            }}
+          >
+            Invite to Job
+          </Button>
+        )}
       </div>
     </>
   );

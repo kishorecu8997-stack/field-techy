@@ -3,10 +3,7 @@ import type {
   BudgetValue,
   RatingValue,
 } from "@/shared/libs/constants/filterOptions";
-import {
-  BUDGET_OPTIONS,
-  RATING_OPTIONS,
-} from "@/shared/libs/constants/filterOptions";
+import { RATING_OPTIONS } from "@/shared/libs/constants/filterOptions";
 import React, { useMemo } from "react";
 import { usePopupStore } from "../store/popupStore";
 import { Button } from "./commonUI/Buttons";
@@ -189,8 +186,6 @@ const Filters: React.FC<FiltersProps> = ({
           ))}
         </div>
       </div>
-
-      
 
       {/* Rating */}
       <div className="mb-6">

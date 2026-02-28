@@ -12,13 +12,11 @@ import Popup from "@/shared/components/Popup";
 import InvitationSentModal from "../explore_engineer/components/invite_job/InvitationSentModal";
 import { useClientExploreEngineers } from "@/shared/apiServices/client/clientOpenApiService";
 import { useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
-import type {
-  RatingValue,
-} from "@/shared/libs/constants/filterOptions";
+import type { RatingValue } from "@/shared/libs/constants/filterOptions";
 
 const SelectEngineer = () => {
   const params = useParams();
-  const jobId = Number(params.id); // <-- get jobId from URL
+  const jobId = Number(params.id);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState(false);
@@ -114,8 +112,8 @@ const SelectEngineer = () => {
               toast.success(
                 `${selectedIds.length} engineer(s) invited successfully!`,
               );
-              setIsOpen(true); 
-              setSelectedIds([]); 
+              setIsOpen(true);
+              setSelectedIds([]);
             } catch (error) {
               console.error(error);
               toast.error("Failed to invite some engineers. Please try again.");

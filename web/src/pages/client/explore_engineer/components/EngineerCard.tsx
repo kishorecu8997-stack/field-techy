@@ -1,4 +1,3 @@
-import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import React from "react";
@@ -24,9 +23,9 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
     >
       <img
         // src={engineer.imageUrl}
-        src={assetsConfig.images.users.user}
+        src={engineer.imageUrl}
         alt={engineer.name}
-        className="w-25 h-full rounded-lg object-cover"
+        className="w-25 h-full rounded-full object-cover"
       />
       <div className="flex-1">
         <h3 className="font-bold text-lg">{engineer.name}</h3>

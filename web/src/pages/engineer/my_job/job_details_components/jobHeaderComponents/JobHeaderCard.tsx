@@ -239,6 +239,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           <ClientActions
             activeTab={activeTab}
             allCardsApproved={allCardsApproved}
+            jobStatus={status}
           />
         ) : (
           <EngineersActions

@@ -1,61 +1,92 @@
-import FilterPanel from "@/pages/client/search_result/components/FilterPanel";
-import { SORT_OPTIONS, type Filters } from "@/pages/client/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useState } from "react";
 import EngineerListPage from "./components/EngineerListPage";
+import Filters from "@/shared/components/Filters";
+import { SORT_OPTIONS } from "@/pages/client/search_result/types";
+import { useState } from "react";
 
-/**
- * `ExploreEngineer` is the main page component for browsing and finding engineers.
- * It renders a layout with a header, a list of engineers (`EngineerListPage`),
- * and a set of filters (`Filters`) in a sidebar.
- */
+export type FiltersType = {
+  location: number | null;
+  category: number | null;
+  rating: number | null;
+  experience: number;
+  skills: Set<number>;
+};
+
 const ExploreEngineer = () => {
-  const [filters, setFilters] = useState<Filters>({
-    location: [],
-    category: [],
-    rating: [],
+  // Filter state
+  const [filters, setFilters] = useState<FiltersType>({
+    location: null,
+    category: null,
+    rating: null,
     experience: 0,
-    budgetType: null,
-    skills: [],
+    skills: new Set(),
   });
 
-  const handleFilterChange = (newFilters: Filters) => {
-    setFilters(newFilters);
+  const handleFilterChange = (newFilters: Partial<FiltersType>) => {
+    setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
   const handleClearAllFilters = () => {
     setFilters({
-      location: [],
-      category: [],
-      rating: [],
+      location: null,
+      category: null,
+      rating: null,
       experience: 0,
-      budgetType: null,
-      skills: [],
+      skills: new Set(),
     });
   };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-      <div className="container mx-auto px-4 ">
-        <div className="w-full sticky top-16 z-10 ">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="w-full sticky top-16 z-10">
           <MyJobsHeader
             title="Explore Engineers"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowBreadcrumb={false}
-            description={`10 jobs found`} // ✅ Updated count
+            description={`10+ engineers found`}
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+          {/* Engineer List */}
           <div className="lg:col-span-2">
-            <div className="space-y-10">
-              <EngineerListPage />
-            </div>
+            <EngineerListPage filters={filters} />
           </div>
+
+          {/* Sidebar Filters */}
           <div className="lg:col-span-1">
             <div className="sticky top-6">
-              <FilterPanel
-                onFilterChange={handleFilterChange}
+              <Filters
+                selectedLocation={filters.location}
+                onLocationChange={(location) =>
+                  handleFilterChange({ location })
+                }
+                selectedCategory={filters.category}
+                onCategoryChange={(category) =>
+                  handleFilterChange({ category })
+                }
+                rating={
+                  filters.rating
+                    ? (String(filters.rating) as "1" | "2" | "3" | "4" | "5")
+                    : undefined
+                }
+                onRatingChange={(rating) =>
+                  handleFilterChange({ rating: rating ? Number(rating) : null })
+                }
+                experience={filters.experience}
+                onExperienceChange={(experience) =>
+                  handleFilterChange({ experience })
+                }
+                selectedSkills={filters.skills}
+                onSkillToggle={(skillId) => {
+                  const newSkills = new Set(filters.skills);
+                  if (newSkills.has(skillId)) newSkills.delete(skillId);
+                  else newSkills.add(skillId);
+                  handleFilterChange({ skills: newSkills });
+                }}
                 onClearAll={handleClearAllFilters}
-                currentFilters={filters}
               />
             </div>
           </div>
