@@ -143,7 +143,7 @@ export default function AllUsers() {
       label: "Employment Status",
       renderCell: (row) => (
         <div className="text-center text-sm text-gray-900 dark:text-white">
-          {row.isEmployed ? "Employed" : "Unemployed"}
+          {(row.isEmployed ? "Employed" : "Unemployed").toUpperCase()}
         </div>
       ),
     },
@@ -152,7 +152,7 @@ export default function AllUsers() {
       label: "Avg Rating",
       renderCell: (row) => (
         <div className="text-center text-sm text-gray-900 dark:text-white">
-          {row.averageRating.toFixed(1) ?? 0}
+          {(row.averageRating ?? 0).toFixed(1)}        
         </div>
       ),
     },
@@ -171,9 +171,11 @@ export default function AllUsers() {
             selectedFile?.engineer.id === row.id ? selectedFile.type : null
           }
           onChange={(value) => {
-            setSelectedFile({ engineer: row, type: value as ProfileFileType });
-            setIsPreviewOpen(true);
-          }}
+            if (value == null || value === "") {
+              setSelectedFile(null);
+              setIsPreviewOpen(false);
+              return;
+            }}}
         />
       ),
     },

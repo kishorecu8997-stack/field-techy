@@ -44,8 +44,11 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   } = useAdminGetEngineerById(userId ?? 0, shouldFetchFromAdmin);
 
   const adminFileUrl = (() => {
+    if (!shouldFetchFromAdmin || !fileType) {
+      return null;
+    }
     const docs = engineerDetails?.documents;
-    if (!docs || !fileType) return null;
+    if (!docs) return null;
 
     switch (fileType) {
       case "profilePicture":

@@ -2,7 +2,6 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useFormContext } from "react-hook-form";
 import type { EngineerFormData } from "../types";
 import { StarIcon } from "lucide-react";
-// import ProfileImageWithProgress from "@/shared/components/ProfileImageProgress";
 import RatingAndReviewTable from "./RatingReviewTable";
 import type { AdminGetEngineerResponse } from "@/api";
 import placeholdr_user from "@/assets/user-image/placeholdr_user.svg";
@@ -152,7 +151,7 @@ export default function BasicInformation({
               <label className="block text-sm text-gray-500 mb-1">
                 Employment Type
               </label>
-              <p className="font-semibold">{employmentType || "N/A"}</p>
+              <p className="font-semibold">{employmentType}</p>
             </div>
           </div>
         </div>
