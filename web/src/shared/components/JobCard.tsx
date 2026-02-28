@@ -57,9 +57,9 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   const getDuration =
     startDate && endDate
       ? getDurationString({
-        startDateStr: startDate,
-        endDateStr: endDate,
-      })
+          startDateStr: startDate,
+          endDateStr: endDate,
+        })
       : "N/A";
 
   const companyName =
@@ -117,9 +117,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         </div>
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
-          <span>
-            {formattedPay}
-          </span>
+          <span>{formattedPay}</span>
         </div>
       </div>
 

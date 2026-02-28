@@ -66,7 +66,7 @@ export interface Job {
   workLocationName?: string | null;
   numberOfVacancy?: number;
   numberOfApplicants?: number;
-  currencySymbol: string;
+  currencySymbol?: string;
 }
 
 /**

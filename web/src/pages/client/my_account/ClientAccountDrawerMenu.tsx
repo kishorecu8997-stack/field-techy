@@ -73,9 +73,6 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   // Use the custom hook to get/fetch profile
   const clientProfile = useClientProfile();
 
-  // Get client ID from store or fallback (though store should handle it)
-  const clientId = clientProfile?.id || "9f034ed8-2ea5-44b6-a410-973e559e2c47";
-
   const methods = useForm({
     defaultValues: {
       profileImage: profileImageUrl,
@@ -104,7 +101,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
     data: clientFiles = [],
     isLoading: isLoadingFiles,
     refetch: refetchFiles,
-  } = useClientFiles(clientId);
+  } = useClientFiles();
 
   // Filter out non-profile-pic files for the context
   const { documentFiles, profilePictureFile } = useMemo(() => {
@@ -205,31 +202,28 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
               hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:pl-6 
               hover:text-teal-600 dark:hover:text-teal-400
-              ${
-                item.isLogout
-                  ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                  : ""
-              }
+              ${item.isLogout
+                    ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                    : ""
+                  }
             `}
               >
                 <div className="flex items-center space-x-3">
                   <item.icon
                     className={`
                   h-5 w-5 transition-colors 
-                  ${
-                    item.isLogout
-                      ? "text-red-600 dark:text-red-400 "
-                      : "text-gray-600 dark:text-gray-300 "
-                  }
+                  ${item.isLogout
+                        ? "text-red-600 dark:text-red-400 "
+                        : "text-gray-600 dark:text-gray-300 "
+                      }
                 `}
                   />
                   <span
                     className={`
-                ${
-                  item.isLogout
-                    ? "text-red-600 dark:text-red-400"
-                    : "text-gray-700 dark:text-gray-200"
-                }
+                ${item.isLogout
+                        ? "text-red-600 dark:text-red-400"
+                        : "text-gray-700 dark:text-gray-200"
+                      }
                 `}
                   >
                     {item.label}

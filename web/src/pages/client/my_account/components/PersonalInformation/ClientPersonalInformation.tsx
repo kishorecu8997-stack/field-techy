@@ -1,4 +1,9 @@
-import { useAppResolveSignupRegion, useClientGetCompanyInfo, useClientUpdateCompanyInfo, useVatOptions } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useAppResolveSignupRegion,
+  useClientGetCompanyInfo,
+  useClientUpdateCompanyInfo,
+  useVatOptions,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
@@ -48,7 +53,11 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
 
   // Fetch company info
-  const { data: clientInfo, isLoading: isFetchingInfo, isFetching } = useClientGetCompanyInfo(true);
+  const {
+    data: clientInfo,
+    isLoading: isFetchingInfo,
+    isFetching,
+  } = useClientGetCompanyInfo(true);
   console.log(clientInfo);
 
   useEffect(() => {
@@ -84,7 +93,8 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     },
   });
 
-  const corporateInfo = clientInfo?.clientType === "corporate" ? clientInfo : null;
+  const corporateInfo =
+    clientInfo?.clientType === "corporate" ? clientInfo : null;
 
   const methods = useForm<PersonalInfo>({
     // useForm reads defaultValues ONCE at mount — clientInfo is null at that
@@ -128,8 +138,8 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
 
   const parentStateId =
     typeof selectedStateValue === "object" &&
-      selectedStateValue !== null &&
-      "value" in selectedStateValue
+    selectedStateValue !== null &&
+    "value" in selectedStateValue
       ? (selectedStateValue as { value: string | number }).value
       : selectedStateValue;
 
@@ -196,7 +206,9 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     const isCorporate = companyInfo?.clientType === "corporate";
 
     // Extract a numeric ID from a raw number/string value (SelectField stores the option's value directly)
-    const getId = (val: string | number | null | undefined): number | undefined => {
+    const getId = (
+      val: string | number | null | undefined,
+    ): number | undefined => {
       if (val === null || val === undefined || val === "") return undefined;
       const num = Number(val);
       return isNaN(num) ? undefined : num;
@@ -250,7 +262,6 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     });
   };
 
-
   return (
     <FormContainer
       methods={methods}
@@ -299,11 +310,11 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
             businessTypes.length > 0
               ? businessTypes
               : [
-                { value: "PRIVATE", label: "Private" },
-                { value: "GOVERNMENT", label: "Government" },
-                { value: "NGO", label: "NGO" },
-                { value: "OTHER", label: "Other" },
-              ]
+                  { value: "PRIVATE", label: "Private" },
+                  { value: "GOVERNMENT", label: "Government" },
+                  { value: "NGO", label: "NGO" },
+                  { value: "OTHER", label: "Other" },
+                ]
           }
           required
         />
@@ -365,12 +376,12 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
                 typeof country === "string"
                   ? country
                   : String(
-                    country !== null &&
-                      typeof country === "object" &&
-                      "value" in country
-                      ? (country as { value: string | number }).value
-                      : country
-                  ),
+                      country !== null &&
+                        typeof country === "object" &&
+                        "value" in country
+                        ? (country as { value: string | number }).value
+                        : country,
+                    ),
               ),
           }}
         />

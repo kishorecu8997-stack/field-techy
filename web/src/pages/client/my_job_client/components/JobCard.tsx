@@ -50,7 +50,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     status = "unknown",
     serviceType,
     serviceCategoryId,
-    currencySymbol = "$"
+    currencySymbol = "$",
   } = job;
 
   const { data: serviceCategories = [] } = useServiceCategories();
@@ -58,7 +58,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const resolvedServiceType = useMemo(() => {
     if (serviceCategoryId != null) {
       const match = serviceCategories.find(
-        (c) => String(c.id) === String(serviceCategoryId)
+        (c) => String(c.id) === String(serviceCategoryId),
       );
       if (match) return match.name;
     }

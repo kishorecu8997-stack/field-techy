@@ -50,16 +50,18 @@ const ClientJobDetails = () => {
   } = useClientGetAssignmentDetails({ jobId }, !!jobId);
 
   // Fallback to useClientGetJobs if needed for job details
-  const { data: jobsData, refetch, isLoading: jobsLoading } = useClientGetJobs(true);
+  const {
+    data: jobsData,
+    refetch,
+    isLoading: jobsLoading,
+  } = useClientGetJobs(true);
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   // Extend the generated type to include clientDetails if it comes from the API but is missing in types
   type ExtendedJob = (typeof jobsArray)[0] & {
     clientDetails?: { personName?: string };
   };
 
-  const job = (jobsArray as ExtendedJob[]).find(
-    (j) => Number(j.id) === jobId,
-  );
+  const job = (jobsArray as ExtendedJob[]).find((j) => Number(j.id) === jobId);
 
   // Get the first assignment from the assignment data
   const assignments = Array.isArray(assignmentData) ? assignmentData : [];
@@ -124,7 +126,11 @@ const ClientJobDetails = () => {
 
   const renderContent = () => {
     if (isLoading || jobsLoading) {
-      return <div className="flex justify-center items-center h-64 mt-6"><LoaderComponent /></div>;
+      return (
+        <div className="flex justify-center items-center h-64 mt-6">
+          <LoaderComponent />
+        </div>
+      );
     }
 
     if (isError) {
@@ -196,7 +202,8 @@ const ClientJobDetails = () => {
             isReport={false}
             isShowBreadcrumb
             customLabels={{
-              [params.jobId || ""]: job?.jobTitle || (isLoading ? "Loading..." : "Job not found"),
+              [params.jobId || ""]:
+                job?.jobTitle || (isLoading ? "Loading..." : "Job not found"),
             }}
             segments={segments}
             isChatVisible={!!openChatJobId}

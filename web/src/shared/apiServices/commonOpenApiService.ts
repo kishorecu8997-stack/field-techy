@@ -202,7 +202,7 @@ export function useCreateRateAndReviewAssignment(options?: {
         regionId !== undefined
           ? { ...fnOptions?.body, regionId }
           : fnOptions?.body
-      ) as typeof fnOptions["body"];
+      ) as (typeof fnOptions)["body"];
       const { data } = await createRateAndReviewAssignment({
         client: apiClient,
         ...fnOptions,

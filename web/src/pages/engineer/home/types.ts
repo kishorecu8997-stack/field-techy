@@ -27,13 +27,13 @@ export interface JobItem {
   currencySymbol?: string;
 
   status:
-  | "Posted"
-  | "In Progress"
-  | "Cancelled"
-  | "Closed"
-  | "Hold"
-  | "Flagged"
-  | string;
+    | "Posted"
+    | "In Progress"
+    | "Cancelled"
+    | "Closed"
+    | "Hold"
+    | "Flagged"
+    | string;
 
   skills: string[] | null;
   tools: string[] | null;

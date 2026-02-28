@@ -10,13 +10,8 @@ import {
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { UserRole } from "@/shared/enums/users";
-import {
-  useUserSessionStore
-} from "@/shared/store/useUserSessionStore";
-import {
-  decodeJwtPayload,
-  type JwtClientPayload,
-} from "@/utils/jwtUtils";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { decodeJwtPayload, type JwtClientPayload } from "@/utils/jwtUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import React from "react";
@@ -60,7 +55,9 @@ const Login = ({
         // a valid userId would create a broken session (profile won't load, etc.)
         const payload = decodeJwtPayload<JwtClientPayload>(resp.token);
         if (!payload?.userId) {
-          toast.error("Login failed: unable to verify session. Please try again.");
+          toast.error(
+            "Login failed: unable to verify session. Please try again.",
+          );
           return;
         }
 

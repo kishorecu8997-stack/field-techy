@@ -30,7 +30,7 @@ import {
   type GetClientBalanceResponse,
   type GetClientTransactionsData,
   type GetClientTransactionsError,
-  type GetClientTransactionsResponse
+  type GetClientTransactionsResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -208,33 +208,35 @@ export function useClientPostJob(options?: {
 }) {
   const queryClient = useQueryClient();
   const regionId = useClientRegionId();
-  return useMutation<ClientPostJobResponse, unknown, Omit<ClientPostJobData, "url">>(
-    {
-      mutationFn: async (fnOptions) => {
-        // Deep-merge regionId into the body; cast to required type since callers must provide required fields
-        const body = (
-          regionId !== undefined
-            ? { ...fnOptions?.body, regionId }
-            : fnOptions?.body
-        ) as ClientPostJobData["body"];
-        const { data } = await clientPostJob({
-          client: apiClient,
-          ...fnOptions,
-          body,
-          throwOnError: true,
-        });
-        return data!;
-      },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({
-          queryKey: clientGetJobsQueryKey({ client: apiClient }),
-          exact: false,
-        });
-        options?.onSuccess?.(data);
-      },
-      onError: options?.onError,
+  return useMutation<
+    ClientPostJobResponse,
+    unknown,
+    Omit<ClientPostJobData, "url">
+  >({
+    mutationFn: async (fnOptions) => {
+      // Deep-merge regionId into the body; cast to required type since callers must provide required fields
+      const body = (
+        regionId !== undefined
+          ? { ...fnOptions?.body, regionId }
+          : fnOptions?.body
+      ) as ClientPostJobData["body"];
+      const { data } = await clientPostJob({
+        client: apiClient,
+        ...fnOptions,
+        body,
+        throwOnError: true,
+      });
+      return data!;
     },
-  );
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: clientGetJobsQueryKey({ client: apiClient }),
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
 }
 
 export function useClientGetJobs(enabled: boolean = true) {
@@ -284,7 +286,7 @@ export function useClientMarkJobFileUploaded(options?: {
         regionId !== undefined
           ? { ...fnOptions?.body, regionId }
           : fnOptions?.body
-      ) as typeof fnOptions["body"];
+      ) as (typeof fnOptions)["body"];
       const { data } = await clientMarksJobFileUploaded({
         client: apiClient,
         ...fnOptions,
@@ -318,7 +320,7 @@ export function useClientInviteEngineer(options?: {
         regionId !== undefined
           ? { ...fnOptions?.body, regionId }
           : fnOptions?.body
-      ) as typeof fnOptions["body"];
+      ) as (typeof fnOptions)["body"];
       const { data } = await clientInviteEngineer({
         client: apiClient,
         ...fnOptions,
@@ -369,7 +371,7 @@ export function useClientActionOnAssignment(options?: {
         regionId !== undefined
           ? { ...fnOptions?.body, regionId }
           : fnOptions?.body
-      ) as typeof fnOptions["body"];
+      ) as (typeof fnOptions)["body"];
       const { data } = await clientActionOnAssignment({
         client: apiClient,
         ...fnOptions,
@@ -400,7 +402,7 @@ export function useClientCancelJob(options?: {
         regionId !== undefined
           ? { ...fnOptions?.body, regionId }
           : fnOptions?.body
-      ) as typeof fnOptions["body"];
+      ) as (typeof fnOptions)["body"];
       const { data } = await clientCancelJob({
         client: apiClient,
         ...fnOptions,
@@ -444,7 +446,7 @@ export function useClientActionOnWorkLog(options?: {
         regionId !== undefined
           ? { ...fnOptions?.body, regionId }
           : fnOptions?.body
-      ) as typeof fnOptions["body"];
+      ) as (typeof fnOptions)["body"];
       const { data } = await clientActionOnWorkLog({
         client: apiClient,
         ...fnOptions,
@@ -479,7 +481,7 @@ export function useClientActionOnBreak(options?: {
         regionId !== undefined
           ? { ...fnOptions?.body, regionId }
           : fnOptions?.body
-      ) as typeof fnOptions["body"];
+      ) as (typeof fnOptions)["body"];
       const { data } = await clientActionOnBreak({
         client: apiClient,
         ...fnOptions,
@@ -503,12 +505,12 @@ export function useClientActionOnBreak(options?: {
 import type { ClientFile } from "./clientTypes";
 
 // TODO: Hook needs proper investigation of API endpoint
-export function useClientFiles(_clientId: string | number) {
+export function useClientFiles() {
   // Use correct API endpoint if available, for now return empty list
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => { },
+    refetch: () => {},
   };
 }
 

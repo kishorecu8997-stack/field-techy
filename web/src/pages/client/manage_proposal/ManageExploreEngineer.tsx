@@ -41,7 +41,10 @@ const ManageExploreEngineer = () => {
       jobName: (proposal as any).jobTitle || "Job",
       proposal: proposal.proposalDetail || "No details",
       imageUrl: proposal.engineer?.profilePictureUrl || "",
-      location: [proposal.engineer?.city, proposal.engineer?.state].filter(Boolean).join(", ") || "Location not specified",
+      location:
+        [proposal.engineer?.city, proposal.engineer?.state]
+          .filter(Boolean)
+          .join(", ") || "Location not specified",
       skills: proposal.engineer?.skills || [],
       portfolioDoc: proposal.proposalAttachmentUrl || "No attachment provided",
     };
@@ -174,11 +177,16 @@ const ManageExploreEngineer = () => {
                     Skills:
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {getProposal()?.skills.map((skill: string, index: number) => (
-                      <span key={index} className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-100 rounded-full text-sm font-medium">
-                        {skill}
-                      </span>
-                    ))}
+                    {getProposal()?.skills.map(
+                      (skill: string, index: number) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-100 rounded-full text-sm font-medium"
+                        >
+                          {skill}
+                        </span>
+                      ),
+                    )}
                   </div>
                 </span>
               )}
@@ -186,14 +194,17 @@ const ManageExploreEngineer = () => {
                 <p className="text-gray-700 dark:text-gray-200 text-xl font-semibold">
                   Proposal:
                 </p>
-                <span className="whitespace-pre-wrap">{getProposal()?.proposal}</span>
+                <span className="whitespace-pre-wrap">
+                  {getProposal()?.proposal}
+                </span>
               </span>
               <span>
                 <p className="text-gray-700 dark:text-gray-200 text-xl font-semibold">
                   Past Work & Portfolio
                 </p>
                 <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 pt-2">
-                  {getProposal()?.portfolioDoc && getProposal()?.portfolioDoc !== "No attachment provided" ? (
+                  {getProposal()?.portfolioDoc &&
+                  getProposal()?.portfolioDoc !== "No attachment provided" ? (
                     <a
                       href={getProposal()?.portfolioDoc}
                       target="_blank"
@@ -203,7 +214,9 @@ const ManageExploreEngineer = () => {
                       View Attachment
                     </a>
                   ) : (
-                    <span className="text-gray-500 italic">No attachment provided</span>
+                    <span className="text-gray-500 italic">
+                      No attachment provided
+                    </span>
                   )}
                 </div>
               </span>

@@ -102,12 +102,7 @@ export const useAdminProfile = () => {
     ) {
       fetchProfile();
     }
-  }, [
-    session?.accessToken,
-    session?.role,
-    profileFetched,
-    fetchProfile,
-  ]);
+  }, [session?.accessToken, session?.role, profileFetched, fetchProfile]);
 
   return profile;
 };

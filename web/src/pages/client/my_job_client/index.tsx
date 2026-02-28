@@ -97,7 +97,11 @@ const MyJobsClient: React.FC = () => {
   const currentJobs = filteredJobs.slice(startIndex, startIndex + itemsPerPage);
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-screen"><LoaderComponent /></div>
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoaderComponent />
+      </div>
+    );
   }
 
   return (
@@ -123,7 +127,9 @@ const MyJobsClient: React.FC = () => {
                   currentJobs.map((job) => <JobCard key={job.id} job={job} />)
                 ) : (
                   <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
-                    <div className="font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 p-20 rounded-lg">No jobs match the selected filter.</div>
+                    <div className="font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 p-20 rounded-lg">
+                      No jobs match the selected filter.
+                    </div>
                   </p>
                 )}
               </div>

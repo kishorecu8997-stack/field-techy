@@ -336,8 +336,8 @@ export function useAppGetLookupData(
         ...(parentId && { parentId: String(parentId) }),
       },
     }),
-    staleTime: 10 * 60 * 1000,  // 10 minutes — lookup data rarely changes
-    gcTime: 30 * 60 * 1000,     // keep in cache for 30 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes — lookup data rarely changes
+    gcTime: 30 * 60 * 1000, // keep in cache for 30 minutes
     refetchOnWindowFocus: false,
     ...options,
   });
@@ -359,7 +359,9 @@ export function useAdminManageEngineers(
 
   const mergedQuery: AdminGetEngineersQuery = {
     ...query,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -391,7 +393,9 @@ export function useAdminManageClients(options?: {
   const queryParams: AdminGetClientsQuery = {
     ...query,
     ...(clientType ? { clientType } : {}),
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery<
@@ -517,7 +521,10 @@ export function useAdminUpdateJobStatus(options?: {
   const queryClient = useQueryClient();
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    mutationFn: async (fnOptions: { query: { jobId: number }; body?: AdminUpdateJobStatusBody }) => {
+    mutationFn: async (fnOptions: {
+      query: { jobId: number };
+      body?: AdminUpdateJobStatusBody;
+    }) => {
       const { data } = await adminUpdateJobStatus({
         client: apiClient,
         query: {
@@ -705,7 +712,9 @@ export function useAdminGetJobs(
 
   const mergedQuery: AdminGetJobsQuery = {
     ...query,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -735,7 +744,9 @@ export function useAdminGetJobDetails(
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
     ? {
         ...query,
-        regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
       }
     : { jobId: 0 };
 
@@ -864,7 +875,9 @@ export function useAdminGetEngineerHistory(
 
   const mergedQuery: AdminGetEngineerHistoryQuery = {
     ...query,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -898,7 +911,9 @@ export function useAdminGetClientHistory(
 
   const mergedQuery: AdminGetClientHistoryQuery = {
     ...query,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -948,7 +963,9 @@ export function useAdminGetJobLogs(
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
         ...query,
-        regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
       }
     : { jobId: 0 };
 
@@ -986,7 +1003,9 @@ export function useAdminGetPaymentTransactions(
   const mergedQuery: AdminGetPaymentTransactionsQuery = {
     ...query,
     jobId: query?.jobId ?? 0,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -1014,7 +1033,9 @@ export function useAdminGetJobGraph(
 
   const mergedQuery: AdminGetJobGraphQuery = {
     ...query,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -1028,7 +1049,9 @@ export function useAdminGetJobGraph(
 
 // ─── Sub Admins ───────────────────────────────────────────────────────────────
 
-export type AdminGetSubAdminsQuery = NonNullable<AdminGetSubAdminsData["query"]>;
+export type AdminGetSubAdminsQuery = NonNullable<
+  AdminGetSubAdminsData["query"]
+>;
 
 export function useAdminGetSubAdmins(
   query?: AdminGetSubAdminsQuery,
@@ -1042,7 +1065,9 @@ export function useAdminGetSubAdmins(
 
   const mergedQuery: AdminGetSubAdminsQuery = {
     ...query,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -1072,7 +1097,9 @@ export function useAdminGetManageTransactions(
 
   const mergedQuery: AdminGetManageTransactionsQuery = {
     ...query,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -1102,7 +1129,9 @@ export function useAdminGetTransactionRequests(
 
   const mergedQuery: AdminGetTransactionRequestsQuery = {
     ...query,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -1132,7 +1161,9 @@ export function useAdminGetWalletOverview(
 
   const mergedQuery: AdminGetWalletOverviewQuery = {
     ...query,
-    regionId: query?.regionId ?? (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -1271,4 +1302,3 @@ export function useAdminDeleteEngineerMutation(options?: {
     onError: options?.onError,
   });
 }
-

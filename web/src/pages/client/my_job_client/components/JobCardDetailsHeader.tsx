@@ -31,7 +31,12 @@ interface JobCardDetailsHeaderProps {
  * JobCardDetailsHeader component displays the job details header
  * It contains the job title, job status, working type, and job actions
  */
-const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job, isLoading, isError, refetch }) => {
+const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({
+  job,
+  isLoading,
+  isError,
+  refetch,
+}) => {
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -98,10 +103,11 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job, isLoad
   return (
     <>
       <div
-        className={`${isSendProposal
-          ? "text-gray-800 bg-yellow-50"
-          : "bg-teal-800 text-white"
-          } p-5 rounded-xl shadow-md`}
+        className={`${
+          isSendProposal
+            ? "text-gray-800 bg-yellow-50"
+            : "bg-teal-800 text-white"
+        } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-center">
           <h1 className="text-xl md:text-2xl font-bold">{job.title}</h1>
@@ -143,8 +149,8 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job, isLoad
 
         <div className="mt-4 flex flex-wrap gap-3 justify-end">
           {job.status === JOB_STATUSES.inprogress &&
-            !isWorkApproved &&
-            !isPaymentReleased ? (
+          !isWorkApproved &&
+          !isPaymentReleased ? (
             <div className="flex flex-wrap gap-2">
               <Button
                 className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"

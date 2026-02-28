@@ -16,7 +16,6 @@ import { toast } from "react-toastify";
 import type { JobItem } from "../../home/types";
 import { getExperienceLevel, JOB_STATUSES } from "../types";
 import { Badge } from "./BadgeVariant";
-import { formatAmount } from "@/utils/currency";
 
 dayjs.extend(relativeTime);
 

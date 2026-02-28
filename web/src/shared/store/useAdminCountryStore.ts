@@ -18,6 +18,6 @@ export const useAdminCountryStore = create<AdminCountryState>()(
     }),
     {
       name: "admin-country-storage",
-    }
-  )
+    },
+  ),
 );
