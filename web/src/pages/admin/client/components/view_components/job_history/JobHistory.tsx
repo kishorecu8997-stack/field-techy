@@ -3,11 +3,10 @@ import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import {
   useAdminGetClientHistory,
   type AdminGetClientHistoryQuery,
-  type AdminGetJobGraphQuery,
 } from "@/shared/apiServices/admin/adminOpenApiService";
-
 import type { JobItem } from "@/pages/admin/jobs/types";
 import ClientJobByCategory from "./ClientJobByCategory";
+import { statusGroupToGraphStatus } from "../../../types";
 
 interface JobHistoryProps {
   userId: number;
@@ -94,7 +93,7 @@ const JobHistory: React.FC<JobHistoryProps> = ({ userId }) => {
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
         userId={userId}
-        status={config.statusGroup as AdminGetJobGraphQuery["status"]}
+        status={config.statusGroup ? statusGroupToGraphStatus[config.statusGroup] : undefined}
       />
     ),
   }));

@@ -1,4 +1,5 @@
 import type { AdminGetClientResponse } from "@/api";
+import type { AdminGetClientHistoryQuery, AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 
 export interface ManageClientProps {
@@ -115,6 +116,20 @@ export const documentType: DocumentOption[] = [
   { value: "govIdDoc", label: "Government Document" },
   { value: "certificateDoc", label: "Certificate Document" },
 ];
+
+export const statusGroupToGraphStatus: Record<
+  NonNullable<AdminGetClientHistoryQuery["statusGroup"]>,
+  AdminGetJobGraphQuery["status"] | undefined
+> = {
+  posted: "posted",
+  inProgress: "inProgress",
+  invited: "invited",
+  completed: "completed",
+  declined: "declined",
+  hold: "hold",
+  flagged: "flagged",
+};
+
 
 export type BlockClientForm = {
   reason: string;
