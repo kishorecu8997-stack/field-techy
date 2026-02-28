@@ -11,6 +11,7 @@ import {
   type AppMarkProfileFileUploadedResponse,
   type AppMarkProfileFileUploadedError,
   type CreateRateAndReviewAssignmentResponse,
+  type AppCheckExistenceData,
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -24,12 +25,19 @@ import {
   createRateAndReviewAssignmentMutation,
   getUserRatingAndReviewsOptions,
   getUserRatingAndReviewsQueryKey,
+  appCheckExistenceOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
 
 export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
+
+interface UseCheckUserExistenceParams {
+  email?: string;
+  phone?: string;
+  enabled?: boolean;
+}
 
 /**
  * Get download URL for a profile file.
@@ -207,5 +215,27 @@ export function useGetUserRatingAndReviews(enabled: boolean = true) {
   return useQuery({
     ...getUserRatingAndReviewsOptions({ client: apiClient }),
     enabled,
+  });
+}
+
+export function useCheckUserExistence({
+  email,
+  phone,
+  enabled = true,
+}: UseCheckUserExistenceParams) {
+  const hasValue = Boolean(email || phone);
+
+  return useQuery({
+    ...appCheckExistenceOptions({
+      client: apiClient,
+      query: {
+        ...(email ? { email } : {}),
+        ...(phone ? { phone } : {}),
+      } satisfies AppCheckExistenceData["query"],
+    }),
+
+    enabled: enabled && hasValue,
+    staleTime: 0,
+    retry: false,
   });
 }
