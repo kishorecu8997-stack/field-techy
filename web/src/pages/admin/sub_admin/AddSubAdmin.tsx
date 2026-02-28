@@ -74,11 +74,13 @@ export default function AddSubAdmin() {
               name: data.name,
               email: data.email,
               phoneNumber: data.phoneNumber,
-              regionId: Number(data.region),
               password: data.password,
             };
 
-            await createSubAdmin({ body: payload });
+            await createSubAdmin({
+              body: payload,
+              query: { regionId: Number(data.region) },
+            });
             toast.success("Sub-Admin added successfully!");
             navigate(absoluteUrls.admin.home.manage_sub_admin);
             methods.reset();

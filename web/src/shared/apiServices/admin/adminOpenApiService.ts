@@ -1,7 +1,6 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
-  adminGetSubAdmins,
   getCmsContent,
   adminGetClientsForManagement,
   type AdminUpdatePersonalInfoData,
@@ -62,18 +61,10 @@ import {
   type AdminUpdateEngineerData,
   type AdminUpdateEngineerResponse,
   type AdminDeleteEngineerResponse,
-  type AdminGetEngineerHistoryData,
-  type AdminGetEngineerHistoryResponse,
   type AdminCreateSubAdminData,
   type AdminCreateSubAdminResponses,
-  type AdminGetSubAdminsData,
-  type AdminGetSubAdminsResponses,
   type AdminUpdateSubAdminData,
   type AdminUpdateSubAdminResponses,
-  type AdminGetClientHistoryResponse,
-  type AdminGetClientHistoryData,
-  type AdminGetJobGraphData,
-  type AdminGetJobGraphResponses,
   type AdminUpdateJobStatusData,
   type AdminUpdateJobStatusResponses,
   type AdminGetJobLogsData,
@@ -123,16 +114,14 @@ import {
   adminCreateEngineerMutation,
   adminUpdateEngineerMutation,
   adminDeleteEngineerMutation,
-  adminGetEngineerHistoryOptions,
   adminCreateSubAdminMutation,
   adminUpdateSubAdminMutation,
-  adminGetClientHistoryOptions,
   adminGetJobGraphOptions,
   adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
-  adminGetJobGraphOptions,
   adminGetSubAdminsOptions,
+  adminGetSubAdminsQueryKey,
   adminGetManageTransactionsOptions,
   adminGetTransactionRequestsOptions,
   adminGetWalletOverviewOptions,
@@ -470,36 +459,9 @@ export function useAdminEngineersByUserIdStatus(options?: {
 export type AdminCreateSubAdminBody = NonNullable<
   AdminCreateSubAdminData["body"]
 >;
-export type AdminGetSubAdminsQuery = NonNullable<
-  AdminGetSubAdminsData["query"]
->;
 export type AdminUpdateSubAdminBody = NonNullable<
   AdminUpdateSubAdminData["body"]
 >;
-
-const SUBADMINS_QUERY_KEY = ["admin", "sub-admins"] as const;
-
-export function useAdminGetSubAdmins(
-  query?: AdminGetSubAdminsQuery,
-  options?: {
-    enabled?: boolean;
-    onSuccess?: (data: AdminGetSubAdminsResponses[200]) => void;
-    onError?: (error: unknown) => void;
-  },
-) {
-  return useQuery({
-    queryKey: [...SUBADMINS_QUERY_KEY, query],
-    queryFn: async () => {
-      const response = await adminGetSubAdmins({
-        client: apiClient,
-        query,
-        throwOnError: true,
-      });
-      return response.data as AdminGetSubAdminsResponses[200];
-    },
-    ...options,
-  });
-}
 
 export function useAdminCreateSubAdmin(options?: {
   onSuccess?: (data: AdminCreateSubAdminResponses[201]) => void;
@@ -509,7 +471,7 @@ export function useAdminCreateSubAdmin(options?: {
   return useMutation({
     ...adminCreateSubAdminMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: SUBADMINS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: adminGetSubAdminsQueryKey() });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -524,7 +486,7 @@ export function useAdminUpdateSubAdmin(options?: {
   return useMutation({
     ...adminUpdateSubAdminMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: SUBADMINS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: adminGetSubAdminsQueryKey() });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -1197,8 +1159,15 @@ export function useAdminAddEngineer(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
   return useMutation({
-    ...adminCreateEngineerMutation({ client: apiClient }),
+    ...adminCreateEngineerMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
     onSuccess: (data: AdminAddEngineerResponse) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
@@ -1217,8 +1186,15 @@ export function useAdminUpdateEngineer(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
   return useMutation({
-    ...adminUpdateEngineerMutation({ client: apiClient }),
+    ...adminUpdateEngineerMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
     onSuccess: (data: AdminUpdateEngineerResponse) => {
       queryClient.resetQueries({
         queryKey: queryKeys.admin.manageEngineers,
@@ -1248,78 +1224,3 @@ export function useAdminDeleteEngineerMutation(options?: {
   });
 }
 
-export type AdminGetEngineerHistoryQuery = NonNullable<
-  AdminGetEngineerHistoryData["query"]
->;
-
-export function useAdminGetEngineerHistory(
-  userId: number,
-  query: AdminGetEngineerHistoryQuery,
-  options?: {
-    enabled?: boolean;
-    onSuccess?: (data: AdminGetEngineerHistoryResponse) => void;
-    onError?: (error: unknown) => void;
-  },
-) {
-  return useQuery({
-    ...adminGetEngineerHistoryOptions({
-      client: apiClient,
-      path: { userId },
-      query,
-    }),
-    ...options,
-  });
-}
-export type AdminGetClientHistoryQuery = NonNullable<
-  AdminGetClientHistoryData["query"]
->;
-
-export function useAdminGetClientHistory(
-  userId: number,
-  query: AdminGetClientHistoryQuery,
-  options?: {
-    enabled?: boolean;
-    onSuccess?: (data: AdminGetClientHistoryResponse) => void;
-    onError?: (error: unknown) => void;
-  },
-) {
-  return useQuery({
-    ...adminGetClientHistoryOptions({
-      client: apiClient,
-      path: { userId },
-      query,
-    }),
-    ...options,
-  });
-}
-
-export type AdminGetJobGraphQuery = Omit<
-  NonNullable<AdminGetJobGraphData["query"]>,
-  "userId"
-> & {
-  userId?: number;
-};
-export type AdminGetJobGraphResponse = NonNullable<
-  AdminGetJobGraphResponses[200]
->;
-
-export function useAdminGetJobGraph(
-  query: AdminGetJobGraphQuery,
-  options?: {
-    enabled?: boolean;
-  },
-) {
-  const { userId, ...restQuery } = query;
-  const isValidId = typeof userId === "number" && userId > 0;
-  return useQuery({
-    ...adminGetJobGraphOptions({
-      client: apiClient,
-      query: {
-        ...restQuery,
-        userId: isValidId ? (userId as number) : 0,
-      },
-    }),
-    ...options,
-    enabled: (options?.enabled ?? true) && isValidId,
-  });
-}

@@ -67,6 +67,14 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
     setRegion(id, selectedRegion?.name ?? null);
   };
 
+  // Auto-select first region when data loads and none is selected yet
+  useEffect(() => {
+    if (adminLookupData && adminLookupData.length > 0 && !regionId) {
+      const first = adminLookupData[0];
+      setRegion(first.id.toString(), first.name ?? null);
+    }
+  }, [adminLookupData, regionId, setRegion]);
+
   return (
     <header
       className="text-white px-4 sm:px-6 py-2 shadow-lg flex justify-between items-center"
@@ -98,7 +106,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
               label: item.name ?? "",
             })) ?? []
           }
-          value={regionId}
+          value={regionId ?? adminLookupData?.[0]?.id.toString() ?? null}
           onChange={handleRegionChange}
         />
 
