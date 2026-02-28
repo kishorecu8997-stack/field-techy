@@ -101,7 +101,7 @@ export function useAppUploadProfileFile(options?: {
     };
     headers: { authorization: string };
   }) => {
-    return mutation.mutateAsync(params as any);
+    return mutation.mutateAsync(params);
   };
 
   return {
