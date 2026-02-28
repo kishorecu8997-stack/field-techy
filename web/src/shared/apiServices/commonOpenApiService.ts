@@ -25,6 +25,7 @@ import {
   createRateAndReviewAssignmentMutation,
   getUserRatingAndReviewsOptions,
   getUserRatingAndReviewsQueryKey,
+  appResolveSignupRegionOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -223,6 +224,13 @@ export function useCreateRateAndReviewAssignment(options?: {
 export function useGetUserRatingAndReviews(enabled: boolean = true) {
   return useQuery({
     ...getUserRatingAndReviewsOptions({ client: apiClient }),
+    enabled,
+  });
+}
+
+export function useAppResolveSignupRegion(enabled: boolean = true) {
+  return useQuery({
+    ...appResolveSignupRegionOptions({ client: apiClient }),
     enabled,
   });
 }

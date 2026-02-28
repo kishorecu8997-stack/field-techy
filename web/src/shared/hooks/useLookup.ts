@@ -81,8 +81,10 @@ export function useLookup(
 }
 
 /** Convenience hooks for all supported lookup tables */
-export const useCountries = (options?: LookupCallOptions) =>
-  useLookup("countries", undefined, options);
+export const useCountries = (
+  parentId?: string | number | null,
+  options?: LookupCallOptions
+) => useLookup("countries", parentId, options);
 export const useIndustries = (options?: LookupCallOptions) =>
   useLookup("industries", undefined, options);
 export const useStates = (
