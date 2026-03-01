@@ -25,7 +25,11 @@ const ReportDetails: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [status, setStatus] = useState<StatusType>("pending");
-  const { data: clientReports, refetch } = useGetReportClient({
+  const {
+    data: clientReports,
+    refetch,
+    isLoading,
+  } = useGetReportClient({
     limit: pageSize,
     page: currentPage,
     status: status,
@@ -33,7 +37,7 @@ const ReportDetails: React.FC = () => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [clientReports]);
 
   const clientsReportsData = clientReports?.data;
 
@@ -152,26 +156,28 @@ const ReportDetails: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex flex-col">
-                <h1 className="text-lg font-medium">Attached files</h1>
-                <span className="flex gap-x-2 items-center p-2 mt-2 border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 w-fit rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                  <FaFile className="text-3xl text-blue-500 dark:text-blue-400" />
-                  <span className="flex flex-col">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={data.attachment?.url ?? undefined}
-                    >
-                      <h1 className="text-sm font-semibold">
-                        {data.attachment?.filename}
-                      </h1>
-                      <p className="text-[10px] text-gray-500 dark:text-gray-400 uppercase">
-                        {data.attachment?.size}
-                      </p>
-                    </a>
+              {data.attachment && (
+                <div className="flex flex-col">
+                  <h1 className="text-lg font-medium">Attached files</h1>
+                  <span className="flex gap-x-2 items-center p-2 mt-2 border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 w-fit rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <FaFile className="text-3xl text-blue-500 dark:text-blue-400" />
+                    <span className="flex flex-col">
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={data.attachment?.url ?? undefined}
+                      >
+                        <h1 className="text-sm font-semibold">
+                          {data.attachment?.filename}
+                        </h1>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400 uppercase">
+                          {data.attachment?.size}
+                        </p>
+                      </a>
+                    </span>
                   </span>
-                </span>
-              </div>
+                </div>
+              )}
 
               <div className="w-full px-4 mt-10 py-12">
                 <div className="relative flex items-center justify-around w-full">
@@ -272,6 +278,7 @@ const ReportDetails: React.FC = () => {
         onPageChange={setCurrentPage}
         onPageSizeChange={setPageSize}
         totalCount={clientReports?.total ?? 0}
+        loading={isLoading}
       />
     </>
   );

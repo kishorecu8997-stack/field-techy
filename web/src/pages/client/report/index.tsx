@@ -89,8 +89,6 @@ const ReportPage = ({
                 });
               }
 
-              console.log("Submitting Report Data:", data);
-
               toast.success("Report submitted successfully!");
               reset();
               close(true);
@@ -127,7 +125,7 @@ const ReportPage = ({
           <SelectField
             label="Issue Category"
             name="category"
-            placeholder="Enter your name"
+            placeholder="Select the category"
             required
             rules={{ required: "Category is required" }}
             options={[
@@ -142,7 +140,7 @@ const ReportPage = ({
             name="priority"
             required
             rules={{ required: "Priority level is required" }}
-            placeholder="select a priority"
+            placeholder="Select a priority"
             options={[
               { value: "low", label: "Low" },
               { value: "medium", label: "Medium" },
