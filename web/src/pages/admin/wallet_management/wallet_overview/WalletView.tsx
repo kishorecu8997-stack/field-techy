@@ -1,18 +1,27 @@
 import { absoluteUrls } from "@/config/urls";
-import {
-  engineerData,
-  WalletViewData,
-  type WalletViewProps,
-} from "@/dummy_data/admin";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import CustomTable, {
   type Column,
 } from "@/shared/components/commonUI/custom_table";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { useMemo } from "react";
+import { useForm } from "react-hook-form";
+import {
+  useAdminGetManageTransactions,
+  useAdminDownloadInvoice,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
+interface WalletViewProps {
+  sno?: number;
+  invoiceNumber: string;
+  dateTime: string;
+  transactionType: string;
+  amount: string;
+  paymentStatus: string;
+  category: string;
+  description: string;
+}
 /**
  * @component WalletView
  * @description Renders a detailed view of a specific client's wallet.
@@ -20,76 +29,159 @@ import { useNavigate, useParams } from "react-router-dom";
  * wallet balance, and a table of their transaction history.
  * @returns {JSX.Element} The rendered wallet details view component.
  */
+
 export default function WalletView() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>(); // INV-55
   const methods = useForm();
 
-  const { id } = useParams<{ id: string }>();
+  const { data, isLoading } = useAdminGetManageTransactions(
+    {},
+    { enabled: true },
+  );
 
-  // Find by ID (replace with real API call if needed)
-  const walletDetails = engineerData.find((user) => user.sno.toString() === id);
+
+  const selectedTransaction = useMemo(() => {
+    if (!data || !id) return null;
+
+    return data?.data?.find((tx: any) => tx.invoiceNumber === id);
+  }, [data, id]);
+
+  
+  const { refetch: downloadInvoice } = useAdminDownloadInvoice(
+    selectedTransaction?.id ?? 0,
+    { enabled: false },
+  );
+
+  const handleDownload = async () => {
+    const response = await downloadInvoice();
+
+    if (response?.data) {
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${selectedTransaction?.invoiceNumber}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }
+  };
+
+  const tableData: WalletViewProps[] = useMemo(() => {
+    if (!selectedTransaction) return [];
+
+    return [
+      {
+        sno: 1,
+        invoiceNumber: selectedTransaction.invoiceNumber,
+        dateTime: new Date(selectedTransaction.timestamp).toLocaleString(
+          "en-IN",
+          {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          },
+        ),
+        transactionType: selectedTransaction.transactionType,
+        amount: selectedTransaction.amount,
+        paymentStatus: selectedTransaction.paymentStatus,
+        category: selectedTransaction.category,
+        description: selectedTransaction.description,
+      },
+    ];
+  }, [selectedTransaction]);
 
   const columns: Column<WalletViewProps>[] = [
     { key: "sno", label: "Sr.No." },
+    { key: "invoiceNumber", label: "Invoice No" },
     { key: "dateTime", label: "Date & Time" },
-    { key: "transactionId", label: "Transaction ID" },
     { key: "transactionType", label: "Transaction Type" },
     { key: "amount", label: "Amount" },
-    { key: "status", label: "Status" },
+    { key: "paymentStatus", label: "Status" },
+    { key: "category", label: "Category" },
+    { key: "description", label: "Description" },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="p-8 text-center">Loading transaction details...</div>
+    );
+  }
+
+  if (!selectedTransaction) {
+    return (
+      <div className="p-8 text-center text-red-600">
+        Transaction not found (Invoice: {id})
+        <div className="mt-4">
+          <Button onClick={() => navigate(-1)}>Go Back</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="font-semibold">Wallet Details</h1>
+        <h1 className="font-semibold">Transaction Details</h1>
         <Button
-          className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500"
+          variant="solid"
           onClick={() => navigate(absoluteUrls.admin.home.wallet_overview)}
         >
           Back
         </Button>
       </div>
+
       <div className="bg-white dark:bg-gray-700 rounded-lg p-4">
-        <FormContainer methods={methods} className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2">
-            <ImageUploaderField
-              name="profileImage"
-              label="Image"
-              allowUpload={false}
-            />
-          </div>
+
+        <FormContainer methods={methods} className="flex flex-col gap-4">
           <div className="flex justify-between w-9/12 gap-8 my-4">
-            <div className="mb-4">
-              <label className="block text-sm text-gray-500 mb-1">Name</label>
-              <p className="font-semibold text-sm">
-                {walletDetails?.details?.name}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm text-gray-500 mb-1">
-                Phone Number
-              </label>
-              <p className="font-semibold text-sm">
-                {walletDetails?.details.phone || "—"}
-              </p>
-            </div>
             <div>
               <label className="block text-sm text-gray-500 mb-1">
-                Wallet Balance
+                Client Name
               </label>
               <p className="font-semibold text-sm">
-                {walletDetails?.walletBalance}
+                {selectedTransaction.clientDetails?.name || "—"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-500 mb-1">Email</label>
+              <p className="font-semibold text-sm">
+                {selectedTransaction.clientDetails?.email || "—"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-500 mb-1">Phone</label>
+              <p className="font-semibold text-sm">
+                {selectedTransaction.clientDetails?.phone || "—"}
               </p>
             </div>
           </div>
         </FormContainer>
 
-        <div className="h-full overflow-y-auto">
+        {/* ✅ Transaction Table */}
+        <div className="mt-6">
           <CustomTable<WalletViewProps>
             columns={columns}
-            data={WalletViewData}
-            initialPageSize={10}
+            data={tableData}
+            initialPageSize={tableData.length}
+            showPagination={false}
           />
+        </div>
+
+        {/* ✅ Download Button at Bottom (Better UX like before) */}
+        <div className="flex justify-end mt-6">
+          <Button variant="solid" onClick={handleDownload}>
+            Download Invoice
+          </Button>
         </div>
       </div>
     </div>

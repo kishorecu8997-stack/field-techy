@@ -1,8 +1,11 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
+  adminUpdateJobStatus,
   getCmsContent,
   adminGetClientsForManagement,
+  getExchangeRates,
+  updateExchangeRate,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -23,8 +26,16 @@ import {
   type AdminGetJobsResponse,
   type AdminGetJobDetailsData,
   type AdminGetJobDetailsResponse,
+  type AdminGetJobGraphData,
+  type AdminGetJobGraphResponse,
+  type AdminGetSubAdminsData,
+  type AdminGetSubAdminsResponse,
   type AdminGetEngineersForManagementData,
   type AdminGetEngineersForManagementResponses,
+  type AdminGetEngineerHistoryData,
+  type AdminGetEngineerHistoryResponse,
+  type AdminGetClientHistoryData,
+  type AdminGetClientHistoryResponse,
   type AdminGetClientsForManagementResponse,
   type CreateOrUpdatePageResponses,
   type AddAndUpdateContactSupportResponses,
@@ -48,13 +59,36 @@ import {
   type AdminGetServiceCategoriesResponse,
   type AdminUpdateServiceCategoryResponse,
   type AdminDeleteServiceCategoryResponse,
+  type AdminCreateEngineerResponse,
+  type AdminCreateEngineerData,
+  type AdminUpdateEngineerData,
+  type AdminUpdateEngineerResponse,
+  type AdminDeleteEngineerResponse,
+  type AdminCreateSubAdminData,
+  type AdminCreateSubAdminResponses,
+  type AdminUpdateSubAdminData,
+  type AdminUpdateSubAdminResponses,
   type AdminUpdateJobStatusData,
   type AdminUpdateJobStatusResponses,
   type AdminGetJobLogsData,
   type AdminGetJobLogsResponse,
   type AdminGetJobTransactionsData,
   type AdminGetJobTransactionsResponses,
+  type GetExchangeRatesData,
+  type GetExchangeRatesResponse,
+  type UpdateExchangeRateData,
+  type UpdateExchangeRateResponse,
+  type AdminGetManageTransactionsData,
+  type AdminGetManageTransactionsResponse,
+  type AdminGetManageTransactionsError,
+  type AdminGetTransactionRequestsData,
+  type AdminGetTransactionRequestsResponse,
+  type AdminGetWalletOverviewData,
+  type AdminGetWalletOverviewResponse,
+  type AdminDownloadInvoiceResponse,
 } from "@/api";
+
+export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
 import {
   adminGetPersonalInfoOptions,
   adminUpdatePersonalInfoMutation,
@@ -78,13 +112,26 @@ import {
   adminGetClientOptions,
   adminDeleteClientMutation,
   adminGetEngineerOptions,
+  adminGetEngineerHistoryOptions,
+  adminGetClientHistoryOptions,
   adminCreateServiceCategoryMutation,
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
-  adminUpdateJobStatusMutation,
+  adminCreateEngineerMutation,
+  adminUpdateEngineerMutation,
+  adminDeleteEngineerMutation,
+  adminCreateSubAdminMutation,
+  adminUpdateSubAdminMutation,
+  adminGetJobGraphOptions,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
+  adminGetSubAdminsOptions,
+  adminGetSubAdminsQueryKey,
+  adminGetManageTransactionsOptions,
+  adminGetTransactionRequestsOptions,
+  adminGetWalletOverviewOptions,
+  adminDownloadInvoiceOptions,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -756,6 +803,197 @@ export function useAdminGetPaymentTransactions(
     ...options,
   });
 }
+
+// ─── Job Graph ────────────────────────────────────────────────────────────────
+export type AdminGetJobGraphQuery = NonNullable<AdminGetJobGraphData["query"]>;
+
+export function useAdminGetJobGraph(
+  query: AdminGetJobGraphQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetJobGraphResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetJobGraphQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetJobGraphOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+  
+// ─── Sub Admins ───────────────────────────────────────────────────────────────
+
+export type AdminGetSubAdminsQuery = NonNullable<
+  AdminGetSubAdminsData["query"]
+>;
+
+export function useAdminGetSubAdmins(
+  query?: AdminGetSubAdminsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetSubAdminsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetSubAdminsQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetSubAdminsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+// ─── Manage Transactions ─────────────────────────────────────────────────────
+
+export type AdminGetManageTransactionsQuery = NonNullable<
+  AdminGetManageTransactionsData["query"]
+>;
+
+export function useAdminGetManageTransactions(
+  query?: AdminGetManageTransactionsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetManageTransactionsResponse) => void;
+    onError?: (data: AdminGetManageTransactionsError) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetManageTransactionsQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetManageTransactionsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+// ─── Transaction Requests ─────────────────────────────────────────────────────
+
+export type AdminGetTransactionRequestsQuery = NonNullable<
+  AdminGetTransactionRequestsData["query"]
+>;
+export function useAdminGetTransactionRequests(
+  query?: AdminGetTransactionRequestsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetTransactionRequestsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const regionId =
+    query?.regionId ??
+    (selectedRegionId ? Number(selectedRegionId) : undefined);
+
+  const mergedQuery: AdminGetTransactionRequestsQuery = {
+    ...query,
+    regionId,
+  };
+
+  return useQuery({
+    ...adminGetTransactionRequestsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+
+    enabled: !!regionId && (options?.enabled ?? true),
+
+    staleTime: 0,
+    gcTime: 1000 * 60 * 5,
+
+    ...options,
+  });
+}
+
+// ─── Wallet Overview ──────────────────────────────────────────────────────────
+
+export type AdminGetWalletOverviewQuery = NonNullable<
+  AdminGetWalletOverviewData["query"]
+>;
+
+export function useAdminGetWalletOverview(
+  query: AdminGetWalletOverviewQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetWalletOverviewResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetWalletOverviewQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetWalletOverviewOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+// ─── Download Invoice ─────────────────────────────────────────────────────────
+
+export function useAdminDownloadInvoice(
+  invoiceId: number,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminDownloadInvoiceResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+  const isValidId = Number.isFinite(invoiceId) && invoiceId > 0;
+
+  return useQuery({
+    ...adminDownloadInvoiceOptions({
+      client: apiClient,
+      path: { id: isValidId ? invoiceId : 0 },
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
+    enabled: isValidId ? (options?.enabled ?? true) : false,
+    ...options,
+  });
+}
 export function useAdminDeleteClientMutation(options?: {
   onSuccess?: (data: AdminDeleteClientResponse) => void;
   onError?: (error: unknown) => void;
@@ -771,5 +1009,124 @@ export function useAdminDeleteClientMutation(options?: {
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+}
+
+export type AdminAddEngineerResponse = AdminCreateEngineerResponse;
+export type AdminAddEngineerBody = AdminCreateEngineerData["body"];
+
+export function useAdminAddEngineer(options?: {
+  onSuccess?: (data: AdminAddEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminCreateEngineerMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
+    onSuccess: (data: AdminAddEngineerResponse) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminUpdateEngineerBody = AdminUpdateEngineerData["body"];
+
+export function useAdminUpdateEngineer(options?: {
+  onSuccess?: (data: AdminUpdateEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminUpdateEngineerMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
+    onSuccess: (data: AdminUpdateEngineerResponse) => {
+      queryClient.resetQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminDeleteEngineerMutation(options?: {
+  onSuccess?: (data: AdminDeleteEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+  return useMutation({
+    ...adminDeleteEngineerMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateTransactionRequestStatus(options?: {
+  onSuccess?: (data: AdminUpdateTransactionRequestStatusResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminUpdateTransactionRequestStatusMutation({
+      client: apiClient,
+    }),
+
+    onMutate: (variables) => {
+      if (!selectedRegionId) {
+        throw new Error("Region is not selected");
+      }
+
+      variables.query = {
+        ...variables.query,
+        regionId: Number(selectedRegionId),
+      };
+    },
+
+    onSuccess: async (data) => {
+      console.log("🔥 PUT success → refetching ALL transaction tables");
+
+      await queryClient.refetchQueries({
+        queryKey: ["adminGetTransactionRequests"],
+        type: "all", // v5
+      });
+
+      options?.onSuccess?.(data);
+    },
+
+    onError: (error) => {
+      options?.onError?.(error);
+    },
   });
 }
