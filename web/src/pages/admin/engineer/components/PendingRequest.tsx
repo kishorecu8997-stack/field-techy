@@ -44,6 +44,7 @@ export default function PendingRequest() {
     data: engineersResponse,
     isLoading,
     isFetching,
+    refetch,
   } = useAdminManageEngineers({
     page: currentPage,
     limit: pageSize,
@@ -71,6 +72,7 @@ export default function PendingRequest() {
         body: { profileStatus },
       }),
     showPopup,
+    refetch,
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
@@ -96,6 +98,7 @@ export default function PendingRequest() {
             try {
               await deleteEngineer({ path: { userId: engineerData.userId } });
               toast.success("Engineer deleted successfully!");
+              await refetch?.();
               close(true);
             } catch (error) {
               toast.error("Failed to delete engineer. Please try again.");

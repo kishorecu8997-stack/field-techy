@@ -43,7 +43,7 @@ export default function BlockedUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading, isFetching } =
+  const { data: engineersResponse, isLoading, isFetching, refetch } =
     useAdminManageEngineers({
       page: currentPage,
       limit: pageSize,
@@ -111,6 +111,7 @@ export default function BlockedUser() {
               });
               toast.success("Engineer unblocked successfully!");
               close(true);
+              await refetch?.();
             } catch (error) {
               toast.error(
                 error instanceof Error

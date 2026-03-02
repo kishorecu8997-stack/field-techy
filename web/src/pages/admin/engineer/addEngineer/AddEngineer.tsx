@@ -181,14 +181,11 @@ useEffect(() => {
     );
     return { body, files };
   };
-
-  const handleNext = async () => {
-    const exists = userExists?.emailExists === true || userExists?.phoneExists === true;
-
-    if (exists) {
-      toast.error("User already exists");
-      return;
-    }
+    const handleNext = async () => {
+      if (userExists?.emailExists || userExists?.phoneExists) {
+        toast.error("User already exists");
+        return;
+      }
     let isValid = false;
 
     if (activeTab === "Basic Information") {
@@ -263,11 +260,11 @@ useEffect(() => {
     });
   };
 
-  const handleSave = async () => {
-    if (userExists) {
-      toast.error("User already exists");
-      return;
-    }
+    const handleSave = async () => {
+      if (userExists?.emailExists || userExists?.phoneExists) {
+        toast.error("User already exists");
+        return;
+      }
 
     const isValidBasic = await validateBasicInformation();
     if (!isValidBasic) return;
