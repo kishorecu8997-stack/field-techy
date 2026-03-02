@@ -29,7 +29,6 @@ const ReportPage = ({
 }) => {
   const { showPopup } = usePopupStore();
   const { jobId } = useParams();
-
   const isClient = location.pathname.includes("client");
   const { mutate: saveClientReport } = useSaveReportClient();
   const { mutate: saveEngineerReport } = useSaveReportEngineer();
