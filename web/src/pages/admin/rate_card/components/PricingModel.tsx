@@ -50,9 +50,6 @@ const PricingModel: React.FC = () => {
   return (
     <div className="px-2 py-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-bold text-gray-900 dark:text-neutral-200">
-          Pricing Models
-        </h2>
         {!isView && (
           <Button
             variant="link"
@@ -62,7 +59,7 @@ const PricingModel: React.FC = () => {
             onClick={addExperinceLevel}
             disabled={isExperienceLevelAdded}
           >
-            Add Experinece Level
+            Add Experinece Level Rate Card
           </Button>
         )}
       </div>
