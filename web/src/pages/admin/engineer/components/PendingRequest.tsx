@@ -22,6 +22,8 @@ import {
 import { useEngineerStatusChange } from "@/shared/hooks/useEngineerStatusChange";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import ViewFileComponent from "@/pages/admin/engineer/components/ViewFileComponent";
+import { getEngineerFileUrl } from "@/utils/getEngineerFileUrl";
+
 
 export default function PendingRequest() {
   const navigate = useNavigate();
@@ -74,9 +76,13 @@ export default function PendingRequest() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
-  useEffect(() => {
+  const resetPreview = () => {
     setSelectedFile(null);
     setIsPreviewOpen(false);
+  };
+
+  useEffect(() => {
+    resetPreview();
   }, [currentPage, pageSize]);
 
   const selectedEngineer = useMemo(() => {
@@ -88,27 +94,8 @@ export default function PendingRequest() {
     if (!selectedFile) return;
     if (isLoading || isFetching) return;
     if (selectedEngineer) return;
-    setSelectedFile(null);
-    setIsPreviewOpen(false);
+    resetPreview();
   }, [isFetching, isLoading, selectedEngineer, selectedFile]);
-
-  const getFileUrl = () => {
-    if (!selectedFile || !selectedEngineer) return null;
-    const { type } = selectedFile;
-
-    switch (type) {
-      case "profilePicture":
-        return selectedEngineer.profilePicture?.url;
-      case "resumeFile":
-        return selectedEngineer.resumeFile?.url;
-      case "govIdDoc":
-        return selectedEngineer.govIdDoc?.url;
-      case "certificateDoc":
-        return selectedEngineer.certificateDoc?.url;
-      default:
-        return null;
-    }
-  };
 
   const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
     await showPopup({
@@ -334,7 +321,7 @@ export default function PendingRequest() {
             onClose={() => setIsPreviewOpen(false)}
             fileType={selectedFile.type}
             userId={selectedEngineer.userId}
-            fileUrl={getFileUrl()}
+            fileUrl={getEngineerFileUrl(selectedEngineer, selectedFile?.type)}
             title={`${selectedEngineer.name}'s`}
           />
         )}

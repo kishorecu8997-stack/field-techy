@@ -25,6 +25,7 @@ import {
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import ViewFileComponent from "./ViewFileComponent";
 import SelectMenu from "@/shared/components/SelectMenu";
+import { getEngineerFileUrl } from "@/utils/getEngineerFileUrl";
 
 /**
  * InactiveUser Component
@@ -56,55 +57,47 @@ export default function InactiveUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading, isFetching } =
-    useAdminManageEngineers({
-      page: currentPage,
-      limit: pageSize,
-      status: "inactive",
-    });
+  const {
+    data: engineersResponse,
+    isLoading,
+    isFetching,
+  } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    status: "inactive",
+  });
 
   const { mutateAsync: deleteEngineer } = useAdminDeleteEngineerMutation();
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
-  useEffect(() => {
+  const resetPreview = () => {
     setSelectedFile(null);
     setIsPreviewOpen(false);
+  };
+
+  useEffect(() => {
+    resetPreview();
   }, [currentPage, pageSize]);
 
   const selectedEngineer = useMemo(() => {
     if (!selectedFile) return null;
-    return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
   }, [engineerData, selectedFile]);
 
   useEffect(() => {
     if (!selectedFile) return;
     if (isLoading || isFetching) return;
     if (selectedEngineer) return;
-    setSelectedFile(null);
-    setIsPreviewOpen(false);
+      resetPreview();
   }, [isFetching, isLoading, selectedEngineer, selectedFile]);
 
   const { mutateAsync: updateEngineerStatus } =
     useAdminEngineersByUserIdStatus();
-
-  const getFileUrl = () => {
-    if (!selectedFile || !selectedEngineer) return null;
-    const { type } = selectedFile;
-
-    switch (type) {
-      case "profilePicture":
-        return selectedEngineer.profilePicture?.url;
-      case "resumeFile":
-        return selectedEngineer.resumeFile?.url;
-      case "govIdDoc":
-        return selectedEngineer.govIdDoc?.url;
-      case "certificateDoc":
-        return selectedEngineer.certificateDoc?.url;
-      default:
-        return null;
-    }
-  };
 
   //Delete confirmation
   const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
@@ -195,7 +188,9 @@ export default function InactiveUser() {
                 label: item.label ?? "",
               })) ?? []
             }
-            value={selectedFile?.engineerId === row.id ? selectedFile.type : null}
+            value={
+              selectedFile?.engineerId === row.id ? selectedFile.type : null
+            }
             onChange={(value) => {
               if (!value) {
                 setSelectedFile(null);
@@ -203,7 +198,10 @@ export default function InactiveUser() {
                 return;
               }
 
-              setSelectedFile({ engineerId: row.id, type: value as ProfileFileType });
+              setSelectedFile({
+                engineerId: row.id,
+                type: value as ProfileFileType,
+              });
               setIsPreviewOpen(true);
             }}
           />
@@ -240,7 +238,8 @@ export default function InactiveUser() {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
-      renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed").toUpperCase(),
+      renderCell: (row) =>
+        (row.isEmployed ? "Employed" : "Unemployed").toUpperCase(),
     },
     {
       key: "avgRating",
@@ -411,7 +410,7 @@ export default function InactiveUser() {
             onClose={() => setIsPreviewOpen(false)}
             fileType={selectedFile.type}
             userId={selectedEngineer.userId}
-            fileUrl={getFileUrl()}
+            fileUrl={getEngineerFileUrl(selectedEngineer, selectedFile?.type)}
             title={`${selectedEngineer.name}'s`}
           />
         )}
