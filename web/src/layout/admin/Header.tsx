@@ -12,6 +12,7 @@ import {
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useAdminProfile } from "@/shared/store/useAdminProfileStore";
+import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 
 /**
  * Header
@@ -30,7 +31,7 @@ import { useAdminProfile } from "@/shared/store/useAdminProfileStore";
  * @returns {JSX.Element} Header component with navigation controls and user interface
  */
 export default function Header({ onToggleSidebar }: NavbarProps) {
-  const [region, setRegion] = useState<string | null>();
+  const { regionId, setRegion } = useAdminCountryStore();
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -59,6 +60,21 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
     setIsNotificationOpen((prev) => !prev);
   };
 
+  const handleRegionChange = (id: string | null) => {
+    const selectedRegion = adminLookupData?.find(
+      (item) => item.id.toString() === id,
+    );
+    setRegion(id, selectedRegion?.name ?? null);
+  };
+
+  // Auto-select first region when data loads and none is selected yet
+  useEffect(() => {
+    if (adminLookupData && adminLookupData.length > 0 && !regionId) {
+      const first = adminLookupData[0];
+      setRegion(first.id.toString(), first.name ?? null);
+    }
+  }, [adminLookupData, regionId, setRegion]);
+
   return (
     <header
       className="text-white px-4 sm:px-6 py-2 shadow-lg flex justify-between items-center"
@@ -86,12 +102,12 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
           className="w-36"
           options={
             adminLookupData?.map((item) => ({
-              value: item.name ?? "",
+              value: item.id.toString(),
               label: item.name ?? "",
             })) ?? []
           }
-          value={region}
-          onChange={setRegion}
+          value={regionId ?? adminLookupData?.[0]?.id.toString() ?? null}
+          onChange={handleRegionChange}
         />
 
         <div

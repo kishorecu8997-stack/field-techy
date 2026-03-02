@@ -36,12 +36,12 @@ const NotificationPanel = ({
 
   return (
     <div className="max-w-md w-full max-h-full overflow-y-auto relative">
-      <div className="flex justify-end gap-4 mb-2 pr-2 sticky top-0 bg-white dark:bg-gray-800 z-10 py-1">
+      <div className="flex justify-end gap-2 mb-2 pr-2 sticky top-0 bg-white dark:bg-gray-800 z-10 py-1">
         {onMarkAllAsRead && hasUnread && (
           <Button
             variant="no_style"
             onClick={onMarkAllAsRead}
-            className="text-xs font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors cursor-pointer"
+            className="text-xs font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors cursor-pointer h-4"
           >
             Mark all as read
           </Button>

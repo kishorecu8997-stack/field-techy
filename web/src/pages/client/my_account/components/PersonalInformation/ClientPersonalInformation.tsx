@@ -1,32 +1,40 @@
-import { useClientUpdateCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
-import { useVatOptions } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useAppResolveSignupRegion,
+  useClientGetCompanyInfo,
+  useClientUpdateCompanyInfo,
+  useVatOptions,
+} from "@/shared/apiServices/client/clientOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import type { LookupItem } from "@/shared/hooks/useLookup";
 import {
   useCities,
   useCountries,
   useIndustries,
+  useLookup,
   useStates,
 } from "@/shared/hooks/useLookup";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useClientCompanyInfoStore } from "@/shared/store/useClientCompanyInfoStore";
+import { useClientStore } from "@/shared/store/useClientStore";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { CiLocationOn } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
 import { toast } from "react-toastify";
-import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import {
   validateAddress,
+  validateCompany,
   validateIsPhoneVerified,
   validateName,
   validateVatNumber,
   validateZipcode,
-  validateCompany,
 } from "../../Validate";
 
 interface ClientPersonalInformationProps {
@@ -41,11 +49,43 @@ interface ClientPersonalInformationProps {
 const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   onMenuItemClick,
 }) => {
-  const { companyInfo } = useClientCompanyInfoStore();
+  const { showPopup } = usePopupStore();
+  const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
+
+  // Fetch company info
+  const {
+    data: clientInfo,
+    isLoading: isFetchingInfo,
+    isFetching,
+  } = useClientGetCompanyInfo(true);
+  console.log(clientInfo);
+
+  useEffect(() => {
+    if (clientInfo) {
+      setCompanyInfo(clientInfo);
+      if (clientInfo.phoneNumber) {
+        setIsPhoneVerified(true);
+      }
+    }
+  }, [clientInfo, setCompanyInfo]);
+
+  const { data: businessTypesData } = useLookup("businessTypes");
+
+  const businessTypes = useMemo(
+    () =>
+      (businessTypesData || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [businessTypesData],
+  );
+
+  const { fetchClientProfile } = useClientStore();
 
   const { mutateAsync: updateClient } = useClientUpdateCompanyInfo({
     onSuccess: () => {
       toast.success("Profile Updated Successfully");
+      fetchClientProfile();
       onMenuItemClick("clientAccount");
     },
     onError: (error: unknown) => {
@@ -53,36 +93,45 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     },
   });
 
+  const corporateInfo =
+    clientInfo?.clientType === "corporate" ? clientInfo : null;
+
   const methods = useForm<PersonalInfo>({
+    // useForm reads defaultValues ONCE at mount — clientInfo is null at that
+    // point (async fetch). Actual population is done via setValue in useEffects below.
     defaultValues: {
-      companyName: "",
-      contactPersonName: "",
-      phoneNumber: "",
-      businessType: "PRIVATE",
-      industry: "",
-      address: "",
-      country: "",
-      state: "",
-      city: "",
-      postalCode: "",
-      taxDocument: "",
-      vatRegistrationNumber: "",
+      companyName: corporateInfo?.companyName,
+      contactPersonName: clientInfo?.name,
+      phoneNumber: clientInfo?.phoneNumber,
+      businessType: corporateInfo?.businessTypeId,
+      industry: corporateInfo?.industryId,
+      address: corporateInfo?.address,
+      country: clientInfo?.countryId,
+      state: clientInfo?.stateId,
+      city: clientInfo?.cityId,
+      postalCode: clientInfo?.postalCode,
+      taxDocument: corporateInfo?.documentType,
+      vatRegistrationNumber: corporateInfo?.documentNumber,
     },
     mode: "onChange",
   });
-  const { control, trigger, reset } = methods;
+
+  const { control, trigger } = methods;
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
 
   // Watch values for dependent fields
   const country = useWatch({ control, name: "country" });
   const selectedStateValue = useWatch({ control, name: "state" });
 
+  const { data: signupRegion } = useAppResolveSignupRegion();
+
   // Fetch dropdown data from API
-  const countriesQuery = useCountries();
+  const regionId = signupRegion?.regionId;
+  const countriesQuery = useCountries(regionId);
 
   const parentCountryId =
     typeof country === "object" && country !== null && "value" in country
-      ? (country as any).value
+      ? (country as { value: string | number }).value
       : country;
 
   const statesQuery = useStates(parentCountryId);
@@ -91,7 +140,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     typeof selectedStateValue === "object" &&
     selectedStateValue !== null &&
     "value" in selectedStateValue
-      ? (selectedStateValue as any).value
+      ? (selectedStateValue as { value: string | number }).value
       : selectedStateValue;
 
   const citiesQuery = useCities(parentStateId);
@@ -133,69 +182,85 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
 
   // Sync form with store data
-  useEffect(() => {
-    if (companyInfo) {
-      reset({
-        companyName:
-          ("companyName" in companyInfo && companyInfo.companyName) || "",
-        contactPersonName:
-          ("personName" in companyInfo
-            ? companyInfo.personName
-            : companyInfo.name) || "",
-        phoneNumber: companyInfo.phoneNumber || "",
-        businessType: "PRIVATE", // Default or map if exists
-        industry:
-          ("industryId" in companyInfo ? companyInfo.industryId : "") || "",
-        address: ("address" in companyInfo ? companyInfo.address : "") || "",
-        country: companyInfo.countryId || "",
-        state: companyInfo.stateId || "",
-        city: companyInfo.cityId || "",
-        postalCode: companyInfo.postalCode || "",
-        taxDocument:
-          ("documentType" in companyInfo && companyInfo.documentType) || "",
-        vatRegistrationNumber:
-          ("documentNumber" in companyInfo && companyInfo.documentNumber) || "",
-      });
 
-      if (companyInfo.phoneNumber) {
-        setIsPhoneVerified(true);
-      }
-    }
-  }, [companyInfo, reset]);
-
-  const handleSubmit = async (data: PersonalInfo) => {
-    const isCorporate = companyInfo?.clientType === "corporate";
-
-    // Helper to get ID
-    const getId = (val: any) => {
-      if (!val) return undefined;
-      const num = Number(val);
-      return isNaN(num) ? undefined : num;
-    };
-
-    await updateClient({
-      body: {
-        clientType: isCorporate ? "corporate" : "home",
-        name: data.contactPersonName,
-        companyName: isCorporate ? data.companyName : undefined,
-        personName: data.contactPersonName,
-        address: data.address,
-        countryId: getId(data.country),
-        stateId: getId(data.state),
-        cityId: getId(data.city),
-        postalCode: data.postalCode,
-        industryId: isCorporate ? getId(data.industry) : undefined,
-        documentType: isCorporate ? data.taxDocument : undefined,
-        documentNumber: isCorporate ? data.vatRegistrationNumber : undefined,
-      },
-    });
-  };
+  const showLoader = (isFetchingInfo || isFetching) && !companyInfo;
 
   useEffect(() => {
     if (isPhoneVerified) {
       trigger("phoneNumber");
     }
   }, [isPhoneVerified, trigger]);
+
+  if (showLoader) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
+        <LoaderComponent />
+        <p className="mt-4 text-gray-500 animate-pulse">
+          Refreshing company information...
+        </p>
+      </div>
+    );
+  }
+
+  const handleSubmit = async (data: PersonalInfo) => {
+    const isCorporate = companyInfo?.clientType === "corporate";
+
+    // Extract a numeric ID from a raw number/string value (SelectField stores the option's value directly)
+    const getId = (
+      val: string | number | null | undefined,
+    ): number | undefined => {
+      if (val === null || val === undefined || val === "") return undefined;
+      const num = Number(val);
+      return isNaN(num) ? undefined : num;
+    };
+
+    const updateBody = {
+      clientType: (isCorporate ? "corporate" : "home") as "corporate" | "home",
+      name: data.contactPersonName,
+      companyName: isCorporate ? data.companyName : undefined,
+      personName: data.contactPersonName,
+      address: data.address,
+      countryId: getId(data.country),
+      stateId: getId(data.state),
+      cityId: getId(data.city),
+      postalCode: data.postalCode,
+      industryId: isCorporate ? getId(data.industry) : undefined,
+      businessTypeId: isCorporate ? getId(data.businessType) : undefined,
+      documentType: isCorporate ? (data.taxDocument ?? undefined) : undefined,
+      documentNumber: isCorporate ? data.vatRegistrationNumber : undefined,
+    };
+
+    await showPopup({
+      title: "Update Profile",
+      body: "Are you sure you want to update your profile?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "danger",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            try {
+              await updateClient({
+                body: updateBody,
+              });
+              close(true);
+            } catch (error: unknown) {
+              toast.error(GlobalApiErrorHandler.handle(error).message);
+              close(true);
+            }
+          },
+        },
+      ],
+    });
+  };
 
   return (
     <FormContainer
@@ -241,12 +306,16 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           name="businessType"
           placeholder="Business Type"
           leftIcon={<TbFileText className="text-lg text-gray-500" />}
-          options={[
-            { value: "PRIVATE", label: "Private" },
-            { value: "GOVERNMENT", label: "Government" },
-            { value: "NGO", label: "NGO" },
-            { value: "OTHER", label: "Other" },
-          ]}
+          options={
+            businessTypes.length > 0
+              ? businessTypes
+              : [
+                  { value: "PRIVATE", label: "Private" },
+                  { value: "GOVERNMENT", label: "Government" },
+                  { value: "NGO", label: "NGO" },
+                  { value: "OTHER", label: "Other" },
+                ]
+          }
           required
         />
 
@@ -304,7 +373,15 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
             validate: (value: string) =>
               validateZipcode(
                 value,
-                typeof country === "string" ? country : (country as any)?.value,
+                typeof country === "string"
+                  ? country
+                  : String(
+                      country !== null &&
+                        typeof country === "object" &&
+                        "value" in country
+                        ? (country as { value: string | number }).value
+                        : country,
+                    ),
               ),
           }}
         />
@@ -330,10 +407,10 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
         )}
       </div>
 
-      <div className="p-3 mt-auto">
+      <div className="bg-white">
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition rounded-none"
         >
           Edit Profile
         </Button>
