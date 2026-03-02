@@ -13,7 +13,6 @@ import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import EngineerOTPPage from "@/pages/engineer/auth/components/EngineerOTPPage";
 import ClientOTPPage from "@/pages/client/auth/components/ClientOTPPage";
-// import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
 import type { AppForgotPasswordError } from "@/api";
 
 export type ForgetPasswordFormData = {
@@ -33,6 +32,7 @@ interface AuthForgetPasswordProps {
 
 const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCheckingUser, setIsCheckingUser] = useState(false);
   const navigate = useNavigate();
   const methods = useForm<ForgetPasswordFormData>({
     defaultValues: {
@@ -51,13 +51,43 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
     },
   });
 
-  const handleSubmit = (data: ForgetPasswordFormData) => {
-    forgotPassword({
-      body: {
-        email: data.email,
-        userRole: role,
-      },
-    });
+  // Check if user exists before sending OTP
+  const checkUserExists = async (email: string) => {
+    const { appCheckExistence } = await import("@/api/sdk.gen");
+    const response = await appCheckExistence({ query: { email } });
+    return response.data;
+  };
+
+  const handleSubmit = async (data: ForgetPasswordFormData) => {
+    try {
+      setIsCheckingUser(true);
+      
+      // First check if user exists
+      const existenceData = await checkUserExists(data.email);
+      
+      if (!existenceData?.emailExists) {
+        toastError("This email is not registered in our system");
+        return;
+      }
+      
+      // User exists, proceed to send OTP
+      forgotPassword({
+        body: {
+          email: data.email,
+          userRole: role,
+        },
+      });
+    } catch (error) {
+      // If check fails, still allow proceeding (backend will validate)
+      forgotPassword({
+        body: {
+          email: data.email,
+          userRole: role,
+        },
+      });
+    } finally {
+      setIsCheckingUser(false);
+    }
   };
 
   const resetUrl =
@@ -109,8 +139,8 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 transition py-6"
-            loading={isPending}
-            disabled={isPending}
+            loading={isPending || isCheckingUser}
+            disabled={isPending || isCheckingUser}
           >
             Submit
           </Button>
