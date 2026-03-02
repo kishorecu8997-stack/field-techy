@@ -1,5 +1,8 @@
 import type { AdminGetClientResponse } from "@/api";
-import type { AdminGetClientHistoryQuery, AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
+import type {
+  AdminGetClientHistoryQuery,
+  AdminGetJobGraphQuery,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 
 export interface ManageClientProps {
@@ -129,7 +132,6 @@ export const statusGroupToGraphStatus: Record<
   hold: "hold",
   flagged: "flagged",
 };
-
 
 export type BlockClientForm = {
   reason: string;

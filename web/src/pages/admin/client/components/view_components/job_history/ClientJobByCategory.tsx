@@ -16,7 +16,6 @@ import { useSearchParams } from "react-router-dom";
 import { formatDate } from "@/utils/formatDate";
 import type { AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
 
-
 interface ClientJobByCategoryProps {
   data: JobItem[];
   isLoading?: boolean;
@@ -31,7 +30,6 @@ interface ClientJobByCategoryProps {
   setSearch?: (value: string) => void;
   status?: AdminGetJobGraphQuery["status"];
 }
-
 
 /**
  * Renders the job history table for a specific client.
@@ -51,7 +49,6 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
   setSearch: externalSetSearch,
   status,
 }) => {
-
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const internalSearch = searchParams.get("search") || "";
