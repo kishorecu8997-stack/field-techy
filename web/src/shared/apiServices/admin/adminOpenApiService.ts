@@ -80,6 +80,8 @@ import {
   type AdminGetWalletOverviewData,
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
+  type AdminGetEngineersForManagementError,
+  adminGetEngineersForManagement,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -125,7 +127,6 @@ import {
   adminGetTransactionRequestsOptions,
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
-  adminGetEngineersForManagementOptions,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -367,11 +368,21 @@ export function useAdminManageEngineers(
       (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
-  return useQuery({
-    ...adminGetEngineersForManagementOptions({
-      client: apiClient,
-      query: mergedQuery,
-    }),
+  return useQuery<
+    AdminManageEngineersResponse,
+    AdminGetEngineersForManagementError
+  >({
+    queryKey: [...queryKeys.admin.manageEngineers, mergedQuery],
+    queryFn: async ({ signal }) => {
+      const { data } = await adminGetEngineersForManagement({
+        client: apiClient,
+        query: mergedQuery,
+        signal,
+        throwOnError: true,
+      });
+      return data as AdminManageEngineersResponse;
+    },
+    refetchOnMount: true,
     ...options,
   });
 }
