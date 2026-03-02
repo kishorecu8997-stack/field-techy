@@ -100,8 +100,8 @@ export default function EditSubAdmin() {
                   name: data.name,
                   email: data.email,
                   phoneNumber: data.phoneNumber,
-                  regionId: Number(data.region),
                 },
+                query: { regionId: Number(data.region) },
               });
 
               toast.success("Sub-Admin updated successfully!");
