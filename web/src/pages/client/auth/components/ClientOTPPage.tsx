@@ -15,7 +15,7 @@ interface ClientOTPPageProps {
   header?: string;
   description?: string;
   onClose?: () => void;
-  handleNavigate?: () => void;
+  handleNavigate?: (otp?: string) => void;
   buttonText?: string;
   verificationType: "email" | "phone";
   contact: string; // email or phone number
@@ -46,7 +46,7 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
   handleNavigate,
   buttonText,
   verificationType,
-  contact,
+  // contact,
   onResendOTP,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
@@ -68,20 +68,18 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
 
   const handleSubmit = async (data: OTPValues) => {
     try {
-      const body =
-        verificationType === "email"
-          ? { type: "email" as const, email: contact, otp: data.otp }
-          : { type: "phone" as const, phone: contact, otp: data.otp };
-
       await verifyOTP({
-        body: body as AppVerifyOtpData["body"] & {
+        body: {
+          type: verificationType,
+          code: data.otp,
+        } as AppVerifyOtpData["body"] & {
           email?: string;
           phone?: string;
           otp: string;
         },
         headers: { authorization: "" },
       });
-      handleNavigate?.();
+      handleNavigate?.(data.otp);
     } catch (error: unknown) {
       method.setError("otp", {
         type: "manual",
@@ -133,9 +131,7 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className="text-green-600 dark:text-green-400 font-medium bg-gray-200 dark:bg-gray-700 px-3 py-1.5 text-sm rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Resend
               </button>

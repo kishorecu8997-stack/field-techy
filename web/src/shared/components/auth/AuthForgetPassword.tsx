@@ -11,9 +11,9 @@ import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
-import EngineerOTPPage from "@/pages/engineer/auth/components/OTPPage";
-import ClientOTPPage from "@/pages/client/auth/components/OTPPage";
-import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
+import EngineerOTPPage from "@/pages/engineer/auth/components/EngineerOTPPage";
+import ClientOTPPage from "@/pages/client/auth/components/ClientOTPPage";
+// import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
 import type { AppForgotPasswordError } from "@/api";
 
 export type ForgetPasswordFormData = {
@@ -65,15 +65,12 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
       ? absoluteUrls.client.auth.reset_password
       : absoluteUrls.engineer.auth.reset_password;
 
-  const handleOtpSubmit = (otpData: OTPValues) => {
-    const otp = otpData?.otp ? otpData.otp : "";
-
+  const handleOtpSubmit = (otp?: string) => {
+    // Store email and OTP for reset password page (validation already happened in popup)
+    sessionStorage.setItem("reset_password_email", methods.getValues("email"));
     if (otp) {
       sessionStorage.setItem("reset_password_otp", otp);
     }
-
-    sessionStorage.setItem("reset_password_email", methods.getValues("email"));
-
     navigate(`${resetUrl}?email=${methods.getValues("email")}`);
   };
 
@@ -125,14 +122,18 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
               header="Enter the OTP"
               description="We sent you an OTP code"
               onClose={() => setIsOpen(false)}
-              onSubmit={handleOtpSubmit}
+              verificationType="email"
+              contact={methods.getValues("email")}
+              handleNavigate={handleOtpSubmit}
             />
           ) : (
             <EngineerOTPPage
               header="Enter the OTP"
               description="We sent you an OTP code"
               onClose={() => setIsOpen(false)}
-              onSubmit={handleOtpSubmit}
+              verificationType="email"
+              contact={methods.getValues("email")}
+              handleNavigate={handleOtpSubmit}
             />
           )}
         </Popup>

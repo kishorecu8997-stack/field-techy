@@ -15,7 +15,7 @@ interface EngineerOTPPageProps {
   header?: string;
   description?: string;
   onClose?: () => void;
-  handleNavigate?: () => void;
+  handleNavigate?: (otp?: string) => void;
   buttonText?: string;
   verificationType: "email" | "phone";
   contact: string; // email or phone number
@@ -46,7 +46,7 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
   handleNavigate,
   buttonText,
   verificationType,
-  contact,
+  // contact,
   onResendOTP,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
@@ -69,20 +69,18 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
 
   const handleSubmit = async (data: OTPValues) => {
     try {
-      const body =
-        verificationType === "email"
-          ? { type: "email" as const, email: contact, otp: data.otp }
-          : { type: "phone" as const, phone: contact, otp: data.otp };
-
       await verifyOtp({
-        body: body as AppVerifyOtpData["body"] & {
+        body: {
+          type: verificationType,
+          code: data.otp,
+        } as AppVerifyOtpData["body"] & {
           email?: string;
           phone?: string;
           otp: string;
         },
         headers: { authorization: "" },
       });
-      handleNavigate?.();
+      handleNavigate?.(data.otp);
     } catch (error: unknown) {
       method.setError("otp", {
         type: "manual",
