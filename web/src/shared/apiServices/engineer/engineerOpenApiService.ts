@@ -31,6 +31,7 @@ import {
   type GetEngineerTransactionsError,
   type GetEngineerTransactionsResponse,
   type GetUserReportsData,
+  type GetUserReportsResponses,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -666,6 +667,7 @@ export function useSaveReportEngineer(options?: {
   });
 }
 
+export type ReportIssue = GetUserReportsResponses[200]["data"][number];
 export function useGetReportEngineer(
   query: GetUserReportsData["query"] = {},
   enabled: boolean = true,
