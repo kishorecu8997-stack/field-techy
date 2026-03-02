@@ -78,6 +78,7 @@ const ExploreSavedJobs = () => {
         numberOfVacancy: job.vacancies ?? 1,
         experience: job.experienceLevelId ?? null,
         salary: job.totalPrice ?? null,
+        currencySymbol: job.currencySymbol ?? "$",
         budgetType: job.rateCardId ? String(job.rateCardId) : null,
 
         status: job.status || "",

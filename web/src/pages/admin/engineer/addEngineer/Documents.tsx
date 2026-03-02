@@ -1,53 +1,110 @@
-import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
+import { useFormContext } from "react-hook-form";
+import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+import DocumentCard from "@/shared/components/DocumentCard";
+import type { EngineerFormData } from "../types";
 
 /**
- * Documents component handles the document upload section of the engineer registration form.
- * It provides interfaces for uploading required legal and educational documents.
+ * Documents Component
  *
- * Required Documents:
- * - Government ID Proof: Legal identification document
- * - Qualification Certificate: Educational or professional certifications
+ * Displays upload or preview sections for engineer documents
+ * (Government ID and Qualification Certificate) using
+ * React Hook Form context.
  *
- * Features:
- * - File upload functionality for both document types
- * - Input validation for required documents
- * - Responsive layout with grid/flex arrangement
+ * - Shows `DocumentCard` when a document URL exists
+ * - Shows `FileUpload` when no file is present
+ * - Supports view-only mode to disable editing actions
  *
- * @component
- * @example
- * ```tsx
- * <FormProvider {...methods}>
- *   <Documents />
- * </FormProvider>
- * ```
+ * @param {DocumentsProps} props Component props
+ * @param {boolean} [props.isView=false] Enables view-only mode
  *
- * @remarks
- * This component must be used within a FormProvider context as it relies on
- * form context for file upload handling and validation.
- *
- * @returns {JSX.Element} A form section component with document upload fields
+ * @returns {JSX.Element} Documents upload/preview UI
  */
-export default function Documents() {
+
+interface DocumentsProps {
+  isView?: boolean;
+}
+
+export default function Documents({ isView = false }: DocumentsProps) {
+  const { watch, setValue } = useFormContext<EngineerFormData>();
+
+  const governmentId = watch("governmentId");
+  const certificate = watch("certificate");
+
+  // Determine if a value is an existing file URL
+  const isExistingFile = (value: unknown): value is string =>
+    typeof value === "string" && value.startsWith("http");
+
+  const handleEdit = (field: keyof EngineerFormData) => {
+    setValue(field, null, { shouldDirty: true, shouldValidate: true });
+  };
+
+  const handleDelete = (field: keyof EngineerFormData) => {
+    setValue(field, null, { shouldDirty: true, shouldValidate: true });
+  };
+
   return (
-    <div>
-      <div className="grid md:flex mb-6 mt-2 md:w-8/12 gap-5">
-        <div className="w-60">
-          <FileUpload
-            name="governmentId"
-            label="Government ID Proof"
-            placeholder="Government ID"
-            required
-            accept=".pdf"
-          />
+    <div className="bg-white dark:bg-gray-800 p-4">
+      <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:w-9/12">
+        {/* Government ID Proof */}
+        <div className="w-full">
+          {isExistingFile(governmentId) ? (
+            <div className="flex flex-col gap-2 xl:w-96">
+              <DocumentCard
+                id={1}
+                document={{
+                  title: "Government ID Proof",
+                  fileName: governmentId.split("/").pop() || "gov-id.pdf",
+                  fileType: "PDF",
+                  previewUrl: governmentId,
+                }}
+                onEdit={isView ? undefined! : () => handleEdit("governmentId")}
+                onDelete={
+                  isView ? undefined! : () => handleDelete("governmentId")
+                }
+                onDownload={() => window.open(governmentId, "_blank")}
+              />
+            </div>
+          ) : (
+            <FileUpload
+              name="governmentId"
+              label="Government ID Proof"
+              placeholder="Upload Government ID"
+              accept=".pdf"
+              required
+              disabled={isView}
+            />
+          )}
         </div>
-        <div className="w-60">
-          <FileUpload
-            name="certificate"
-            label="Qualification Certificate"
-            placeholder="Certificate"
-            required
-            accept=".pdf"
-          />
+
+        {/* Qualification Certificate */}
+        <div className="w-full">
+          {isExistingFile(certificate) ? (
+            <div className="flex flex-col gap-2 xl:w-96">
+              <DocumentCard
+                id={2}
+                document={{
+                  title: "Qualification Certificate",
+                  fileName: certificate.split("/").pop() || "certificate.pdf",
+                  fileType: "PDF",
+                  previewUrl: certificate,
+                }}
+                onEdit={isView ? undefined! : () => handleEdit("certificate")}
+                onDelete={
+                  isView ? undefined! : () => handleDelete("certificate")
+                }
+                onDownload={() => window.open(certificate, "_blank")}
+              />
+            </div>
+          ) : (
+            <FileUpload
+              name="certificate"
+              label="Qualification Certificate"
+              placeholder="Upload Certificate"
+              accept=".pdf"
+              required
+              disabled={isView}
+            />
+          )}
         </div>
       </div>
     </div>
