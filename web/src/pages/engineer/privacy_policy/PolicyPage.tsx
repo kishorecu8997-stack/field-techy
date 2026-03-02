@@ -68,16 +68,21 @@ const PolicyPage = () => {
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
           <div
             className="
-                 prose prose-lg dark:prose-invert max-w-none
-                 prose-headings:text-gray-900 dark:prose-headings:text-gray-100
-                 prose-p:text-gray-700 dark:prose-p:text-gray-300
-                 prose-a:text-teal-600 dark:prose-a:text-teal-400
-                 prose-strong:text-gray-900 dark:prose-strong:text-gray-100
-                 prose-ul:text-gray-700 dark:prose-ul:text-gray-300
-                 prose-ol:text-gray-700 dark:prose-ol:text-gray-300
-                 break-words              
-                 overflow-x-hidden         
-                 w-full "
+    prose 
+    prose-lg 
+    dark:prose-invert 
+    max-w-none
+
+    [&_ul]:list-disc
+    [&_ul]:pl-6
+    [&_ol]:list-decimal
+    [&_ol]:pl-6
+    [&_li]:mb-1
+
+    break-words
+    overflow-x-hidden
+    w-full
+  "
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(cmsData.data.content),
             }}

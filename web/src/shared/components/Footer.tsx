@@ -14,10 +14,13 @@ import { assetsConfig } from "@/assets";
 import useDrawerStore from "../store/useDrawerStore";
 import { scrollToTop } from "@/utils";
 import IconWithTheme from "./IconWithTheme";
+import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
+import LoaderComponent from "./commonUI/LoaderComponent";
 
 /**
  * Main footer component with company info, quick links, support options,
  * social media icons, and a report problem modal.
+ * Fetches dynamic email and phone number from CMS content API.
  */
 const Footer = () => {
   const [open, setOpen] = useState(false);
@@ -25,6 +28,39 @@ const Footer = () => {
 
   const location = useLocation();
   const isClient = location.pathname.includes("client");
+
+  const {
+    data: contactData,
+    isLoading: contactLoading,
+    error: contactError,
+  } = useGetCmsContent("contact-info");
+
+  const getContactInfo = () => {
+  const defaultValues = {
+    phone: "+971 4580 8119",
+    email: "connect@fieldtechy.com",
+    address:
+      "Suite 302, Maple Leaf Building, Innovation District, Toronto, Canada",
+    copyright: "Copyright © 2025 Field Techy | All Rights Reserved.",
+  };
+
+  if (
+    contactData?.type === "contact-info" &&
+    contactData?.data &&
+    typeof contactData.data === "object" &&
+    !Array.isArray(contactData.data)
+  ) {
+    return {
+      phone: String((contactData.data as any).phone ?? defaultValues.phone),
+      email: String((contactData.data as any).email ?? defaultValues.email),
+      address: String((contactData.data as any).address ?? defaultValues.address),
+      copyright: String((contactData.data as any).copyright ?? defaultValues.copyright),
+    };
+  }
+
+  return defaultValues;
+};
+  const { phone, email, address, copyright } = getContactInfo();
 
   return (
     <footer className="bg-white dark:bg-gray-900 pt-12 pb-8 px-6 md:px-12 relative overflow-hidden text-gray-600 dark:text-gray-300">
@@ -42,17 +78,55 @@ const Footer = () => {
               OUR ADDRESS
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Suite 302, Maple Leaf Building, Innovation District, Toronto,
-              Canada
+              {contactLoading ? (
+                <span className="animate-pulse">
+                  <LoaderComponent />
+                </span>
+              ) : contactError ? (
+                <span className="text-red-500 text-sm">
+                  Suite 302, Maple Leaf Building, Innovation District, Toronto,
+                  Canada
+                </span>
+              ) : (
+                address
+              )}
             </p>
             <div className="space-y-3">
               <div className="flex items-center text-gray-600 dark:text-gray-400">
                 <IoMdMail className="w-5 h-5 mr-3 text-green-800 dark:text-green-500" />
-                connect@fieldtechy.com
+                {contactLoading ? (
+                  <span className="animate-pulse">
+                    <LoaderComponent />
+                  </span>
+                ) : contactError ? (
+                  <span className="text-red-500 text-sm">
+                    connect@fieldtechy.com
+                  </span>
+                ) : (
+                  <a
+                    href={`mailto:${email}`}
+                    className="hover:text-green-800 dark:hover:text-green-500 transition-colors"
+                  >
+                    {email}
+                  </a>
+                )}
               </div>
               <div className="flex items-center text-gray-600 dark:text-gray-400">
                 <MdLocalPhone className="w-5 h-5 mr-3 text-green-800 dark:text-green-500" />
-                +971 4580 8119
+                {contactLoading ? (
+                  <span className="animate-pulse">
+                    <LoaderComponent />
+                  </span>
+                ) : contactError ? (
+                  <span className="text-red-500 text-sm">+971 4580 8119</span>
+                ) : (
+                  <a
+                    href={`tel:${phone}`}
+                    className="hover:text-green-800 dark:hover:text-green-500 transition-colors"
+                  >
+                    {phone}
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -178,16 +252,9 @@ const Footer = () => {
               </li>
               <li>
                 <NavLink
-                  className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
-                  to={
-                    isClient
-                      ? absoluteUrls.client.home.privacy_policy
-                      : absoluteUrls.engineer.home.video_guidance
-                  }
-                  onClick={() => {
-                    scrollToTop();
-                    setActiveKey("videoGuidance");
-                  }}
+                  to="#"
+                  onClick={(e) => e.preventDefault()}
+                  className="text-gray-400 dark:text-gray-600 cursor-not-allowed pointer-events-none"
                 >
                   Video Tutorials
                 </NavLink>
@@ -198,7 +265,15 @@ const Footer = () => {
 
         <div className="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-600 dark:text-gray-500 mb-4 md:mb-0">
-            Copyright © 2025 Field Techy | All Rights Reserved.
+            {contactLoading ? (
+              <span className="animate-pulse">
+                <LoaderComponent />
+              </span>
+            ) : contactError ? (
+              "Copyright © 2025 Field Techy | All Rights Reserved."
+            ) : (
+              copyright
+            )}
           </p>
 
           <div className="flex space-x-4">

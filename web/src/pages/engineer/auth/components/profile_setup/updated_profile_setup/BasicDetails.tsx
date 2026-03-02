@@ -13,6 +13,9 @@ import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiError
 import SetPassword from "../SetPassword"; // Resuing existing
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { EngineerBasicDetails } from "./types";
+import DOMPurify from "dompurify";
+import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
+import Popup from "@/shared/components/Popup";
 
 /**
  * A component that represents the main profile setup step for engineers.
@@ -43,6 +46,13 @@ const BasicDetails = () => {
     markStepCompleted,
     setToken,
   } = useEngineerRegistrationStore();
+
+  const [termsOpen, setTermsOpen] = useState(false);
+  const {
+    data: cmsData,
+    isLoading: isTermsLoading,
+    error: termsError,
+  } = useGetCmsContent("terms");
 
   const formCtx = useForm<EngineerBasicDetails>({
     defaultValues: {
@@ -227,50 +237,12 @@ const BasicDetails = () => {
               <label htmlFor="termsAndConditions" className="cursor-pointer">
                 I agree to the
               </label>
+              {/* === CHANGED: Now opens CMS modal instead of hardcoded popup === */}
               <span
-                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
-                onClick={async (e) => {
+                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0 hover:text-blue-700 transition"
+                onClick={(e) => {
                   e.stopPropagation();
-                  try {
-                    await showPopup({
-                      title: "Engineer Terms & Conditions",
-                      body: (
-                        <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300 max-w-lg">
-                          <p>
-                            <strong>What is Field Techy:</strong> A smart
-                            solution to hire verified engineers on demand, for
-                            home IT issues or business technical projects.
-                          </p>
-                          <p>
-                            <strong>Features:</strong> Post jobs quickly, hire
-                            verified engineers, track progress, communicate
-                            in-app, and pay securely via escrow.
-                          </p>
-                          <p>
-                            <strong>Who It’s For:</strong> Home clients needing
-                            one-time support and corporate clients managing
-                            multi-location projects.
-                          </p>
-                          <p>
-                            By using our service, you agree to all applicable
-                            terms and conditions.
-                          </p>
-                        </div>
-                      ),
-                      actionButtons: [
-                        {
-                          label: "Close",
-                          value: null,
-                          variant: "primary",
-                        },
-                      ],
-                    });
-                  } catch (error) {
-                    console.error(
-                      "Failed to open Engineer Terms & Conditions popup:",
-                      error,
-                    );
-                  }
+                  setTermsOpen(true);
                 }}
               >
                 Terms and Conditions
@@ -304,6 +276,52 @@ const BasicDetails = () => {
           </h2>
         </div>
       </div>
+
+      <Popup open={termsOpen} onClose={() => setTermsOpen(false)}>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl mx-auto max-h-[85vh] overflow-hidden flex flex-col">
+          {/* Modal header */}
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {isTermsLoading
+                ? "Terms & Conditions"
+                : cmsData && "type" in cmsData && cmsData.type === "page"
+                  ? cmsData.data.title
+                  : "Terms & Conditions"}
+            </h2>
+            <button
+              onClick={() => setTermsOpen(false)}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Content area */}
+          <div className="p-6 overflow-y-auto flex-1">
+            {isTermsLoading ? (
+              <div className="flex items-center justify-center min-h-[400px]">
+                <p className="text-gray-500">Loading terms and conditions...</p>
+              </div>
+            ) : termsError ||
+              !cmsData ||
+              !("type" in cmsData) ||
+              cmsData.type !== "page" ? (
+              <div className="flex items-center justify-center min-h-[400px]">
+                <p className="text-red-500">
+                  Failed to load terms and conditions
+                </p>
+              </div>
+            ) : (
+              <div
+                className=" dark:text-gray-300 text-gray-700"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(cmsData.data.content),
+                }}
+              />
+            )}
+          </div>
+        </div>
+      </Popup>
     </FormContainer>
   );
 };

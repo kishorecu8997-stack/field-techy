@@ -21,6 +21,8 @@ export default function ContactSupport() {
     defaultValues: {
       email: "",
       phoneNumber: "",
+      address: "",
+      copyright: "",
     },
   });
 
@@ -69,6 +71,8 @@ export default function ContactSupport() {
                 body: {
                   email: data.email,
                   phone: data.phoneNumber,
+                  address: data.address,
+                  copyright: data.copyright,
                 },
               });
               close(true);
@@ -108,6 +112,19 @@ export default function ContactSupport() {
               name="phoneNumber"
               label="Mobile Number"
               required
+            />
+          </div>
+        </div>
+        <div className="flex gap-4 w-full mt-2">
+          <div className="flex-1">
+            <InputField name="address" label="Address" type="text"/>
+          </div>
+
+          <div className="flex-1">
+            <InputField
+              name="copyright"
+              label="Copyright"
+              type="text"
             />
           </div>
         </div>

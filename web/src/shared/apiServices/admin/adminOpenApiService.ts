@@ -39,7 +39,6 @@ import {
   type AddAndUpdateContactSupportResponses,
   type GetCmsPagesResponses,
   type GetCmsContentData,
-  type GetCmsContentResponses,
   type CreateFaqData,
   type CreateFaqResponses,
   type UpdateFaqData,
@@ -622,8 +621,7 @@ export function useGetCmsContent(
   key: GetCmsContentData["query"]["key"],
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: GetCmsContentResponses[200]) => void;
-    onError?: (error: unknown) => void;
+    refetchInterval?: number | false | (() => number | false);
   },
 ) {
   return useQuery({
@@ -635,17 +633,18 @@ export function useGetCmsContent(
       });
       return response.data;
     },
-    staleTime: 10 * 1000,
-    gcTime: 30 * 1000,
-    retry: 2,
+
+    enabled: options?.enabled ?? true,
+
+    staleTime: 0,
     refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchInterval: 30 * 1000,
     refetchIntervalInBackground: false,
-    ...options,
+
+    refetchInterval: options?.enabled
+      ? () => (document.visibilityState === "visible" ? 15000 : false)
+      : false,
   });
 }
-
 export function useCreateFaq(options?: {
   onSuccess?: (data: CreateFaqResponses[201]) => void;
   onError?: (error: unknown) => void;
