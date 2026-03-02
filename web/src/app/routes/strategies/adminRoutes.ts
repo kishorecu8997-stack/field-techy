@@ -71,7 +71,7 @@ export class AdminRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.AdminManageEngineerAdd),
           },
           {
-            path: urls.admin.home.manage_engineer_view,
+            path: `${urls.admin.home.manage_engineer_view}/:id?`,
             element: withSuspense(Components.AdminManageEngineerView),
           },
           {

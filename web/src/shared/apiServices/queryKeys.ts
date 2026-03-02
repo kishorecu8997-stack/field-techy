@@ -16,6 +16,7 @@ export const queryKeys = {
     all: ["engineers"] as const,
     detail: (id: string | number) =>
       [...queryKeys.engineer.all, String(id)] as const,
+    adminById: (id: number) => ["admin", "engineer", id] as const,
     jobLogs: (assignmentId: number) =>
       ["engineer", "jobLogs", assignmentId] as const,
   },
@@ -44,6 +45,7 @@ export const queryKeys = {
       all: ["admin", "rateCards"] as const,
       detail: (id: number) => ["admin", "rateCards", id] as const,
     },
+    manageEngineers: ["adminManageEngineers"] as const,
     notifications: {
       all: ["admin", "notifications"] as const,
       detail: (id: string | number) =>

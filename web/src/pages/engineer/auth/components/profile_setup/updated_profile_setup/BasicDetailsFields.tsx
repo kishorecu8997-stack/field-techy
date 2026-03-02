@@ -29,13 +29,16 @@ import { FaRegUser } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoUnlinkSharp, IoWalletOutline } from "react-icons/io5";
 import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailFieldWithValidation";
+import { useAppResolveSignupRegion } from "@/shared/apiServices/commonOpenApiService";
 
 const BasicDetailsFields = () => {
   const { watch } = useFormContext();
   const country = watch("country");
   const selectedState = watch("state");
+  const { data: signupRegion } = useAppResolveSignupRegion();
 
-  const countriesQuery = useCountries();
+  const regionId = signupRegion?.regionId;
+  const countriesQuery = useCountries(regionId);
 
   const parentCountryId = country?.value ?? country;
   const statesQuery = useStates(parentCountryId);

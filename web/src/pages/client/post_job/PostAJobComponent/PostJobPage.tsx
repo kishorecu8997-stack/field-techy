@@ -3,7 +3,6 @@ import { absoluteUrls } from "@/config/urls";
 import { JOB_TYPES } from "@/constants/jobTypes";
 import { TemplateData } from "@/dummy_data/client";
 import {
-  useClientGetJobs,
   useClientGetRateCard,
   useClientMarkJobFileUploaded,
   useClientPostJob,
@@ -49,45 +48,42 @@ const PostJobPage = () => {
     setAmount,
     setCurrencySymbol,
   } = usePostAJobStore();
-  const { refetch: refetchJobs } = useClientGetJobs();
   const billConsentRef = useRef(false);
   const isDisable = false;
 
   const formCtx = useForm<PostAJobFieldsProps>({
     defaultValues: {
-      projectName: "Test",
-      jobName: "Test",
-      jobTitle: "Test",
-      serviceCategory: "1",
+      projectName: "",
+      jobName: "",
+      jobTitle: "",
+      serviceCategory: "",
       locationType: JOB_TYPES.onsite,
-      location: "test location",
-      engagementModel: "1",
-      country: "1",
-      state: "1",
-      city: "1",
-      experienceLevel: "1",
-      numberOfVacancy: "1",
+      location: "",
+      engagementModel: "",
+      country: "",
+      state: "",
+      city: "",
+      experienceLevel: "",
+      numberOfVacancy: "",
       toolBudgetTotal: 0,
       skills: [],
       tools: [],
       safetyWears: [],
       task: "",
-      description:
-        "Before calling client.postMessage, check if client and client.postMessage exist to avoid runtime errors. If no clients are found, log a warning for easier debugging. Consider returning a boolean or throwing an error if messaging fails, so the caller can handle it.",
+      description: "",
       backFills: backFillsType.required,
       budget: "",
       primaryLanguage: "",
       secondaryLanguage: "",
       attachment: null,
-      otherInfo:
-        "Before calling client.postMessage, check if client and client.postMessage exist to avoid runtime errors. If no clients are found, log a warning for easier debugging. Consider returning a boolean or throwing an error if messaging fails, so the caller can handle it.",
-      startDate: new Date(),
+      otherInfo: "",
+      startDate: null,
       startTime: "",
-      endDate: new Date(),
+      endDate: null,
       endTime: "",
       jobDuration: "",
-      tentativeStartDate: new Date(),
-      tentativeEndDate: new Date(),
+      tentativeStartDate: null,
+      tentativeEndDate: null,
       tentativeEndTime: "",
       jobOccurrence: OccurrenceFields.repeat,
       repeatedBy: RepeatByFields.week,
@@ -96,7 +92,7 @@ const PostJobPage = () => {
       repeatedByMonth: "",
       templatesName: "",
       repeatedByYear: "",
-      JobOccurrenceEndDate: new Date(),
+      JobOccurrenceEndDate: null,
       estimatedDuration: "",
       saveAsTemplate: false,
     },
@@ -349,7 +345,6 @@ const PostJobPage = () => {
           try {
             await uploadAttachmentsAndTools(response, data);
             toast.success("Your job has been successfully posted!");
-            refetchJobs();
             navigate(absoluteUrls.client.home.my_jobs);
           } catch {
             const hasFilesToUpload =

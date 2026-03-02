@@ -127,7 +127,6 @@ export interface BlockClientProps {
   onSuccess?: () => void;
 }
 
-
 export interface walletViewData {
   id: number;
   dateTime: string;

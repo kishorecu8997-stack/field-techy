@@ -94,7 +94,9 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg max-w-2xl w-full p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className={`text-lg font-semibold text-gray-800 dark:text-white ${titleClassName || ""}`}>
+        <h2
+          className={`text-lg font-semibold text-gray-800 dark:text-white ${titleClassName || ""}`}
+        >
           {title}
         </h2>
         <div className="flex items-center gap-2">

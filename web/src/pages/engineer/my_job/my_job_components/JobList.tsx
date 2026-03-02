@@ -1,11 +1,13 @@
 import JobCard from "@/shared/components/JobCard";
 import type { EngineerGetMyJobsResponse } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import ErrorState from "@/shared/components/commonUI/ErrorState";
 
 interface JobListProps {
   jobs: EngineerGetMyJobsResponse;
   isLoading: boolean;
   isError: boolean;
+  refetch: () => void;
 }
 
 /**
@@ -19,7 +21,7 @@ interface JobListProps {
  * @param {boolean} props.isError Error state.
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
-const JobList = ({ jobs, isLoading, isError }: JobListProps) => {
+const JobList = ({ jobs, isLoading, isError, refetch }: JobListProps) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
@@ -29,9 +31,12 @@ const JobList = ({ jobs, isLoading, isError }: JobListProps) => {
   }
   if (isError) {
     return (
-      <div className="col-span-2 text-center py-10 text-red-500">
-        Unable to load jobs. Please check your internet connection and try
-        again.
+      <div className="col-span-2">
+        <ErrorState
+          title="Unable to Load Jobs"
+          message="Something went wrong. Please try again later."
+          onRetry={refetch}
+        />
       </div>
     );
   }
@@ -40,7 +45,12 @@ const JobList = ({ jobs, isLoading, isError }: JobListProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {jobs && jobs.length > 0 ? (
           jobs.map((job) => (
-            <JobCard key={job.id} {...job} status={job.status ?? undefined} />
+            <JobCard
+              key={job.id}
+              {...job}
+              status={job.status ?? undefined}
+              currencySymbol={job.currencySymbol ?? "$"}
+            />
           ))
         ) : (
           <div className="col-span-full text-center py-10 text-gray-500 dark:text-gray-400">
