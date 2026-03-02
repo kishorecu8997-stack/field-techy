@@ -30,6 +30,38 @@ interface ReportTableProps {
   filterParams: FilterDataProps;
 }
 
+
+/**
+ * @component ReportTable
+ * @description A reusable table component for displaying admin report issues.
+ * Used across all four tabs (All Users, Client, Engineer, Completed) in the
+ * AdminReportIssue page, differentiated by the `role` and `data` props.
+ *
+ * Features:
+ * - Client-side search across category, description, priority, and role fields
+ * - Client-side filtering by priority level and date from `filterParams`
+ * - Client-side sorting by date or priority from `filterParams`
+ * - Row action to view full report details in a popup
+ * - "Solved" action inside the popup triggers `resolveReport` mutation and refetches data
+ * - Server-side pagination via `currentPage`, `pageSize`, and `total` props
+ *
+ * @param {ReportTableProps} props - Component props
+ * @returns {JSX.Element} A searchable, filterable, paginated table of report issues.
+ *
+ * @example
+ * <ReportTable
+ *   role="client"
+ *   data={clientData?.data ?? []}
+ *   total={clientData?.total ?? 0}
+ *   isLoading={clientLoading}
+ *   currentPage={clientPage}
+ *   setCurrentPage={setClientPage}
+ *   pageSize={pageSize}
+ *   setPageSize={setPageSize}
+ *   refetch={refetchClient}
+ *   filterParams={filterParams}
+ * />
+ */
 export default function ReportTable({
   refetch,
   data,

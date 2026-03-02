@@ -1,9 +1,7 @@
 import type { AdminGetReportsResponses } from "@/api";
-import { useAdminGetReport } from "@/shared/apiServices/admin/adminOpenApiService";
-import AdminFilter, {
-  type FilterDataProps,
-} from "@/shared/components/AdminFilter";
+import AdminFilter from "@/shared/components/AdminFilter";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
+import { useAdminReports } from "@/shared/hooks/useAdminReports";
 import { useState } from "react";
 import { BsFilterRight } from "react-icons/bs";
 import ReportTable from "./components/ReportTable";
@@ -20,60 +18,34 @@ type AdminReportIssue = AdminGetReportsResponses[200]["data"][number];
  */
 export default function AdminReportIssue() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [pageSize, setPageSize] = useState(10);
-  const [allPage, setAllPage] = useState(1);
-  const [clientPage, setClientPage] = useState(1);
-  const [engineerPage, setEngineerPage] = useState(1);
-  const [completedPage, setCompletedPage] = useState(1);
-  const [filterParams, setFilterParams] = useState<FilterDataProps>({
-    sortBy: "",
-    date: "",
-    filters: [],
-  });
   const {
-    data: allData,
-    isLoading: allLoading,
-    refetch: refetchAll,
-  } = useAdminGetReport({
-    page: allPage,
-    limit: pageSize,
-  });
-
-  const {
-    data: clientData,
-    isLoading: clientLoading,
-    refetch: refetchClient,
-  } = useAdminGetReport({
-    page: clientPage,
-    limit: pageSize,
-    reporterRole: "client",
-  });
-
-  const {
-    data: engineerData,
-    isLoading: engineerLoading,
-    refetch: refetchEngineer,
-  } = useAdminGetReport({
-    page: engineerPage,
-    limit: pageSize,
-    reporterRole: "engineer",
-  });
-
-  const {
-    data: completedData,
-    isLoading: completedLoading,
-    refetch: refetchCompleted,
-  } = useAdminGetReport({
-    page: completedPage,
-    limit: pageSize,
-    status: "resolved",
-  });
-
-  // This prop function receives the filter object from the child
-  const handleApplyFilters = (data: FilterDataProps) => {
-    setFilterParams(data);
-    setIsFilterOpen(false);
-  };
+    allData,
+    clientData,
+    engineerData,
+    completedData,
+    allLoading,
+    clientLoading,
+    engineerLoading,
+    completedLoading,
+    refetchAll,
+    refetchClient,
+    refetchEngineer,
+    refetchCompleted,
+    filterParams,
+    handleApplyFilters,
+    pagination: {
+      pageSize,
+      setPageSize,
+      allPage,
+      setAllPage,
+      clientPage,
+      setClientPage,
+      engineerPage,
+      setEngineerPage,
+      completedPage,
+      setCompletedPage,
+    },
+  } = useAdminReports();
 
   const tabs = [
     {
