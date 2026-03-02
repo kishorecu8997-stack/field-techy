@@ -17,23 +17,23 @@ interface EngineerRegistrationState {
   email: string;
   phone: string;
   country:
-    | string
-    | number
-    | { value?: string | number; label?: string }
-    | null
-    | undefined;
+  | string
+  | number
+  | { value?: string | number; label?: string }
+  | null
+  | undefined;
   state:
-    | string
-    | number
-    | { value?: string | number; label?: string }
-    | null
-    | undefined;
+  | string
+  | number
+  | { value?: string | number; label?: string }
+  | null
+  | undefined;
   city:
-    | string
-    | number
-    | { value?: string | number; label?: string }
-    | null
-    | undefined;
+  | string
+  | number
+  | { value?: string | number; label?: string }
+  | null
+  | undefined;
   postalCode: string;
   address: string;
 
@@ -41,11 +41,11 @@ interface EngineerRegistrationState {
   skills: (string | number | { value?: string | number; label?: string })[]; // IDs or Names
   portfolioLink: string;
   serviceCategory:
-    | string
-    | number
-    | { value?: string | number; label?: string }
-    | null
-    | undefined; // ID or Name
+  | string
+  | number
+  | { value?: string | number; label?: string }
+  | null
+  | undefined; // ID or Name
   amount: string; // Rate/Budget
   designation: string;
   company: string;
@@ -82,33 +82,33 @@ interface EngineerRegistrationState {
       email: string;
       phone: string;
       country:
-        | string
-        | number
-        | { value?: string | number; label?: string }
-        | null
-        | undefined;
+      | string
+      | number
+      | { value?: string | number; label?: string }
+      | null
+      | undefined;
       state:
-        | string
-        | number
-        | { value?: string | number; label?: string }
-        | null
-        | undefined;
+      | string
+      | number
+      | { value?: string | number; label?: string }
+      | null
+      | undefined;
       city:
-        | string
-        | number
-        | { value?: string | number; label?: string }
-        | null
-        | undefined;
+      | string
+      | number
+      | { value?: string | number; label?: string }
+      | null
+      | undefined;
       postalCode: string;
       address: string;
       skills: (string | number | { value?: string | number; label?: string })[];
       portfolioLink: string;
       serviceCategory:
-        | string
-        | number
-        | { value?: string | number; label?: string }
-        | null
-        | undefined;
+      | string
+      | number
+      | { value?: string | number; label?: string }
+      | null
+      | undefined;
       amount: string;
       designation: string;
       company: string;
@@ -135,6 +135,8 @@ interface EngineerRegistrationState {
   setToken: (token: string) => void;
   markRegistrationComplete: () => void;
   getApiData: () => EngineerData;
+  resetEmail: () => void;
+  resetPhone: () => void;
 }
 
 const initialState = {
@@ -241,6 +243,14 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
         set({ registrationComplete: true });
       },
 
+      resetEmail: () => {
+        set({ emailVerified: false });
+      },
+
+      resetPhone: () => {
+        set({ mobileVerified: false });
+      },
+
       getApiData: () => {
         const state = get();
         return {
@@ -253,7 +263,7 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
           portfolioLink: state.portfolioLink,
           serviceCategory:
             typeof state.serviceCategory === "object" &&
-            state.serviceCategory !== null
+              state.serviceCategory !== null
               ? (state.serviceCategory.value ?? "")
               : (state.serviceCategory ?? ""),
 
@@ -277,15 +287,15 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
           experiences:
             state.company && state.designation
               ? [
-                  {
-                    designation: state.designation,
-                    employer: state.company,
-                    workLocationType: "REMOTE",
-                    employmentType: "FULL_TIME",
-                    startDate: new Date().toISOString(),
-                    isCurrent: true,
-                  },
-                ]
+                {
+                  designation: state.designation,
+                  employer: state.company,
+                  workLocationType: "REMOTE",
+                  employmentType: "FULL_TIME",
+                  startDate: new Date().toISOString(),
+                  isCurrent: true,
+                },
+              ]
               : [],
 
           educations: [],

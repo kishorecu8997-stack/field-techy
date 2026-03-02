@@ -14,7 +14,7 @@ import { useState } from "react";
 import EngineerOTPPage from "@/pages/engineer/auth/components/OTPPage";
 import ClientOTPPage from "@/pages/client/auth/components/OTPPage";
 import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
-import type { AppForgotPasswordError } from "@/api";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 export type ForgetPasswordFormData = {
   email: string;
@@ -46,8 +46,8 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
       success("OTP sent to your email address");
       setIsOpen(true);
     },
-    onError: (err: AppForgotPasswordError) => {
-      toastError(err?.error || "Failed to send OTP");
+    onError: (err: unknown) => {
+      toastError(GlobalApiErrorHandler.handle(err, "Failed to send OTP").message);
     },
   });
 

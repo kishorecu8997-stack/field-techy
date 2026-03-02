@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { useResetPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
-import { type AppResetPasswordError } from "@/api";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import AuthPasswordSection from "./AuthPasswordSection";
 
 /**
@@ -73,8 +73,8 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
           : absoluteUrls.engineer.auth.login;
       navigate(loginUrl);
     },
-    onError: (err: AppResetPasswordError) => {
-      toastError(err?.error || "Failed to reset password");
+    onError: (err: unknown) => {
+      toastError(GlobalApiErrorHandler.handle(err, "Failed to reset password").message);
     },
   });
 

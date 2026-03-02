@@ -42,6 +42,8 @@ const BasicDetails = () => {
     updateProfileData,
     markStepCompleted,
     setToken,
+    resetEmail,
+    resetPhone,
   } = useEngineerRegistrationStore();
 
   const formCtx = useForm<EngineerBasicDetails>({
@@ -77,13 +79,16 @@ const BasicDetails = () => {
         localStorage.setItem("auth_token", result.token);
         setToken(result.token);
       }
-
       toast.success("Profile details submitted successfully!");
       markStepCompleted(3);
+      resetEmail();
+      resetPhone();
       navigate(absoluteUrls.engineer.auth.verification);
     },
     onError: (error: unknown) => {
       toast.error(GlobalApiErrorHandler.handle(error).message);
+      resetEmail();
+      resetPhone();
     },
   });
   // Check for existing registration session
@@ -132,6 +137,7 @@ const BasicDetails = () => {
     });
     return () => subscription.unsubscribe();
   }, [formCtx, updateProfileData]);
+
   const handleSubmit = async (data: EngineerBasicDetails) => {
     type ValWithValue = { value: unknown };
     // Extract IDs from select objects - OpenAPI expects number IDs
@@ -158,11 +164,11 @@ const BasicDetails = () => {
       postalCode: data.postalCode,
       skills: Array.isArray(data.skills)
         ? data.skills
-            .map((s: unknown) => {
-              const val = getIdValue(s);
-              return val !== undefined ? val : NaN;
-            })
-            .filter((n) => !isNaN(n))
+          .map((s: unknown) => {
+            const val = getIdValue(s);
+            return val !== undefined ? val : NaN;
+          })
+          .filter((n) => !isNaN(n))
         : [],
       serviceCategoryId: getIdValue(data.serviceCategory),
       hourlyRate: parseFloat(data.amount?.replace(/[^0-9.]/g, "")) || undefined,

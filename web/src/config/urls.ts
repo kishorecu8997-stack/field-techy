@@ -208,6 +208,7 @@ export const absoluteUrls = {
       profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
       documents: `${BASE.CLIENT_AUTH}/documents`,
       terms_and_conditions: `${BASE.CLIENT_AUTH}/terms-and-conditions`,
+      verification: `${BASE.CLIENT_AUTH}/verification`,
     },
     home: {
       dashboard: `${BASE.CLIENT}/dashboard`,
