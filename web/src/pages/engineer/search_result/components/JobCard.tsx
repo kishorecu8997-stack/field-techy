@@ -9,6 +9,7 @@ import { calculateMatchScore } from "@/utils/matchCalculator";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import React, { useMemo, useState } from "react";
+import { BiUser } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -351,10 +352,94 @@ const JobCard: React.FC<{
                     </strong>
                   </span>
                 )}
-                {jobData.duration && <span>| {jobData.duration}</span>}
-                <span>{jobData.postedTime || "Just now"}</span>
               </div>
             </div>
+          </div>
+
+          {/* DESCRIPTION */}
+          <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
+            {jobData.description}
+          </p>
+
+          {/* SKILLS & TOOLS */}
+          {job.skills?.length || job.tools?.length ? (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {jobData.skills?.slice(0, 5).map((skill, i) => (
+                <span
+                  key={i}
+                  className="px-3 py-1 text-xs rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400"
+                >
+                  {skill}
+                </span>
+              ))}
+              {jobData.tools?.slice(0, 3).map((tool, i) => (
+                <span
+                  key={i}
+                  className="px-3 py-1 text-xs rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400"
+                >
+                  {tool}
+                </span>
+              ))}
+            </div>
+          ) : null}
+
+          {hasSalary ? (
+            <div className="flex items-center gap-1.5 pb-2">
+              <span className="text-gray-800 dark:text-gray-200">
+                {salaryDisplay}
+              </span>
+            </div>
+          ) : null}
+          {/* FOOTER BAR */}
+          <div className="flex flex-wrap items-center justify-between bg-gray-100 dark:bg-gray-700/50 rounded-md p-3">
+            <div className="flex flex-wrap items-center gap-5">
+              {jobData.location && (
+                <div className="flex items-center gap-1.5">
+                  <IoLocationSharp className="h-4 w-4 text-gray-500" />
+                  <span className="text-gray-800 dark:text-gray-200">
+                    {jobData.location}
+                  </span>
+                </div>
+              )}
+
+              {job.slaLevel && (
+                <div className="flex items-center gap-1.5">
+                  <icons.active className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                  <span className="text-gray-800 dark:text-gray-200">
+                    {job.slaLevel}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2">
+                <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                <span className="font-medium text-gray-800 dark:text-gray-200">
+                  {getExperienceLevel(
+                    jobData.experience ? Number(jobData.experience) : 0,
+                  )}
+                </span>
+              </div>
+            </div>
+
+            {/* BOOKMARK */}
+            {showBookmark && (
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div
+                  onClick={handleBookmarkClick}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                  aria-label={
+                    job?.status === "unsaved" ? "Remove bookmark" : "Add bookmark"
+                  }
+                >
+                  {job?.status === "unsaved" ? (
+                    <icons.bookmarkFilled className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  ) : (
+                    <icons.bookmark className="w-4 h-4" />
+                  )}
+                </div>
+                <span>{jobData.postedTime || "Just now"}</span>
+              </div>
+            )}
           </div>
         </Link>
 
