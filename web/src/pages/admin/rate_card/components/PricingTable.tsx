@@ -14,7 +14,6 @@ const PricingTable: React.FC<{
   editable: boolean;
 }> = ({ control, index, tiers, editable }) => {
   const headers = [
-    "Experience Level",
     "Hourly",
     "Half-Day (4h)",
     "Full-Day (8h)",
@@ -34,7 +33,7 @@ const PricingTable: React.FC<{
         <thead className="bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
           <tr>
             {headers.map((h) => (
-              <th key={h} className="px-4 py-2 font-semibold">
+              <th key={h} className="px-4 py-2 font-semibold text-center">
                 {h}
               </th>
             ))}
@@ -48,9 +47,6 @@ const PricingTable: React.FC<{
                 key={tier.level}
                 className="border-t border-gray-200 dark:border-gray-700"
               >
-                <td className="px-4 py-1 font-medium dark:text-gray-200">
-                  {tier.level} – {tier.description}
-                </td>
                 {fields.map((field) => (
                   <td key={field} className="px-4 py-2">
                     {editable ? (

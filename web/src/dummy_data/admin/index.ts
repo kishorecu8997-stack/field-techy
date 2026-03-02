@@ -238,8 +238,7 @@ export const notifications: NotificationProps[] = [
 
 export const rateCardTypes = [
   { label: "Master Rate Card", value: "masterRateCard" },
-  { label: "Client Specific Rate Card", value: "clientSpecificRateCard" },
-  { label: "Project Specific Rate Card", value: "projectSpecificRateCard" },
+  { label: "Service Category", value: "serviceCategory" },
 ];
 
 export const ClientNameList = [
