@@ -295,7 +295,8 @@ export function useClientActionOnAssignment(options?: {
       // Invalidate job logs query when assignment action is performed
       if (options?.assignmentId) {
         queryClient.invalidateQueries({
-          queryKey: ["getJobLogs", { path: { assignmentId: options.assignmentId } }],
+          queryKey: ["getJobLogs"],
+          exact: false,
         });
       }
       options?.onSuccess?.(data);
@@ -344,7 +345,8 @@ export function useClientActionOnWorkLog(options?: {
       // Invalidate job logs query when work log action is performed
       if (options?.assignmentId) {
         queryClient.invalidateQueries({
-          queryKey: ["getJobLogs", { path: { assignmentId: options.assignmentId } }],
+          queryKey: ["getJobLogs"],
+          exact: false,
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
@@ -366,7 +368,8 @@ export function useClientActionOnBreak(options?: {
       // Invalidate job logs query when break action is performed
       if (options?.assignmentId) {
         queryClient.invalidateQueries({
-          queryKey: ["getJobLogs", { path: { assignmentId: options.assignmentId } }],
+          queryKey: ["getJobLogs"],
+          exact: false,
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });

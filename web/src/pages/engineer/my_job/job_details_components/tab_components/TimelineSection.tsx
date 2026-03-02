@@ -1,14 +1,12 @@
 import React, { useState, useMemo } from "react";
 import TimelineSectionHeader from "@/pages/client/my_job_client/components/tab_components/timeline_section/TimelineSectionHeader";
 import ActionRequiredBadge from "@/pages/client/my_job_client/components/tab_components/timeline_section/ActionRequiredBadge";
-// import TimelineList from "@/shared/components/TimelineList";
 import {
   formatApiDate,
   transformLogsToTimelineItems,
   transformBreakRequestsToItems,
   transformSignOffsToItems,
 } from "@/utils/timelineUtils";
-// import { formatNow } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
 import Popup from "@/shared/components/Popup";
 import RevisionRequestUpdateForm from "../jobHeaderComponents/RevisionRequestUpdateForm";
@@ -23,16 +21,12 @@ import {
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import type { EngineerGetMyJobsResponse } from "@/api";
 
-/**
- * Transform engineer's job/proposal data to timeline items
- */
 const transformProposalToTimelineItems = (
   jobs: EngineerGetMyJobsResponse,
   currentJobId?: number,
 ) => {
   if (!jobs || jobs.length === 0) return [];
 
-  // Filter to current job if provided, otherwise get all proposals
   const relevantJobs = currentJobId
     ? jobs.filter((job) => job.id === currentJobId)
     : jobs;
@@ -50,9 +44,6 @@ const transformProposalToTimelineItems = (
   }> = [];
 
   relevantJobs.forEach((job) => {
-    // Add entries in reverse chronological order (most recent first) based on status
-
-    // 6. Proposal Rejected entry (if rejected) - most recent for rejected status
     if (job.assignmentStatus === "rejected") {
       const rejectedTimestamp = job.respondedAt;
       if (rejectedTimestamp) {
@@ -68,7 +59,6 @@ const transformProposalToTimelineItems = (
       }
     }
 
-    // 5. Job Started entry (if started - client approved)
     if (job.assignmentStatus === "started") {
       const startedTimestamp = job.assignedAt || job.respondedAt;
       if (startedTimestamp) {
@@ -84,7 +74,6 @@ const transformProposalToTimelineItems = (
       }
     }
 
-    // 4. Start Request Pending entry (if start_pending_approval)
     if (job.assignmentStatus === "start_pending_approval") {
       const startPendingTimestamp = job.respondedAt;
       if (startPendingTimestamp) {
@@ -100,7 +89,6 @@ const transformProposalToTimelineItems = (
       }
     }
 
-    // 3. Proposal Accepted entry (if accepted/assigned or later statuses)
     if (
       job.assignmentStatus === "accepted" ||
       job.assignmentStatus === "assigned" ||
@@ -123,7 +111,6 @@ const transformProposalToTimelineItems = (
       }
     }
 
-    // 2. Proposal Submitted entry (if applied)
     if (
       job.assignmentStatus === "applied" ||
       job.assignmentStatus === "accepted" ||
@@ -136,7 +123,6 @@ const transformProposalToTimelineItems = (
     ) {
       const submittedTimestamp = job.appliedAt || job.respondedAt;
       if (submittedTimestamp) {
-        // Build details string - include proposal detail if available
         let proposalDetails = job.proposalDetail
           ? `\n\nProposal Details: ${job.proposalDetail}`
           : `\n\nSubmitted proposal for: ${job.jobTitle}`;
@@ -153,7 +139,6 @@ const transformProposalToTimelineItems = (
       }
     }
 
-    // 1. Job Posted entry (always show this) - oldest event
     if (job.createdAt) {
       allItems.push({
         title: "Job Posted",
@@ -167,17 +152,9 @@ const transformProposalToTimelineItems = (
     }
   });
 
-  // Sort by sortOrder descending (highest first = most recent first)
   return allItems.sort((a, b) => b.sortOrder - a.sortOrder);
 };
 
-/**
- * Engineer job timeline tab that renders milestones, progress updates, and revision/break details.
- * Uses real API data from /jobs/assignments/{assignmentId}/logs endpoint.
- * Also uses /jobs/my-job endpoint to get engineer's proposal status.
- * Only shows API data when available, no dummy fallback.
- * When hasApplied is true and no API logs available, shows local "Proposal Submitted" entry.
- */
 const TimelineSection: React.FC<{
   progressUpdates?: ProgressUpdate[];
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
@@ -192,67 +169,46 @@ const TimelineSection: React.FC<{
   hasApplied = false,
 }) => {
   const [isRevisionOpen, setIsRevisionOpen] = useState(false);
-  const [activeRevision, setActiveRevision] = useState<ProgressUpdate | null>(
-    null,
-  );
-  const [isRevisionUpdateFormOpen, setIsRevisionUpdateFormOpen] =
-    useState(false);
+  const [activeRevision, setActiveRevision] = useState<ProgressUpdate | null>(null);
+  const [isRevisionUpdateFormOpen, setIsRevisionUpdateFormOpen] = useState(false);
   const [isBreakDetailsOpen, setIsBreakDetailsOpen] = useState(false);
   const [activeBreak, setActiveBreak] = useState<ProgressUpdate | null>(null);
-  const [collapsedUpdates, setCollapsedUpdates] = useState<
-    Record<string, boolean>
-  >({});
+  const [collapsedUpdates, setCollapsedUpdates] = useState<Record<string, boolean>>({});
 
-  // Fetch job logs from real API
   const { data: jobLogs, isLoading: isLoadingLogs } = useGetJobLogs(
     assignmentId ?? 0,
     !!assignmentId,
   );
 
-  // Fetch engineer's jobs to get proposal status
   const { data: engineerJobs } = useEngineerGetMyJobs(!!jobId || !!hasApplied);
 
-  // Transform proposal data to timeline items
   const proposalTimelineItems = useMemo(() => {
-    if (
-      !engineerJobs ||
-      !Array.isArray(engineerJobs) ||
-      engineerJobs.length === 0
-    )
+    if (!engineerJobs || !Array.isArray(engineerJobs) || engineerJobs.length === 0)
       return [];
     return transformProposalToTimelineItems(engineerJobs, jobId);
   }, [engineerJobs, jobId]);
 
-  // Transform API data to timeline items
   const apiTimelineItems = useMemo(() => {
     if (!jobLogs) return [];
 
     const logItems = transformLogsToTimelineItems(jobLogs.logs || []);
-    const breakItems = transformBreakRequestsToItems(
-      jobLogs.breakRequests || [],
-    );
+    const breakItems = transformBreakRequestsToItems(jobLogs.breakRequests || []);
     const signOffItems = transformSignOffsToItems(jobLogs.signOffSheets || []);
 
     const allItems = [...logItems, ...breakItems, ...signOffItems];
-    // Sort by effectiveTimestamp descending (newest first)
+
     return allItems.sort((a, b) => {
-      const dateA = a.effectiveTimestamp
-        ? new Date(a.effectiveTimestamp).getTime()
-        : 0;
-      const dateB = b.effectiveTimestamp
-        ? new Date(b.effectiveTimestamp).getTime()
-        : 0;
+      const dateA = a.effectiveTimestamp ? new Date(a.effectiveTimestamp).getTime() : 0;
+      const dateB = b.effectiveTimestamp ? new Date(b.effectiveTimestamp).getTime() : 0;
       return dateB - dateA;
     });
   }, [jobLogs]);
 
-  // Extract revision updates from jobLogs for TimelineSectionHeader
   const apiRevisionUpdateDataList = useMemo(() => {
     if (!jobLogs?.logs?.length) return [];
 
     const revisionDataList: any[] = [];
 
-    // Find all progress update logs that have revisions
     for (const log of jobLogs.logs) {
       if (
         (log.logType === "progress_update" || log.logType === "SUBMISSION") &&
@@ -287,7 +243,6 @@ const TimelineSection: React.FC<{
     return revisionDataList;
   }, [jobLogs]);
 
-  // Build timeline items - combines API logs with proposal data
   const timelineItems = useMemo(() => {
     const allItems: Array<{
       title: string;
@@ -300,6 +255,7 @@ const TimelineSection: React.FC<{
       detailsType?: string;
       attachmentUrl?: string | null;
       attachmentName?: string;
+      attachments?: Array<{ name: string; url: string }>;
       sortOrder: number;
       logId?: number;
       logType?: string;
@@ -317,7 +273,7 @@ const TimelineSection: React.FC<{
       }));
       allItems.push(...apiItemsWithSortOrder);
     }
-    // Sort by effectiveTimestamp descending (newest first)
+
     return allItems.sort((a, b) => {
       const dateA = a.effectiveTimestamp
         ? new Date(a.effectiveTimestamp).getTime()
@@ -374,28 +330,38 @@ const TimelineSection: React.FC<{
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-      {/* Action Required - Show ONLY progress updates requiring engineer action (revision_requested or pending) */}
+      {/* Engineer Action Required: show only when waiting for engineer response */}
       {progressUpdates.length > 0 && (
         <div className="space-y-3 mb-4">
-          {/* Calculate action required count once */}
           {(() => {
             const actionRequiredUpdates = progressUpdates.filter((update) => {
-              if (update.title !== "Progress Update") return false;
-              const statusLower = String(update.statusText || "").toLowerCase();
-              return (
-                statusLower === "pending" ||
-                statusLower === "revision requested" ||
-                statusLower === "revision_requested"
-              );
+              const statusLower = String(update.statusText || "").toLowerCase().trim();
+
+              const revisions = update.revisions || [];
+              const latestRevision = revisions[0]; // newest first
+              const latestRevisionStatus = String(latestRevision?.status || "").toLowerCase().trim();
+
+              const isRevisionRequest =
+                statusLower.includes("revision requested") ||
+                statusLower === "revision_requested" ||
+                statusLower.includes("revise requested") ||
+                statusLower.includes("needs revision");
+
+              // Show if it's a revision request AND engineer has NOT yet responded
+              // (no content from engineer in the latest revision)
+              const engineerHasResponded = !!latestRevision?.content;
+
+              return isRevisionRequest && !engineerHasResponded;
             });
+
             const actionRequiredCount = actionRequiredUpdates.length;
 
             return actionRequiredCount > 0 ? (
               <>
                 <ActionRequiredBadge count={actionRequiredCount} />
                 {actionRequiredUpdates.map((update, idx) => {
-                  if (update.title === REVISION_UPDATE_LABELS.title)
-                    return null;
+                  if (update.title === REVISION_UPDATE_LABELS.title) return null;
+
                   const updateKey = `${update.title || "update"}-${idx}`;
                   const isCollapsed = collapsedUpdates[updateKey] ?? false;
 
@@ -424,7 +390,7 @@ const TimelineSection: React.FC<{
         </div>
       )}
 
-      {/* Activity Timeline - Show ALL items using TimelineSectionHeader for expandable revision conversations */}
+      {/* Activity Timeline */}
       {timelineItems.length > 0 && (
         <TimelineSectionHeader
           items={timelineItems.map((item) => ({
@@ -436,14 +402,12 @@ const TimelineSection: React.FC<{
         />
       )}
 
-      {/* This message won't show now since we always have at least Job Posted */}
       {timelineItems.length === 0 && (
         <div className="text-center text-gray-500 py-4">
           No timeline data available yet
         </div>
       )}
 
-      {/* revision Modal */}
       <RevisionModal
         isOpen={isRevisionOpen}
         onClose={handleCloseRevision}
@@ -451,16 +415,11 @@ const TimelineSection: React.FC<{
         onOpenUpdateForm={handleOpenRevisionUpdateForm}
       />
 
-      {/* revision Update Form Modal */}
-      <Popup
-        open={isRevisionUpdateFormOpen}
-        onClose={handleCloseRevisionUpdateForm}
-      >
+      <Popup open={isRevisionUpdateFormOpen} onClose={handleCloseRevisionUpdateForm}>
         <RevisionRequestUpdateForm
           onClose={handleCloseRevisionUpdateForm}
           onAddProgressUpdate={onAddProgressUpdate}
           assignmentId={assignmentId}
-          // API returns jobLogId in revisions, not logId - check both for compatibility
           logId={
             activeRevision?.revisions?.[0]?.jobLogId ??
             activeRevision?.revisions?.[0]?.logId ??
@@ -470,7 +429,6 @@ const TimelineSection: React.FC<{
         />
       </Popup>
 
-      {/* Break Details Modal */}
       <BreakDetailsModal
         isOpen={isBreakDetailsOpen}
         onClose={handleCloseBreakDetails}

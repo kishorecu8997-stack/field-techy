@@ -12,6 +12,10 @@ import {
   UPDATE_LOG_MESSAGES,
 } from "@/constants/updateLogConstants";
 import { useEngineerAddWorkLog } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { getJobLogs } from "@/api";
+import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
+import { apiClient } from "@/shared/apiServices/apiClient";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface UpdateLogFormProps {
   onClose: () => void;
@@ -30,12 +34,27 @@ const UpdateLogForm = ({ onClose, assignmentId }: UpdateLogFormProps) => {
     defaultValues: UPDATE_LOG_DEFAULTS,
   });
   const { showPopup } = usePopupStore();
+  const queryClient = useQueryClient();
 
   // Mutation for adding work log
-  const { mutate: addWorkLog } = useEngineerAddWorkLog({
+  const { mutateAsync: addWorkLog } = useEngineerAddWorkLog({
     assignmentId,
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Log submitted successfully!");
+      // Force refetch the job logs to update timeline immediately
+      if (assignmentId) {
+        try {
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId },
+          });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          queryClient.setQueryData(exactQueryKey, response.data);
+        } catch (error) {
+          console.error("Failed to refetch timeline:", error);
+          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+      }
       onClose();
     },
     onError: (error) => {
@@ -62,20 +81,44 @@ const UpdateLogForm = ({ onClose, assignmentId }: UpdateLogFormProps) => {
             // Call the real API to submit the work log
             if (assignmentId) {
               const attachment = data.attachments?.[0];
-              addWorkLog({
-                body: {
-                  assignmentId,
-                  logType: "progress_update",
-                  details: data.notes,
-                  attachment: attachment
-                    ? {
-                        filename: attachment.name,
-                        size: attachment.size,
-                        mimeType: attachment.type,
-                      }
-                    : undefined,
-                },
+              
+              // Prepare attachment metadata if file exists
+              const attachmentMeta = attachment
+                ? {
+                    filename: attachment.name,
+                    size: attachment.size,
+                    mimeType: attachment.type,
+                  }
+                : undefined;
+
+              // Prepare request body - only include attachment if file exists
+              // Prepare request body - only include attachment if file exists
+              // Note: Backend API may not support title yet, but we send it anyway
+              const requestBody: any = {
+                assignmentId,
+                logType: "progress_update",
+                title: data.title,
+                details: data.notes,
+              };
+
+              // Only add attachment if file exists
+              if (attachmentMeta) {
+                requestBody.attachment = attachmentMeta;
+              }
+
+              // Call the API to submit work log and get response with upload URL
+              const response = await addWorkLog({
+                body: requestBody,
               });
+
+              // Upload file to S3 if URL is provided in response
+              if (attachment && response.attachmentUrl) {
+                await fetch(response.attachmentUrl, {
+                  method: "PUT",
+                  body: attachment,
+                  headers: { "Content-Type": attachment.type },
+                });
+              }
             } else {
               toast.error("No assignment found. Cannot submit log.");
             }

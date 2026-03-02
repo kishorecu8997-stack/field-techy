@@ -32,6 +32,9 @@ interface TimelineSectionHeaderProps {
     logType?: string;
     logId?: number;
     approverComment?: string | null;
+    attachmentUrl?: string | null;
+    attachmentName?: string;
+    attachments?: Array<{ name: string; url: string }>;
   }>;
   apiRevisionUpdateDataList?: RevisionData[];
 }
@@ -121,6 +124,66 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                       {item.details}
                     </p>
                   )}
+                  {/* Attachment display for progress updates and final statements */}
+                  {item.attachmentUrl && (
+                    <div className="mt-2">
+                      <a
+                        href={item.attachmentUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 cursor-pointer"
+                      >
+                        <svg
+                          className="h-4 w-4 text-gray-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                          />
+                        </svg>
+                        {/* Show different label based on logType */}
+                        {item.logType === "FINAL_STATEMENT" || item.logType === "final_statement"
+                          ? "Signature"
+                          : item.logType === "WORK_SUBMISSION" || item.logType === "work_submission" || item.logType === "SUBMISSION"
+                          ? "Work Submission"
+                          : "View Document"}
+                      </a>
+                    </div>
+                  )}
+                  {/* Display multiple attachments (for final statements) */}
+                  {item.attachments && item.attachments.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {item.attachments.map((attachment, idx) => (
+                        <a
+                          key={idx}
+                          href={attachment.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 cursor-pointer"
+                        >
+                          <svg
+                            className="h-4 w-4 text-gray-500"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                            />
+                          </svg>
+                          {attachment.name}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                   {isExpanded && item.approverComment && (
                     <div className="mt-2 p-2 bg-gray-100 dark:bg-gray-700 rounded">
                       <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
@@ -186,7 +249,7 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                     <div key={revision.revisionId || revIdx} className="mb-3">
                       {/* Client message in amber box */}
                       {revision.clientComment && (
-                        <div className="rounded-lg border border-amber-200 bg-amber-50/70 p-3 w-full dark:border-amber-800/50 dark:bg-amber-900/20">
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 w-full dark:border-amber-800/50 dark:bg-amber-900/20">
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1">
                               <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">

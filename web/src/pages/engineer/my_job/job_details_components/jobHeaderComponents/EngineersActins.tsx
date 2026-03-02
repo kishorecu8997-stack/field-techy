@@ -14,6 +14,7 @@ import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/job
 import FinalStatementForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/FinalStatementForm";
 import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
 import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
 import { RiErrorWarningFill } from "react-icons/ri";
 
 /**
@@ -64,6 +65,7 @@ const EngineersActions = ({
   onAddProgressUpdate,
   onOpenFinalStatement,
   isFinalStatementSubmitted,
+  isFinalStatementApproved,
   onOpenGiveClientFeedback,
   onOpenViewClientFeedback,
   assignmentId,
@@ -71,6 +73,8 @@ const EngineersActions = ({
   progressUpdates,
   numberOfVacancy,
   numberOfApprovedProposals,
+  jobStartDate,
+  jobEndDate,
 }: {
   setOfferJobStatus?: Dispatch<
     SetStateAction<OfferedJobStatusType | undefined>
@@ -88,12 +92,15 @@ const EngineersActions = ({
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
   isFinalStatementSubmitted?: boolean;
+  isFinalStatementApproved?: boolean;
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
   assignmentId?: number;
   progressUpdates?: ProgressUpdate[];
   numberOfVacancy?: number;
   numberOfApprovedProposals?: number;
+  jobStartDate?: string;
+  jobEndDate?: string;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
@@ -124,11 +131,19 @@ const EngineersActions = ({
   const { mutateAsync: requestStartJob, isPending: isStartingJob } =
     useEngineerRequestStart({
       assignmentId,
-      onSuccess: () => {
+      onSuccess: async () => {
         toast.success("Job start request submitted successfully");
-        // Query invalidation is handled by the mutation hook
-        handleUpdateOfferStatus("started");
-        window.location.reload();
+        // Update local state to show pending approval status (not started yet)
+        handleUpdateOfferStatus("start_pending_approval");
+        // Invalidate queries to refetch updated job data without page reload
+        queryClient.invalidateQueries({ queryKey: ["engineers"] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+        // Force refetch the job details
+        if (assignmentId) {
+          queryClient.invalidateQueries({ 
+            queryKey: ["engineer", "jobDetails", assignmentId] 
+          });
+        }
       },
       onError: (error) => {
         console.error("Failed to request job start:", error);
@@ -244,6 +259,8 @@ const EngineersActions = ({
           onClose={closePopup}
           onAddProgressUpdate={onAddProgressUpdate}
           assignmentId={assignmentId}
+          jobStartDate={jobStartDate}
+          jobEndDate={jobEndDate}
         />
       ),
       bodyClassName: "overflow-visible",
@@ -295,10 +312,8 @@ const EngineersActions = ({
         Break Request
       </Button>
       <Button
-        className={`bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm ${hasPendingProgressUpdate ? "opacity-50 cursor-not-allowed" : ""}`}
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
         onClick={() => setOpen?.(true)}
-        disabled={hasPendingProgressUpdate}
-        aria-disabled={hasPendingProgressUpdate}
       >
         Create Log
       </Button>
@@ -310,7 +325,9 @@ const EngineersActions = ({
 
   // Determine engineer's proposal status - ONLY from assignment data, not job status
   // This ensures each engineer sees only their own proposal status
+  // Also check for submitted status when there's no assignment yet (proposal just sent)
   const isApplied = hasAssignment && OfferJobStatus === "applied";
+  const isSubmitted = OfferJobStatus === "submitted" || OfferJobStatus === "applied";
   const isRejected = hasAssignment && (OfferJobStatus === "rejected" || mappedOfferStatus === "declined");
   const isJobStarted = OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
   const isProposalAccepted = hasAssignment && (
@@ -475,9 +492,8 @@ const EngineersActions = ({
               Break Request
             </Button>
             <Button
-              className={`bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300 ${hasPendingProgressUpdate ? "opacity-50 cursor-not-allowed" : ""}`}
+              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
               onClick={() => setOpen?.(true)}
-              disabled={hasPendingProgressUpdate}
             >
               Create Log
             </Button>
@@ -488,8 +504,14 @@ const EngineersActions = ({
               Final Statement
             </Button>
           </div>
+        ) : /* Final Statement Approved - Job Completed Status */
+        isFinalStatementApproved ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-green-500 w-6 h-6" />
+            <span className="text-lg text-green-500">Job Completed</span>
+          </div>
         ) : /* Applied Status */
-        isApplied ? (
+        isApplied || isSubmitted ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             <icons.checkCircle className="text-green-500 w-6 h-6" />
             <span className="text-lg">Job Applied</span>

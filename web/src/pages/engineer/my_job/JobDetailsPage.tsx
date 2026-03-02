@@ -28,6 +28,20 @@ import ReviewClientModal from "./job_details_components/jobHeaderComponents/Revi
 import JobTabSection from "./job_details_components/JobTabSection";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import ChatForJobs from "@/shared/components/ChatForJobs";
+import skillsData from "@/dummy_data/skills.json";
+import toolsData from "@/dummy_data/tools.json";
+
+// Create skill lookup map for fast ID to label conversion
+const skillMap = new Map<number, string>();
+skillsData.skills.forEach((skill) => {
+  skillMap.set(skill.id, skill.label);
+});
+
+// Create tool lookup map for fast ID to label conversion
+const toolMap = new Map<string, string>();
+toolsData.tools.forEach((tool) => {
+  toolMap.set(tool.id, tool.label);
+});
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -96,18 +110,26 @@ const mapJobToJobOverview = (
   const jobTitle = job?.jobTitle || "";
   const jobDescription = job?.jobDescription || "";
 
-  // Extract skills - convert numbers to strings (engineer API returns numbers)
+  // Extract skills - convert IDs to labels using skillMap
   const skills = Array.isArray(job.skills)
-    ? job.skills.map((skill) => String(skill))
+    ? job.skills.map((skill) => {
+        const skillId = typeof skill === "number" ? skill : parseInt(String(skill), 10);
+        const skillLabel = skillMap.get(skillId);
+        return skillLabel || String(skill);
+      })
     : [];
 
-  // Extract tools - convert numbers to strings (engineer API returns numbers)
+  // Extract tools - convert IDs to labels using toolMap
   const tools = Array.isArray(job.tools)
-    ? job.tools.map((tool) => ({
-        name: String(tool),
-        price: "",
-        image: undefined,
-      }))
+    ? job.tools.map((tool) => {
+        const toolId = String(tool);
+        const toolLabel = toolMap.get(toolId);
+        return {
+          name: toolLabel || String(tool),
+          price: "",
+          image: undefined,
+        };
+      })
     : [];
 
   // Extract duration from startDate and endDate
@@ -275,6 +297,25 @@ const JobDetailsPage = () => {
   const allProgressUpdates = useMemo(() => {
     return [...progressUpdates, ...apiProgressUpdates];
   }, [progressUpdates, apiProgressUpdates]);
+
+  // Check if final statement has been submitted and approved from job logs
+  const isFinalStatementSubmitted = useMemo(() => {
+    if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
+      return false;
+    }
+    const signOff = jobLogs.signOffSheets[0];
+    // Final statement is submitted if it has any status (pending, approved, or rejected)
+    return !!signOff.status;
+  }, [jobLogs]);
+
+  // Check if final statement has been approved by client
+  const isFinalStatementApproved = useMemo(() => {
+    if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
+      return false;
+    }
+    const signOff = jobLogs.signOffSheets[0];
+    return signOff.status === "approved";
+  }, [jobLogs]);
 
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
@@ -461,10 +502,14 @@ const JobDetailsPage = () => {
                 activeTab={activeTab}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 onOpenFinalStatement={handleOpenFinalStatement}
+                isFinalStatementSubmitted={isFinalStatementSubmitted}
+                isFinalStatementApproved={isFinalStatementApproved}
                 assignmentId={assignmentId}
                 progressUpdates={allProgressUpdates}
                 jobId={params.jobId}
                 onToggleChat={handleToggleChat}
+                jobStartDate={job?.startDate || undefined}
+                jobEndDate={job?.endDate || undefined}
               />
 
               <JobTabSection
@@ -474,7 +519,8 @@ const JobDetailsPage = () => {
                 setSendProposal={setIsSendProposal}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
-                OfferJobStatus={assignmentStatus}
+                OfferJobStatus={_offerJobStatus || assignmentStatus}
+                setOfferJobStatus={setOfferJobStatus}
                 progressUpdates={allProgressUpdates}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 assignmentId={assignmentId}

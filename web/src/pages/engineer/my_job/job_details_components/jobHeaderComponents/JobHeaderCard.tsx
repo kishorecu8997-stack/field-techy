@@ -46,6 +46,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onAddProgressUpdate,
   onOpenFinalStatement,
   isFinalStatementSubmitted,
+  isFinalStatementApproved,
   onOpenGiveClientFeedback,
   onOpenViewClientFeedback,
   allCardsApproved,
@@ -53,6 +54,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   assignmentId,
   progressUpdates,
   jobId,
+  jobStartDate,
+  jobEndDate,
   onToggleChat,
 }) => {
   const params = useParams();
@@ -264,12 +267,15 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             onAddProgressUpdate={onAddProgressUpdate}
             onOpenFinalStatement={onOpenFinalStatement}
             isFinalStatementSubmitted={isFinalStatementSubmitted}
+            isFinalStatementApproved={isFinalStatementApproved}
             onOpenGiveClientFeedback={onOpenGiveClientFeedback}
             onOpenViewClientFeedback={onOpenViewClientFeedback}
             assignmentId={assignmentId}
             progressUpdates={progressUpdates}
             numberOfVacancy={numberOfVacancy}
             numberOfApprovedProposals={numberOfApprovedProposals}
+            jobStartDate={jobStartDate}
+            jobEndDate={jobEndDate}
           />
         )}
       </div>

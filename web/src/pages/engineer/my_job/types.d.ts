@@ -129,12 +129,15 @@ export interface JobHeaderCardProps {
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
   isFinalStatementSubmitted?: boolean;
+  isFinalStatementApproved?: boolean;
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
   allCardsApproved?: boolean;
   assignmentId?: number;
   progressUpdates?: ProgressUpdate[];
   jobId: string;
+  jobStartDate?: string;
+  jobEndDate?: string;
   onToggleChat?: (jobId: string) => void;
   onCloseChat?: () => void;
 }

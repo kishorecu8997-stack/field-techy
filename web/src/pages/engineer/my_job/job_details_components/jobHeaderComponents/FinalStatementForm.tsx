@@ -1,4 +1,8 @@
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@/shared/apiServices/apiClient";
+import { getJobLogs } from "@/api";
+import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
@@ -13,6 +17,7 @@ import {
   FINAL_STATEMENT_MESSAGES,
 } from "@/constants/finalStatementConstants";
 import { useEngineerSubmitSignOff } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
 
 interface FinalStatementFields {
   notes: string;
@@ -36,10 +41,32 @@ const FinalStatementForm = ({
   assignmentId?: number;
 }) => {
   const { showPopup } = usePopupStore();
+  const queryClient = useQueryClient();
   const { mutateAsync: submitSignOff } = useEngineerSubmitSignOff({
     assignmentId,
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success(FINAL_STATEMENT_MESSAGES.submitSuccess);
+      // Force refetch the job logs to update timeline immediately
+      if (assignmentId) {
+        try {
+          // Directly fetch the latest job logs from API
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId },
+          });
+          
+          // Use exact query key format from getJobLogsQueryKey
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          
+          // Update using exact key and fallback keys
+          queryClient.setQueryData(exactQueryKey, response.data);
+          queryClient.setQueryData(["getJobLogs", { path: { assignmentId } }], response.data);
+          queryClient.setQueryData(queryKeys.engineer.jobLogs(assignmentId), response.data);
+        } catch (error) {
+          console.error("Error refetching job logs:", error);
+          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+      }
       onClose?.();
     },
     onError: (error) => {
@@ -98,7 +125,7 @@ const FinalStatementForm = ({
                 : undefined;
 
               // Call the API to submit final statement
-              await submitSignOff({
+              const response = await submitSignOff({
                 body: {
                   assignmentId: Number(assignmentId),
                   workAttachment: workAttachment || {
@@ -114,6 +141,25 @@ const FinalStatementForm = ({
                   comments: data.notes || "",
                 },
               });
+
+              // Upload files to S3 if URLs are returned
+              const uploadFile = async (file: File, url: string) => {
+                await fetch(url, {
+                  method: "PUT",
+                  body: file,
+                  headers: { "Content-Type": file.type },
+                });
+              };
+
+              // Upload work attachment if URL provided
+              if (taskFile && response.workAttachmentUrl) {
+                await uploadFile(taskFile, response.workAttachmentUrl);
+              }
+
+              // Upload signature attachment if URL provided
+              if (signatureFile && response.signatureAttachmentUrl) {
+                await uploadFile(signatureFile, response.signatureAttachmentUrl);
+              }
 
               close(true);
             } catch (error) {

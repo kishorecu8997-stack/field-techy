@@ -176,29 +176,41 @@ const mapClientJobToJobOverview = (
   const jobTitle = job?.jobTitle || job?.title || "";
   const jobDescription = job?.jobDescription || "";
 
-  // Extract skills - pass through exactly as backend returns (could be strings or numbers)
+  // Extract skills - convert IDs to labels using skillMap
   const rawSkills = getJobValue<string[] | number[]>("skills");
   let skills: string[] = [];
   if (Array.isArray(rawSkills)) {
-    skills = rawSkills.map((skill) => String(skill));
+    skills = rawSkills.map((skill) => {
+      const skillId = typeof skill === "string" ? parseInt(skill, 10) : skill;
+      const skillLabel = skillMap.get(skillId);
+      return skillLabel || String(skill);
+    });
   }
 
-  // Extract tools - pass through exactly as backend returns
+  // Extract tools - convert IDs to labels using toolMap
   const rawTools = getJobValue<unknown>("tools");
   let tools: Array<{ name: string; price: string; image?: string }> = [];
+  
+  // Helper function to convert tool ID to label
+  const getToolLabel = (toolValue: string | number): string => {
+    const toolId = String(toolValue);
+    const toolLabel = toolMap.get(toolId);
+    return toolLabel || String(toolValue);
+  };
   
   // Check for tools array first
   if (Array.isArray(rawTools) && rawTools.length > 0) {
     tools = rawTools.map((tool): { name: string; price: string; image?: string } => {
       if (typeof tool === "object" && tool !== null) {
         const toolObj = tool as Record<string, unknown>;
+        const toolName = toolObj.name || toolObj.id;
         return {
-          name: String(toolObj.name || toolObj.id || JSON.stringify(tool)),
+          name: toolName ? getToolLabel(toolName as string | number) : String(tool),
           price: String(toolObj.price || toolObj.amount || ""),
           image: toolObj.image as string | undefined,
         };
       }
-      return { name: String(tool), price: "", image: undefined };
+      return { name: getToolLabel(tool as string | number), price: "", image: undefined };
     }).filter(t => t.name && t.name !== "undefined");
   } else {
     // Check for individual tool fields: toolName, toolImage, toolAdditionalBudget
@@ -211,7 +223,7 @@ const mapClientJobToJobOverview = (
       const budgetParts = toolAdditionalBudget ? toolAdditionalBudget.split(",").map(b => b.trim()) : [];
       
       tools = toolNames.map((name, index) => ({
-        name: name,
+        name: getToolLabel(name),
         price: budgetParts[index] || "",
         image: index === 0 && toolImage ? toolImage : undefined,
       })).filter(t => t.name);

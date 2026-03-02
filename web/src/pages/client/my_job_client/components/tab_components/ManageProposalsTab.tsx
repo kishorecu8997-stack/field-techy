@@ -90,7 +90,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             query.queryKey[0]._id === "clientGetAssignmentDetails"
           ),
       });
-      window.location.reload();
+      // Note: Query invalidation handles UI update - no need for page reload
     },
     onError: (error) => {
       console.error("Failed to action on proposal:", error);

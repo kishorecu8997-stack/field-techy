@@ -26,7 +26,12 @@ import {
   useEngineerGetMyJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import type { EngineerSearchJobsResponse } from "@/api";
+import { engineerGetMyJobs } from "@/api";
+import { engineerGetMyJobsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { toast } from "react-toastify";
+import { getJobLogs } from "@/api";
+import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
+import { apiClient } from "@/shared/apiServices/apiClient";
 
 /**
  * Maps API job data to JobOverviewProps format for the Job Overview tab
@@ -135,6 +140,7 @@ const JobTabSection = ({
   activeTab,
   setActiveTab,
   OfferJobStatus,
+  setOfferJobStatus,
   progressUpdates = [],
   onAddProgressUpdate,
   jobInfo,
@@ -149,6 +155,7 @@ const JobTabSection = ({
   activeTab?: string;
   setActiveTab?: React.Dispatch<React.SetStateAction<string>>;
   OfferJobStatus?: AssignmentStatus;
+  setOfferJobStatus?: (status: AssignmentStatus) => void;
   progressUpdates?: ProgressUpdate[];
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   jobInfo?: JobInfoSectionProps;
@@ -161,12 +168,34 @@ const JobTabSection = ({
   const queryClient = useQueryClient();
 
   const { mutateAsync: applyJob } = useEngineerApplyJob({
-    onSuccess: () => {
+    onSuccess: async () => {
       // After successful submission, set hasApplied to true to show Proposal Info tab
       setHasApplied(true);
+      // Update parent state to reflect the change immediately
+      if (setOfferJobStatus) {
+        setOfferJobStatus("submitted");
+      }
+      // Switch to Proposal Info tab
+      setSelectedTab(JOB_TAB_LABELS.proposalInfo);
       // Invalidate engineer queries to trigger a refetch and get updated assignmentId
       // This ensures the job data is refreshed without requiring a full page reload
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      // Also invalidate job logs to update the timeline immediately
+      if (assignmentId) {
+        queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        queryClient.invalidateQueries({ queryKey: ["engineer", "jobLogs", assignmentId] });
+        // Force refresh timeline cache
+        try {
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId },
+          });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          queryClient.setQueryData(exactQueryKey, response.data);
+        } catch (error) {
+          console.error("Error refetching timeline:", error);
+        }
+      }
     },
   });
 
@@ -210,6 +239,7 @@ const JobTabSection = ({
 
   // Determine if engineer has applied based on OfferJobStatus from API (persists after refresh)
   // This is the primary source of truth - local hasApplied state only works within session
+  // Note: "submitted" status is handled by local hasApplied state
   const hasAppliedFromApi =
     OfferJobStatus === "applied" ||
     OfferJobStatus === "accepted" ||
@@ -275,8 +305,51 @@ const JobTabSection = ({
         }
       }
 
+      // Immediately update UI state before toast
+      setHasApplied(true);
+      // Also set submitted proposal data so it displays immediately in ProposalInfoTab
+      setSubmittedProposal({
+        proposalDescription: data.proposalDescription || "",
+        attachments: data.attachments,
+      });
+      setShowSuccess(true);
+      // Switch to Proposal Info tab immediately
+      setSelectedTab(JOB_TAB_LABELS.proposalInfo);
+      // Update parent state to reflect the change immediately
+      if (setOfferJobStatus) {
+        setOfferJobStatus("submitted");
+      }
+      // Force refetch timeline to update immediately
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      
+      // Manually fetch and update engineerJobs cache for timeline
+      try {
+        const response = await engineerGetMyJobs({ client: apiClient });
+        if (response.data) {
+          const exactQueryKey = engineerGetMyJobsQueryKey();
+          queryClient.setQueryData(exactQueryKey, response.data);
+        }
+      } catch (error) {
+        console.error("Error refetching engineer jobs:", error);
+      }
+      
+      if (assignmentId) {
+        queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        queryClient.invalidateQueries({ queryKey: ["engineer", "jobLogs", assignmentId] });
+        // Also manually set the cache to trigger immediate update
+        try {
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId },
+          });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          queryClient.setQueryData(exactQueryKey, response.data);
+        } catch (error) {
+          console.error("Error refetching timeline:", error);
+        }
+      }
+
       toast.success("Proposal submitted successfully!");
-      window.location.reload()
     } catch (error) {
       console.error("Failed to submit proposal:", error);
       toast.error("Failed to submit proposal. Please try again.");

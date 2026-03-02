@@ -517,7 +517,8 @@ export function useEngineerRequestStart(options?: {
       // Invalidate job logs query when start request is submitted
       if (options?.assignmentId) {
         queryClient.invalidateQueries({
-          queryKey: ["getJobLogs", { path: { assignmentId: options.assignmentId } }],
+          queryKey: ["getJobLogs"],
+          exact: false,
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -539,7 +540,8 @@ export function useEngineerSubmitSignOff(options?: {
       // Invalidate job logs query when sign-off is submitted
       if (options?.assignmentId) {
         queryClient.invalidateQueries({
-          queryKey: ["getJobLogs", { path: { assignmentId: options.assignmentId } }],
+          queryKey: ["getJobLogs"],
+          exact: false,
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -561,7 +563,8 @@ export function useEngineerAddWorkLog(options?: {
       // Invalidate job logs query when work log is added
       if (options?.assignmentId) {
         queryClient.invalidateQueries({
-          queryKey: ["getJobLogs", { path: { assignmentId: options.assignmentId } }],
+          queryKey: ["getJobLogs"],
+          exact: false,
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -583,7 +586,8 @@ export function useEngineerSubmitRevision(options?: {
       // Invalidate job logs query when revision is submitted
       if (options?.assignmentId) {
         queryClient.invalidateQueries({
-          queryKey: ["getJobLogs", { path: { assignmentId: options.assignmentId } }],
+          queryKey: ["getJobLogs"],
+          exact: false,
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -604,8 +608,13 @@ export function useEngineerRequestBreak(options?: {
     onSuccess: (data) => {
       // Invalidate job logs query when break request is submitted
       if (options?.assignmentId) {
+        // Use partial matching to invalidate job logs queries
         queryClient.invalidateQueries({
-          queryKey: ["getJobLogs", { path: { assignmentId: options.assignmentId } }],
+          queryKey: ["engineer", "jobLogs", options.assignmentId],
+        });
+        // Also invalidate any other job logs queries with the same assignmentId
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });

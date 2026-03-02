@@ -18,6 +18,10 @@ import {
   REVISION_UPDATE_COLORS,
 } from "@/constants/revisionUpdateConstants";
 import { useEngineerSubmitRevision } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { getJobLogs } from "@/api";
+import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
+import { apiClient } from "@/shared/apiServices/apiClient";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * Revision request/update form for engineers to send notes and optional attachments.
@@ -39,12 +43,27 @@ const RevisionRequestUpdateForm = ({
   });
 
   const { showPopup } = usePopupStore();
+  const queryClient = useQueryClient();
 
   // Mutation for submitting revision
   const { mutate: submitRevision } = useEngineerSubmitRevision({
     assignmentId,
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Revision submitted successfully!");
+      // Force refetch the job logs to update timeline immediately
+      if (assignmentId) {
+        try {
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId },
+          });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          queryClient.setQueryData(exactQueryKey, response.data);
+        } catch (error) {
+          console.error("Failed to refetch timeline:", error);
+          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+      }
       onClose();
     },
     onError: (error) => {
