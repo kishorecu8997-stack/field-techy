@@ -2,7 +2,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import type { ManageEngineerProps } from "../types";
 import Popup from "@/shared/components/Popup";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 import ViewFileComponent from "@/pages/admin/engineer/components/ViewFileComponent";
@@ -36,7 +36,6 @@ export default function AllUsers() {
     type: ProfileFileType;
   } | null>(null);
 
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -46,15 +45,6 @@ export default function AllUsers() {
     limit: pageSize,
   });
 
-  const resetPreview = () => {
-    setSelectedFile(null);
-    setIsPreviewOpen(false);
-  };
-
-  useEffect(() => {
-    resetPreview();
-  }, [currentPage, pageSize]);
-
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   const selectedEngineer = useMemo(() => {
@@ -62,12 +52,7 @@ export default function AllUsers() {
     return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
   }, [engineerData, selectedFile]);
 
-  useEffect(() => {
-    if (!selectedFile) return;
-    if (isLoading || isFetching) return;
-    if (selectedEngineer) return;
-    resetPreview();
-  }, [isFetching, isLoading, selectedEngineer, selectedFile]);
+  const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
   const columns: Column<ManageEngineerProps>[] = [
     {
@@ -180,7 +165,6 @@ export default function AllUsers() {
           onChange={(value) => {
             if (!value) {
               setSelectedFile(null);
-              setIsPreviewOpen(false);
               return;
             }
 
@@ -188,7 +172,6 @@ export default function AllUsers() {
               engineerId: row.id,
               type: value as ProfileFileType,
             });
-            setIsPreviewOpen(true);
           }}
         />
       ),
@@ -214,10 +197,10 @@ export default function AllUsers() {
           />
         </div>
       </div>
-      <Popup open={isPreviewOpen} onClose={() => setIsPreviewOpen(false)}>
+      <Popup open={isPreviewOpen} onClose={() => setSelectedFile(null)}>
         {selectedFile && selectedEngineer && (
           <ViewFileComponent
-            onClose={() => setIsPreviewOpen(false)}
+            onClose={() => setSelectedFile(null)}
             fileType={selectedFile.type}
             userId={selectedEngineer.userId}
             fileUrl={getEngineerFileUrl(selectedEngineer, selectedFile?.type)}

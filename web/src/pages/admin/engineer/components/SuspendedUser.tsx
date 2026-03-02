@@ -6,7 +6,7 @@ import type { ManageEngineerProps, StatusHistoryType } from "../types";
 import { documentType } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import {
   useAdminEngineersByUserIdStatus,
@@ -40,7 +40,6 @@ export default function SuspendedUser() {
     engineerId: number;
     type: ProfileFileType;
   } | null>(null);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -53,26 +52,12 @@ export default function SuspendedUser() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
-    const resetPreview = () => {
-      setSelectedFile(null);
-      setIsPreviewOpen(false);
-    };
-
-  useEffect(() => {
-    resetPreview();
-  }, [currentPage, pageSize]);
-
   const selectedEngineer = useMemo(() => {
     if (!selectedFile) return null;
     return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
   }, [engineerData, selectedFile]);
 
-  useEffect(() => {
-    if (!selectedFile) return;
-    if (isLoading || isFetching) return;
-    if (selectedEngineer) return;
-    resetPreview();
-  }, [isFetching, isLoading, selectedEngineer, selectedFile]);
+  const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
   const { mutateAsync: updateEngineerStatus } =
     useAdminEngineersByUserIdStatus();
@@ -210,12 +195,10 @@ export default function SuspendedUser() {
           onChange={(value) => {
             if (!value) {
               setSelectedFile(null);
-              setIsPreviewOpen(false);
               return;
             }
 
             setSelectedFile({ engineerId: row.id, type: value as ProfileFileType });
-            setIsPreviewOpen(true);
           }}
         />
       ),
@@ -287,10 +270,10 @@ export default function SuspendedUser() {
           />
         </div>
       </div>
-      <Popup open={isPreviewOpen} onClose={() => setIsPreviewOpen(false)}>
+      <Popup open={isPreviewOpen} onClose={() => setSelectedFile(null)}>
         {selectedFile && selectedEngineer && (
           <ViewFileComponent
-            onClose={() => setIsPreviewOpen(false)}
+            onClose={() => setSelectedFile(null)}
             fileType={selectedFile.type}
             userId={selectedEngineer.userId}
             fileUrl={getEngineerFileUrl(selectedEngineer, selectedFile?.type)}

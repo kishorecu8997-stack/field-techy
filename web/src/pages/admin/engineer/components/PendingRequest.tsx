@@ -5,7 +5,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -37,7 +37,6 @@ export default function PendingRequest() {
     engineerId: number;
     type: ProfileFileType;
   } | null>(null);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -76,26 +75,12 @@ export default function PendingRequest() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
-  const resetPreview = () => {
-    setSelectedFile(null);
-    setIsPreviewOpen(false);
-  };
-
-  useEffect(() => {
-    resetPreview();
-  }, [currentPage, pageSize]);
-
   const selectedEngineer = useMemo(() => {
     if (!selectedFile) return null;
     return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
   }, [engineerData, selectedFile]);
 
-  useEffect(() => {
-    if (!selectedFile) return;
-    if (isLoading || isFetching) return;
-    if (selectedEngineer) return;
-    resetPreview();
-  }, [isFetching, isLoading, selectedEngineer, selectedFile]);
+  const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
   const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
     await showPopup({
@@ -189,12 +174,10 @@ export default function PendingRequest() {
             onChange={(value) => {
               if (!value) {
                 setSelectedFile(null);
-                setIsPreviewOpen(false);
                 return;
               }
 
               setSelectedFile({ engineerId: row.id, type: value as ProfileFileType });
-              setIsPreviewOpen(true);
             }}
           />
         );
@@ -315,10 +298,10 @@ export default function PendingRequest() {
           />
         </div>
       </div>
-      <Popup open={isPreviewOpen} onClose={() => setIsPreviewOpen(false)}>
+      <Popup open={isPreviewOpen} onClose={() => setSelectedFile(null)}>
         {selectedFile && selectedEngineer && (
           <ViewFileComponent
-            onClose={() => setIsPreviewOpen(false)}
+            onClose={() => setSelectedFile(null)}
             fileType={selectedFile.type}
             userId={selectedEngineer.userId}
             fileUrl={getEngineerFileUrl(selectedEngineer, selectedFile?.type)}
