@@ -26,6 +26,7 @@ export interface ApiErrorResponse {
   instance?: string;
   message?: string;
   failedAttempts?: number;
+  error?: string;
 }
 
 /**
@@ -193,6 +194,10 @@ export class GlobalApiErrorHandler {
       return errorResponse.title;
     }
 
+    if (errorResponse.error) {
+      return errorResponse.error;
+    }
+
     // Fall back to status-based default message
     if (status && this.defaultStatusMessages.has(status)) {
       return this.defaultStatusMessages.get(status)!;
@@ -262,7 +267,8 @@ export class GlobalApiErrorHandler {
       if (
         errorResponse.message ||
         errorResponse.detail ||
-        errorResponse.title
+        errorResponse.title ||
+        errorResponse.error
       ) {
         const message = this.extractErrorMessage(
           errorResponse,

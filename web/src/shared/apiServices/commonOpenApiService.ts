@@ -11,6 +11,7 @@ import {
   type AppMarkProfileFileUploadedResponse,
   type AppMarkProfileFileUploadedError,
   type CreateRateAndReviewAssignmentResponse,
+  createRateAndReviewAssignment,
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -24,10 +25,12 @@ import {
   createRateAndReviewAssignmentMutation,
   getUserRatingAndReviewsOptions,
   getUserRatingAndReviewsQueryKey,
+  appResolveSignupRegionOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
 
@@ -101,7 +104,7 @@ export function useAppUploadProfileFile(options?: {
     };
     headers: { authorization: string };
   }) => {
-    return mutation.mutateAsync(params as any);
+    return mutation.mutateAsync(params);
   };
 
   return {
@@ -191,8 +194,23 @@ export function useCreateRateAndReviewAssignment(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const regionId = useUserSessionStore((s) => s.session?.regionId);
   return useMutation({
     ...createRateAndReviewAssignmentMutation({ client: apiClient }),
+    mutationFn: async (fnOptions) => {
+      const body = (
+        regionId !== undefined
+          ? { ...fnOptions?.body, regionId }
+          : fnOptions?.body
+      ) as (typeof fnOptions)["body"];
+      const { data } = await createRateAndReviewAssignment({
+        client: apiClient,
+        ...fnOptions,
+        body,
+        throwOnError: true,
+      });
+      return data!;
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: getUserRatingAndReviewsQueryKey({ client: apiClient }),
@@ -206,6 +224,13 @@ export function useCreateRateAndReviewAssignment(options?: {
 export function useGetUserRatingAndReviews(enabled: boolean = true) {
   return useQuery({
     ...getUserRatingAndReviewsOptions({ client: apiClient }),
+    enabled,
+  });
+}
+
+export function useAppResolveSignupRegion(enabled: boolean = true) {
+  return useQuery({
+    ...appResolveSignupRegionOptions({ client: apiClient }),
     enabled,
   });
 }

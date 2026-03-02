@@ -95,7 +95,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
     error: graphError,
   } = useAdminGetJobGraph(
     {
-      userId,
+      userId: userId ?? 0,
       interval: intervalMap[selectedDay || "monthly"],
     },
     {
