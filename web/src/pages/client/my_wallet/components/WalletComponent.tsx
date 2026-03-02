@@ -29,7 +29,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
     isError: txError,
   } = useClientTransactions({ limit: 5, sortOrder: "desc" }, true);
 
-  const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => {
+  const transactions: Transaction[] = (transactionsRaw?.transactions ?? []).map((tx) => {
     const amountNum = Number(tx.amount);
     const safeAmount = Number.isNaN(amountNum) ? 0 : amountNum;
     const txDate = new Date(tx.timestamp);
