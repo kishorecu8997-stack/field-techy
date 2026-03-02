@@ -42,6 +42,7 @@ import {
   useClientActionOnAssignment,
   useClientActionOnWorkLog,
   useClientActionOnBreak,
+  useClientRegionId,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
@@ -71,6 +72,7 @@ const TimelineSection: React.FC<{
   assignments?: ClientGetAssignmentDetailsResponse;
 }> = ({ assignmentId, jobId, hasProposals = false, assignments }) => {
   const queryClient = useQueryClient();
+  const regionId = useClientRegionId();
   const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
   const [isShortBreakCollapsed, setIsShortBreakCollapsed] = useState(false);
   const [isFinalStatementCollapsed, setIsFinalStatementCollapsed] = useState(false);
@@ -156,8 +158,9 @@ const TimelineSection: React.FC<{
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
+            query: regionId !== undefined ? { regionId } : undefined,
           });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId: effectiveAssignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId: effectiveAssignmentId }, query: regionId !== undefined ? { regionId } : undefined });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Failed to refetch timeline:", error);
@@ -178,8 +181,9 @@ const TimelineSection: React.FC<{
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
+            query: regionId !== undefined ? { regionId } : undefined,
           });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId: effectiveAssignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId: effectiveAssignmentId }, query: regionId !== undefined ? { regionId } : undefined });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Failed to refetch timeline:", error);
@@ -200,8 +204,9 @@ const TimelineSection: React.FC<{
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
+            query: regionId !== undefined ? { regionId } : undefined,
           });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId: effectiveAssignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId: effectiveAssignmentId }, query: regionId !== undefined ? { regionId } : undefined });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Failed to refetch timeline:", error);

@@ -10,6 +10,8 @@ import { JOB_STATUSES } from "@/pages/client/search_result/types";
 import { icons } from "@/config/icons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { absoluteUrls } from "@/config/urls";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import ErrorState from "@/shared/components/commonUI/ErrorState";
 
 interface JobCardDetailsHeaderProps {
   job: {
@@ -20,13 +22,21 @@ interface JobCardDetailsHeaderProps {
     type: string;
     status: string;
   };
+  isLoading: boolean;
+  isError: boolean;
+  refetch: () => void;
 }
 
 /*
  * JobCardDetailsHeader component displays the job details header
  * It contains the job title, job status, working type, and job actions
  */
-const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job }) => {
+const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({
+  job,
+  isLoading,
+  isError,
+  refetch,
+}) => {
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,10 +50,18 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job }) => {
     "hold",
   );
 
-  if (!job) {
+  if (isLoading) {
     return (
       <div className="p-5 bg-red-50 text-red-700 rounded-lg">
-        Job not found.
+        <LoaderComponent />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-5 bg-red-50 text-red-700 rounded-lg">
+        <ErrorState onRetry={refetch} />
       </div>
     );
   }

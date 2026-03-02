@@ -153,8 +153,10 @@ const MyJobsClient: React.FC = () => {
                 {currentJobs.length > 0 ? (
                   currentJobs.map((job) => <JobCard key={job.id} job={job} />)
                 ) : (
-                  <p className="col-span-full text-center text-gray-500 dark:text-gray-400">
-                    No jobs match the selected filter.
+                  <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
+                    <div className="font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 p-20 rounded-lg">
+                      No jobs match the selected filter.
+                    </div>
                   </p>
                 )}
               </div>
