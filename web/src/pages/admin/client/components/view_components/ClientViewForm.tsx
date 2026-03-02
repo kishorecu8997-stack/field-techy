@@ -31,6 +31,7 @@ const ClientViewForm: React.FC = () => {
     userId || "",
     {
       enabled: !!userId,
+      refetchOnMount: "always",
     },
   );
 
