@@ -32,13 +32,13 @@ const Dashboard: React.FC = () => {
   const { locationPermission, notificationPermission } = useDeviceStore();
   const { checkPermission: checkLocationPermission } = useGeolocation();
   const { checkPermission: checkNotificationPermission } = useFCM();
-  const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
-  const { data: clientInfo } = useClientGetCompanyInfo(!companyInfo);
+  const { setCompanyInfo } = useClientCompanyInfoStore();
+  const { data: clientInfo } = useClientGetCompanyInfo();
   useEffect(() => {
-    if (clientInfo && !companyInfo) {
+    if (clientInfo) {
       setCompanyInfo(clientInfo);
     }
-  }, [clientInfo, companyInfo, setCompanyInfo]);
+  }, [clientInfo, setCompanyInfo]);
   const { data: ClientJobOverview } = useClientJobOverviewDashboard();
   const summary = ClientJobOverview?.summary;
 

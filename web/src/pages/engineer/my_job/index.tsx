@@ -50,6 +50,7 @@ const MyJobsPage = () => {
     data: jobs,
     isLoading,
     isError,
+    refetch,
   } = useEngineerGetJobs(jobStatus, jobType);
 
   const jobFilters = [
@@ -91,7 +92,12 @@ const MyJobsPage = () => {
           onFilterChange={setActiveFilter as (filter: string) => void}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <JobList jobs={jobs || []} isLoading={isLoading} isError={isError} />
+          <JobList
+            jobs={jobs || []}
+            isLoading={isLoading}
+            isError={isError}
+            refetch={refetch}
+          />
           <div className="lg:col-span-1">
             <div className="sticky top-6">
               <SidebarProfile />

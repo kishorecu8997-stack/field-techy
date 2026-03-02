@@ -18,7 +18,7 @@ export const ClientViewData: CompanyInfo = {
   phoneNumber: "+91 9876543210",
   address: "123 Business Street, Sector 45",
   city: "New Delhi",
-  documentNumber: "123456789",
+  documentNumber: "VAT12345678",
 };
 
 export const bankCardData: BankCardData = {

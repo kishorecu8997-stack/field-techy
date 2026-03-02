@@ -118,11 +118,11 @@ export const CorporateClientEdit = ClientForm;
 export const HomeClientEdit = ClientForm;
 export const CorporateClientView = React.lazy(
   () =>
-    import("@/pages/admin/client/components/view_components/CorporateClientViewForm"),
+    import("@/pages/admin/client/components/view_components/ClientViewForm"),
 );
 export const HomeClientView = React.lazy(
   () =>
-    import("@/pages/admin/client/components/view_components/HomeClientViewForm"),
+    import("@/pages/admin/client/components/view_components/ClientViewForm"),
 );
 export const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView"),

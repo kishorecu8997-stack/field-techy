@@ -224,16 +224,14 @@ const ClientAdd: React.FC<ClientAddProps> = ({
           )}
 
           {clientType === "corporate" && (
-            <>
-              <InputField
-                label="Enter VAT registration number"
-                name="documentNumber"
-                required
-                placeholder="Enter VAT registration number"
-                rules={{ validate: (v: string) => validateVatNumber(v) }}
-                disabled={isView}
-              />
-            </>
+            <InputField
+              label="Enter VAT registration number"
+              name="documentNumber"
+              required
+              placeholder="Enter VAT registration number"
+              rules={{ validate: (v: string) => validateVatNumber(v) }}
+              disabled={isView}
+            />
           )}
           {clientType === "corporate" && (
             <SelectField
