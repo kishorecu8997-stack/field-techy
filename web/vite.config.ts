@@ -70,6 +70,10 @@ const pwaPlugin = VitePWA({
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: "/",
+  server:{
+    host:"0.0.0.0",
+    port: 5174
+  },
   resolve: {
     alias: {
       "@": "/src", // Direct alias path for the src directory
