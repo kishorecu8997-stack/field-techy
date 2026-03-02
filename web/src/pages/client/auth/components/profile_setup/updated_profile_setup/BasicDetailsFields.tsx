@@ -23,6 +23,7 @@ import { useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
 import { ClientTypeEnum } from "./types";
+import { useAppResolveSignupRegion } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * Email field component with real-time availability validation
@@ -48,8 +49,11 @@ const BasicDetailsFields = () => {
     setValue("city", undefined);
   }, [country, setValue]);
 
+  const { data: signupRegion } = useAppResolveSignupRegion();
+
   // Fetch dropdown data from API
-  const countriesQuery = useCountries();
+  const regionId = signupRegion?.regionId;
+  const countriesQuery = useCountries(regionId);
   const parentCountryId = country?.value ?? country;
   const statesQuery = useStates(parentCountryId);
   const parentStateId = selectedState?.value ?? selectedState;
