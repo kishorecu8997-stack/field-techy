@@ -37,7 +37,7 @@ export default function AddCategory() {
               Array.isArray(query.queryKey) &&
               query.queryKey[0] === "adminGetServiceCategories",
           },
-          (oldData) => {
+          (oldData: unknown) => {
             if (!oldData || typeof oldData !== "object") return oldData;
             const prev = oldData as {
               data?: Array<{ id: number; name: string }>;
