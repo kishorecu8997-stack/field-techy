@@ -78,9 +78,17 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
       </div>
     );
 
-  const validTransactions = (transactionsRaw || []).filter(
-    (tx) => !isNaN(new Date(tx.timestamp).getTime()),
-  );
+  // const validTransactions = (transactionsRaw || []).filter(
+  //   (tx) => !isNaN(new Date(tx.timestamp).getTime()),
+  // );
+
+  const transactionsArray = Array.isArray(transactionsRaw)
+  ? transactionsRaw
+  : [];
+
+const validTransactions = transactionsArray.filter(
+  (tx) => !isNaN(new Date(tx.timestamp).getTime()),
+);
 
   const hasActiveFilters = !!(searchTerm || filterDateFrom || filterDateTo);
 
