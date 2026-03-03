@@ -1,11 +1,8 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
-  adminUpdateJobStatus,
   getCmsContent,
   adminGetClientsForManagement,
-  getExchangeRates,
-  updateExchangeRate,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -32,10 +29,6 @@ import {
   type AdminGetSubAdminsResponse,
   type AdminGetEngineersForManagementData,
   type AdminGetEngineersForManagementResponses,
-  type AdminGetEngineerHistoryData,
-  type AdminGetEngineerHistoryResponse,
-  type AdminGetClientHistoryData,
-  type AdminGetClientHistoryResponse,
   type AdminGetClientsForManagementResponse,
   type CreateOrUpdatePageResponses,
   type AddAndUpdateContactSupportResponses,
@@ -53,7 +46,6 @@ import {
   type AdminUpdateClientResponse,
   type AdminGetClientResponse,
   type AdminGetClientsForManagementError,
-  type AdminDeleteClientResponse,
   type AdminCreateServiceCategoryResponse,
   type AdminGetServiceCategoriesData,
   type AdminGetServiceCategoriesResponse,
@@ -64,20 +56,12 @@ import {
   type AdminUpdateEngineerData,
   type AdminUpdateEngineerResponse,
   type AdminDeleteEngineerResponse,
-  type AdminCreateSubAdminData,
-  type AdminCreateSubAdminResponses,
-  type AdminUpdateSubAdminData,
-  type AdminUpdateSubAdminResponses,
   type AdminUpdateJobStatusData,
   type AdminUpdateJobStatusResponses,
   type AdminGetJobLogsData,
   type AdminGetJobLogsResponse,
   type AdminGetJobTransactionsData,
   type AdminGetJobTransactionsResponses,
-  type GetExchangeRatesData,
-  type GetExchangeRatesResponse,
-  type UpdateExchangeRateData,
-  type UpdateExchangeRateResponse,
   type AdminGetManageTransactionsData,
   type AdminGetManageTransactionsResponse,
   type AdminGetManageTransactionsError,
@@ -109,7 +93,6 @@ import {
   adminCreateClientMutation,
   adminUpdateClientMutation,
   adminGetClientOptions,
-  adminDeleteClientMutation,
   adminGetEngineerOptions,
   adminCreateServiceCategoryMutation,
   adminGetServiceCategoriesOptions,
@@ -118,14 +101,11 @@ import {
   adminCreateEngineerMutation,
   adminUpdateEngineerMutation,
   adminDeleteEngineerMutation,
-  adminCreateSubAdminMutation,
-  adminUpdateSubAdminMutation,
   adminGetJobGraphOptions,
   adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
   adminGetSubAdminsOptions,
-  adminGetSubAdminsQueryKey,
   adminGetManageTransactionsOptions,
   adminGetTransactionRequestsOptions,
   adminGetWalletOverviewOptions,
@@ -1096,11 +1076,14 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
     onSuccess: async (data) => {
       await queryClient.refetchQueries({
         predicate: (query) => {
-          const key = query.queryKey?.[0] as { _id?: string } | undefined;
+          const firstKeyItem = query.queryKey?.[0];
+
+          if (!firstKeyItem || typeof firstKeyItem !== "object") {
+            return false;
+          }
           return (
-            key &&
-            typeof key === "object" &&
-            key._id === "adminGetTransactionRequests"
+            (firstKeyItem as { _id?: string })._id ===
+            "adminGetTransactionRequests"
           );
         },
         type: "all",
