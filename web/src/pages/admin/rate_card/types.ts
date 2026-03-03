@@ -31,6 +31,12 @@ export interface RateCardProps {
   skillSet: string;
   region: string;
   location: string;
+  experienceLevel: string;
+  hourly: string;
+  halfDay: string;
+  fullDay: string;
+  weekly: string;
+  monthly: string;
   rate: string;
   rateType: string;
   project: string;
