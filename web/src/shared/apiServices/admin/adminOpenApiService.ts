@@ -39,7 +39,6 @@ import {
   type AddAndUpdateContactSupportResponses,
   type GetCmsPagesResponses,
   type GetCmsContentData,
-  type GetCmsContentResponses,
   type CreateFaqData,
   type CreateFaqResponses,
   type UpdateFaqData,
@@ -80,6 +79,8 @@ import {
   type AdminGetWalletOverviewData,
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
+  type AdminGetEngineersForManagementError,
+  adminGetEngineersForManagement,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -94,7 +95,6 @@ import {
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetJobDetailsOptions,
-  adminGetEngineersForManagementOptions,
   createOrUpdatePageMutation,
   addAndUpdateContactSupportMutation,
   getCmsPagesOptions,
@@ -347,11 +347,14 @@ export type AdminGetEngineersQuery = NonNullable<
   AdminGetEngineersForManagementData["query"]
 >;
 
+export type AdminManageEngineersResponse =
+  AdminGetEngineersForManagementResponses[200];
+
 export function useAdminManageEngineers(
   query?: AdminGetEngineersQuery,
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: AdminGetEngineersForManagementResponses) => void;
+    onSuccess?: (data: AdminManageEngineersResponse) => void;
     onError?: (error: unknown) => void;
   },
 ) {
@@ -364,11 +367,21 @@ export function useAdminManageEngineers(
       (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
-  return useQuery({
-    ...adminGetEngineersForManagementOptions({
-      client: apiClient,
-      query: mergedQuery,
-    }),
+  return useQuery<
+    AdminManageEngineersResponse,
+    AdminGetEngineersForManagementError
+  >({
+    queryKey: [...queryKeys.admin.manageEngineers, mergedQuery],
+    queryFn: async ({ signal }) => {
+      const { data } = await adminGetEngineersForManagement({
+        client: apiClient,
+        query: mergedQuery,
+        signal,
+        throwOnError: true,
+      });
+      return data as AdminManageEngineersResponse;
+    },
+    refetchOnMount: true,
     ...options,
   });
 }
@@ -465,7 +478,11 @@ export function useAdminEngineersByUserIdStatus(options?: {
       },
     }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["adminManageEngineers"] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+        refetchType: "all",
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -631,8 +648,7 @@ export function useGetCmsContent(
   key: GetCmsContentData["query"]["key"],
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: GetCmsContentResponses[200]) => void;
-    onError?: (error: unknown) => void;
+    refetchInterval?: number | false | (() => number | false);
   },
 ) {
   return useQuery({
@@ -644,17 +660,24 @@ export function useGetCmsContent(
       });
       return response.data;
     },
-    staleTime: 10 * 1000,
-    gcTime: 30 * 1000,
-    retry: 2,
+
+    enabled: options?.enabled ?? true,
+
+    staleTime: 0,
     refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchInterval: 30 * 1000,
     refetchIntervalInBackground: false,
-    ...options,
+
+    refetchInterval:
+      options?.enabled === false
+        ? false
+        : (options?.refetchInterval ??
+          (() =>
+            typeof document !== "undefined" &&
+            document.visibilityState === "visible"
+              ? 15000
+              : false)),
   });
 }
-
 export function useCreateFaq(options?: {
   onSuccess?: (data: CreateFaqResponses[201]) => void;
   onError?: (error: unknown) => void;

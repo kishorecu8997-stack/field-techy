@@ -89,9 +89,9 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       },
     },
     {
-      label: "About App",
-      icon: icons.danger,
-      id: "aboutApp",
+      label: "About US",
+      icon: icons.fileLines,
+      id: "aboutus",
       onClick: () => {
         navigate(`${absoluteUrls.engineer.home.about_app}`);
         onClose();
