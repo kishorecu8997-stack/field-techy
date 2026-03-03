@@ -1,7 +1,8 @@
 import React from "react";
-import { JOB_TAB_COPY, JOB_TAB_CONFIG } from "@/shared/constants/jobTabs";
+import { JOB_TAB_COPY } from "@/shared/constants/jobTabs";
 import { IoAttach } from "react-icons/io5";
 import type { ProposalInfoTabProps } from "../../types.d";
+import { formatDate } from "@/shared/libs/utils";
 
 /**
  * Type guard to check if the proposal data is from API (has attachmentUrl)
@@ -26,6 +27,7 @@ function isApiProposalData(
  */
 const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({
   submittedProposal,
+  proposalAppliedDate,
 }) => {
   // Check if this is API data or Form data
   const isApiData = isApiProposalData(submittedProposal);
@@ -76,7 +78,11 @@ const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({
           <h3 className="text-base font-semibold text-gray-900 dark:text-white">
             {JOB_TAB_COPY.proposalDescriptionAndAttachments}
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">{`${JOB_TAB_COPY.sentOnPrefix}${JOB_TAB_CONFIG.defaultSentOn}`}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {proposalAppliedDate
+              ? `${JOB_TAB_COPY.sentOnPrefix}${formatDate(proposalAppliedDate)}`
+              : JOB_TAB_COPY.sentOnPrefix}
+          </p>
         </div>
 
         <p className="text-sm leading-relaxed text-gray-900 dark:text-gray-100 whitespace-pre-wrap break-words">

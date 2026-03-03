@@ -9,7 +9,6 @@ import UserDocuments from "./Documents";
 import { FormProvider, useForm } from "react-hook-form";
 import type { EngineerFormData } from "../types";
 import DisputeReports from "./DisputeReports";
-import Previlage from "./Privilege";
 import Wallet from "./Wallet";
 import EngineerJobCategory from "./jobCategory";
 import type { AdminGetEngineerResponse } from "@/api";
@@ -93,11 +92,6 @@ export default function UserDetails() {
     {
       label: "Disputes & Reports",
       content: <DisputeReports />,
-      hide: false,
-    },
-    {
-      label: "Privileges",
-      content: <Previlage />,
       hide: false,
     },
     {

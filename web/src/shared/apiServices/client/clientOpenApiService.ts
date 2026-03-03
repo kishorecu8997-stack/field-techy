@@ -361,6 +361,7 @@ export function useClientGetAssignmentDetails(
 export function useClientActionOnAssignment(options?: {
   onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   const regionId = useClientRegionId();
@@ -382,6 +383,13 @@ export function useClientActionOnAssignment(options?: {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      // Invalidate job logs query when assignment action is performed
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -456,11 +464,14 @@ export function useClientActionOnWorkLog(options?: {
       return data;
     },
     onSuccess: (data) => {
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when work log action is performed
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -491,11 +502,14 @@ export function useClientActionOnBreak(options?: {
       return data;
     },
     onSuccess: (data) => {
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when break action is performed
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
