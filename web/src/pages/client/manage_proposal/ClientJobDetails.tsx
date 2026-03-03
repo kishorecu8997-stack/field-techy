@@ -54,7 +54,7 @@ const ClientJobDetails = () => {
     data: jobsData,
     refetch,
     isLoading: jobsLoading,
-  } = useClientGetJobs(true);
+  } = useClientGetJobs();
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   // Extend the generated type to include clientDetails if it comes from the API but is missing in types
   type ExtendedJob = (typeof jobsArray)[0] & {

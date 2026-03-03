@@ -27,6 +27,7 @@ const LocationSection = ({
   const {
     watch,
     formState: { errors },
+    setValue,
   } = useFormContext();
   const locationType = watch("locationType");
 
@@ -45,11 +46,10 @@ const LocationSection = ({
             <span className="text-red-500">*</span>
           </label>
           <div
-            className={`w-full rounded-md px-4 py-2 flex items-center gap-4 border text-base ${
-              errors.locationType
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            }`}
+            className={`w-full rounded-md px-4 py-2 flex items-center gap-4 border text-base ${errors.locationType
+              ? "border-red-500"
+              : "border-gray-300 dark:border-gray-600"
+              }`}
           >
             <RadioField
               name="locationType"
@@ -109,7 +109,17 @@ const LocationSection = ({
             <SectionHeader title="Work Location" />
           </div>
           <div className="px-3 pb-8">
-            <MapWithSearch className="h-[380px]" />
+            <MapWithSearch className="h-[380px]" onMapClick={(latlng: { lat: number; lng: number }, name: string) => {
+              setValue("workLocationLat", latlng.lat);
+              setValue("workLocationLng", latlng.lng);
+              setValue("workLocationName", name);
+            }}
+              onSearchSelect={(latlng: { lat: number; lng: number }, name: string) => {
+                setValue("workLocationLat", latlng.lat);
+                setValue("workLocationLng", latlng.lng);
+                setValue("workLocationName", name);
+              }}
+            />
           </div>
         </div>
       )}

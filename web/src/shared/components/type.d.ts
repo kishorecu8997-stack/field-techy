@@ -40,9 +40,10 @@ interface MapComponentProps {
   initialPosition?: [number, number];
   initialZoom?: number;
   markers?: MapMarker[];
-  onMapClick?: (latlng: { lat: number; lng: number }) => void;
+  onMapClick?: (latlng: { lat: number; lng: number }, name: string) => void;
   viewOnly?: boolean;
   onPositionChange?: (position: [number, number]) => void;
+  onSearchSelect?: (latlng: { lat: number; lng: number }, name: string) => void;
   className?: string;
 }
 
