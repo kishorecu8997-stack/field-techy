@@ -1,10 +1,11 @@
 import {
   Controller,
   useFormContext,
+  useWatch,
   type RegisterOptions,
   type ControllerRenderProps,
 } from "react-hook-form";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
 import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min?url";
 import { toast } from "react-toastify";
@@ -43,12 +44,24 @@ export const FileUpload = ({
   maxPages = 5,
   isShowLabel = true,
 }: FileUploadProps) => {
-  const { control, getValues } = useFormContext();
+  const { control } = useFormContext();
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<string | null>(null);
   const [pageCount, setPageCount] = useState<number | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const watchedValue = useWatch({ control, name });
+  const blobUrlRef = useRef<string | null>(null);
+
+  const getDisplayFileName = (value: string) => {
+    try {
+      const parsed = new URL(value);
+      const last = parsed.pathname.split("/").pop() || "Document";
+      return decodeURIComponent(last);
+    } catch {
+      return value.split("/").pop()?.split("?")[0] || "Document";
+    }
+  };
 
   // ✅ Setup PDF.js worker once
   useEffect(() => {
@@ -121,29 +134,54 @@ export const FileUpload = ({
 
   // ✅ Load existing form value if present
   useEffect(() => {
-    const value = getValues(name);
-    if (!value) return;
+    const revokeBlobUrl = () => {
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+        blobUrlRef.current = null;
+      }
+    };
 
-    if (value instanceof FileList && value.length > 0) {
-      const file = value[0];
+    setFileError(null);
+    setFileSize(null);
+    setPageCount(null);
+
+    if (!watchedValue) {
+      revokeBlobUrl();
+      setFileUrl(null);
+      setFileName(null);
+      return;
+    }
+
+    if (watchedValue instanceof FileList && watchedValue.length > 0) {
+      const file = watchedValue[0];
       setFileName(file.name);
       setFileSize(formatFileSize(file.size));
+
+      revokeBlobUrl();
+      const url = URL.createObjectURL(file);
+      blobUrlRef.current = url;
+      setFileUrl(url);
+
       if (file.type === "application/pdf" && validatePDF) {
         validatePdfPages(file).then(({ pages }) => setPageCount(pages));
       }
-      setFileUrl(URL.createObjectURL(file));
-    } else if (typeof value === "string") {
-      setFileName(value.split("/").pop() || "Document");
-      setFileUrl(value);
+
+      return;
     }
-  }, [getValues, name, validatePDF, validatePdfPages]);
+
+    if (typeof watchedValue === "string") {
+      setFileName(getDisplayFileName(watchedValue));
+      revokeBlobUrl();
+      setFileUrl(watchedValue);
+    }
+  }, [validatePDF, validatePdfPages, watchedValue]);
 
   // ✅ Cleanup blob URL on unmount
   useEffect(() => {
     return () => {
-      if (fileUrl) URL.revokeObjectURL(fileUrl);
+      if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);
     };
-  }, [fileUrl]);
+  }, []);
 
   // ✅ Format file size
   const formatFileSize = (bytes: number): string => {
@@ -202,7 +240,7 @@ export const FileUpload = ({
     setPageCount(null);
     setFileError(null);
     if (fileUrl) {
-      URL.revokeObjectURL(fileUrl);
+      if (fileUrl.startsWith("blob:")) URL.revokeObjectURL(fileUrl);
       setFileUrl(null);
     }
 
@@ -292,7 +330,7 @@ export const FileUpload = ({
     setPageCount(null);
     setFileError(null);
     if (fileUrl) {
-      URL.revokeObjectURL(fileUrl);
+      if (fileUrl.startsWith("blob:")) URL.revokeObjectURL(fileUrl);
       setFileUrl(null);
     }
     const input = document.getElementById(name) as HTMLInputElement;

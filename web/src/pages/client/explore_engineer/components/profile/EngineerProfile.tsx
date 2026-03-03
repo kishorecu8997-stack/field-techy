@@ -31,8 +31,8 @@ const EngineerProfile: React.FC = () => {
   });
 
   const handleInviteClick = () => {
-    if (engineerId) {
-      navigate(`${absoluteUrls.client.home.ClientJobInvite}/${engineerId}`);
+    if (data?.userId) {
+      navigate(`${absoluteUrls.client.home.ClientJobInvite}/${data.userId}`);
     }
   };
 

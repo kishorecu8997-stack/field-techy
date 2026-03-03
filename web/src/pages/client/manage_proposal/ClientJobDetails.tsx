@@ -15,6 +15,8 @@ import type { AssignmentStatus } from "../search_result/types";
 import type { OfferedJobStatusType } from "../../engineer/my_job/types.d";
 import ChatForJobs from "@/shared/components/ChatForJobs";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import ErrorState from "@/shared/components/commonUI/ErrorState";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -44,15 +46,22 @@ const ClientJobDetails = () => {
   const {
     data: assignmentData,
     isLoading,
-    error,
+    isError,
   } = useClientGetAssignmentDetails({ jobId }, !!jobId);
 
   // Fallback to useClientGetJobs if needed for job details
-  const { data: jobsData } = useClientGetJobs(true);
+  const {
+    data: jobsData,
+    refetch,
+    isLoading: jobsLoading,
+  } = useClientGetJobs(true);
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
-  const job = jobsArray.find(
-    (j: { id?: string | number }) => Number(j.id) === jobId,
-  );
+  // Extend the generated type to include clientDetails if it comes from the API but is missing in types
+  type ExtendedJob = (typeof jobsArray)[0] & {
+    clientDetails?: { personName?: string };
+  };
+
+  const job = (jobsArray as ExtendedJob[]).find((j) => Number(j.id) === jobId);
 
   // Get the first assignment from the assignment data
   const assignments = Array.isArray(assignmentData) ? assignmentData : [];
@@ -71,68 +80,18 @@ const ClientJobDetails = () => {
     }
   }, [isDummyNetworkEngineer, activeTab]);
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-        <div className="container mx-auto px-4 py-6 md:px-6">
-          <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
-            <MyJobsHeader
-              title="Job Details"
-              isReport={false}
-              isShowBreadcrumb
-              customLabels={{
-                [params.jobId || ""]: "Loading...",
-              }}
-            />
-          </div>
-          <div className="flex justify-center items-center h-64">
-            <div className="text-gray-600 dark:text-gray-400">
-              Loading job details...
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error || !job) {
-    return (
-      <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-        <div className="container mx-auto px-4 py-6 md:px-6">
-          <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
-            <MyJobsHeader
-              title="Job Details"
-              isReport={false}
-              isShowBreadcrumb
-              customLabels={{
-                [params.jobId || ""]: "Job not found",
-              }}
-            />
-          </div>
-          <div className="flex justify-center items-center h-64">
-            <div className="text-red-600 dark:text-red-400">
-              {error ? "Error loading job details" : "Job not found"}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Format duration from startDate and endDate
   let durationDisplay = "Not specified";
-  if (job.startDate && job.endDate) {
+  if (job?.startDate && job?.endDate) {
     const startDate = new Date(job.startDate);
     const endDate = new Date(job.endDate);
     durationDisplay = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
-  } else if (job.startDate) {
+  } else if (job?.startDate) {
     durationDisplay = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
   }
 
   // Get status or default to Posted
-  const jobStatus = job.status || "Posted";
+  const jobStatus = job?.status || "Posted";
 
   // Chat toggle function
   const handleToggleChat = (jobId: string) => {
@@ -165,6 +124,75 @@ const ClientJobDetails = () => {
     breadcrumbExtra === "chats" ? "Chats" : null,
   ].filter((v): v is string => typeof v === "string");
 
+  const renderContent = () => {
+    if (isLoading || jobsLoading) {
+      return (
+        <div className="flex justify-center items-center h-64 mt-6">
+          <LoaderComponent />
+        </div>
+      );
+    }
+
+    if (isError) {
+      return (
+        <div className="flex justify-center items-center h-64 mt-6">
+          <ErrorState
+            title="Unable to Load Job Details"
+            message="Something went wrong. Please try again later."
+            onRetry={refetch}
+          />
+        </div>
+      );
+    }
+
+    if (openChatJobId) {
+      return (
+        <div className="flex-1 overflow-y-auto mt-6">
+          <ChatForJobs jobId={openChatJobId} currentUser="Client" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="lg:col-span-2 space-y-6">
+          <JobHeaderCard
+            title={job?.jobTitle || ""}
+            client={job?.clientDetails?.personName || ""}
+            duration={durationDisplay}
+            type={job?.jobType || ""}
+            status={jobStatus}
+            setIsWorkSubmitted={setIsWorkSubmitted}
+            setSendProposal={setIsSendProposal}
+            isSendProposal={isSendProposal}
+            setActiveTab={setActiveTab}
+            setOfferJobStatus={setOfferJobStatus}
+            OfferJobStatus={OfferJobStatus}
+            hideBreakDetails={isDummyNetworkEngineer}
+            hideDurationAndClient={isDummyNetworkEngineer}
+            jobLocation={undefined}
+            numberOfVacancy={undefined}
+            numberOfApplicants={undefined}
+            jobId={jobIdParam!}
+            onToggleChat={handleToggleChat}
+          />
+          <JobTabSection
+            status={(jobStatus as JobStatus) || "Posted"}
+            isWorkSubmitted={isWorkSubmitted}
+            isSendProposal={isSendProposal}
+            activeTab={activeTab}
+            OfferJobStatus={OfferJobStatus}
+            isDummyNetworkEngineer={isDummyNetworkEngineer}
+            showManageProposals={true}
+            job={job}
+            assignmentId={assignmentId}
+          />
+        </div>
+        <SidebarJobPostWallet earnings={earningsData} />
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -174,55 +202,15 @@ const ClientJobDetails = () => {
             isReport={false}
             isShowBreadcrumb
             customLabels={{
-              [params.jobId || ""]: job.jobTitle || "Job",
+              [params.jobId || ""]:
+                job?.jobTitle || (isLoading ? "Loading..." : "Job not found"),
             }}
             segments={segments}
             isChatVisible={!!openChatJobId}
             handleCloseChat={handleCloseChat}
           />
         </div>
-        {openChatJobId ? (
-          <div className="flex-1 overflow-y-auto">
-            <ChatForJobs jobId={openChatJobId} currentUser="Client" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-            <div className="lg:col-span-2 space-y-6">
-              <JobHeaderCard
-                title={job.jobTitle}
-                client=""
-                duration={durationDisplay}
-                type={job.jobType}
-                status={jobStatus}
-                setIsWorkSubmitted={setIsWorkSubmitted}
-                setSendProposal={setIsSendProposal}
-                isSendProposal={isSendProposal}
-                setActiveTab={setActiveTab}
-                setOfferJobStatus={setOfferJobStatus}
-                OfferJobStatus={OfferJobStatus}
-                hideBreakDetails={isDummyNetworkEngineer}
-                hideDurationAndClient={isDummyNetworkEngineer}
-                jobLocation={undefined}
-                numberOfVacancy={undefined}
-                numberOfApplicants={undefined}
-                jobId={jobIdParam!}
-                onToggleChat={handleToggleChat}
-              />
-              <JobTabSection
-                status={(jobStatus as JobStatus) || "Posted"}
-                isWorkSubmitted={isWorkSubmitted}
-                isSendProposal={isSendProposal}
-                activeTab={activeTab}
-                OfferJobStatus={OfferJobStatus}
-                isDummyNetworkEngineer={isDummyNetworkEngineer}
-                showManageProposals={true}
-                job={job}
-                assignmentId={assignmentId}
-              />
-            </div>
-            <SidebarJobPostWallet earnings={earningsData} />
-          </div>
-        )}
+        {renderContent()}
       </div>
     </div>
   );

@@ -88,10 +88,12 @@ export const useAdminProfile = () => {
   const session = useUserSessionStore((state) => state.session);
   const profile = useAdminProfileStore((state) => state.adminProfile);
   const profileFetched = useAdminProfileStore((state) => state.profileFetched);
-  const loading = useAdminProfileStore((state) => state.loading);
   const fetchProfile = useAdminProfileStore((state) => state.fetchAdminProfile);
 
   useEffect(() => {
+    // Read `loading` directly from store state to avoid subscribing to it
+    // (subscribing causes 2 extra re-renders per fetch: true → false)
+    const { loading } = useAdminProfileStore.getState();
     if (
       session?.accessToken &&
       session?.role?.toUpperCase() === "ADMIN" &&
@@ -100,13 +102,7 @@ export const useAdminProfile = () => {
     ) {
       fetchProfile();
     }
-  }, [
-    session?.accessToken,
-    session?.role,
-    profileFetched,
-    loading,
-    fetchProfile,
-  ]);
+  }, [session?.accessToken, session?.role, profileFetched, fetchProfile]);
 
   return profile;
 };

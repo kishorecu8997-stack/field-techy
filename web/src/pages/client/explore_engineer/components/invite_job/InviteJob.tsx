@@ -9,15 +9,13 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import { useClientGetJobs, useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
+import { useClientGetJobs, useClientInviteEngineer, useClientRegionId } from "@/shared/apiServices/client/clientOpenApiService";
 import { absoluteUrls } from "@/config/urls";
 import type { SelectedJobCardId } from "../../types";
 import type { ClientGetJobsResponse } from "@/api";
 import InvitationSentModal from "./InvitationSentModal";
 import JobInviteCard from "./JobInviteCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
-
-// InviteJob is now a standalone page; it will read engineerId from URL params.
 
 /**
  * A component that allows a client to select one or more jobs to invite an engineer to.
@@ -32,10 +30,12 @@ const InviteJob: React.FC = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const regionId = useClientRegionId();
 
   useEffect(() => {
     scrollToTop();
   }, [currentPage]);
+
 
   const { data: jobsData } = useClientGetJobs(true) as { data?: ClientGetJobsResponse };
 
@@ -72,8 +72,11 @@ const InviteJob: React.FC = () => {
     try {
       console.log("Sending invitations for jobs:", data.id, "to engineer:", engineer);
       const invitations = data.id.map((jobId) => {
-        console.log("Preparing invite - jobId:", jobId, "engineerId:", engineer);
-        return inviteEngineer({ body: { jobId, engineerId: engineer } });
+        console.log("Preparing invite - jobId:", jobId, "engineerId:", engineer, "regionId:", regionId);
+        // explicitly include regionId so backend always receives it
+        const body: any = { jobId, engineerId: engineer };
+        if (regionId !== undefined) body.regionId = regionId;
+        return inviteEngineer({ body });
       });
       const results = await Promise.all(invitations);
       console.log("All invitations sent successfully:", results);
@@ -94,7 +97,9 @@ const InviteJob: React.FC = () => {
   };
 
   const itemsPerPage = 6;
-  const postedJobs = (jobsData || []).filter((j) => j.status?.toLowerCase() === "posted");
+  // only show jobs that are posted and not already tied to this engineer
+  const postedJobs = (jobsData || [])
+    .filter((j) => j.status?.toLowerCase() === "posted")
   const totalPages = Math.ceil(postedJobs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedJobs = postedJobs.slice(startIndex, startIndex + itemsPerPage);

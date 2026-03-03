@@ -125,7 +125,6 @@ const ExploreJobs: React.FC = () => {
         return match ? parseInt(match[1], 10) * 10080 : 0;
       }
 
-      console.warn(`Unrecognized time format: "${timeStr}"`);
       return 0; // fallback to "now"
     };
 
@@ -290,6 +289,7 @@ const ExploreJobs: React.FC = () => {
     setSortBy(newSort);
     setCurrentPage(1);
   };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">

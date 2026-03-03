@@ -116,7 +116,7 @@ const SelectEngineer = () => {
               setSelectedIds([]);
             } catch (error) {
               console.error(error);
-              toast.error("Failed to invite some engineers. Please try again.");
+              toast.error("Engineers were already invited.");
             }
           },
         },
@@ -137,7 +137,7 @@ const SelectEngineer = () => {
       setIsOpen(true); // open modal
     } catch (error) {
       console.error(error);
-      toast.error("Failed to invite engineer. Please try again.");
+      toast.error("Engineer already invited");
     }
   };
   if (isLoading) {
