@@ -74,13 +74,8 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
         },
       });
     } catch (error) {
-      // If check fails, still allow proceeding (backend will validate)
-      await forgotPassword({
-        body: {
-          email: data.email,
-          userRole: role,
-        },
-      });
+      // Show error to user when existence check fails
+      toastError("Unable to verify email. Please try again.");
     } finally {
       setIsCheckingUser(false);
     }
