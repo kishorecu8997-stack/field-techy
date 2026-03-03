@@ -69,8 +69,6 @@ const ManageRateCards: React.FC = () => {
       fullDay: "-",
       weekly: "-",
       monthly: "-",
-      rate: item.rate,
-      rateType: item.rateType,
       project: "-", // Project field not available in API response
       createdDate: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-",
       status: true, // Default status
@@ -91,8 +89,7 @@ const ManageRateCards: React.FC = () => {
         item.halfDay.toLowerCase().includes(search) ||
         item.fullDay.toLowerCase().includes(search) ||
         item.weekly.toLowerCase().includes(search) ||
-        item.monthly.toLowerCase().includes(search) ||
-        item.rateType.toLowerCase().includes(search)
+        item.monthly.toLowerCase().includes(search)
     );
   }, [tableData, searchTerm]);
 
@@ -199,8 +196,6 @@ const ManageRateCards: React.FC = () => {
         </div>
       ),
     },
-    { key: "rate", label: "Rate" },
-    { key: "rateType", label: "Rate Type" },
     { key: "createdDate", label: "Created Date" },
     {
       key: "status",

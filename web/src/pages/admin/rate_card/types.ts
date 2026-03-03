@@ -37,8 +37,6 @@ export interface RateCardProps {
   fullDay: string;
   weekly: string;
   monthly: string;
-  rate: string;
-  rateType: string;
   project: string;
   createdDate: string;
   status: boolean;
