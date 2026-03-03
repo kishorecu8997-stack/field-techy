@@ -5,17 +5,16 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 import type { ContactSupportFormData } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
-import {
-  useAddAndUpdateContactSupport,
-  useGetCmsPages,
-} from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAddAndUpdateContactSupport, useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
- * @component ContactSupport
- * @description Form for updating contact support information
+ * Form for viewing and updating contact support information
  */
+
 export default function ContactSupport() {
   const methods = useForm<ContactSupportFormData>({
     defaultValues: {
@@ -26,41 +25,46 @@ export default function ContactSupport() {
     },
   });
 
+  const { reset } = methods;
   const { showPopup } = usePopupStore();
 
-  const { refetch } = useGetCmsPages({
-    onError: () => {
-      toast.error("Failed to load existing contact support content");
-    },
-  });
+  const {
+    data: contactResponse,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetCmsContent("contact-info");
+
+  
+  useEffect(() => {
+    if (contactResponse?.type === "contact-info" && contactResponse.data) {
+      reset({
+        email: contactResponse.data.email || "",
+        phoneNumber: contactResponse.data.phone || "",         
+        address: contactResponse.data.address || "",
+        copyright: contactResponse.data.copyright || "",
+      });
+    }
+  }, [contactResponse, reset]);
 
   const mutation = useAddAndUpdateContactSupport({
-    onSuccess: async (data) => {
-      toast.success(data.message || "Contact support updated successfully!");
-      methods.reset();
+    onSuccess: async (response) => {
+      toast.success(response.message || "Contact support updated successfully!");
       await refetch();
     },
-
     onError: (error: unknown) => {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to update contact support";
-
-      toast.error(errorMessage);
+      const msg =
+        error instanceof Error ? error.message : "Failed to update contact support";
+      toast.error(msg);
     },
   });
 
-  const handleSaveConfirmation = async (data: ContactSupportFormData) => {
+  const handleSaveConfirmation = async (formData: ContactSupportFormData) => {
     await showPopup({
-      title: "Add Contact Support",
-      body: "Are you sure you want to save these details?",
+      title: "Update Contact Support",
+      body: "Are you sure you want to save these changes?",
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        { label: "Cancel", value: null, variant: "outline" },
         {
           label: "Save",
           value: "save",
@@ -69,15 +73,15 @@ export default function ContactSupport() {
             try {
               await mutation.mutateAsync({
                 body: {
-                  email: data.email,
-                  phone: data.phoneNumber,
-                  address: data.address,
-                  copyright: data.copyright,
+                  email: formData.email,
+                  phone: formData.phoneNumber,          
+                  address: formData.address,
+                  copyright: formData.copyright,
                 },
               });
               close(true);
-            } catch (err) {
-              toast.error(`Could not save. Please try again. ${err}`);
+            } catch {
+              toast.error("Could not save. Please try again.");
             }
           },
         },
@@ -85,57 +89,67 @@ export default function ContactSupport() {
     });
   };
 
-  const handleSubmit = (data: ContactSupportFormData) => {
+  const onSubmit = (data: ContactSupportFormData) => {
     handleSaveConfirmation(data);
   };
 
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg p-8">
+        <div className="flex items-center justify-center min-h-[300px]">
+          <LoaderComponent />
+        </div>
+      </div>
+    );
+  }
+
+ if (isError || contactResponse?.type !== "contact-info") {
+    return (
+      <div className="bg-white rounded-lg p-8 text-center text-red-600 min-h-[300px] flex items-center justify-center">
+        Failed to load contact support information
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
       <FormContainer
         methods={methods}
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
+        onSubmit={onSubmit}
+        className="flex flex-col gap-4 mt-2 px-2 pb-4 w-full"
       >
-        <div className="flex gap-4 w-full">
+        {/* form fields remain the same */}
+        <div className="flex flex-col md:flex-row gap-4 w-full">
           <div className="flex-1">
             <InputField
               name="email"
               label="Email Address"
-              type="text"
+              type="email"
               required
               rules={validateEmailRules}
             />
           </div>
-
           <div className="flex-1">
-            <PhoneInputField
-              name="phoneNumber"
-              label="Mobile Number"
-              required
-            />
-          </div>
-        </div>
-        <div className="flex gap-4 w-full mt-2">
-          <div className="flex-1">
-            <InputField name="address" label="Address" type="text"/>
-          </div>
-
-          <div className="flex-1">
-            <InputField
-              name="copyright"
-              label="Copyright"
-              type="text"
-            />
+            <PhoneInputField name="phoneNumber" label="Mobile Number" required />
           </div>
         </div>
 
-        <div className="flex justify-end mt-2">
+        <div className="flex flex-col md:flex-row gap-4 w-full">
+          <div className="flex-1">
+            <InputField name="address" label="Address" type="text" />
+          </div>
+          <div className="flex-1">
+            <InputField name="copyright" label="Copyright Text" type="text" />
+          </div>
+        </div>
+
+        <div className="flex justify-end mt-6">
           <Button
             type="submit"
-            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            className="w-fit bg-gradient-to-r from-teal-900 to-teal-700 text-white py-2 px-6 rounded-lg hover:opacity-90 transition disabled:opacity-50"
             disabled={mutation.isPending}
           >
-            {mutation.isPending ? "Saving..." : "Save"}
+            {mutation.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </FormContainer>

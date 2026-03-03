@@ -13,9 +13,9 @@ import BasicDetailsFields from "./BasicDetailsFields";
 import { type ClientBasicDetails, ClientTypeEnum } from "./types";
 import { absoluteUrls } from "@/config/urls";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
-import DOMPurify from "dompurify";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 import Popup from "@/shared/components/Popup";
+import RichTextContent from "@/shared/components/RichTextContent";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -374,12 +374,9 @@ const BasicDetails = () => {
                 </p>
               </div>
             ) : (
-              <div
-                className=" dark:text-gray-300 text-gray-700"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(cmsData.data.content),
-                }}
-              />
+             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow dark:text-gray-200">
+            <RichTextContent html={cmsData.data.content} />
+          </div>
             )}
           </div>
         </div>

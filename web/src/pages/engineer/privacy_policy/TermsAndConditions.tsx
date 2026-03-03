@@ -1,7 +1,7 @@
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useLocation } from "react-router-dom";
-import DOMPurify from "dompurify";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
+import RichTextContent from "@/shared/components/RichTextContent";
 
 const TermsAndConditionsPage = () => {
   const location = useLocation();
@@ -58,27 +58,9 @@ const TermsAndConditionsPage = () => {
 
         {/* Render HTML content directly */}
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-          <div
-             className="
-    prose 
-    prose-lg 
-    dark:prose-invert 
-    max-w-none
-
-    [&_ul]:list-disc
-    [&_ul]:pl-6
-    [&_ol]:list-decimal
-    [&_ol]:pl-6
-    [&_li]:mb-1
-
-    break-words
-    overflow-x-hidden
-    w-full
-  "
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(cmsData.data.content),
-            }}
-          />
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+            <RichTextContent html={cmsData.data.content} />
+          </div>
         </div>
       </div>
     </div>

@@ -13,9 +13,9 @@ import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiError
 import SetPassword from "../SetPassword"; // Resuing existing
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { EngineerBasicDetails } from "./types";
-import DOMPurify from "dompurify";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 import Popup from "@/shared/components/Popup";
+import RichTextContent from "@/shared/components/RichTextContent";
 
 /**
  * A component that represents the main profile setup step for engineers.
@@ -312,12 +312,9 @@ const BasicDetails = () => {
                 </p>
               </div>
             ) : (
-              <div
-                className=" dark:text-gray-300 text-gray-700"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(cmsData.data.content),
-                }}
-              />
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow dark:text-gray-300">
+                <RichTextContent html={cmsData.data.content} />
+              </div>
             )}
           </div>
         </div>
