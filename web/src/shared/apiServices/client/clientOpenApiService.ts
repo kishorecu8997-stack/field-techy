@@ -31,8 +31,8 @@ import {
   type GetClientTransactionsData,
   type GetClientTransactionsError,
   type GetUserReportsData,
-   type GetClientTransactionsResponse,
-   type GetUserReportsResponses,
+  type GetClientTransactionsResponse,
+  type GetUserReportsResponses,
 } from "@/api";
 import {
   appChangePasswordMutation,
