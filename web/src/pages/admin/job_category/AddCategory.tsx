@@ -64,7 +64,7 @@ export default function AddCategory() {
       },
       onError: (error) => {
         const errorMessage =
-          error instanceof Error ? error.message : "Create category failed";
+          error instanceof Error ? error.message : "A category with this name already exists";
         toast.error(errorMessage);
       },
     });
