@@ -42,8 +42,19 @@ const CommonNotificationPage: React.FC<CommonNotificationPageProps> = ({
   const unread = sorted.filter((n) => !n.read);
   const hasUnread = unread.length > 0;
 
-  // Show all unread notifications; if none, fall back to the last 20
-  const visibleNotifications = hasUnread ? unread : sorted.slice(0, 20);
+  // Always show all unread. If fewer than 20, top up with the most recent
+  // read notifications to reach a combined total of 20.
+  const MAX = 20;
+  let visibleNotifications: typeof sorted;
+  if (!hasUnread) {
+    visibleNotifications = sorted.slice(0, MAX);
+  } else if (unread.length >= MAX) {
+    visibleNotifications = unread;
+  } else {
+    const remaining = MAX - unread.length;
+    const readNotifications = sorted.filter((n) => n.read).slice(0, remaining);
+    visibleNotifications = [...unread, ...readNotifications];
+  }
 
   const grouped = groupNotificationsByDate(visibleNotifications);
 
