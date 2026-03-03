@@ -1,13 +1,21 @@
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { FaUserCircle } from "react-icons/fa";
+import Popup from "@/shared/components/Popup";
 import type { ManageEngineerProps, StatusHistoryType } from "../types";
+import { documentType } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminEngineersByUserIdStatus,
+  useAdminManageEngineers,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import SelectMenu from "@/shared/components/SelectMenu";
+import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
+import ViewFileComponent from "@/pages/admin/engineer/components/ViewFileComponent";
+import { getEngineerFileUrl } from "@/utils/getEngineerFileUrl";
 
 /**
  * BlockedUser Component
@@ -28,16 +36,39 @@ import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApi
 export default function BlockedUser() {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
+  const [selectedFile, setSelectedFile] = useState<{
+    engineerId: number;
+    type: ProfileFileType;
+  } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+  const {
+    data: engineersResponse,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useAdminManageEngineers({
     page: currentPage,
     limit: pageSize,
     status: "blocked",
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const selectedEngineer = useMemo(() => {
+    if (!selectedFile) return null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
+  }, [engineerData, selectedFile]);
+
+  const isPreviewOpen = !!selectedFile && !!selectedEngineer;
+
+  const { mutateAsync: updateEngineerStatus } =
+    useAdminEngineersByUserIdStatus();
 
   const latestBlockMap = useMemo<
     Record<string, StatusHistoryType | undefined>
@@ -81,9 +112,24 @@ export default function BlockedUser() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Unlocking engineer:", engineer.id);
-            toast.success("Engineer unblocked successfully!");
-            close(true);
+            try {
+              await updateEngineerStatus({
+                path: { userId: engineer.userId },
+                body: { userStatus: "active" },
+              });
+              toast.success("Engineer unblocked successfully!");
+              close(true);
+              await refetch?.();
+            } catch (error) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : typeof error === "string"
+                    ? error
+                    : "Failed to unblock engineer",
+              );
+              close(true);
+            }
           },
         },
       ],
@@ -112,12 +158,21 @@ export default function BlockedUser() {
       key: "details",
       label: "Details",
       renderCell: (row: ManageEngineerProps) => {
+        const initials = row.name?.charAt(0).toUpperCase() || "E";
         return (
-          <div className="text-sm flex items-center gap-2">
-            <div>
-              <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
+              {row.profilePicture?.url ? (
+                <img
+                  src={row.profilePicture.url}
+                  alt={row.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initials
+              )}
             </div>
-            <div>
+            <div className="flex flex-col">
               <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
                 {row.phoneNumber}
@@ -129,6 +184,34 @@ export default function BlockedUser() {
           </div>
         );
       },
+    },
+    {
+      key: "documentType",
+      label: "View Documents",
+      renderCell: (row: ManageEngineerProps) => (
+        <SelectMenu
+          placeholder="Select Document"
+          className="w-36"
+          options={
+            documentType?.map((item) => ({
+              value: item.value ?? "",
+              label: item.label ?? "",
+            })) ?? []
+          }
+          value={selectedFile?.engineerId === row.id ? selectedFile.type : null}
+          onChange={(value) => {
+            if (!value) {
+              setSelectedFile(null);
+              return;
+            }
+
+            setSelectedFile({
+              engineerId: row.id,
+              type: value as ProfileFileType,
+            });
+          }}
+        />
+      ),
     },
     {
       key: "blockReason",
@@ -173,7 +256,7 @@ export default function BlockedUser() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={engineerData}
-            loading={isLoading}
+            loading={isLoading || isFetching}
             initialPageSize={pageSize}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
@@ -182,6 +265,17 @@ export default function BlockedUser() {
           />
         </div>
       </div>
+      <Popup open={isPreviewOpen} onClose={() => setSelectedFile(null)}>
+        {selectedFile && selectedEngineer && (
+          <ViewFileComponent
+            onClose={() => setSelectedFile(null)}
+            fileType={selectedFile.type}
+            userId={selectedEngineer.userId}
+            fileUrl={getEngineerFileUrl(selectedEngineer, selectedFile?.type)}
+            title={`${selectedEngineer.name}'s`}
+          />
+        )}
+      </Popup>
     </div>
   );
 }
