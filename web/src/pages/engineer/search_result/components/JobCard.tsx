@@ -182,7 +182,6 @@ const JobCard: React.FC<{
     job.stateId ? String(job.stateId) : undefined,
     !!job.stateId,
   );
-
   const { refetch } = useGetEngineerSavedJobs({
     limit: 10,
     page: 1,

@@ -37,7 +37,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const adminProfile = useAdminProfile();
-  const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
+  const { data: adminLookupData } = useAppGetLookupData(LookupTable.Regions);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
