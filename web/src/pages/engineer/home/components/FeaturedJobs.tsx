@@ -17,58 +17,58 @@ import type { JobItem } from "../types";
  * Renders a circular progress ring for the match score.
  * Dynamic coloring: Rose (<50%), Amber (50-79%), Green (80%+)
  */
-const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
-  const size = 38;
-  const strokeWidth = 3;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (score / 100) * circumference;
-  const getColorClass = (val: number) => {
-    if (val >= 80) return "text-green-600 dark:text-green-400";
-    if (val >= 50) return "text-amber-500 dark:text-amber-400";
-    return "text-rose-500 dark:text-rose-400";
-  };
-  const activeColor = getColorClass(score);
-  return (
-    <div
-      className="relative flex items-center justify-center flex-shrink-0"
-      style={{ width: size, height: size }}
-    >
-      <svg
-        className="w-full h-full transform -rotate-90"
-        viewBox={`0 0 ${size} ${size}`}
-      >
-        <circle
-          className="text-gray-200 dark:text-gray-700"
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          fill="transparent"
-          r={radius}
-          cx={size / 2}
-          cy={size / 2}
-        />
-        <circle
-          className={`${activeColor} transition-all duration-1000 ease-in-out`}
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          fill="transparent"
-          r={radius}
-          cx={size / 2}
-          cy={size / 2}
-          style={{
-            strokeDasharray: circumference,
-            strokeDashoffset: strokeDashoffset,
-            strokeLinecap: "round",
-          }}
-        />
-      </svg>
+// const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
+//   const size = 38;
+//   const strokeWidth = 3;
+//   const radius = (size - strokeWidth) / 2;
+//   const circumference = 2 * Math.PI * radius;
+//   const strokeDashoffset = circumference - (score / 100) * circumference;
+//   const getColorClass = (val: number) => {
+//     if (val >= 80) return "text-green-600 dark:text-green-400";
+//     if (val >= 50) return "text-amber-500 dark:text-amber-400";
+//     return "text-rose-500 dark:text-rose-400";
+//   };
+//   const activeColor = getColorClass(score);
+//   return (
+//     <div
+//       className="relative flex items-center justify-center flex-shrink-0"
+//       style={{ width: size, height: size }}
+//     >
+//       <svg
+//         className="w-full h-full transform -rotate-90"
+//         viewBox={`0 0 ${size} ${size}`}
+//       >
+//         <circle
+//           className="text-gray-200 dark:text-gray-700"
+//           stroke="currentColor"
+//           strokeWidth={strokeWidth}
+//           fill="transparent"
+//           r={radius}
+//           cx={size / 2}
+//           cy={size / 2}
+//         />
+//         <circle
+//           className={`${activeColor} transition-all duration-1000 ease-in-out`}
+//           stroke="currentColor"
+//           strokeWidth={strokeWidth}
+//           fill="transparent"
+//           r={radius}
+//           cx={size / 2}
+//           cy={size / 2}
+//           style={{
+//             strokeDasharray: circumference,
+//             strokeDashoffset: strokeDashoffset,
+//             strokeLinecap: "round",
+//           }}
+//         />
+//       </svg>
 
-      <span className={`absolute text-[10px] font-bold ${activeColor}`}>
-        {score}%
-      </span>
-    </div>
-  );
-};
+//       <span className={`absolute text-[10px] font-bold ${activeColor}`}>
+//         {score}%
+//       </span>
+//     </div>
+//   );
+// };
 
 /**
  * JobCard Component - Displays a single job listing card
@@ -112,7 +112,6 @@ const FeatureJobCard: React.FC<
 > = (props) => {
   const job = props as JobItem;
   const { bookMarkRefetch } = props;
-  const matchScore = props.matchScore;
   const { data: engagementModels } = useLookupData("engagementModels");
   const { refetch } = useGetEngineerSavedJobs({
     limit: 10,
@@ -203,7 +202,7 @@ const FeatureJobCard: React.FC<
           </div>
 
           <div className="flex items-center space-x-2">
-            {matchScore !== undefined && <MatchScoreRing score={matchScore} />}
+            {/* Match score ring hidden - keeping space for bookmark only */}
             <div
               onClick={handleBookmarkClick}
               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
