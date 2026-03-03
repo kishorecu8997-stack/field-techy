@@ -71,6 +71,8 @@ import {
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
   type AdminUpdateTransactionRequestStatusResponses,
+  type AdminGetEngineersForManagementError,
+  adminGetEngineersForManagement,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -83,7 +85,6 @@ import {
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetJobDetailsOptions,
-  adminGetEngineersForManagementOptions,
   createOrUpdatePageMutation,
   addAndUpdateContactSupportMutation,
   getCmsPagesOptions,
@@ -328,19 +329,41 @@ export type AdminGetEngineersQuery = NonNullable<
   AdminGetEngineersForManagementData["query"]
 >;
 
+export type AdminManageEngineersResponse =
+  AdminGetEngineersForManagementResponses[200];
+
 export function useAdminManageEngineers(
   query?: AdminGetEngineersQuery,
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: AdminGetEngineersForManagementResponses) => void;
+    onSuccess?: (data: AdminManageEngineersResponse) => void;
     onError?: (error: unknown) => void;
   },
 ) {
-  return useQuery({
-    ...adminGetEngineersForManagementOptions({
-      client: apiClient,
-      query,
-    }),
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetEngineersQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery<
+    AdminManageEngineersResponse,
+    AdminGetEngineersForManagementError
+  >({
+    queryKey: [...queryKeys.admin.manageEngineers, mergedQuery],
+    queryFn: async ({ signal }) => {
+      const { data } = await adminGetEngineersForManagement({
+        client: apiClient,
+        query: mergedQuery,
+        signal,
+        throwOnError: true,
+      });
+      return data as AdminManageEngineersResponse;
+    },
+    refetchOnMount: true,
     ...options,
   });
 }
@@ -419,7 +442,11 @@ export function useAdminEngineersByUserIdStatus(options?: {
   return useMutation({
     ...adminUpdateUserStatusMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["adminManageEngineers"] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+        refetchType: "all",
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

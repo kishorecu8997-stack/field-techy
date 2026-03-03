@@ -1,10 +1,12 @@
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import type { EngineerFormData } from "../types";
 import { StarIcon } from "lucide-react";
-import ProfileImageWithProgress from "@/shared/components/ProfileImageProgress";
 import RatingAndReviewTable from "./RatingReviewTable";
 import type { AdminGetEngineerResponse } from "@/api";
+import placeholdr_user from "@/assets/user-image/placeholdr_user.svg";
+
 /**
  * BasicInformation
  *
@@ -52,6 +54,33 @@ export default function BasicInformation({
   const employmentStatus = engineer?.employmentStatus ?? "N/A";
   const employmentType = engineer?.employmentType ?? "N/A";
   const averageRating = engineer?.averageRating ?? 0;
+  const [profileImageSrc, setProfileImageSrc] =
+    useState<string>(placeholdr_user);
+
+  useEffect(() => {
+    let objectUrl: string | null = null;
+
+    if (!profileImage || profileImage === "null") {
+      setProfileImageSrc(placeholdr_user);
+    } else if (typeof profileImage === "string") {
+      setProfileImageSrc(profileImage);
+    } else if (profileImage instanceof File) {
+      objectUrl = URL.createObjectURL(profileImage);
+      setProfileImageSrc(objectUrl);
+    } else if (profileImage instanceof FileList && profileImage.length > 0) {
+      objectUrl = URL.createObjectURL(profileImage[0]);
+      setProfileImageSrc(objectUrl);
+    } else {
+      setProfileImageSrc(placeholdr_user);
+    }
+
+    // Cleanup function to revoke the object URL
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [profileImage]);
 
   return (
     <div>
@@ -63,10 +92,16 @@ export default function BasicInformation({
         <label className="block text-sm text-gray-500 mb-1">
           Profile Image
         </label>
-        <ProfileImageWithProgress
-          imageUrl={typeof profileImage === "string" ? profileImage : ""}
-          completionPercent={60}
-        />
+        <div className="w-24 h-24 bg-transparent rounded-full mb-6 overflow-hidden border-2 border-gray-100 dark:border-gray-700 shadow-sm">
+          <img
+            src={profileImageSrc}
+            alt="Profile"
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = placeholdr_user;
+            }}
+          />
+        </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           <div>
