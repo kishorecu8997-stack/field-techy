@@ -4,7 +4,7 @@ import type { RenderTask } from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min?url";
 
 interface PDFPreviewProps {
-  url: string;
+  url: string | undefined;
   className?: string;
 }
 

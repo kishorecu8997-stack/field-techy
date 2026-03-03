@@ -219,7 +219,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       name: data.contactPersonName,
       companyName: isCorporate ? data.companyName : undefined,
       personName: data.contactPersonName,
-      address: data.address,
+      address: data.address ?? undefined,
       countryId: getId(data.country),
       stateId: getId(data.state),
       cityId: getId(data.city),

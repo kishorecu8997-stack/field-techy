@@ -23,7 +23,9 @@ export const useEngineerStatusChange = ({
     if (!status) return;
 
     const previousStatus =
-      rowStatuses[row.id] ?? row.approvalStatus ?? "pending";
+      rowStatuses[row.id] ??
+      (row.profileStatus as EngineerStatusType) ??
+      "pending";
 
     setRowStatuses((prev) => ({ ...prev, [row.id]: status }));
 
@@ -45,14 +47,25 @@ export const useEngineerStatusChange = ({
                 : "warning",
           action: async (close) => {
             try {
-              await mutateAsync({ userId: row.id, profileStatus: status });
+              await mutateAsync({ userId: row.userId, profileStatus: status });
               isSuccess = true;
-              refetch();
-              close(true);
+              toast.success(
+                `Engineer status updated to ${status} successfully!`,
+              );
             } catch (error) {
               toast.error(`Failed to update engineer status: ${error}`);
               close(true);
+              return;
             }
+
+            try {
+              await refetch?.();
+            } catch {
+              toast.error(
+                "Engineer status updated, but failed to refresh the list.",
+              );
+            }
+            close(true);
           },
         },
       ],
