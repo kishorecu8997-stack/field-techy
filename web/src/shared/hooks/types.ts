@@ -16,5 +16,5 @@ export interface UseEngineerStatusChangeProps {
     { userId: number; profileStatus: EngineerStatusType }
   >["mutateAsync"];
   showPopup: (config: PopupConfig) => Promise<unknown>;
-  refetch: () => void;
+  refetch?: () => void | Promise<unknown>;
 }
