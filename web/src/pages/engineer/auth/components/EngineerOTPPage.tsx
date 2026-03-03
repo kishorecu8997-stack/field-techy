@@ -8,7 +8,6 @@ import { useVerifyOtp } from "@/shared/apiServices/commonOpenApiService";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import type { AppVerifyOtpData } from "@/api";
 import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
-
 export type { OTPValues } from "@/shared/components/commonUI/inputs/types";
 
 interface EngineerOTPPageProps {
