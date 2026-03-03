@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { LuCalendarDays, LuClock } from "react-icons/lu";
+import { useParams } from "react-router-dom";
 
 type StatusType = "pending" | "resolved";
 
@@ -22,6 +23,7 @@ type StatusType = "pending" | "resolved";
  * Engineer-facing view: focus on creating/updating/submitting reports
  */
 const ReportDetails: React.FC = () => {
+  const { jobId } = useParams();
   const { showPopup, closePopup } = usePopupStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -35,6 +37,7 @@ const ReportDetails: React.FC = () => {
     limit: pageSize,
     page: currentPage,
     status: status,
+    jobId: Number(jobId),
   });
 
   useEffect(() => {

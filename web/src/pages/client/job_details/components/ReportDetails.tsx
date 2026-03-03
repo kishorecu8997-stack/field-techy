@@ -1,4 +1,7 @@
-import { useGetReportClient, type ReportIssue } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useGetReportClient,
+  type ReportIssue,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import CustomTable, {
@@ -11,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { LuCalendarDays, LuClock } from "react-icons/lu";
+import { useParams } from "react-router-dom";
 
 type StatusType = "pending" | "resolved";
 
@@ -19,6 +23,7 @@ type StatusType = "pending" | "resolved";
  * Client-facing view: focus on reviewing / approving / requesting changes
  */
 const ReportDetails: React.FC = () => {
+  const { jobId } = useParams();
   const { showPopup, closePopup } = usePopupStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -31,6 +36,7 @@ const ReportDetails: React.FC = () => {
     limit: pageSize,
     page: currentPage,
     status: status,
+    jobId: Number(jobId),
   });
 
   useEffect(() => {
