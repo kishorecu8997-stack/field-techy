@@ -230,7 +230,7 @@ const SelectEngineer = () => {
         <InvitationSentModal
           onClose={() => {
             setIsOpen(false);
-            navigate(absoluteUrls.client.home.my_jobs);
+            navigate(`${absoluteUrls.client.home.my_jobs}?status=Posted`);
           }}
         />
       </Popup>

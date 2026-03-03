@@ -22,6 +22,8 @@ const ExploreEngineer = () => {
     skills: new Set(),
   });
 
+  const [totalEngineerCount, setTotalEngineerCount] = useState<number>(0);
+
   const handleFilterChange = (newFilters: Partial<FiltersType>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
@@ -45,14 +47,14 @@ const ExploreEngineer = () => {
             title="Explore Engineers"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowBreadcrumb={false}
-            description={`10+ engineers found`}
+            description={`${totalEngineerCount}+ engineers found`}
           />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
           {/* Engineer List */}
           <div className="lg:col-span-2">
-            <EngineerListPage filters={filters} />
+            <EngineerListPage filters={filters} onTotalEngineerCountChange={setTotalEngineerCount} />
           </div>
 
           {/* Sidebar Filters */}

@@ -8,6 +8,8 @@ import {
 import type { JobInvite } from "../../types";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { FaRegCircle } from "react-icons/fa";
+import { useCountries, useStates, useCities } from "@/shared/hooks/useLookup";
+import { useMemo } from "react";
 
 interface JobCardProps {
   job: JobInvite;
@@ -27,6 +29,29 @@ const JobInviteCard: React.FC<JobCardProps> = ({
   isSelected,
   onToggle,
 }) => {
+  // lookup for location names
+  const { data: countries } = useCountries();
+  const { data: states } = useStates(
+    job.countryId ? String(job.countryId) : undefined,
+    !!job.countryId ? { enabled: true } : undefined,
+  );
+  const { data: cities } = useCities(
+    job.stateId ? String(job.stateId) : undefined,
+    !!job.stateId ? { enabled: true } : undefined,
+  );
+
+  const locationString = useMemo(() => {
+    if (job.location) return job.location;
+    const countryName = countries?.find((c) => c.id === job.countryId)?.name;
+    const stateName = states?.find((s) => s.id === job.stateId)?.name;
+    const cityName = cities?.find((c) => c.id === job.cityId)?.name;
+    const parts: string[] = [];
+    if (cityName) parts.push(cityName);
+    if (stateName) parts.push(stateName);
+    if (countryName) parts.push(countryName);
+    return parts.join(", ");
+  }, [job.location, countries, states, cities, job.countryId, job.stateId, job.cityId]);
+
   return (
     <div
       className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer `}
@@ -79,7 +104,7 @@ const JobInviteCard: React.FC<JobCardProps> = ({
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
           <IoLocationOutline className="w-4 h-4 mr-2" />
-          {job.location}
+          {locationString}
         </div>
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">

@@ -48,6 +48,7 @@ import {
   clientGetMyDocumentsOptions,
   clientGetDashboardOptions,
   clientExploreEngineersOptions,
+  clientGetPublicEngineerProfileOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
@@ -463,11 +464,34 @@ export function useClientExploreEngineers(
   query: ClientExploreEngineersData["query"] = {},
   enabled: boolean = true,
 ) {
+  // Forward the provided query object (including optional jobId) to the API hook.
   return useQuery({
     ...clientExploreEngineersOptions({
       client: apiClient,
       query,
     }),
     enabled: enabled,
+    staleTime: 0,
+  });
+}
+
+/**
+ * Hook for fetching a single engineer's public profile.
+ * Wraps the `/jobs/explore/engineers/{id}` endpoint.
+ *
+ * @param id - engineer ID from the route or other context
+ * @param enabled - whether the query should be active
+ */
+export function useClientGetPublicEngineerProfile(
+  id: number,
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...clientGetPublicEngineerProfileOptions({
+      client: apiClient,
+      path: { id },
+    }),
+    enabled: enabled && !!id,
+    staleTime: 0,
   });
 }

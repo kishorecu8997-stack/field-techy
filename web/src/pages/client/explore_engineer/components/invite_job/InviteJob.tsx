@@ -1,19 +1,23 @@
 import { earningsData } from "@/dummy_data/jobDetails";
-import { JobInviteData } from "@/dummy_data/jobInviteData";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import Popup from "@/shared/components/Popup";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import React from "react";
+import Pagination from "@/pages/engineer/search_result/components/Pagination";
+import { scrollToTop } from "@/utils";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
+import { useClientGetJobs, useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
+import { absoluteUrls } from "@/config/urls";
 import type { SelectedJobCardId } from "../../types";
+import type { ClientGetJobsResponse } from "@/api";
 import InvitationSentModal from "./InvitationSentModal";
 import JobInviteCard from "./JobInviteCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
-interface SelectJobCardProps {
-  onClose: () => void;
-}
+
+// InviteJob is now a standalone page; it will read engineerId from URL params.
 
 /**
  * A component that allows a client to select one or more jobs to invite an engineer to.
@@ -22,8 +26,24 @@ interface SelectJobCardProps {
  * @param {SelectJobCardProps} props - The props for the component.
  * @returns {React.ReactElement} A React functional component that renders the job invitation page.
  */
-const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
+const InviteJob: React.FC = () => {
+  const { engineerId } = useParams();
+  const engineer = Number(engineerId);
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    scrollToTop();
+  }, [currentPage]);
+
+  const { data: jobsData } = useClientGetJobs(true) as { data?: ClientGetJobsResponse };
+
+  const { mutateAsync: inviteEngineer } = useClientInviteEngineer({
+    onError: (error) => {
+      console.error("Invitation mutation error:", error);
+    },
+  });
 
   const methods = useForm<SelectedJobCardId>({
     defaultValues: {
@@ -39,12 +59,60 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
     formState: { errors },
   } = methods;
 
-  const handleInviteClick = (data: SelectedJobCardId) => {
-    console.log("Form submitted with data:", data);
-    toast.success(`Invitation sent successfully`);
-    setIsOpen(true);
-    // onInviteJobCard(data); // This can be called if needed
+  const handleInviteClick = async (data: SelectedJobCardId) => {
+    if (!engineer || engineer <= 0) {
+      toast.error("Engineer ID is invalid");
+      console.error("Invalid engineer ID:", engineer);
+      return;
+    }
+    if (!data.id || data.id.length === 0) {
+      toast.error("Please select at least one job");
+      return;
+    }
+    try {
+      console.log("Sending invitations for jobs:", data.id, "to engineer:", engineer);
+      const invitations = data.id.map((jobId) => {
+        console.log("Preparing invite - jobId:", jobId, "engineerId:", engineer);
+        return inviteEngineer({ body: { jobId, engineerId: engineer } });
+      });
+      const results = await Promise.all(invitations);
+      console.log("All invitations sent successfully:", results);
+      toast.success(`Invitation sent successfully`);
+      setIsOpen(true);
+    } catch (error: unknown) {
+      console.error("Invitation error details:", error);
+      let errorMsg = "Failed to send invitation. Please try again.";
+      if (error instanceof Error) {
+        errorMsg = error.message;
+      } else if (typeof error === "object" && error !== null) {
+        const errObj = error as Record<string, unknown>;
+        if (errObj.message) errorMsg = String(errObj.message);
+        if (errObj.error) errorMsg = String(errObj.error);
+      }
+      toast.error(errorMsg);
+    }
   };
+
+  const itemsPerPage = 6;
+  const postedJobs = (jobsData || []).filter((j) => j.status?.toLowerCase() === "posted");
+  const totalPages = Math.ceil(postedJobs.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedJobs = postedJobs.slice(startIndex, startIndex + itemsPerPage);
+
+  const mappedJobs = paginatedJobs.map((apiJob) => ({
+    id: apiJob.id,
+    title: apiJob.jobTitle,
+    date: apiJob.startDate ? new Date(apiJob.startDate).toDateString() : "",
+    location: apiJob.workLocationName || "",
+    countryId: apiJob.countryId,
+    stateId: apiJob.stateId,
+    cityId: apiJob.cityId,
+    duration: apiJob.endDate ? "Calculated Duration" : "",
+    jobType: apiJob.jobType,
+    status: apiJob.status,
+    serviceType: `Service Category ${apiJob.serviceCategoryId}`,
+    price: apiJob.totalPrice ? `$${apiJob.totalPrice}` : "",
+  }));
 
   const handleToggle = (jobId: number) => {
     const currentIds = getValues("id");
@@ -61,6 +129,7 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
           <div className="w-full sticky top-16 z-10 ">
             <MyJobsHeader
               title="Select Jobs"
+              description={undefined}
               isShowBreadcrumb={true}
               isReport={false}
               isShowSort={false}
@@ -94,8 +163,8 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
                         </p>
                       )}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {JobInviteData.length > 0 ? (
-                          JobInviteData.map((job) => (
+                        {mappedJobs.length > 0 ? (
+                          mappedJobs.map((job) => (
                             <JobInviteCard
                               key={job.id}
                               job={job}
@@ -113,6 +182,20 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
                           </p>
                         )}
                       </div>
+
+                      {/* Pagination */}
+                      {totalPages > 1 && (
+                        <div className="mt-6">
+                          <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={(page) => {
+                              setCurrentPage(page);
+                              window.scrollTo({ top: 0, behavior: "smooth" });
+                            }}
+                          />
+                        </div>
+                      )}
                     </>
                   )}
                 />
@@ -126,8 +209,19 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
           </div>
         </div>
       </FormContainer>
-      <Popup open={isOpen} onClose={onClose}>
-        <InvitationSentModal onClose={() => setIsOpen(false)} />
+      <Popup
+        open={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          navigate(`${absoluteUrls.client.home.my_jobs}?status=Posted`);
+        }}
+      >
+        <InvitationSentModal
+          onClose={() => {
+            setIsOpen(false);
+            navigate(`${absoluteUrls.client.home.my_jobs}?status=Posted`);
+          }}
+        />
       </Popup>
     </div>
   );

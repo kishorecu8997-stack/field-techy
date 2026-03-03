@@ -14,12 +14,12 @@ import type { EngineerCardProps } from "../types";
  */
 const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
   const navigate = useNavigate();
+  const detailsUrl = `${absoluteUrls.client.home.client_Explore_engineers_details}/${engineer.id}`;
+
   return (
     <div
       className="p-4 rounded-lg flex items-center gap-4 bg-slate-100 dark:bg-teal-800 text-gray-800 dark:text-white transition-colors duration-300 cursor-pointer"
-      onClick={() =>
-        navigate(absoluteUrls.client.home.client_Explore_engineers_details)
-      }
+      onClick={() => navigate(detailsUrl)}
     >
       <img
         // src={engineer.imageUrl}
@@ -45,10 +45,7 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
           {engineer.availability}
         </p>
         <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          <NavLink
-            to={absoluteUrls.client.home.client_Explore_engineers_details}
-            className="hover:text-teal-900 text-[1rem] whitespace-nowrap"
-          >
+          <NavLink to={detailsUrl} className="hover:text-teal-900 text-[1rem] whitespace-nowrap">
             <Button
               variant="primary"
               className="bg-teal-800 dark:bg-teal text-white"

@@ -7,6 +7,7 @@ import type { FiltersType } from "../index";
 
 interface EngineerListPageProps {
   filters: FiltersType;
+  onTotalEngineerCountChange?: (count: number) => void;
 }
 
 /**
@@ -16,7 +17,7 @@ interface EngineerListPageProps {
  * The component manages its own state for theme, category selection, and pagination.
  * @returns {React.ReactElement} The rendered engineer list page.
  */
-const EngineerListPage: React.FC<EngineerListPageProps> = ({ filters }) => {
+const EngineerListPage: React.FC<EngineerListPageProps> = ({ filters, onTotalEngineerCountChange }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   useEffect(() => {
     scrollToTop();
@@ -46,6 +47,13 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({ filters }) => {
   );
   const engineers = data?.data ?? [];
   const totalPages = Math.ceil((data?.total ?? 0) / itemsPerPage);
+  
+  // Notify parent of total engineer count
+  useEffect(() => {
+    if (onTotalEngineerCountChange && data?.total) {
+      onTotalEngineerCountChange(data.total);
+    }
+  }, [data?.total, onTotalEngineerCountChange]);
 
   const mappedEngineers = engineers.map((engineer) => ({
     id: String(engineer.id),
