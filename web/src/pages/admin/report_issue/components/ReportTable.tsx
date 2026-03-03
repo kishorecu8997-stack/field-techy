@@ -13,6 +13,7 @@ import { useAdminResolveReport } from "@/shared/apiServices/admin/adminOpenApiSe
 import { toast } from "react-toastify";
 import type { AdminGetReportsResponses } from "@/api";
 import type { FilterDataProps } from "@/shared/components/AdminFilter";
+import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 
 type AdminReportIssue = AdminGetReportsResponses[200]["data"][number];
 type ReporterRole = AdminReportIssue["reporterRole"] | "all" | "completed";
@@ -74,6 +75,7 @@ export default function ReportTable({
   filterParams,
 }: ReportTableProps) {
   const { showPopup } = usePopupStore();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   const { mutateAsync: resolveReport } = useAdminResolveReport();
   const [search, setSearch] = useState("");
 
@@ -260,6 +262,7 @@ export default function ReportTable({
             try {
               await resolveReport({
                 body: { reportId: row.id, resolve: true },
+                query: { regionId: Number(selectedRegionId) },
               });
               refetch();
               toast.success("Report resolved successfully!");

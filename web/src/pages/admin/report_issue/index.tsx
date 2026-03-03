@@ -1,12 +1,9 @@
-import type { AdminGetReportsResponses } from "@/api";
 import AdminFilter from "@/shared/components/AdminFilter";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { useAdminReports } from "@/shared/hooks/useAdminReports";
 import { useState } from "react";
 import { BsFilterRight } from "react-icons/bs";
 import ReportTable from "./components/ReportTable";
-
-type AdminReportIssue = AdminGetReportsResponses[200]["data"][number];
 
 /**
  * AdminReportIssue page for admin. Presents AdminReportIssue in tabbed sections using

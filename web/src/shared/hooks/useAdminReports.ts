@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAdminGetReport } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { FilterDataProps } from "@/shared/components/AdminFilter";
+import { useAdminCountryStore } from "../store/useAdminCountryStore";
 
 /**
  * @hook useAdminReports
@@ -27,7 +28,7 @@ export function useAdminReports() {
   const [clientPage, setClientPage] = useState(1);
   const [engineerPage, setEngineerPage] = useState(1);
   const [completedPage, setCompletedPage] = useState(1);
-
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   /** Filter and sort params applied from the AdminFilter panel. */
   const [filterParams, setFilterParams] = useState<FilterDataProps>({
     sortBy: "",
@@ -40,7 +41,11 @@ export function useAdminReports() {
     data: allData,
     isLoading: allLoading,
     refetch: refetchAll,
-  } = useAdminGetReport({ page: allPage, limit: pageSize });
+  } = useAdminGetReport({
+    page: allPage,
+    limit: pageSize,
+    regionId: Number(selectedRegionId),
+  });
 
   /** Fetches reports filtered to reporterRole: "client". */
   const {
@@ -51,6 +56,7 @@ export function useAdminReports() {
     page: clientPage,
     limit: pageSize,
     reporterRole: "client",
+    regionId: Number(selectedRegionId),
   });
 
   /** Fetches reports filtered to reporterRole: "engineer". */
@@ -62,6 +68,7 @@ export function useAdminReports() {
     page: engineerPage,
     limit: pageSize,
     reporterRole: "engineer",
+    regionId: Number(selectedRegionId),
   });
 
   /** Fetches reports filtered to status: "resolved". */
@@ -73,6 +80,7 @@ export function useAdminReports() {
     page: completedPage,
     limit: pageSize,
     status: "resolved",
+    regionId: Number(selectedRegionId),
   });
 
   /**
