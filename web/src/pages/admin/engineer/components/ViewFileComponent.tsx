@@ -34,8 +34,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   fileUrl,
   userId,
 }) => {
-  const shouldFetchFromAdmin =
-    !!userId && !!fileType && !fileUrl;
+  const shouldFetchFromAdmin = !!userId && !!fileType && !fileUrl;
 
   const {
     data: engineerDetails,
@@ -65,7 +64,10 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
     data: downloadData,
     isLoading,
     isError,
-  } = useAppDownloadProfileFile(fileType, !!fileType && !fileUrl && !shouldFetchFromAdmin);
+  } = useAppDownloadProfileFile(
+    fileType,
+    !!fileType && !fileUrl && !shouldFetchFromAdmin,
+  );
 
   const previewUrl =
     fileUrl ?? adminFileUrl ?? downloadData?.downloadUrl ?? undefined;
@@ -140,11 +142,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
       }
     >
       <div className="w-full flex items-center justify-center">
-        <PDFPreview
-          key={previewUrl}
-          url={previewUrl}
-          className="h-[300px]"
-        />
+        <PDFPreview key={previewUrl} url={previewUrl} className="h-[300px]" />
       </div>
     </Suspense>
   );

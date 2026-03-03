@@ -56,9 +56,7 @@ const DisputeReports: React.FC = () => {
     {
       key: "JobId",
       label: "Job ID",
-      renderCell: (row) => (
-        <span className="capitalize">{row.jobId}</span>
-      ),
+      renderCell: (row) => <span className="capitalize">{row.jobId}</span>,
     },
     { key: "issueCategory", label: "Issue Category" },
     {
@@ -78,7 +76,7 @@ const DisputeReports: React.FC = () => {
     {
       key: "attachFile",
       label: "File",
-      align: "center", 
+      align: "center",
       dataCellAlign: "center",
       renderCell: (row) => {
         const hasFile = !!row.attachFile?.url;

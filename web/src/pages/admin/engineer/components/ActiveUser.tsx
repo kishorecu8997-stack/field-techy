@@ -48,20 +48,23 @@ export default function ActiveUser() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [activeEngineer, setActiveEngineer] = useState<ManageEngineerProps | null>(
-    null,
-  );
+  const [activeEngineer, setActiveEngineer] =
+    useState<ManageEngineerProps | null>(null);
   const [selectedFile, setSelectedFile] = useState<{
     engineerId: number;
     type: ProfileFileType;
   } | null>(null);
 
-  const { data: engineersResponse, isLoading, isFetching, refetch } =
-    useAdminManageEngineers({
-      page: currentPage,
-      limit: pageSize,
-      status: "active",
-    });
+  const {
+    data: engineersResponse,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    status: "active",
+  });
 
   const { mutateAsync: deleteEngineer } = useAdminDeleteEngineerMutation();
 
@@ -69,10 +72,14 @@ export default function ActiveUser() {
 
   const selectedEngineer = useMemo(() => {
     if (!selectedFile) return null;
-    return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
   }, [engineerData, selectedFile]);
 
-    const isPreviewOpen = !!selectedFile && !!selectedEngineer;
+  const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
   const { mutateAsync: updateEngineerStatus } =
     useAdminEngineersByUserIdStatus();
@@ -215,7 +222,8 @@ export default function ActiveUser() {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
-      renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed").toUpperCase(),
+      renderCell: (row) =>
+        (row.isEmployed ? "Employed" : "Unemployed").toUpperCase(),
     },
     {
       key: "avgRating",

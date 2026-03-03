@@ -43,18 +43,26 @@ export default function BlockedUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading, isFetching, refetch } =
-    useAdminManageEngineers({
-      page: currentPage,
-      limit: pageSize,
-      status: "blocked",
-    });
+  const {
+    data: engineersResponse,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    status: "blocked",
+  });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   const selectedEngineer = useMemo(() => {
     if (!selectedFile) return null;
-    return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
   }, [engineerData, selectedFile]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
@@ -197,7 +205,10 @@ export default function BlockedUser() {
               return;
             }
 
-            setSelectedFile({ engineerId: row.id, type: value as ProfileFileType });
+            setSelectedFile({
+              engineerId: row.id,
+              type: value as ProfileFileType,
+            });
           }}
         />
       ),

@@ -21,12 +21,14 @@ export default function BlockEngineer({
       <Popup open={isBlockEngineer} onClose={() => setIsBlockEngineer(false)}>
         <div className="p-4">
           <div className="flex justify-between items-center">
-            <span className="font-bold text-black dark:text-white">Block Engineer</span>
+            <span className="font-bold text-black dark:text-white">
+              Block Engineer
+            </span>
             <div
               className="text-xl font-semibold cursor-pointer"
               onClick={() => setIsBlockEngineer(false)}
             >
-              <IoCloseSharp className="text-black dark:text-white"/>
+              <IoCloseSharp className="text-black dark:text-white" />
             </div>
           </div>
 

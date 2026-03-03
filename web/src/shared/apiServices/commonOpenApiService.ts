@@ -255,7 +255,7 @@ export function useCheckUserExistence({
     enabled: enabled && hasValue,
     staleTime: 0,
     retry: false,
-      });
+  });
 }
 export function useAppResolveSignupRegion(enabled: boolean = true) {
   return useQuery({

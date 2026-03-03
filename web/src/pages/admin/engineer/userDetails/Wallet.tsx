@@ -47,7 +47,7 @@ export default function Wallet() {
 
   const transactions: WalletTransaction[] = useMemo(
     () => (walletHistory?.data ?? []) as WalletTransaction[],
-    [walletHistory?.data]
+    [walletHistory?.data],
   );
 
   // Table Columns
@@ -73,9 +73,7 @@ export default function Wallet() {
       key: "transactionType",
       label: "Type",
       renderCell: (row) => (
-        <span className="capitalize font-semibold">
-          {row.transactionType}
-        </span>
+        <span className="capitalize font-semibold">{row.transactionType}</span>
       ),
     },
 
@@ -83,9 +81,7 @@ export default function Wallet() {
       key: "amount",
       label: "Amount",
       renderCell: (row) => (
-        <span className="font-medium">
-          ₹{row.amount.toLocaleString()}
-        </span>
+        <span className="font-medium">₹{row.amount.toLocaleString()}</span>
       ),
     },
 
@@ -101,7 +97,9 @@ export default function Wallet() {
               : "bg-yellow-100 text-yellow-700";
 
         return (
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${color}`}>
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${color}`}
+          >
             {row.status}
           </span>
         );
@@ -120,35 +118,47 @@ export default function Wallet() {
         <div className="grid md:grid-cols-3 gap-6">
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Bank Name</label>
+              <label className="block text-xs text-gray-500 mb-1">
+                Bank Name
+              </label>
               <p className="font-semibold">{data.bankName}</p>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Card Number</label>
+              <label className="block text-xs text-gray-500 mb-1">
+                Card Number
+              </label>
               <p className="font-semibold">{data.cardNumber}</p>
             </div>
           </div>
 
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Bank Address</label>
+              <label className="block text-xs text-gray-500 mb-1">
+                Bank Address
+              </label>
               <p className="text-sm leading-tight">{data.bankAddress}</p>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">IBAN Number</label>
+              <label className="block text-xs text-gray-500 mb-1">
+                IBAN Number
+              </label>
               <p className="font-semibold">{data.ibanNumber}</p>
             </div>
           </div>
 
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Card Holder Name</label>
+              <label className="block text-xs text-gray-500 mb-1">
+                Card Holder Name
+              </label>
               <p className="font-semibold text-gray-500">
                 {data.cardHolderName}
               </p>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Swift Code</label>
+              <label className="block text-xs text-gray-500 mb-1">
+                Swift Code
+              </label>
               <p className="font-semibold">{data.swiftCode}</p>
             </div>
           </div>
@@ -173,8 +183,8 @@ export default function Wallet() {
             !hasValidUserId
               ? "Missing engineer ID in URL."
               : error
-              ? "Failed to fetch wallet transactions."
-              : null
+                ? "Failed to fetch wallet transactions."
+                : null
           }
           totalCount={walletHistory?.total ?? 0}
           currentPage={page}

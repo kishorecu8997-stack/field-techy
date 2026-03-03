@@ -19,8 +19,7 @@ import type {
   AdminCreateEngineerData,
   AppMarkProfileFileUploadedData,
 } from "@/api";
-import { useCheckUserExistence } from "@/shared/apiServices/commonOpenApiService"
-
+import { useCheckUserExistence } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * AddEngineer component provides a multi-step form interface for adding new engineers to the system.
@@ -89,29 +88,29 @@ export default function AddEngineer() {
     enabled: (email?.length ?? 0) > 5 || (phone?.length ?? 0) > 7,
   });
 
-useEffect(() => {
-  if (checkingUser) return;
+  useEffect(() => {
+    if (checkingUser) return;
 
-  // Email check
-  if (userExists?.emailExists) {
-    setError("email", {
-      type: "manual",
-      message: "User already exists with this email",
-    });
-  } else {
-    clearErrors("email");
-  }
+    // Email check
+    if (userExists?.emailExists) {
+      setError("email", {
+        type: "manual",
+        message: "User already exists with this email",
+      });
+    } else {
+      clearErrors("email");
+    }
 
-  // Phone check
-  if (userExists?.phoneExists) {
-    setError("phoneNumber", {
-      type: "manual",
-      message: "User already exists with this phone number",
-    });
-  } else {
-    clearErrors("phoneNumber");
-  }
-}, [userExists, checkingUser, setError, clearErrors]);
+    // Phone check
+    if (userExists?.phoneExists) {
+      setError("phoneNumber", {
+        type: "manual",
+        message: "User already exists with this phone number",
+      });
+    } else {
+      clearErrors("phoneNumber");
+    }
+  }, [userExists, checkingUser, setError, clearErrors]);
 
   const validateBasicInformation = () =>
     trigger([
@@ -181,11 +180,11 @@ useEffect(() => {
     );
     return { body, files };
   };
-    const handleNext = async () => {
-      if (userExists?.emailExists || userExists?.phoneExists) {
-        toast.error("User already exists");
-        return;
-      }
+  const handleNext = async () => {
+    if (userExists?.emailExists || userExists?.phoneExists) {
+      toast.error("User already exists");
+      return;
+    }
     let isValid = false;
 
     if (activeTab === "Basic Information") {
@@ -260,11 +259,11 @@ useEffect(() => {
     });
   };
 
-    const handleSave = async () => {
-      if (userExists?.emailExists || userExists?.phoneExists) {
-        toast.error("User already exists");
-        return;
-      }
+  const handleSave = async () => {
+    if (userExists?.emailExists || userExists?.phoneExists) {
+      toast.error("User already exists");
+      return;
+    }
 
     const isValidBasic = await validateBasicInformation();
     if (!isValidBasic) return;

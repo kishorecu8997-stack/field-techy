@@ -34,7 +34,7 @@ export type DisputePriorityLevel =
   (typeof DISPUTE_PRIORITY_LEVEL)[keyof typeof DISPUTE_PRIORITY_LEVEL];
 export type DisputeResolvedInFavourOf =
   (typeof DISPUTE_RESOLVED_IN_FAVOUR_OF)[keyof typeof DISPUTE_RESOLVED_IN_FAVOUR_OF];
-  
+
 export interface DisputeProps {
   id: number;
   reportedById: number;

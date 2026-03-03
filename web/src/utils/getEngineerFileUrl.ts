@@ -10,10 +10,7 @@ export const getEngineerFileUrl = (
 ): string | null => {
   if (!engineer || !type) return null;
 
-  const fileMap: Record<
-    ProfileFileType,
-    { url?: string } | undefined
-  > = {
+  const fileMap: Record<ProfileFileType, { url?: string } | undefined> = {
     profilePicture: engineer.profilePicture,
     resumeFile: engineer.resumeFile,
     govIdDoc: engineer.govIdDoc,

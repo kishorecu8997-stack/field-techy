@@ -43,18 +43,26 @@ export default function SuspendedUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading, isFetching, refetch } =
-    useAdminManageEngineers({
-      page: currentPage,
-      limit: pageSize,
-      status: "suspended",
-    });
+  const {
+    data: engineersResponse,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    status: "suspended",
+  });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
   const selectedEngineer = useMemo(() => {
     if (!selectedFile) return null;
-    return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
   }, [engineerData, selectedFile]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
@@ -199,7 +207,10 @@ export default function SuspendedUser() {
               return;
             }
 
-            setSelectedFile({ engineerId: row.id, type: value as ProfileFileType });
+            setSelectedFile({
+              engineerId: row.id,
+              type: value as ProfileFileType,
+            });
           }}
         />
       ),

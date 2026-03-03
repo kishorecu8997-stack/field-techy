@@ -24,7 +24,8 @@ export const useEngineerStatusChange = ({
 
     const previousStatus =
       rowStatuses[row.id] ??
-      ((row.profileStatus as EngineerStatusType) ?? "pending");
+      (row.profileStatus as EngineerStatusType) ??
+      "pending";
 
     setRowStatuses((prev) => ({ ...prev, [row.id]: status }));
 
@@ -48,7 +49,10 @@ export const useEngineerStatusChange = ({
             try {
               await mutateAsync({ userId: row.userId, profileStatus: status });
               isSuccess = true;
-              toast.success(`Engineer status updated to ${status} successfully!`);            } catch (error) {
+              toast.success(
+                `Engineer status updated to ${status} successfully!`,
+              );
+            } catch (error) {
               toast.error(`Failed to update engineer status: ${error}`);
               close(true);
               return;

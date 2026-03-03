@@ -24,7 +24,6 @@ import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService"
 import ViewFileComponent from "@/pages/admin/engineer/components/ViewFileComponent";
 import { getEngineerFileUrl } from "@/utils/getEngineerFileUrl";
 
-
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
@@ -79,7 +78,11 @@ export default function PendingRequest() {
 
   const selectedEngineer = useMemo(() => {
     if (!selectedFile) return null;
-    return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
   }, [engineerData, selectedFile]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
@@ -173,14 +176,19 @@ export default function PendingRequest() {
                 label: item.label ?? "",
               })) ?? []
             }
-            value={selectedFile?.engineerId === row.id ? selectedFile.type : null}
+            value={
+              selectedFile?.engineerId === row.id ? selectedFile.type : null
+            }
             onChange={(value) => {
               if (!value) {
                 setSelectedFile(null);
                 return;
               }
 
-              setSelectedFile({ engineerId: row.id, type: value as ProfileFileType });
+              setSelectedFile({
+                engineerId: row.id,
+                type: value as ProfileFileType,
+              });
             }}
           />
         );
@@ -210,7 +218,8 @@ export default function PendingRequest() {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
-      renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed").toUpperCase(),
+      renderCell: (row) =>
+        (row.isEmployed ? "Employed" : "Unemployed").toUpperCase(),
     },
     {
       key: "avgRating",

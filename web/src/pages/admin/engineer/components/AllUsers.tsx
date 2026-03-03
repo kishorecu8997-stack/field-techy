@@ -11,7 +11,6 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { documentType } from "../types";
 import { getEngineerFileUrl } from "@/utils/getEngineerFileUrl";
 
-
 /**
  * AllUsers Component
  *
@@ -39,8 +38,11 @@ export default function AllUsers() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: engineersResponse, isLoading, isFetching } =
-    useAdminManageEngineers({
+  const {
+    data: engineersResponse,
+    isLoading,
+    isFetching,
+  } = useAdminManageEngineers({
     page: currentPage,
     limit: pageSize,
   });
@@ -49,7 +51,11 @@ export default function AllUsers() {
 
   const selectedEngineer = useMemo(() => {
     if (!selectedFile) return null;
-    return engineerData.find((engineer) => engineer.id === selectedFile.engineerId) ?? null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
   }, [engineerData, selectedFile]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
