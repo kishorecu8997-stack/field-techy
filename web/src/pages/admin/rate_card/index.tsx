@@ -143,7 +143,7 @@ const ManageRateCards: React.FC = () => {
     {
       key: "experienceLevel",
       label: "Experience Level",
-      renderCell: (row: RateCardProps) => (
+      renderCell: (_row: RateCardProps) => (
         <div className="flex flex-col gap-1">
           <div className="text-sm">Level 1 - Junior (1-3 years)</div>
           <div className="text-sm">Level 2 - Mid (3-5 years)</div>
@@ -152,7 +152,7 @@ const ManageRateCards: React.FC = () => {
       ),
     },
     { key: "hourly", label: "Hourly",
-      renderCell: (row: RateCardProps) => (
+      renderCell: (_row: RateCardProps) => (
         <div className="flex flex-col gap-1">
           <div className="text-sm">-</div>
           <div className="text-sm">-</div>
@@ -161,7 +161,7 @@ const ManageRateCards: React.FC = () => {
       ),
     },
     { key: "halfDay", label: "Half-Day (4h)",
-      renderCell: (row: RateCardProps) => (
+      renderCell: (_row: RateCardProps) => (
         <div className="flex flex-col gap-1">
           <div className="text-sm">-</div>
           <div className="text-sm">-</div>
@@ -170,7 +170,7 @@ const ManageRateCards: React.FC = () => {
       ),
     },
     { key: "fullDay", label: "Full-Day (8h)",
-      renderCell: (row: RateCardProps) => (
+      renderCell: (_row: RateCardProps) => (
         <div className="flex flex-col gap-1">
           <div className="text-sm">-</div>
           <div className="text-sm">-</div>
@@ -179,7 +179,7 @@ const ManageRateCards: React.FC = () => {
       ),
     },
     { key: "weekly", label: "Weekly (5d)",
-      renderCell: (row: RateCardProps) => (
+      renderCell: (_row: RateCardProps) => (
         <div className="flex flex-col gap-1">
           <div className="text-sm">-</div>
           <div className="text-sm">-</div>
@@ -188,7 +188,7 @@ const ManageRateCards: React.FC = () => {
       ),
     },
     { key: "monthly", label: "Monthly",
-      renderCell: (row: RateCardProps) => (
+      renderCell: (_row: RateCardProps) => (
         <div className="flex flex-col gap-1">
           <div className="text-sm">-</div>
           <div className="text-sm">-</div>
