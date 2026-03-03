@@ -128,12 +128,11 @@ const ManageRateCards: React.FC = () => {
         <div className="whitespace-nowrap">{row.id}</div>
       ),
     },
-    { key: "skillSet", label: "Skill Set" },
+    { key: "skillSet", label: "Service category" },
     { key: "region", label: "Region" },
-    { key: "location", label: "Location" },
+    { key: "location", label: "Country" },
     { key: "rate", label: "Rate" },
     { key: "rateType", label: "Rate Type" },
-    { key: "project", label: "Project" },
     { key: "createdDate", label: "Created Date" },
     {
       key: "status",
