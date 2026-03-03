@@ -1,6 +1,7 @@
 import { earningsData } from "@/dummy_data/jobDetails";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useEffect, useMemo, useState } from "react";
@@ -25,7 +26,7 @@ import { useServiceCategories } from "@/shared/hooks/useLookup";
  */
 const MyJobsClient: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
-  const { data: jobsData } = useClientGetJobs();
+  const { data: jobsData, isLoading } = useClientGetJobs();
   const { data: serviceCategories } = useServiceCategories();
 
   // Create a memoized map of service category ID to name
@@ -149,7 +150,12 @@ const MyJobsClient: React.FC = () => {
                 filters={jobFilters}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {currentJobs.length > 0 ? (
+                {isLoading ? (
+                  // Show loader while loading
+                  <div className="col-span-full flex justify-center items-center py-20">
+                    <LoaderComponent />
+                  </div>
+                ) : currentJobs.length > 0 ? (
                   currentJobs.map((job) => <JobCard key={job.id} job={job} />)
                 ) : (
                   <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">

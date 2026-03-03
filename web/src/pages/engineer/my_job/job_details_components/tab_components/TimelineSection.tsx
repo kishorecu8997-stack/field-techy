@@ -339,7 +339,7 @@ const TimelineSection: React.FC<{
 
               const revisions = update.revisions || [];
               const latestRevision = revisions[0]; // newest first
-              const latestRevisionStatus = String(latestRevision?.status || "").toLowerCase().trim();
+              // const latestRevisionStatus = String(latestRevision?.status || "").toLowerCase().trim();
 
               const isRevisionRequest =
                 statusLower.includes("revision requested") ||

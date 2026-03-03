@@ -8,7 +8,7 @@ import {
   JOB_TAB_CONFIG,
   JOB_TAB_LABELS,
 } from "@/shared/constants/jobTabs";
-import { IoClose } from "react-icons/io5";
+// import { IoClose } from "react-icons/io5";
 import type { ProposalFormData } from "../../types.d";
 import type { UseFormReturn } from "react-hook-form";
 import { toast } from "react-toastify";

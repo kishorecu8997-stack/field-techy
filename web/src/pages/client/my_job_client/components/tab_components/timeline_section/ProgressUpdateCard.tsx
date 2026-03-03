@@ -45,7 +45,7 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
   progressStatus,
   progressStatusNode,
   revisionUpdateCardData,
-  revisionUpdateStatus,
+  // revisionUpdateStatus,
   onProgressReject,
   onRequestRevision,
   onProgressApprove,

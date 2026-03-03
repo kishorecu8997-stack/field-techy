@@ -25,7 +25,7 @@ import {
   useEngineerApplyJob,
   useEngineerGetMyJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import type { EngineerSearchJobsResponse } from "@/api";
+// import type { EngineerSearchJobsResponse } from "@/api";
 import { engineerGetMyJobs } from "@/api";
 import { engineerGetMyJobsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { toast } from "react-toastify";
@@ -38,91 +38,91 @@ import { apiClient } from "@/shared/apiServices/apiClient";
  * Uses the existing JobOverviewSection component for comprehensive job details display
  * Similar to the client-side implementation
  */
-const mapEngineerJobToJobOverview = (
-  job: EngineerSearchJobsResponse[number],
-): JobOverviewProps => {
-  // Helper to safely cast job properties
-  const getJobValue = <T,>(key: string): T | null | undefined => {
-    return (job as Record<string, unknown>)?.[key] as T | null | undefined;
-  };
+// const mapEngineerJobToJobOverview = (
+//   job: EngineerSearchJobsResponse[number],
+// ): JobOverviewProps => {
+//   // Helper to safely cast job properties
+//   const getJobValue = <T,>(key: string): T | null | undefined => {
+//     return (job as Record<string, unknown>)?.[key] as T | null | undefined;
+//   };
 
-  // Extract basic job info
-  const jobTitle = job?.jobTitle || "";
-  const jobDescription = job?.jobDescription || "";
+//   // Extract basic job info
+//   const jobTitle = job?.jobTitle || "";
+//   const jobDescription = job?.jobDescription || "";
 
-  // Extract skills - convert numbers to strings (engineer API returns numbers)
-  const rawSkills = getJobValue<number[]>("skills");
-  let skills: string[] = [];
-  if (Array.isArray(rawSkills)) {
-    skills = rawSkills.map((skill) => String(skill));
-  }
+//   // Extract skills - convert numbers to strings (engineer API returns numbers)
+//   const rawSkills = getJobValue<number[]>("skills");
+//   let skills: string[] = [];
+//   if (Array.isArray(rawSkills)) {
+//     skills = rawSkills.map((skill) => String(skill));
+//   }
 
-  // Extract tools - convert numbers to strings (engineer API returns numbers)
-  const rawTools = getJobValue<number[]>("tools");
-  let tools: Array<{ name: string; price: string; image?: string }> = [];
-  if (Array.isArray(rawTools)) {
-    tools = rawTools.map((tool) => ({
-      name: String(tool),
-      price: "",
-      image: undefined,
-    }));
-  }
+//   // Extract tools - convert numbers to strings (engineer API returns numbers)
+//   const rawTools = getJobValue<number[]>("tools");
+//   let tools: Array<{ name: string; price: string; image?: string }> = [];
+//   if (Array.isArray(rawTools)) {
+//     tools = rawTools.map((tool) => ({
+//       name: String(tool),
+//       price: "",
+//       image: undefined,
+//     }));
+//   }
 
-  // Extract duration from startDate and endDate
-  const startDate = getJobValue<string>("startDate");
-  const endDate = getJobValue<string>("endDate");
-  let duration: string | undefined;
-  if (startDate && endDate) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
-  } else if (startDate) {
-    duration = `Starts: ${new Date(startDate).toLocaleDateString()}`;
-  }
+//   // Extract duration from startDate and endDate
+//   const startDate = getJobValue<string>("startDate");
+//   const endDate = getJobValue<string>("endDate");
+//   let duration: string | undefined;
+//   if (startDate && endDate) {
+//     const start = new Date(startDate);
+//     const end = new Date(endDate);
+//     duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+//   } else if (startDate) {
+//     duration = `Starts: ${new Date(startDate).toLocaleDateString()}`;
+//   }
 
-  // Extract work details
-  const engagementModel = getJobValue<string>("jobType") || undefined;
-  const experienceLevel = getJobValue<number>("experienceLevelId")?.toString() || undefined;
-  const numberOfVacancies = job?.vacancies ?? undefined;
+//   // Extract work details
+//   const engagementModel = getJobValue<string>("jobType") || undefined;
+//   const experienceLevel = getJobValue<number>("experienceLevelId")?.toString() || undefined;
+//   const numberOfVacancies = job?.vacancies ?? undefined;
 
-  // Extract earnings info - engineers see totalPrice as total payment
-  const totalPrice = getJobValue<string>("totalPrice");
-  const currencySymbol = getJobValue<string>("currencySymbol") || "$";
+//   // Extract earnings info - engineers see totalPrice as total payment
+//   const totalPrice = getJobValue<string>("totalPrice");
+//   const currencySymbol = getJobValue<string>("currencySymbol") || "$";
 
-  // Format total payment
-  let totalPayment: string | undefined;
-  if (totalPrice) {
-    totalPayment = `${currencySymbol}${totalPrice}`;
-  }
+//   // Format total payment
+//   let totalPayment: string | undefined;
+//   if (totalPrice) {
+//     totalPayment = `${currencySymbol}${totalPrice}`;
+//   }
 
-  // Extract additional details
-  const rawAdditionalDetails = getJobValue<string>("additionalDetails");
-  let additionalDetails: string[] = [];
-  if (rawAdditionalDetails) {
-    additionalDetails = [rawAdditionalDetails];
-  }
+//   // Extract additional details
+//   const rawAdditionalDetails = getJobValue<string>("additionalDetails");
+//   let additionalDetails: string[] = [];
+//   if (rawAdditionalDetails) {
+//     additionalDetails = [rawAdditionalDetails];
+//   }
 
-  // Extract attachments - show as "View Document" with the URL
-  const attachments: Array<{ name: string; url: string }> = [];
-  const attachmentUrl = getJobValue<string | null>("attachmentUrl");
-  if (attachmentUrl) {
-    attachments.push({ name: "View Document", url: attachmentUrl });
-  }
+//   // Extract attachments - show as "View Document" with the URL
+//   const attachments: Array<{ name: string; url: string }> = [];
+//   const attachmentUrl = getJobValue<string | null>("attachmentUrl");
+//   if (attachmentUrl) {
+//     attachments.push({ name: "View Document", url: attachmentUrl });
+//   }
 
-  return {
-    jobTitle,
-    jobDescription,
-    skills,
-    tools,
-    duration,
-    engagementModel,
-    experienceLevel,
-    numberOfVacancies,
-    totalPayment,
-    additionalDetails,
-    attachments,
-  };
-};
+//   return {
+//     jobTitle,
+//     jobDescription,
+//     skills,
+//     tools,
+//     duration,
+//     engagementModel,
+//     experienceLevel,
+//     numberOfVacancies,
+//     totalPayment,
+//     additionalDetails,
+//     attachments,
+//   };
+// };
 
 /**
  * Engineer Job Tab Section with simplified 3-tab layout:

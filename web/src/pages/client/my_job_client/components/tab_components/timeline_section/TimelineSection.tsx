@@ -73,8 +73,8 @@ const TimelineSection: React.FC<{
 }> = ({ assignmentId, jobId, hasProposals = false, assignments }) => {
   const queryClient = useQueryClient();
   const regionId = useClientRegionId();
-  const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
-  const [isShortBreakCollapsed, setIsShortBreakCollapsed] = useState(false);
+  const [_isProgressCollapsed, setIsProgressCollapsed] = useState(false);
+  const [isShortBreakCollapsed] = useState(false);
   const [isFinalStatementCollapsed, setIsFinalStatementCollapsed] = useState(false);
   const [isJobCollapsed, setIsJobCollapsed] = useState(false);
   const initialStatus: TimelineStatus = TIMELINE_STATUS.pending;
@@ -110,7 +110,7 @@ const TimelineSection: React.FC<{
   const [keepProgressExpanded, setKeepProgressExpanded] = useState(false);
   const [revisionRequestDetails, setRevisionRequestDetails] = useState<RevisionRequestDetails | null>(null);
   const [isSectionCollapsed, setIsSectionCollapsed] = useState(true);
-  const [isRevisionUpdateCollapsed, setIsRevisionUpdateCollapsed] = useState(false);
+  // const [isRevisionUpdateCollapsed, setIsRevisionUpdateCollapsed] = useState(false);
 
   const revisionFormMethods = useForm<RevisionFormData>({
     mode: "onSubmit",
@@ -386,11 +386,12 @@ const TimelineSection: React.FC<{
         : undefined;
 
       let title = progressLog.title || "Progress Update";
+      const logStatus = progressLog.status as string;
       if (progressLog.logType === "SUBMISSION") {
-        if (progressLog.status === "pending") title = "Proposal Submitted";
-        else if (progressLog.status === "approved") title = "Proposal Accepted";
-        else if (progressLog.status === "rejected") title = "Proposal Rejected";
-      } else if (progressLog.status === "revision_requested") {
+        if (logStatus === "pending") title = "Proposal Submitted";
+        else if (logStatus === "approved") title = "Proposal Accepted";
+        else if (logStatus === "rejected") title = "Proposal Rejected";
+      } else if (progressLog.logType === "progress_update" && logStatus === "revision_requested") {
         title = progressLog.title || "Revision Requested";
       }
 
@@ -767,7 +768,7 @@ const TimelineSection: React.FC<{
     apiFinalStatementData,
   ]);
 
-  const hasProgressData = apiProgressDataList.length > 0;
+  // const hasProgressData = apiProgressDataList.length > 0;
   const hasBreakData = apiBreakRequestsData.length > 0;
   const hasFinalStatementData = apiFinalStatementData !== null;
 
@@ -819,7 +820,7 @@ const TimelineSection: React.FC<{
 
   const isWorkCompleted = isJobCompleted;
 
-  const accentColor = jobStatus === TIMELINE_STATUS.rejected ? TIMELINE_CARD_COLORS.red : TIMELINE_CARD_COLORS.green;
+  // const accentColor = jobStatus === TIMELINE_STATUS.rejected ? TIMELINE_CARD_COLORS.red : TIMELINE_CARD_COLORS.green;
 
   const progressAccentColor =
     progressStatus === TIMELINE_STATUS.rejected
@@ -1032,7 +1033,7 @@ const TimelineSection: React.FC<{
     setRevisionUpdateStatus(TIMELINE_STATUS.approved);
     setProgressStatus(TIMELINE_STATUS.approved);
     if (!keepExpanded) {
-      setIsRevisionUpdateCollapsed(true);
+      // setIsRevisionUpdateCollapsed(true);
       setIsProgressCollapsed(true);
     }
     toast.success(TOAST_MESSAGES.progressApproved, { position: "top-right" });
@@ -1254,7 +1255,7 @@ const TimelineSection: React.FC<{
       setRevisionUpdateStatus(TIMELINE_STATUS.rejected);
       setProgressStatus(TIMELINE_STATUS.rejected);
       if (!keepExpanded) {
-        setIsRevisionUpdateCollapsed(true);
+        // setIsRevisionUpdateCollapsed(true);
         setIsProgressCollapsed(true);
       }
       toast.error(TOAST_MESSAGES.revisionUpdateRejected, { position: "top-right" });
@@ -1346,9 +1347,9 @@ const TimelineSection: React.FC<{
       setIsProgressCollapsed(false);
     }
 
-    if (revisionUpdateStatus !== TIMELINE_STATUS.pending) {
-      setIsRevisionUpdateCollapsed(true);
-    }
+    // if (revisionUpdateStatus !== TIMELINE_STATUS.pending) {
+    //   setIsRevisionUpdateCollapsed(true);
+    // }
 
     if (finalStatementStatus !== TIMELINE_STATUS.pending) {
       setIsFinalStatementCollapsed(true);

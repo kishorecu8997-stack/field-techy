@@ -29,7 +29,7 @@ import {
   BREAK_REQUEST_MESSAGES,
 } from "@/dummy_data/breakRequestDummy";
 import { useEngineerRequestBreak } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { queryKeys } from "@/shared/apiServices/queryKeys";
+// import { queryKeys } from "@/shared/apiServices/queryKeys";
 
 /**
  * BreakRequestForm component for submitting engineer break requests.
@@ -133,11 +133,11 @@ const BreakRequestForm = ({
   }, [startTime, endTime, startDate, endDate, isLongTermBreak, setValue]);
 
   // compute today's start (00:00) and min end-date (one day after selected startDate)
-  const todayStart = (() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-  })();
+  // const todayStart = (() => {
+  //   const d = new Date();
+  //   d.setHours(0, 0, 0, 0);
+  //   return d;
+  // })();
 
   // Calculate minimum start date: max of today and job start date
   const minStartDate = (() => {

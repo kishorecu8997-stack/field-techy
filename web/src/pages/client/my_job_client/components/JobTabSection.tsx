@@ -4,9 +4,7 @@ import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import JobOverviewSection from "@/shared/components/JobOverviewSection";
 import { useEffect, useState, useMemo } from "react";
 import type {
-  JobInfoSectionProps,
   JobTabSectionProps,
-  paymentTermsProps,
 } from "../types";
 // import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
@@ -27,125 +25,6 @@ import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 //   const id = typeof toolId === "number" ? String(toolId) : toolId;
 //   return toolMap.get(id) || `Tool ${id}`;
 // };
-
-/**
- * Maps API job data to JobInfoSectionProps format for the Job Overview tab
- * Uses job prop fields for backward compatibility
- */
-const mapClientJobToJobInfo = (
-  job: JobTabSectionProps["job"],
-): JobInfoSectionProps => {
-  const termsItems: Array<{ text: string }> = [];
-
-  // Add job description as first term item if available
-  if (job?.jobDescription) {
-    termsItems.push({ text: job.jobDescription });
-  }
-
-  // Add start and end dates (from API response or fallback)
-  const startDate = (job as Record<string, unknown>)?.startDate as
-    | string
-    | null
-    | undefined;
-  const endDate = (job as Record<string, unknown>)?.endDate as
-    | string
-    | null
-    | undefined;
-
-  if (startDate) {
-    termsItems.push({
-      text: `Start Date: ${new Date(startDate).toLocaleDateString()}`,
-    });
-  }
-  if (endDate) {
-    termsItems.push({
-      text: `End Date: ${new Date(endDate).toLocaleDateString()}`,
-    });
-  }
-
-  // Add total price/budget
-  const totalPrice = (job as Record<string, unknown>)?.totalPrice as
-    | string
-    | null
-    | undefined;
-  const currencySymbol = (job as Record<string, unknown>)?.currencySymbol as
-    | string
-    | null
-    | undefined;
-  if (totalPrice && currencySymbol) {
-    termsItems.push({ text: `Budget: ${currencySymbol}${totalPrice}` });
-  }
-
-  // Add work location
-  const workLocationName = (job as Record<string, unknown>)
-    ?.workLocationName as string | null | undefined;
-  if (workLocationName) {
-    termsItems.push({ text: `Location: ${workLocationName}` });
-  }
-
-  // Add job type
-  const jobType = (job as Record<string, unknown>)?.jobType as
-    | string
-    | null
-    | undefined;
-  if (jobType) {
-    termsItems.push({ text: `Work Type: ${jobType}` });
-  }
-
-  // Add additional details if available
-  const additionalDetails = (job as Record<string, unknown>)
-    ?.additionalDetails as string | null | undefined;
-  if (additionalDetails) {
-    termsItems.push({ text: additionalDetails });
-  }
-
-  // Handle attachment as file if available
-  const files: Array<{ name: string; url: string }> = [];
-  const attachmentUrl = (job as Record<string, unknown>)?.attachmentUrl as
-    | string
-    | null
-    | undefined;
-  if (attachmentUrl) {
-    // Extract filename from URL, removing query string parameters
-    const urlParts = attachmentUrl.split("/");
-    const fileNameWithParams = urlParts[urlParts.length - 1] || "Job Attachment";
-    const fileName = fileNameWithParams.split("?")[0] || "Job Attachment";
-    files.push({ name: fileName, url: attachmentUrl });
-  }
-
-  return {
-    jobTitle: job?.jobTitle || job?.title || "",
-    terms: {
-      title: "Job Details",
-      items: termsItems,
-    },
-    files,
-  };
-};
-
-/**
- * Maps API job data to paymentTermsProps format
- * Uses job prop fields for backward compatibility
- */
-const mapClientJobToPayInfo = (
-  job: JobTabSectionProps["job"],
-): paymentTermsProps => {
-  const totalPrice = (job as Record<string, unknown>)?.totalPrice as
-    | string
-    | null
-    | undefined;
-  const currencySymbol = (job as Record<string, unknown>)?.currencySymbol as
-    | string
-    | null
-    | undefined;
-
-  return {
-    title: "Payment Terms",
-    amount:
-      totalPrice && currencySymbol ? `${currencySymbol}${totalPrice}` : "",
-    priceType: "Fixed",
-  };
-};
 
 /**
  * Maps API job data to JobOverviewProps format for the Job Overview tab
@@ -413,8 +292,8 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   }, [experienceLevelsResponse]);
 
   // Prepare job info for JobInfoSection using real API data
-  const jobInfo = mapClientJobToJobInfo(job);
-  const payInfo = mapClientJobToPayInfo(job);
+  // const jobInfo = mapClientJobToJobInfo(job);
+  // const payInfo = mapClientJobToPayInfo(job);
 
   // Prepare job overview for JobOverviewSection using real API data
   const jobOverview = useMemo(
