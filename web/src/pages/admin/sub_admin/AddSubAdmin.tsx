@@ -78,8 +78,10 @@ export default function AddSubAdmin() {
             };
 
             await createSubAdmin({
+              query: {
+                regionId: Number(data.region),
+              },
               body: payload,
-              query: { regionId: Number(data.region) },
             });
             toast.success("Sub-Admin added successfully!");
             navigate(absoluteUrls.admin.home.manage_sub_admin);

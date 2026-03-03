@@ -96,18 +96,20 @@ export default function EditSubAdmin() {
             try {
               await updateSubAdmin({
                 path: { userId },
+                query: {
+                  regionId: Number(data.region),
+                },
                 body: {
                   name: data.name,
                   email: data.email,
                   phoneNumber: data.phoneNumber,
                 },
-                query: { regionId: Number(data.region) },
               });
 
               toast.success("Sub-Admin updated successfully!");
               navigate(absoluteUrls.admin.home.manage_sub_admin);
               close?.(true);
-            } catch (err) {
+            } catch {
               toast.error("Failed to update sub-admin. Please try again.");
               close?.(false);
             }
