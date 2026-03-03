@@ -45,7 +45,7 @@ const RejectedTable: React.FC<TableProps> = ({ active }) => {
     },
     {
       enabled: active,
-      staleTime: 0, // ✅ CRITICAL: Always refetch when invalidated
+      staleTime: 0,
     },
   );
 
@@ -104,7 +104,7 @@ const RejectedTable: React.FC<TableProps> = ({ active }) => {
         const formattedAmount = new Intl.NumberFormat(undefined, {
           style: "currency",
           currency: currencyCode,
-          currencyDisplay: "code", 
+          currencyDisplay: "code",
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
         }).format(amount);
@@ -152,7 +152,6 @@ const RejectedTable: React.FC<TableProps> = ({ active }) => {
         <div className="h-full flex-1 overflow-hidden">
           {filteredData.length === 0 && !isLoading && (
             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              No rejected requests found
               {search.trim() && " matching your search"}
             </div>
           )}

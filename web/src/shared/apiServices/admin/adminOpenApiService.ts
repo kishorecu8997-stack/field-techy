@@ -86,9 +86,8 @@ import {
   type AdminGetWalletOverviewData,
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
+  type AdminUpdateTransactionRequestStatusResponses,
 } from "@/api";
-
-export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
 import {
   adminGetPersonalInfoOptions,
   adminUpdatePersonalInfoMutation,
@@ -112,8 +111,6 @@ import {
   adminGetClientOptions,
   adminDeleteClientMutation,
   adminGetEngineerOptions,
-  adminGetEngineerHistoryOptions,
-  adminGetClientHistoryOptions,
   adminCreateServiceCategoryMutation,
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
@@ -124,6 +121,7 @@ import {
   adminCreateSubAdminMutation,
   adminUpdateSubAdminMutation,
   adminGetJobGraphOptions,
+  adminUpdateJobStatusMutation,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
   adminGetSubAdminsOptions,
@@ -132,6 +130,7 @@ import {
   adminGetTransactionRequestsOptions,
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
+  adminUpdateTransactionRequestStatusMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -141,6 +140,7 @@ import {
 } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
+import { useAdminCountryStore } from "../../store/useAdminCountryStore";
 
 export const LookupTable = {
   Countries: "countries",
@@ -805,6 +805,7 @@ export function useAdminGetPaymentTransactions(
 }
 
 // ─── Job Graph ────────────────────────────────────────────────────────────────
+
 export type AdminGetJobGraphQuery = NonNullable<AdminGetJobGraphData["query"]>;
 
 export function useAdminGetJobGraph(
@@ -833,7 +834,6 @@ export function useAdminGetJobGraph(
   });
 }
 
-  
 // ─── Sub Admins ───────────────────────────────────────────────────────────────
 
 export type AdminGetSubAdminsQuery = NonNullable<
@@ -1090,7 +1090,6 @@ export function useAdminDeleteEngineerMutation(options?: {
     onError: options?.onError,
   });
 }
-
 export function useAdminUpdateTransactionRequestStatus(options?: {
   onSuccess?: (data: AdminUpdateTransactionRequestStatusResponses[200]) => void;
   onError?: (error: unknown) => void;
@@ -1103,30 +1102,33 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
       client: apiClient,
     }),
 
-    onMutate: (variables) => {
-      if (!selectedRegionId) {
-        throw new Error("Region is not selected");
-      }
-
-      variables.query = {
-        ...variables.query,
-        regionId: Number(selectedRegionId),
-      };
+    mutationFn: (variables, context) => {
+      return adminUpdateTransactionRequestStatusMutation({
+        client: apiClient,
+      }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+          },
+        },
+        context,
+      );
     },
 
     onSuccess: async (data) => {
-      console.log("🔥 PUT success → refetching ALL transaction tables");
-
       await queryClient.refetchQueries({
-        queryKey: ["adminGetTransactionRequests"],
-        type: "all", // v5
+         predicate: (query) => {
+          const key = query.queryKey?.[0] as { _id?: string } | undefined;
+          return key && typeof key === "object" && key._id === "adminGetTransactionRequests";
+        },
+        type: "all",
       });
 
       options?.onSuccess?.(data);
     },
 
-    onError: (error) => {
-      options?.onError?.(error);
-    },
+    onError: options?.onError,
   });
 }

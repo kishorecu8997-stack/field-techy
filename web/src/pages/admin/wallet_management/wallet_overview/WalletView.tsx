@@ -1,4 +1,3 @@
-import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import CustomTable, {
   type Column,
@@ -11,6 +10,7 @@ import {
   useAdminGetManageTransactions,
   useAdminDownloadInvoice,
 } from "@/shared/apiServices/admin/adminOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 interface WalletViewProps {
   sno?: number;
@@ -32,7 +32,7 @@ interface WalletViewProps {
 
 export default function WalletView() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>(); // INV-55
+  const { id } = useParams<{ id: string }>();
   const methods = useForm();
 
   const { data, isLoading } = useAdminGetManageTransactions(
@@ -40,14 +40,12 @@ export default function WalletView() {
     { enabled: true },
   );
 
-
   const selectedTransaction = useMemo(() => {
     if (!data || !id) return null;
 
-    return data?.data?.find((tx: any) => tx.invoiceNumber === id);
+    return data?.data?.find((tx) => tx.invoiceNumber === id);
   }, [data, id]);
 
-  
   const { refetch: downloadInvoice } = useAdminDownloadInvoice(
     selectedTransaction?.id ?? 0,
     { enabled: false },
@@ -110,9 +108,7 @@ export default function WalletView() {
   ];
 
   if (isLoading) {
-    return (
-      <div className="p-8 text-center">Loading transaction details...</div>
-    );
+    return <LoaderComponent></LoaderComponent>;
   }
 
   if (!selectedTransaction) {
@@ -130,16 +126,12 @@ export default function WalletView() {
     <div className="w-full h-full p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="font-semibold">Transaction Details</h1>
-        <Button
-          variant="solid"
-          onClick={() => navigate(absoluteUrls.admin.home.wallet_overview)}
-        >
+        <Button variant="solid" onClick={() => navigate(-1)}>
           Back
         </Button>
       </div>
 
       <div className="bg-white dark:bg-gray-700 rounded-lg p-4">
-
         <FormContainer methods={methods} className="flex flex-col gap-4">
           <div className="flex justify-between w-9/12 gap-8 my-4">
             <div>

@@ -1,14 +1,12 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react"
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
-
 import CustomTable, {
   type Column,
-} from "@/shared/components/commonUI/custom_table"; // ← import Column type here
+} from "@/shared/components/commonUI/custom_table"; 
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { absoluteUrls } from "@/config/urls";
-
 import { useAdminGetWalletOverview } from "@/shared/apiServices/admin/adminOpenApiService";
 
 interface WalletTransaction {
@@ -74,7 +72,7 @@ const ClientWallet: React.FC = () => {
 
     const cleaned = amountStr.replace(/[^0-9.]/g, "");
     return {
-      symbol: "₹",
+      symbol: "-",
       value: Number(cleaned) || 0,
     };
   };

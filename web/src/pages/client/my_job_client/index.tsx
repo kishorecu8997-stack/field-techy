@@ -15,6 +15,7 @@ import JobCard from "./components/JobCard";
 import { scrollToTop } from "@/utils";
 import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 import type { ClientGetJobsResponse } from "@/api";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -24,7 +25,7 @@ import type { ClientGetJobsResponse } from "@/api";
  */
 const MyJobsClient: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
-  const { data: jobsData } = useClientGetJobs();
+  const { data: jobsData, isLoading } = useClientGetJobs();
 
   const mapApiJobToUiJob = (apiJob: ClientGetJobsResponse[0]): Job => ({
     id: apiJob.id,
@@ -43,9 +44,11 @@ const MyJobsClient: React.FC = () => {
     stateId: apiJob.stateId,
     countryId: apiJob.countryId,
     workLocationName: apiJob.workLocationName,
-    pay: apiJob.totalPrice ? `$${apiJob.totalPrice}` : "N/A",
+    pay: apiJob.totalPrice ? `${apiJob.totalPrice}` : "N/A",
+    currencySymbol: apiJob.currencySymbol ?? "",
     status: (apiJob.status?.toLowerCase() as JobStatus) || JOB_STATUSES.posted,
-    serviceType: "Service Category " + apiJob.serviceCategoryId,
+    serviceCategoryId: apiJob.serviceCategoryId ?? null,
+    serviceType: undefined,
     description: apiJob.jobDescription || undefined,
     postedTime: apiJob.createdAt || undefined,
   });
@@ -93,6 +96,14 @@ const MyJobsClient: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentJobs = filteredJobs.slice(startIndex, startIndex + itemsPerPage);
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoaderComponent />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
@@ -115,8 +126,10 @@ const MyJobsClient: React.FC = () => {
                 {currentJobs.length > 0 ? (
                   currentJobs.map((job) => <JobCard key={job.id} job={job} />)
                 ) : (
-                  <p className="col-span-full text-center text-gray-500 dark:text-gray-400">
-                    No jobs match the selected filter.
+                  <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
+                    <div className="font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 p-20 rounded-lg">
+                      No jobs match the selected filter.
+                    </div>
                   </p>
                 )}
               </div>

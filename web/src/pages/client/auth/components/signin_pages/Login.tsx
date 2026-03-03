@@ -10,10 +10,8 @@ import {
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { UserRole } from "@/shared/enums/users";
-import {
-  useUserSessionStore,
-  type UserSession,
-} from "@/shared/store/useUserSessionStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { decodeJwtPayload, type JwtClientPayload } from "@/utils/jwtUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import React from "react";
@@ -52,12 +50,24 @@ const Login = ({
           localStorage.setItem("auth_token", resp.token);
         }
 
+        // Decode the JWT payload to extract claims (e.g. regionId, userId).
+        // If decoding fails or userId is absent, abort login — proceeding without
+        // a valid userId would create a broken session (profile won't load, etc.)
+        const payload = decodeJwtPayload<JwtClientPayload>(resp.token);
+        if (!payload?.userId) {
+          toast.error(
+            "Login failed: unable to verify session. Please try again.",
+          );
+          return;
+        }
+
         setUserSession({
           accessToken: resp.token,
-          userId: "uuid-client-123", // TODO: Get actual user ID from token or profile response
+          userId: String(payload.userId),
           role: UserRole.CLIENT,
           initiatedAt: Date.now(),
-        } as UserSession);
+          regionId: payload?.regionId,
+        });
 
         navigate(absoluteUrls.client.home.dashboard);
         toast.success("Logged in successfully");

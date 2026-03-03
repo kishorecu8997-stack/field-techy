@@ -44,7 +44,7 @@ interface TableProps {
 const PendingTable: React.FC<TableProps> = ({ active }) => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(100);
+  const [limit, setLimit] = useState(10);
 
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
@@ -150,15 +150,13 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
               newStatus.toLowerCase() === "approved" ? "primary" : "danger",
             action: async (close: ClosePopup) => {
               try {
-                const response = await updateStatusMutation.mutateAsync({
+                await updateStatusMutation.mutateAsync({
                   query: { id: row.id },
                   body: {
                     status: newStatus,
                   },
                 });
                 refetch();
-
-                await new Promise((resolve) => setTimeout(resolve, 1000));
 
                 close(true);
               } catch (error) {
@@ -224,12 +222,14 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
             onChange={(value: string | null) => {
               if (!value || value === row.status) return;
 
+              const lowerValue = value.toLowerCase();
               const normalizedStatus =
-                value.toLowerCase() === "approve"
+                lowerValue === "approve"
                   ? "approved"
-                  : value.toLowerCase() === "reject"
+                  : lowerValue === "reject"
                     ? "rejected"
-                    : value.toLowerCase();
+                    : null;
+              if (!normalizedStatus) return;
 
               handleStatusChange(row, normalizedStatus);
             }}
@@ -260,7 +260,6 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         <div className="h-full flex-1 overflow-hidden">
           {filteredData.length === 0 && !isLoading && (
             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              No pending requests found
               {search.trim() && " matching your search"}
             </div>
           )}

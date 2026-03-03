@@ -1,15 +1,14 @@
-import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
-
 import CustomTable, {
   type Column,
 } from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { absoluteUrls } from "@/config/urls";
-
+import React, { useState, useMemo } from "react"
 import { useAdminGetWalletOverview } from "@/shared/apiServices/admin/adminOpenApiService";
+
 
 interface WalletTransaction {
   profileImageUrl: string | null;
@@ -19,6 +18,12 @@ interface WalletTransaction {
   transactionType: "credit" | "debit";
   amount: string;
 }
+/**
+ * Engineer Component
+ *
+ * Renders a table of engineer payment transactions with client info, job details, and actions.
+ * @returns {JSX.Element} The engineer management view.
+ */
 
 const EngineerWallet: React.FC = () => {
   const navigate = useNavigate();
@@ -85,7 +90,7 @@ const EngineerWallet: React.FC = () => {
     },
     {
       key: "engineerDetails",
-      label: "Engineer Details", // ← better label
+      label: "Engineer Details",
       renderCell: (row: WalletTransaction) => (
         <div className="flex items-center gap-2">
           <div>

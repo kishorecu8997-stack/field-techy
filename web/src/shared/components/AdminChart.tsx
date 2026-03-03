@@ -56,14 +56,52 @@ const GeneralChart = <T extends Record<string, unknown>>({
   className = "",
   series,
   legend,
+  isLoading,
+  error,
 }: GeneralChartProps<T>) => {
+  if (isLoading) {
+    return (
+      <div
+        className={`bg-gray-50 dark:bg-gray-800/50 rounded-lg flex items-center justify-center animate-pulse ${className}`}
+        style={{ height }}
+      >
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+            Loading chart data...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        className={`bg-red-50 dark:bg-red-900/10 rounded-lg flex items-center justify-center border border-red-100 dark:border-red-900/20 ${className}`}
+        style={{ height }}
+      >
+        <div className="text-center p-4">
+          <p className="text-red-600 dark:text-red-400 font-medium mb-1">
+            Failed to load chart
+          </p>
+          <p className="text-xs text-red-500/80 dark:text-red-500/60 truncate max-w-xs">
+            {error}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (data.length === 0) {
     return (
       <div
-        className={`bg-gray-50 rounded flex items-center justify-center ${className}`}
+        className={`bg-gray-50 dark:bg-gray-800/50 rounded flex items-center justify-center ${className}`}
         style={{ height }}
       >
-        <span className="text-gray-500">No data</span>
+        <span className="text-gray-500 dark:text-gray-400">
+          No data available
+        </span>
       </div>
     );
   }

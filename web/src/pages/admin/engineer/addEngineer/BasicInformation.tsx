@@ -1,5 +1,3 @@
-import serviceCategories from "@/dummy_data/serviceCategories";
-import skills from "@/dummy_data/skills";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
@@ -12,6 +10,13 @@ import {
   validatePortfolioLink,
   validatePricePerHour,
 } from "@/utils/validate";
+import { useEffect, useMemo } from "react";
+import { useFormContext } from "react-hook-form";
+import {
+  LookupTable,
+  useAppGetLookupData,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import type { EngineerFormData } from "../types";
 
 /**
  * BasicInformation component handles the first step of the engineer registration form.
@@ -42,14 +47,73 @@ import {
  *
  * @returns {JSX.Element} A form section component with basic information fields
  */
+
 export default function BasicInformation() {
+  const { watch, setValue } = useFormContext<EngineerFormData>();
+  const serviceCategoryValue = watch("serviceCategory");
+
+  const { data: skills } = useAppGetLookupData(LookupTable.Skills);
+  const { data: serviceCategories } = useAppGetLookupData(
+    LookupTable.ServiceCategories,
+  );
+
+  const serviceCategoryOptions = useMemo(() => {
+    return (
+      serviceCategories?.map((item) => ({
+        value: String(item.id),
+        label: item.name,
+      })) ?? []
+    );
+  }, [serviceCategories]);
+
+  useEffect(() => {
+    if (!serviceCategoryOptions.length) return;
+    if (!serviceCategoryValue) return;
+
+    // Normalize numeric values to string ids so SelectField can match options.
+    if (typeof serviceCategoryValue === "number") {
+      setValue("serviceCategory", String(serviceCategoryValue), {
+        shouldDirty: false,
+        shouldValidate: false,
+      });
+      return;
+    }
+
+    // EditEngineer GET currently provides serviceCategory as a name; map it to the matching option id.
+    if (
+      typeof serviceCategoryValue === "string" &&
+      isNaN(Number(serviceCategoryValue))
+    ) {
+      const match = serviceCategoryOptions.find(
+        (o) => o.label.toLowerCase() === serviceCategoryValue.toLowerCase(),
+      );
+      if (!match) return;
+
+      setValue("serviceCategory", match.value, {
+        shouldDirty: false,
+        shouldValidate: false,
+      });
+    }
+  }, [serviceCategoryOptions, serviceCategoryValue, setValue]);
+
+  const priceField = (
+    <InputField
+      name="price"
+      label="Price per/hour"
+      type="text"
+      placeholder="Enter Price per/hour"
+      required
+      rules={{ validate: (v: string) => validatePricePerHour(v) }}
+    />
+  );
+
   return (
     <div>
       <div className="mb-6 mt-2 w-fit">
         <ImageUploaderField label="Profile Image" name="profileImage" />
       </div>
-      <div className="grid md:flex gap-4 w-full">
-        <div className="gap-4 w-1/2 space-y-2">
+      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="space-y-2">
           <InputField
             name="name"
             label="Full Name"
@@ -64,19 +128,18 @@ export default function BasicInformation() {
             label="Skills"
             placeholder="Add your skills"
             required
-            options={skills}
+            options={
+              skills?.map((item) => ({
+                value: item.id,
+                label: item.name,
+              })) ?? []
+            }
             maxTags={15}
           />
-          <SelectField
-            name="serviceCategory"
-            label="Service Category"
-            placeholder="Select Category"
-            options={serviceCategories}
-            required
-          />
+          {priceField}
         </div>
 
-        <div className="w-1/2 space-y-2">
+        <div className="space-y-2">
           <InputField
             name="email"
             label="Email Address"
@@ -91,20 +154,19 @@ export default function BasicInformation() {
             required
             rules={{ validate: (v: string) => validateAddress(v) }}
           />
+          <SelectField
+            name="serviceCategory"
+            label="Service Category"
+            placeholder="Select Category"
+            options={serviceCategoryOptions}
+            required
+          />
           <InputField
             name="portfolio"
             label="Portfolio Link"
             type="text"
             placeholder="Portfolio Link"
             rules={{ validate: (v: string) => validatePortfolioLink(v) }}
-          />
-          <InputField
-            name="price"
-            label="Price per/hour"
-            type="text"
-            placeholder="Enter Price per/hour"
-            required
-            rules={{ validate: (v: string) => validatePricePerHour(v) }}
           />
         </div>
       </div>

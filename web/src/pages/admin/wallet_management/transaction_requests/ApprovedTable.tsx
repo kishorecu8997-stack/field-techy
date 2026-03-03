@@ -98,12 +98,12 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
       label: "Wallet Balance",
       renderCell: (row: TransactionRequest) => {
         const amount = Number(row.amount || 0);
-        const currencyCode = row.currencyCode || "INR"; 
+        const currencyCode = row.currencyCode || "INR";
 
         const formattedAmount = new Intl.NumberFormat(undefined, {
           style: "currency",
           currency: currencyCode,
-          currencyDisplay: "code", 
+          currencyDisplay: "code",
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
         }).format(amount);
@@ -151,7 +151,6 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
         <div className="h-full flex-1 overflow-y-auto">
           {filteredData.length === 0 && !isLoading && (
             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              No approved requests found
               {search.trim() && " matching your search"}
             </div>
           )}
