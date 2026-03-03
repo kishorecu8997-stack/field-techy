@@ -14,6 +14,7 @@ export interface TextareaInputProps {
   containerClassName?: string;
   textareaClassName?: string;
   disabled?: boolean;
+  maxLength?: number;
 }
 
 /**
@@ -36,6 +37,7 @@ export const TextareaInput = ({
   containerClassName = "flex flex-col py-1 w-full",
   textareaClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none  transition",
   disabled = false,
+  maxLength,
 }: TextareaInputProps) => {
   const { control, trigger } = useFormContext();
 
@@ -79,6 +81,7 @@ export const TextareaInput = ({
               id={name}
               placeholder={placeholder || label}
               disabled={disabled}
+              maxLength={maxLength}
               onChange={async (e) => {
                 field.onChange(e);
                 try {

@@ -13,6 +13,9 @@ import BasicDetailsFields from "./BasicDetailsFields";
 import { type ClientBasicDetails, ClientTypeEnum } from "./types";
 import { absoluteUrls } from "@/config/urls";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
+import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
+import Popup from "@/shared/components/Popup";
+import RichTextContent from "@/shared/components/RichTextContent";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -48,6 +51,12 @@ const BasicDetails = () => {
     resetEmail,
     resetPhone,
   } = useClientRegistrationStore();
+  const [termsOpen, setTermsOpen] = useState(false);
+  const {
+    data: cmsData,
+    isLoading: isTermsLoading,
+    error: termsError,
+  } = useGetCmsContent("terms");
 
   const getClientTypeFromRole = (role?: string): ClientTypeEnum => {
     if (role?.toLowerCase() === "corporate") return ClientTypeEnum.CORPORATE;
@@ -295,74 +304,17 @@ const BasicDetails = () => {
               <label htmlFor="termsAndConditions" className="cursor-pointer">
                 I agree to the
               </label>
-              <div
-                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
-                onClick={async (e) => {
+
+              <span
+                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0 hover:text-blue-700 transition"
+                onClick={(e) => {
                   e.stopPropagation();
-
-                  try {
-                    await showPopup({
-                      title: "Terms and Conditions",
-                      body: (
-                        <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300 max-w-lg">
-                          <p>
-                            At Job Portal (https://fieldtechy.com/), we respect
-                            your privacy. This policy explains what information
-                            we collect, how we use it, and how we protect it. It
-                            applies to visitors of our website and does not
-                            cover offline or other channels.
-                          </p>
-
-                          <p>
-                            <strong>Terms of Agreement:</strong> By using our
-                            site, you agree to our Privacy Policy and its terms.
-                          </p>
-
-                          <p>
-                            <strong>Protection of Minors:</strong> We do not
-                            knowingly collect personal data from children under
-                            13. Parents should supervise their children online.
-                            Contact us immediately if such data is submitted.
-                          </p>
-
-                          <p>
-                            <strong>Job Posting and Hiring:</strong> Clients
-                            must provide accurate job information. Field Techy
-                            may remove posts violating our rules. Once assigned,
-                            engineers and clients must communicate
-                            professionally and follow milestone payments.
-                          </p>
-
-                          <p>
-                            <strong>Cancellations & Privacy:</strong> We advise
-                            parents to monitor children's use. Personal data of
-                            children under 13 is removed upon request.
-                          </p>
-
-                          <p>
-                            By using our service, you agree to all applicable
-                            terms and conditions.
-                          </p>
-                        </div>
-                      ),
-                      actionButtons: [
-                        {
-                          label: "Close",
-                          value: null,
-                          variant: "primary",
-                        },
-                      ],
-                    });
-                  } catch (error) {
-                    console.error(
-                      "Failed to open Terms and Conditions popup:",
-                      error,
-                    );
-                  }
+                  setTermsOpen(true);
                 }}
+                role="button"
               >
                 Terms and Conditions
-              </div>
+              </span>
             </div>
           </div>
           {errors?.termsAndConditions && (
@@ -392,6 +344,50 @@ const BasicDetails = () => {
           </h2>
         </div>
       </div>
+
+      <Popup open={termsOpen} onClose={() => setTermsOpen(false)}>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl mx-auto max-h-[85vh] overflow-hidden flex flex-col">
+          {/* Modal header */}
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {isTermsLoading
+                ? "Terms & Conditions"
+                : cmsData && "type" in cmsData && cmsData.type === "page"
+                  ? cmsData.data.title
+                  : "Terms & Conditions"}
+            </h2>
+            <button
+              onClick={() => setTermsOpen(false)}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none"
+              aria-label="Close terms and conditions"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Content area */}
+          <div className="p-6 overflow-y-auto flex-1">
+            {isTermsLoading ? (
+              <div className="flex items-center justify-center min-h-[400px]">
+                <p className="text-gray-500">Loading terms and conditions...</p>
+              </div>
+            ) : termsError ||
+              !cmsData ||
+              !("type" in cmsData) ||
+              cmsData.type !== "page" ? (
+              <div className="flex items-center justify-center min-h-[400px]">
+                <p className="text-red-500">
+                  Failed to load terms and conditions
+                </p>
+              </div>
+            ) : (
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow dark:text-gray-200">
+                <RichTextContent html={cmsData.data.content} />
+              </div>
+            )}
+          </div>
+        </div>
+      </Popup>
     </FormContainer>
   );
 };

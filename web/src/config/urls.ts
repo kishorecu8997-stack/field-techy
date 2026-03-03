@@ -85,6 +85,7 @@ export const urls = {
       ClientSelectEngineers: "select-engineers",
       chat: "messages",
       notifications: "notifications",
+      about_app: "about-app",
     },
     auth: {
       login: "login",
@@ -235,6 +236,7 @@ export const absoluteUrls = {
       ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
       chat: `${BASE.CLIENT}/messages`,
       notifications: `${BASE.CLIENT}/notifications`,
+      about_app: `${BASE.CLIENT}/about-app`,
     },
   },
 

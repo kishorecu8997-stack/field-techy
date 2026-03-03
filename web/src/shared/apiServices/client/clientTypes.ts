@@ -8,7 +8,7 @@ export interface ClientData {
   contactPersonName?: string;
   businessType?: string;
   industry?: string;
-  address?: string;
+  address?: string | null;
   country?: string;
   state?: string;
   city?: string;

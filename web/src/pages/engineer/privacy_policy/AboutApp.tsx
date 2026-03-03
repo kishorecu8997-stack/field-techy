@@ -2,7 +2,8 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useEffect } from "react";
 import { scrollToTop } from "@/utils";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
-import DOMPurify from "dompurify";
+import RichTextContent from "@/shared/components/RichTextContent";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * About App page displaying information about the application.
@@ -25,7 +26,7 @@ const AboutApp = () => {
             isShowSort={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
-            <p className="text-gray-500">Loading about information...</p>
+            <LoaderComponent />
           </div>
         </div>
       </div>
@@ -60,21 +61,9 @@ const AboutApp = () => {
 
         {/* Render HTML content directly */}
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-          <div
-            className="prose prose-lg dark:prose-invert max-w-none
-                       prose-headings:text-gray-900 dark:prose-headings:text-gray-100
-                       prose-p:text-gray-700 dark:prose-p:text-gray-300
-                       prose-a:text-teal-600 dark:prose-a:text-teal-400
-                       prose-strong:text-gray-900 dark:prose-strong:text-gray-100
-                       prose-ul:text-gray-700 dark:prose-ul:text-gray-300
-                       prose-ol:text-gray-700 dark:prose-ol:text-gray-300 
-                       break-words 
-                       overflow-x-hidden         
-                       w-full"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(cmsData.data.content),
-            }}
-          />
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+            <RichTextContent html={cmsData.data.content} />
+          </div>
         </div>
       </div>
     </div>

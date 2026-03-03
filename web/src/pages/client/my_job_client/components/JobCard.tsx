@@ -65,7 +65,9 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     return serviceType ?? "N/A";
   }, [serviceCategoryId, serviceCategories, serviceType]);
 
-  const formattedPay = formatAmount(pay);
+  // Check if pay is already formatted (contains currency symbol) or is N/A
+  const isPayFormatted = pay !== "N/A" && !/^\d+(\.\d+)?$/.test(pay);
+  const displayPay = isPayFormatted ? pay : formatAmount(pay);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -142,12 +144,22 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
           {resolvedServiceType}
         </div>
 
-        <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-          <span className="w-4 h-4 mr-2 flex-shrink-0 flex items-center justify-center font-semibold">
-            {currencySymbol}
-          </span>
-          <span className="font-medium">{formattedPay}</span>
-        </div>
+        {displayPay !== "N/A" && (
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+            <span className="w-4 h-4 mr-2 flex-shrink-0 flex items-center justify-center font-semibold">
+              {currencySymbol}
+            </span>
+            <span className="font-medium">{displayPay}</span>
+          </div>
+        )}
+        {displayPay === "N/A" && (
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+            <span className="w-4 h-4 mr-2 flex-shrink-0 flex items-center justify-center font-semibold">
+              {currencySymbol}
+            </span>
+            <span className="font-medium">Price not set</span>
+          </div>
+        )}
       </div>
     </Link>
   );

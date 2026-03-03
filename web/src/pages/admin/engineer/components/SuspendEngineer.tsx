@@ -6,29 +6,19 @@ import { validateDescription } from "@/utils/validate";
 import React from "react";
 import { useFormContext, type SubmitHandler } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
-import { toast } from "react-toastify";
-
-type SuspendEngineerForm = {
-  suspendStartDate: Date;
-  suspendEndDate: Date;
-  reason: string;
-};
+import type { SuspendEngineerFormData } from "../types";
 
 export default function SuspendEngineer({
   isSuspendEngineer,
   setIsSuspendEngineer,
+  onSubmit,
 }: {
   isSuspendEngineer: boolean;
   setIsSuspendEngineer: React.Dispatch<React.SetStateAction<boolean>>;
+  onSubmit?: SubmitHandler<SuspendEngineerFormData>;
 }) {
-  const { watch, handleSubmit } = useFormContext<SuspendEngineerForm>();
+  const { watch, handleSubmit } = useFormContext<SuspendEngineerFormData>();
   const suspendStartDate = watch("suspendStartDate");
-  // This function only executes if validation passes
-  const onSubmit: SubmitHandler<SuspendEngineerForm> = () => {
-    // Add your API call logic here
-    toast.success("Engineer suspended successfully!");
-    setIsSuspendEngineer(false);
-  };
   return (
     <div>
       <Popup
@@ -37,12 +27,14 @@ export default function SuspendEngineer({
       >
         <div className="p-4">
           <div className="flex justify-between items-center">
-            <span className="font-bold">Suspend Engineer</span>
+            <span className="font-bold text-black dark:text-white">
+              Suspend Engineer
+            </span>
             <div
               className="text-xl font-semibold cursor-pointer"
               onClick={() => setIsSuspendEngineer(false)}
             >
-              <IoCloseSharp />
+              <IoCloseSharp className="text-black dark:text-white" />
             </div>
           </div>
 
@@ -59,7 +51,7 @@ export default function SuspendEngineer({
               label="End Date"
               placeholder="End Date"
               required
-              minDate={suspendStartDate}
+              minDate={suspendStartDate ?? undefined}
             />
             <TextareaInput
               name="reason"
@@ -81,7 +73,9 @@ export default function SuspendEngineer({
             <Button
               type="button"
               className="w-fit bg-teal-900 text-white"
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleSubmit(async (data) => {
+                await onSubmit?.(data);
+              })}
             >
               Submit
             </Button>
