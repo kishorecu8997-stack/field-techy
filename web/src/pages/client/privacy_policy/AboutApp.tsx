@@ -22,7 +22,6 @@ const AboutApp = () => {
         <div className="container mx-auto px-4 py-6 md:px-6">
           <MyJobsHeader
             title="About App"
-            onSortChange={() => {}}
             isShowSort={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -39,7 +38,6 @@ const AboutApp = () => {
         <div className="container mx-auto px-4 py-6 md:px-6">
           <MyJobsHeader
             title="About App"
-            onSortChange={() => {}}
             isShowSort={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -55,7 +53,6 @@ const AboutApp = () => {
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
           title={cmsData.data.title || "About App"}
-          onSortChange={() => {}}
           isShowSort={false}
         />
 
