@@ -132,6 +132,7 @@ export default function Dashboard() {
                 data={formattedUserData}
                 chartType="line"
                 xAxisDataKey="name"
+                yAxisDomain={[0, "auto"]}
                 aspectRatio={2}
                 series={[
                   {
@@ -182,6 +183,7 @@ export default function Dashboard() {
               data={formattedJobData}
               chartType="bar"
               xAxisDataKey="name"
+              yAxisDomain={[0, "auto"]}
               aspectRatio={2}
               series={[
                 {
