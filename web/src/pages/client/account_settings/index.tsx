@@ -51,7 +51,7 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
         onClose();
       },
     },
-{
+    {
       label: "About Us",
       icon: icons.fileLines,
       id: "aboutUs",
@@ -59,7 +59,7 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
         navigate(
           isClient
             ? absoluteUrls.client.home.about_app
-            : absoluteUrls.engineer.home.about_app
+            : absoluteUrls.engineer.home.about_app,
         );
         onClose();
       },

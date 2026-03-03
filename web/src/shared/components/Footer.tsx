@@ -265,7 +265,7 @@ const Footer = () => {
                 <NavLink
                   to="#"
                   onClick={(e) => e.preventDefault()}
-                 className="text-gray-400 dark:text-gray-600 cursor-not-allowed pointer-events-none"
+                  className="text-gray-400 dark:text-gray-600 cursor-not-allowed pointer-events-none"
                   aria-disabled="true"
                   tabIndex={-1}
                 >

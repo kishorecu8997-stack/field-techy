@@ -658,15 +658,15 @@ export function useGetCmsContent(
     refetchOnWindowFocus: true,
     refetchIntervalInBackground: false,
 
-     refetchInterval:
+    refetchInterval:
       options?.enabled === false
         ? false
-        : options?.refetchInterval ??
+        : (options?.refetchInterval ??
           (() =>
             typeof document !== "undefined" &&
             document.visibilityState === "visible"
               ? 15000
-              : false),
+              : false)),
   });
 }
 export function useCreateFaq(options?: {
