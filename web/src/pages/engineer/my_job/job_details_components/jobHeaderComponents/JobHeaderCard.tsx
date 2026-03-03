@@ -126,20 +126,23 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               </p>
             )}
             {(numberOfVacancy !== undefined ||
-              numberOfApplicants !== undefined || numberOfApprovedProposals !== undefined) && (
+              numberOfApplicants !== undefined ||
+              numberOfApprovedProposals !== undefined) && (
               <p className="text-sm mt-1">
                 {numberOfVacancy !== undefined && (
                   <span>
                     {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
                   </span>
                 )}
-                {numberOfVacancy !== undefined && numberOfApprovedProposals !== undefined && (
-                  <span className="ml-2 text-green-400">
-                    (Filled: {numberOfApprovedProposals}/{numberOfVacancy})
-                  </span>
-                )}
                 {numberOfVacancy !== undefined &&
-                  (numberOfApplicants !== undefined || numberOfApprovedProposals !== undefined) && (
+                  numberOfApprovedProposals !== undefined && (
+                    <span className="ml-2 text-green-400">
+                      (Filled: {numberOfApprovedProposals}/{numberOfVacancy})
+                    </span>
+                  )}
+                {numberOfVacancy !== undefined &&
+                  (numberOfApplicants !== undefined ||
+                    numberOfApprovedProposals !== undefined) && (
                     <span>{JOB_HEADER_COPY.separator}</span>
                   )}
                 {numberOfApplicants !== undefined && (
@@ -196,7 +199,13 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
             {/* On Site badge */}
             <span className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium justify-items-center h-fit justify-center items-center text-gray-900 whitespace-nowrap">
-              {type === WORKING_TYPES.onsite || type === "On site" ? "On Site" : type === WORKING_TYPES.remote || type === "Remote" ? "Remote" : type === WORKING_TYPES.hybrid || type === "Hybrid" ? "Hybrid" : type || "Remote"}
+              {type === WORKING_TYPES.onsite || type === "On site"
+                ? "On Site"
+                : type === WORKING_TYPES.remote || type === "Remote"
+                  ? "Remote"
+                  : type === WORKING_TYPES.hybrid || type === "Hybrid"
+                    ? "Hybrid"
+                    : type || "Remote"}
             </span>
             {/* Client menu */}
             {isClient && (

@@ -147,11 +147,14 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                           />
                         </svg>
                         {/* Show different label based on logType */}
-                        {item.logType === "FINAL_STATEMENT" || item.logType === "final_statement"
+                        {item.logType === "FINAL_STATEMENT" ||
+                        item.logType === "final_statement"
                           ? "Signature"
-                          : item.logType === "WORK_SUBMISSION" || item.logType === "work_submission" || item.logType === "SUBMISSION"
-                          ? "Work Submission"
-                          : "View Document"}
+                          : item.logType === "WORK_SUBMISSION" ||
+                              item.logType === "work_submission" ||
+                              item.logType === "SUBMISSION"
+                            ? "Work Submission"
+                            : "View Document"}
                       </a>
                     </div>
                   )}

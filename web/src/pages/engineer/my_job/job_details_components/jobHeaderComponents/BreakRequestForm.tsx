@@ -72,7 +72,7 @@ const BreakRequestForm = ({
     assignmentId,
     onSuccess: async () => {
       toast.success(BREAK_REQUEST_MESSAGES.submitSuccess);
-      
+
       // Force refetch the job logs to update timeline immediately
       if (assignmentId) {
         try {
@@ -81,7 +81,7 @@ const BreakRequestForm = ({
             client: apiClient,
             path: { assignmentId },
           });
-          
+
           // Update the query cache with the new data using exact key from getJobLogsQueryKey
           const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
           queryClient.setQueryData(exactQueryKey, response.data);
@@ -143,7 +143,7 @@ const BreakRequestForm = ({
   const minStartDate = (() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (jobStartDate) {
       const jobStart = new Date(jobStartDate);
       jobStart.setHours(0, 0, 0, 0);

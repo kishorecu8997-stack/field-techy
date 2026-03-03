@@ -56,11 +56,11 @@ const AdvancedSearchBar: React.FC<{
     "Japanese",
   ];
   const slaLevelOptions = ["4 hours", "6 hours", "next-day", "thereafter"];
-  
+
   // Fetch skills and tools from the lookup API
   const { data: skillsResponse } = useLookupData("skills");
   const { data: toolsResponse } = useLookupData("tools");
-  
+
   // Create options arrays from API response
   const skillsOptions = (skillsResponse || []).map((skill) => skill.name);
   const toolsOptions = (toolsResponse || []).map((tool) => tool.name);

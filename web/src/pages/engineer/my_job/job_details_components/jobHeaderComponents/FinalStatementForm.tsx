@@ -54,14 +54,20 @@ const FinalStatementForm = ({
             client: apiClient,
             path: { assignmentId },
           });
-          
+
           // Use exact query key format from getJobLogsQueryKey
           const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
-          
+
           // Update using exact key and fallback keys
           queryClient.setQueryData(exactQueryKey, response.data);
-          queryClient.setQueryData(["getJobLogs", { path: { assignmentId } }], response.data);
-          queryClient.setQueryData(queryKeys.engineer.jobLogs(assignmentId), response.data);
+          queryClient.setQueryData(
+            ["getJobLogs", { path: { assignmentId } }],
+            response.data,
+          );
+          queryClient.setQueryData(
+            queryKeys.engineer.jobLogs(assignmentId),
+            response.data,
+          );
         } catch (error) {
           console.error("Error refetching job logs:", error);
           queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
@@ -158,7 +164,10 @@ const FinalStatementForm = ({
 
               // Upload signature attachment if URL provided
               if (signatureFile && response.signatureAttachmentUrl) {
-                await uploadFile(signatureFile, response.signatureAttachmentUrl);
+                await uploadFile(
+                  signatureFile,
+                  response.signatureAttachmentUrl,
+                );
               }
 
               close(true);

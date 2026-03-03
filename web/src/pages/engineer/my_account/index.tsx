@@ -148,18 +148,18 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           key={"myAccount"}
           className="h-full"
         />
-       <LogoutConfirmationPopup
-  isOpen={isOpen}
-  onClose={() => setIsOpen(false)}
-  onConfirm={() => {
-    logout();
-    clearEngineerProfile();
-    queryClient.clear();     // Clears React Query cache so next login fetches fresh data
-    onClose();
-    navigate(absoluteUrls.engineer.auth.login);
-  }}
-  onCancel={() => setIsOpen(false)}
-/>
+        <LogoutConfirmationPopup
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          onConfirm={() => {
+            logout();
+            clearEngineerProfile();
+            queryClient.clear(); // Clears React Query cache so next login fetches fresh data
+            onClose();
+            navigate(absoluteUrls.engineer.auth.login);
+          }}
+          onCancel={() => setIsOpen(false)}
+        />
       </FormContainer>
     </>
   );

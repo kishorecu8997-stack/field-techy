@@ -69,12 +69,11 @@ export const job: JobInfoSectionProps = {
       },
     ],
   },
-   files: [
+  files: [
     { name: "File Documents.doc", url: "/documents/file-documents.doc" },
     { name: "File Documents.doc", url: "/documents/file-documents.doc" },
     { name: "Image Document.jpg", url: "/documents/image-document.jpg" },
- ],
-
+  ],
 };
 
 export const paymentTerms: paymentTermsProps = {

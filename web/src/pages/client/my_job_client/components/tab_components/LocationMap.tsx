@@ -21,7 +21,7 @@ interface LocationMapProps {
  * @returns {JSX.Element} A section containing the location address and an interactive map.
  *
  * @example
- * <LocationMap 
+ * <LocationMap
  *   workLocationLat="17.6868"
  *   workLocationLng="83.2185"
  *   workLocationName="Visakhapatnam, Andhra Pradesh"
@@ -37,20 +37,25 @@ const LocationMap: React.FC<LocationMapProps> = ({
   };
 
   // Use job coordinates if available, otherwise fall back to dummy data
-  const hasValidCoords = workLocationLat && workLocationLng && 
-    !isNaN(parseFloat(workLocationLat)) && !isNaN(parseFloat(workLocationLng));
+  const hasValidCoords =
+    workLocationLat &&
+    workLocationLng &&
+    !isNaN(parseFloat(workLocationLat)) &&
+    !isNaN(parseFloat(workLocationLng));
 
   const initialPosition: [number, number] = hasValidCoords
     ? [parseFloat(workLocationLat), parseFloat(workLocationLng)]
     : [exampleMarkers.position[0], exampleMarkers.position[1]];
 
   const markers = hasValidCoords
-    ? [{
-        id: 1,
-        position: initialPosition,
-        title: workLocationName || "Work Location",
-        description: workLocationName || "Job work location",
-      }]
+    ? [
+        {
+          id: 1,
+          position: initialPosition,
+          title: workLocationName || "Work Location",
+          description: workLocationName || "Job work location",
+        },
+      ]
     : [exampleMarkers];
 
   return (

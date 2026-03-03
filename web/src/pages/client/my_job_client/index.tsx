@@ -41,7 +41,10 @@ const MyJobsClient: React.FC = () => {
   }, [serviceCategories]);
 
   // Helper function to calculate duration from start and end dates
-  const calculateDuration = (startDate: string | null, endDate: string | null): string => {
+  const calculateDuration = (
+    startDate: string | null,
+    endDate: string | null,
+  ): string => {
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
@@ -54,7 +57,10 @@ const MyJobsClient: React.FC = () => {
 
   // Helper function to get service category name from ID
   const getServiceCategoryName = (serviceCategoryId: number): string => {
-    return serviceCategoryMap.get(serviceCategoryId) || `Service Category ${serviceCategoryId}`;
+    return (
+      serviceCategoryMap.get(serviceCategoryId) ||
+      `Service Category ${serviceCategoryId}`
+    );
   };
 
   const mapApiJobToUiJob = (apiJob: ClientGetJobsResponse[0]): Job => ({
@@ -78,9 +84,10 @@ const MyJobsClient: React.FC = () => {
     stateId: apiJob.stateId,
     countryId: apiJob.countryId,
     workLocationName: apiJob.workLocationName,
-    pay: apiJob.totalPrice != null && apiJob.totalPrice !== ""
-      ? `${apiJob.totalPrice}`
-      : "N/A",
+    pay:
+      apiJob.totalPrice != null && apiJob.totalPrice !== ""
+        ? `${apiJob.totalPrice}`
+        : "N/A",
     status: (apiJob.status?.toLowerCase() as JobStatus) || JOB_STATUSES.posted,
     serviceType: getServiceCategoryName(apiJob.serviceCategoryId),
     description: apiJob.jobDescription || undefined,

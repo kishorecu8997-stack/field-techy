@@ -45,8 +45,14 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           });
           const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
           queryClient.setQueryData(exactQueryKey, response.data);
-          queryClient.setQueryData(["getJobLogs", { path: { assignmentId } }], response.data);
-          queryClient.setQueryData(queryKeys.engineer.jobLogs(assignmentId), response.data);
+          queryClient.setQueryData(
+            ["getJobLogs", { path: { assignmentId } }],
+            response.data,
+          );
+          queryClient.setQueryData(
+            queryKeys.engineer.jobLogs(assignmentId),
+            response.data,
+          );
         } catch (error) {
           queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
         }
@@ -65,8 +71,14 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           });
           const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
           queryClient.setQueryData(exactQueryKey, response.data);
-          queryClient.setQueryData(["getJobLogs", { path: { assignmentId } }], response.data);
-          queryClient.setQueryData(queryKeys.engineer.jobLogs(assignmentId), response.data);
+          queryClient.setQueryData(
+            ["getJobLogs", { path: { assignmentId } }],
+            response.data,
+          );
+          queryClient.setQueryData(
+            queryKeys.engineer.jobLogs(assignmentId),
+            response.data,
+          );
         } catch (error) {
           queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
         }

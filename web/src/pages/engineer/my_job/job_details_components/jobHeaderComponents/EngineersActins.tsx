@@ -140,8 +140,8 @@ const EngineersActions = ({
         queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
         // Force refetch the job details
         if (assignmentId) {
-          queryClient.invalidateQueries({ 
-            queryKey: ["engineer", "jobDetails", assignmentId] 
+          queryClient.invalidateQueries({
+            queryKey: ["engineer", "jobDetails", assignmentId],
           });
         }
       },
@@ -327,14 +327,18 @@ const EngineersActions = ({
   // This ensures each engineer sees only their own proposal status
   // Also check for submitted status when there's no assignment yet (proposal just sent)
   const isApplied = hasAssignment && OfferJobStatus === "applied";
-  const isSubmitted = OfferJobStatus === "submitted" || OfferJobStatus === "applied";
-  const isRejected = hasAssignment && (OfferJobStatus === "rejected" || mappedOfferStatus === "declined");
-  const isJobStarted = OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
-  const isProposalAccepted = hasAssignment && (
-    OfferJobStatus === "accepted" ||
-    OfferJobStatus === "assigned" ||
-    mappedOfferStatus === "accepted"
-  );
+  const isSubmitted =
+    OfferJobStatus === "submitted" || OfferJobStatus === "applied";
+  const isRejected =
+    hasAssignment &&
+    (OfferJobStatus === "rejected" || mappedOfferStatus === "declined");
+  const isJobStarted =
+    OfferJobStatus === "started" || OfferJobStatus === "start_pending_approval";
+  const isProposalAccepted =
+    hasAssignment &&
+    (OfferJobStatus === "accepted" ||
+      OfferJobStatus === "assigned" ||
+      mappedOfferStatus === "accepted");
 
   // Job-level status checks - these determine what ACTIONS are available
   // NOT the engineer's proposal status
@@ -438,7 +442,8 @@ const EngineersActions = ({
         return (
           <div className="flex flex-col items-end gap-2">
             <span className="text-red-400 text-sm font-medium">
-              Applications are closed. All available vacancies for this job have been filled.
+              Applications are closed. All available vacancies for this job have
+              been filled.
             </span>
             <Button
               className="bg-gray-500 text-white px-6 py-2 rounded-md font-medium border border-gray-400 cursor-not-allowed opacity-50"

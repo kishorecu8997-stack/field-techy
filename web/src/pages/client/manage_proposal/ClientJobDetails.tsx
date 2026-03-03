@@ -79,7 +79,7 @@ const ClientJobDetails = () => {
     "submit_pending_approval",
   ];
   const numberOfApprovedProposals = assignments.filter((a) =>
-    approvedStatuses.includes((a.assignmentStatus || "").toLowerCase())
+    approvedStatuses.includes((a.assignmentStatus || "").toLowerCase()),
   ).length;
   const numberOfVacancy = job?.vacancies ?? undefined;
   // const isJobFullyFilled = numberOfVacancy !== undefined && numberOfApprovedProposals >= numberOfVacancy;

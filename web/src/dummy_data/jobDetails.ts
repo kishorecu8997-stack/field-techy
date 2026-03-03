@@ -98,7 +98,6 @@ export const job: JobInfoSectionProps = {
     { name: "File Documents.doc", url: "/documents/file-documents.doc" },
     { name: "Image Document.jpg", url: "/documents/image-document.jpg" },
   ],
-
 };
 
 export const otherProposal: ProposalTermsProps = {

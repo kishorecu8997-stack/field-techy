@@ -45,8 +45,12 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
 }) => {
   const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
   const [rejectedProposals, setRejectedProposals] = useState<string[]>([]);
-  const [pendingApproveConfirmation, setPendingApproveConfirmation] = useState<number | null>(null);
-  const [pendingRejectConfirmation, setPendingRejectConfirmation] = useState<number | null>(null);
+  const [pendingApproveConfirmation, setPendingApproveConfirmation] = useState<
+    number | null
+  >(null);
+  const [pendingRejectConfirmation, setPendingRejectConfirmation] = useState<
+    number | null
+  >(null);
   const queryClient = useQueryClient();
 
   // Calculate approved count from assignments
@@ -59,9 +63,10 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
     "submitted",
     "submit_pending_approval",
   ];
-  const approvedProposalsCount = assignments.filter((a) =>
-    approvedStatuses.includes((a.assignmentStatus || "").toLowerCase()) ||
-    acceptedProposals.includes(String(a.assignmentId))
+  const approvedProposalsCount = assignments.filter(
+    (a) =>
+      approvedStatuses.includes((a.assignmentStatus || "").toLowerCase()) ||
+      acceptedProposals.includes(String(a.assignmentId)),
   ).length;
 
   // Sort proposals by appliedAt - first come first served
@@ -74,7 +79,8 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
   }, [assignments]);
 
   // Check if job is fully filled
-  const isJobFullyFilled = numberOfVacancy !== undefined && approvedProposalsCount >= numberOfVacancy;
+  const isJobFullyFilled =
+    numberOfVacancy !== undefined && approvedProposalsCount >= numberOfVacancy;
 
   const { mutateAsync: actionOnAssignment } = useClientActionOnAssignment({
     onSuccess: () => {
@@ -197,8 +203,12 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
 
       {/* Vacancy Status Display */}
       {numberOfVacancy !== undefined && (
-        <div className={`mb-4 p-3 rounded-lg ${isJobFullyFilled ? 'bg-red-50 dark:bg-red-900/20' : 'bg-blue-50 dark:bg-blue-900/20'}`}>
-          <p className={`text-sm font-medium ${isJobFullyFilled ? 'text-red-700 dark:text-red-400' : 'text-blue-700 dark:text-blue-400'}`}>
+        <div
+          className={`mb-4 p-3 rounded-lg ${isJobFullyFilled ? "bg-red-50 dark:bg-red-900/20" : "bg-blue-50 dark:bg-blue-900/20"}`}
+        >
+          <p
+            className={`text-sm font-medium ${isJobFullyFilled ? "text-red-700 dark:text-red-400" : "text-blue-700 dark:text-blue-400"}`}
+          >
             {isJobFullyFilled
               ? `All ${numberOfVacancy} vacancy(ies) have been filled. No more approvals allowed.`
               : `Approved: ${approvedProposalsCount} / ${numberOfVacancy} vacancies`}
@@ -270,17 +280,16 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
               variant="no_style"
               onClick={() => handleAcceptProposal(proposal.assignmentId)}
               disabled={
-                acceptedProposals.includes(
-                  String(proposal.assignmentId),
-                ) || isJobFullyFilled
+                acceptedProposals.includes(String(proposal.assignmentId)) ||
+                isJobFullyFilled
               }
               className={`px-6 py-2 rounded transition font-medium ${
                 isJobFullyFilled
-                  ? 'bg-gray-400 cursor-not-allowed opacity-50'
-                  : 'bg-green-800 hover:bg-green-900 text-white'
+                  ? "bg-gray-400 cursor-not-allowed opacity-50"
+                  : "bg-green-800 hover:bg-green-900 text-white"
               }`}
             >
-              {isJobFullyFilled ? 'Vacancies Filled' : DUMMY_TABS_LABELS.accept}
+              {isJobFullyFilled ? "Vacancies Filled" : DUMMY_TABS_LABELS.accept}
             </Button>
           </div>
         </div>
@@ -295,7 +304,10 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       )}
 
       {/* Approve Confirmation Popup */}
-      <Popup open={pendingApproveConfirmation !== null} onClose={() => setPendingApproveConfirmation(null)}>
+      <Popup
+        open={pendingApproveConfirmation !== null}
+        onClose={() => setPendingApproveConfirmation(null)}
+      >
         <div className="flex items-center justify-center px-0 w-full">
           <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
             <div className="p-6 pb-4">
@@ -305,7 +317,8 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                     Approve Proposal
                   </h2>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
-                    Are you sure you want to approve this proposal? This action cannot be undone.
+                    Are you sure you want to approve this proposal? This action
+                    cannot be undone.
                   </p>
                 </div>
                 <div
@@ -319,10 +332,19 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             </div>
             <div className="p-6 pt-0">
               <div className="grid grid-cols-2 gap-3">
-                <Button type="button" variant="solid" onClick={() => setPendingApproveConfirmation(null)}>
+                <Button
+                  type="button"
+                  variant="solid"
+                  onClick={() => setPendingApproveConfirmation(null)}
+                >
                   Cancel
                 </Button>
-                <Button variant="primary" onClick={confirmAcceptProposal} type="button" className="bg-green-800 hover:bg-green-900">
+                <Button
+                  variant="primary"
+                  onClick={confirmAcceptProposal}
+                  type="button"
+                  className="bg-green-800 hover:bg-green-900"
+                >
                   Approve
                 </Button>
               </div>
@@ -332,7 +354,10 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       </Popup>
 
       {/* Reject Confirmation Popup */}
-      <Popup open={pendingRejectConfirmation !== null} onClose={() => setPendingRejectConfirmation(null)}>
+      <Popup
+        open={pendingRejectConfirmation !== null}
+        onClose={() => setPendingRejectConfirmation(null)}
+      >
         <div className="flex items-center justify-center px-0 w-full">
           <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
             <div className="p-6 pb-4">
@@ -342,7 +367,8 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                     Reject Proposal
                   </h2>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
-                    Are you sure you want to reject this proposal? This action cannot be undone.
+                    Are you sure you want to reject this proposal? This action
+                    cannot be undone.
                   </p>
                 </div>
                 <div
@@ -356,10 +382,19 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             </div>
             <div className="p-6 pt-0">
               <div className="grid grid-cols-2 gap-3">
-                <Button type="button" variant="solid" onClick={() => setPendingRejectConfirmation(null)}>
+                <Button
+                  type="button"
+                  variant="solid"
+                  onClick={() => setPendingRejectConfirmation(null)}
+                >
                   Cancel
                 </Button>
-                <Button variant="primary" onClick={confirmRejectProposal} type="button" className="bg-red-700 hover:bg-red-800">
+                <Button
+                  variant="primary"
+                  onClick={confirmRejectProposal}
+                  type="button"
+                  className="bg-red-700 hover:bg-red-800"
+                >
                   Reject
                 </Button>
               </div>

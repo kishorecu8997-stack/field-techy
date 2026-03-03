@@ -183,7 +183,9 @@ const JobTabSection = ({
       // Also invalidate job logs to update the timeline immediately
       if (assignmentId) {
         queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
-        queryClient.invalidateQueries({ queryKey: ["engineer", "jobLogs", assignmentId] });
+        queryClient.invalidateQueries({
+          queryKey: ["engineer", "jobLogs", assignmentId],
+        });
         // Force refresh timeline cache
         try {
           const response = await getJobLogs({
@@ -321,7 +323,7 @@ const JobTabSection = ({
       }
       // Force refetch timeline to update immediately
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
-      
+
       // Manually fetch and update engineerJobs cache for timeline
       try {
         const response = await engineerGetMyJobs({ client: apiClient });
@@ -332,10 +334,12 @@ const JobTabSection = ({
       } catch (error) {
         console.error("Error refetching engineer jobs:", error);
       }
-      
+
       if (assignmentId) {
         queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
-        queryClient.invalidateQueries({ queryKey: ["engineer", "jobLogs", assignmentId] });
+        queryClient.invalidateQueries({
+          queryKey: ["engineer", "jobLogs", assignmentId],
+        });
         // Also manually set the cache to trigger immediate update
         try {
           const response = await getJobLogs({

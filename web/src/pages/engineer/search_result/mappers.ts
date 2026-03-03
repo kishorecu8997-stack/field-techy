@@ -37,7 +37,8 @@ export const mapApiJobToJobItem = (
     jobDuration: "",
     client: {
       id: String(job.clientId),
-      companyName: job.clientDetails?.companyName || job.clientDetails?.personName || "",
+      companyName:
+        job.clientDetails?.companyName || job.clientDetails?.personName || "",
       contactPersonName: job.clientDetails?.personName || "N/A",
       email: job.clientDetails?.email || "",
       phoneNumber: job.clientDetails?.phoneNumber || "",
@@ -46,7 +47,8 @@ export const mapApiJobToJobItem = (
       country: "",
       postalCode: "",
       state: "",
-      clientType: job.clientDetails?.clientType === "home" ? "INDIVIDUAL" : "COMPANY",
+      clientType:
+        job.clientDetails?.clientType === "home" ? "INDIVIDUAL" : "COMPANY",
     },
   } as JobItem;
 };

@@ -71,7 +71,8 @@ const mapJobToJobInfo = (
   if (job.attachmentUrl) {
     // Extract filename from URL if it's a full URL, removing query string parameters
     const urlParts = job.attachmentUrl.split("/");
-    const fileNameWithParams = urlParts[urlParts.length - 1] || "Job Attachment";
+    const fileNameWithParams =
+      urlParts[urlParts.length - 1] || "Job Attachment";
     const fileName = fileNameWithParams.split("?")[0] || "Job Attachment";
     files.push({ name: fileName, url: job.attachmentUrl });
   }
@@ -103,7 +104,8 @@ const mapJobToJobOverview = (
   // Extract skills - convert IDs to labels using skillMap
   const skills = Array.isArray(job.skills)
     ? job.skills.map((skill) => {
-        const skillId = typeof skill === "number" ? skill : parseInt(String(skill), 10);
+        const skillId =
+          typeof skill === "number" ? skill : parseInt(String(skill), 10);
         const skillLabel = skillMap.get(skillId);
         return skillLabel || String(skill);
       })
@@ -134,7 +136,7 @@ const mapJobToJobOverview = (
 
   // Extract work details
   const engagementModel = job.jobType || undefined;
-  
+
   // Extract experience level - convert ID to label using experienceLevelMap
   let experienceLevel: string | undefined;
   if (job.experienceLevelId) {
@@ -143,7 +145,7 @@ const mapJobToJobOverview = (
   } else {
     experienceLevel = undefined;
   }
-  
+
   const numberOfVacancies = job.vacancies ?? undefined;
 
   // Extract earnings info - engineers see totalPrice as total payment
@@ -153,7 +155,9 @@ const mapJobToJobOverview = (
       : undefined;
 
   // Extract additional details
-  const additionalDetails = job.additionalDetails ? [job.additionalDetails] : [];
+  const additionalDetails = job.additionalDetails
+    ? [job.additionalDetails]
+    : [];
 
   // Extract attachments
   const attachments: Array<{ name: string; url: string }> = [];
@@ -463,7 +467,10 @@ const JobDetailsPage = () => {
   // Prepare mapped job data from API response - use job as the primary source
   const jobTitle = job?.jobTitle || "";
   const clientId = job?.clientId;
-  const clientName = job?.clientDetails?.companyName || job?.clientDetails?.personName || `Client #${clientId}`;
+  const clientName =
+    job?.clientDetails?.companyName ||
+    job?.clientDetails?.personName ||
+    `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
   const duration = getDurationString({
     startDateStr: job?.startDate || "",

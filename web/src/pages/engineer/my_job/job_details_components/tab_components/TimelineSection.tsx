@@ -169,11 +169,16 @@ const TimelineSection: React.FC<{
   hasApplied = false,
 }) => {
   const [isRevisionOpen, setIsRevisionOpen] = useState(false);
-  const [activeRevision, setActiveRevision] = useState<ProgressUpdate | null>(null);
-  const [isRevisionUpdateFormOpen, setIsRevisionUpdateFormOpen] = useState(false);
+  const [activeRevision, setActiveRevision] = useState<ProgressUpdate | null>(
+    null,
+  );
+  const [isRevisionUpdateFormOpen, setIsRevisionUpdateFormOpen] =
+    useState(false);
   const [isBreakDetailsOpen, setIsBreakDetailsOpen] = useState(false);
   const [activeBreak, setActiveBreak] = useState<ProgressUpdate | null>(null);
-  const [collapsedUpdates, setCollapsedUpdates] = useState<Record<string, boolean>>({});
+  const [collapsedUpdates, setCollapsedUpdates] = useState<
+    Record<string, boolean>
+  >({});
 
   const { data: jobLogs, isLoading: isLoadingLogs } = useGetJobLogs(
     assignmentId ?? 0,
@@ -183,7 +188,11 @@ const TimelineSection: React.FC<{
   const { data: engineerJobs } = useEngineerGetMyJobs(!!jobId || !!hasApplied);
 
   const proposalTimelineItems = useMemo(() => {
-    if (!engineerJobs || !Array.isArray(engineerJobs) || engineerJobs.length === 0)
+    if (
+      !engineerJobs ||
+      !Array.isArray(engineerJobs) ||
+      engineerJobs.length === 0
+    )
       return [];
     return transformProposalToTimelineItems(engineerJobs, jobId);
   }, [engineerJobs, jobId]);
@@ -192,14 +201,20 @@ const TimelineSection: React.FC<{
     if (!jobLogs) return [];
 
     const logItems = transformLogsToTimelineItems(jobLogs.logs || []);
-    const breakItems = transformBreakRequestsToItems(jobLogs.breakRequests || []);
+    const breakItems = transformBreakRequestsToItems(
+      jobLogs.breakRequests || [],
+    );
     const signOffItems = transformSignOffsToItems(jobLogs.signOffSheets || []);
 
     const allItems = [...logItems, ...breakItems, ...signOffItems];
 
     return allItems.sort((a, b) => {
-      const dateA = a.effectiveTimestamp ? new Date(a.effectiveTimestamp).getTime() : 0;
-      const dateB = b.effectiveTimestamp ? new Date(b.effectiveTimestamp).getTime() : 0;
+      const dateA = a.effectiveTimestamp
+        ? new Date(a.effectiveTimestamp).getTime()
+        : 0;
+      const dateB = b.effectiveTimestamp
+        ? new Date(b.effectiveTimestamp).getTime()
+        : 0;
       return dateB - dateA;
     });
   }, [jobLogs]);
@@ -335,7 +350,9 @@ const TimelineSection: React.FC<{
         <div className="space-y-3 mb-4">
           {(() => {
             const actionRequiredUpdates = progressUpdates.filter((update) => {
-              const statusLower = String(update.statusText || "").toLowerCase().trim();
+              const statusLower = String(update.statusText || "")
+                .toLowerCase()
+                .trim();
 
               const revisions = update.revisions || [];
               const latestRevision = revisions[0]; // newest first
@@ -360,7 +377,8 @@ const TimelineSection: React.FC<{
               <>
                 <ActionRequiredBadge count={actionRequiredCount} />
                 {actionRequiredUpdates.map((update, idx) => {
-                  if (update.title === REVISION_UPDATE_LABELS.title) return null;
+                  if (update.title === REVISION_UPDATE_LABELS.title)
+                    return null;
 
                   const updateKey = `${update.title || "update"}-${idx}`;
                   const isCollapsed = collapsedUpdates[updateKey] ?? false;
@@ -415,7 +433,10 @@ const TimelineSection: React.FC<{
         onOpenUpdateForm={handleOpenRevisionUpdateForm}
       />
 
-      <Popup open={isRevisionUpdateFormOpen} onClose={handleCloseRevisionUpdateForm}>
+      <Popup
+        open={isRevisionUpdateFormOpen}
+        onClose={handleCloseRevisionUpdateForm}
+      >
         <RevisionRequestUpdateForm
           onClose={handleCloseRevisionUpdateForm}
           onAddProgressUpdate={onAddProgressUpdate}

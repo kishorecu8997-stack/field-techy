@@ -30,7 +30,11 @@ interface UpdateLogFormProps {
  * Sends multiple progress updates with different statuses for UI display.
  * Uses react-hook-form for form handling and validation.
  */
-const UpdateLogForm = ({ onClose, assignmentId, jobId }: UpdateLogFormProps) => {
+const UpdateLogForm = ({
+  onClose,
+  assignmentId,
+  jobId,
+}: UpdateLogFormProps) => {
   const formCtx = useForm<UpdateLogFormFields>({
     defaultValues: UPDATE_LOG_DEFAULTS,
   });
@@ -82,7 +86,7 @@ const UpdateLogForm = ({ onClose, assignmentId, jobId }: UpdateLogFormProps) => 
             // Call the real API to submit the work log
             if (assignmentId) {
               const attachment = data.attachments?.[0];
-              
+
               // Prepare attachment metadata if file exists
               const attachmentMeta = attachment
                 ? {

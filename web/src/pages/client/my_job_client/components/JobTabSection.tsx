@@ -3,9 +3,7 @@ import TabComponent from "@/shared/components/TabComponent";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import JobOverviewSection from "@/shared/components/JobOverviewSection";
 import { useEffect, useState, useMemo } from "react";
-import type {
-  JobTabSectionProps,
-} from "../types";
+import type { JobTabSectionProps } from "../types";
 // import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import ManageProposalsTab from "./tab_components/ManageProposalsTab";
@@ -59,43 +57,58 @@ const mapClientJobToJobOverview = (
   // Extract tools - convert IDs to labels using toolMap
   const rawTools = getJobValue<unknown>("tools");
   let tools: Array<{ name: string; price: string; image?: string }> = [];
-  
+
   // Helper function to convert tool ID to label
   const getToolLabel = (toolValue: string | number): string => {
     const toolId = String(toolValue);
     const toolLabel = toolMap.get(toolId);
     return toolLabel || String(toolValue);
   };
-  
+
   // Check for tools array first
   if (Array.isArray(rawTools) && rawTools.length > 0) {
-    tools = rawTools.map((tool): { name: string; price: string; image?: string } => {
-      if (typeof tool === "object" && tool !== null) {
-        const toolObj = tool as Record<string, unknown>;
-        const toolName = toolObj.name || toolObj.id;
+    tools = rawTools
+      .map((tool): { name: string; price: string; image?: string } => {
+        if (typeof tool === "object" && tool !== null) {
+          const toolObj = tool as Record<string, unknown>;
+          const toolName = toolObj.name || toolObj.id;
+          return {
+            name: toolName
+              ? getToolLabel(toolName as string | number)
+              : String(tool),
+            price: String(toolObj.price || toolObj.amount || ""),
+            image: toolObj.image as string | undefined,
+          };
+        }
         return {
-          name: toolName ? getToolLabel(toolName as string | number) : String(tool),
-          price: String(toolObj.price || toolObj.amount || ""),
-          image: toolObj.image as string | undefined,
+          name: getToolLabel(tool as string | number),
+          price: "",
+          image: undefined,
         };
-      }
-      return { name: getToolLabel(tool as string | number), price: "", image: undefined };
-    }).filter(t => t.name && t.name !== "undefined");
+      })
+      .filter((t) => t.name && t.name !== "undefined");
   } else {
     // Check for individual tool fields: toolName, toolImage, toolAdditionalBudget
     const toolName = getJobValue<string>("toolName");
     const toolImage = getJobValue<string>("toolImage");
     const toolAdditionalBudget = getJobValue<string>("toolAdditionalBudget");
-    
+
     if (toolName) {
-      const toolNames = toolName.split(",").map(t => t.trim()).filter(t => t);
-      const budgetParts = toolAdditionalBudget ? toolAdditionalBudget.split(",").map(b => b.trim()) : [];
-      
-      tools = toolNames.map((name, index) => ({
-        name: getToolLabel(name),
-        price: budgetParts[index] || "",
-        image: index === 0 && toolImage ? toolImage : undefined,
-      })).filter(t => t.name);
+      const toolNames = toolName
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t);
+      const budgetParts = toolAdditionalBudget
+        ? toolAdditionalBudget.split(",").map((b) => b.trim())
+        : [];
+
+      tools = toolNames
+        .map((name, index) => ({
+          name: getToolLabel(name),
+          price: budgetParts[index] || "",
+          image: index === 0 && toolImage ? toolImage : undefined,
+        }))
+        .filter((t) => t.name);
     }
   }
 
@@ -112,12 +125,15 @@ const mapClientJobToJobOverview = (
   }
 
   // Extract work details
-  const engagementModel = (getJobValue<string>("jobType") || getJobValue<string>("type")) || undefined;
-  
+  const engagementModel =
+    getJobValue<string>("jobType") || getJobValue<string>("type") || undefined;
+
   // Extract experience level - try to convert ID to label using experienceLevelMap
-  const experienceLevelId = getJobValue<string>("experienceLevelId") || getJobValue<number>("experienceLevelId")?.toString();
+  const experienceLevelId =
+    getJobValue<string>("experienceLevelId") ||
+    getJobValue<number>("experienceLevelId")?.toString();
   let experienceLevel: string | undefined;
-  
+
   if (experienceLevelId) {
     const numericId = parseInt(experienceLevelId, 10);
     if (!isNaN(numericId)) {
@@ -129,9 +145,12 @@ const mapClientJobToJobOverview = (
     }
   } else {
     // Fallback to string fields
-    experienceLevel = getJobValue<string>("experienceLevel") || getJobValue<string>("experience") || undefined;
+    experienceLevel =
+      getJobValue<string>("experienceLevel") ||
+      getJobValue<string>("experience") ||
+      undefined;
   }
-  
+
   const numberOfVacancies = job?.vacancies ?? undefined;
 
   // Extract earnings info
@@ -162,7 +181,8 @@ const mapClientJobToJobOverview = (
   }
 
   // Use provided weeklyPayNote or default to the standard message
-  const weeklyPayNote = weeklyPayNoteFromApi || 
+  const weeklyPayNote =
+    weeklyPayNoteFromApi ||
     "Weekly pay is paid every week. Tool allowance is paid once.";
 
   // Format total payment
@@ -172,7 +192,9 @@ const mapClientJobToJobOverview = (
   }
 
   // Extract additional details - ensure it's always an array
-  const rawAdditionalDetails = getJobValue<string[]>("additionalDetails") || getJobValue<string>("additionalDetails");
+  const rawAdditionalDetails =
+    getJobValue<string[]>("additionalDetails") ||
+    getJobValue<string>("additionalDetails");
   let additionalDetails: string[] = [];
   if (Array.isArray(rawAdditionalDetails)) {
     additionalDetails = rawAdditionalDetails;
@@ -182,9 +204,11 @@ const mapClientJobToJobOverview = (
 
   // Extract attachments - show as "View Document" with the URL
   const attachments: Array<{ name: string; url: string }> = [];
-  
+
   // Check for attachments array first
-  const attachmentsArray = getJobValue<string[] | Array<{ name: string; url: string }>>("attachments");
+  const attachmentsArray = getJobValue<
+    string[] | Array<{ name: string; url: string }>
+  >("attachments");
   if (Array.isArray(attachmentsArray)) {
     attachmentsArray.forEach((attachment) => {
       if (typeof attachment === "string" && attachment) {
@@ -322,87 +346,98 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
 
   // Simplified 3 tabs: Timeline, Job Overview, Work Location, Manage Proposals
   const tabs = [
-  {
-    label: JOB_TAB_LABELS.timeline,
-    content: (
-      <div className="space-y-2 md:space-y-5 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm pt-4 pb-5 px-4 md:px-5 md:pt-5">
-        {isLoadingAssignments ? (
-          <div className="p-8 text-center text-gray-500">
-            Loading engineers and timeline...
-          </div>
-        ) : !assignmentsData || assignmentsData.length === 0 ? (
-          <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg border">
-            No engineers assigned yet.
-          </div>
-        ) : (
-          // First, filter to active assignments and then group by unique engineer
-          (() => {
-            // Define active statuses
-            const activeStatuses = [
-              "assigned",
-              "accepted",
-              "started",
-              "submitted",
-              "start_pending_approval",
-              "submit_pending_approval",
-              "submit_pending",
-              "in_progress",
-              "active",
-            ];
+    {
+      label: JOB_TAB_LABELS.timeline,
+      content: (
+        <div className="space-y-2 md:space-y-5 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm pt-4 pb-5 px-4 md:px-5 md:pt-5">
+          {isLoadingAssignments ? (
+            <div className="p-8 text-center text-gray-500">
+              Loading engineers and timeline...
+            </div>
+          ) : !assignmentsData || assignmentsData.length === 0 ? (
+            <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg border">
+              No engineers assigned yet.
+            </div>
+          ) : (
+            // First, filter to active assignments and then group by unique engineer
+            (() => {
+              // Define active statuses
+              const activeStatuses = [
+                "assigned",
+                "accepted",
+                "started",
+                "submitted",
+                "start_pending_approval",
+                "submit_pending_approval",
+                "submit_pending",
+                "in_progress",
+                "active",
+              ];
 
-            // Filter to active assignments with engineers
-            const activeAssignments = assignmentsData.filter((ass) => {
-              const status = (ass?.assignmentStatus || "").toLowerCase().trim();
-              const hasEngineer = !!ass?.engineer?.id;
-              return hasEngineer && (
-                activeStatuses.some((s) => status.includes(s)) ||
-                status === "" ||
-                status === "pending"
-              );
-            });
+              // Filter to active assignments with engineers
+              const activeAssignments = assignmentsData.filter((ass) => {
+                const status = (ass?.assignmentStatus || "")
+                  .toLowerCase()
+                  .trim();
+                const hasEngineer = !!ass?.engineer?.id;
+                return (
+                  hasEngineer &&
+                  (activeStatuses.some((s) => status.includes(s)) ||
+                    status === "" ||
+                    status === "pending")
+                );
+              });
 
-            // Group by unique engineerId to avoid duplicates
-            const assignmentsByEngineer = new Map<number, typeof activeAssignments[0]>();
-            activeAssignments.forEach((ass) => {
-              const engineerId = ass.engineer?.id;
-              if (engineerId) {
-                // If we already have this engineer, prefer the one matching current assignmentId
-                const existing = assignmentsByEngineer.get(engineerId);
-                if (!existing || (assignmentId && ass.assignmentId === assignmentId)) {
-                  assignmentsByEngineer.set(engineerId, ass);
+              // Group by unique engineerId to avoid duplicates
+              const assignmentsByEngineer = new Map<
+                number,
+                (typeof activeAssignments)[0]
+              >();
+              activeAssignments.forEach((ass) => {
+                const engineerId = ass.engineer?.id;
+                if (engineerId) {
+                  // If we already have this engineer, prefer the one matching current assignmentId
+                  const existing = assignmentsByEngineer.get(engineerId);
+                  if (
+                    !existing ||
+                    (assignmentId && ass.assignmentId === assignmentId)
+                  ) {
+                    assignmentsByEngineer.set(engineerId, ass);
+                  }
                 }
-              }
-            });
+              });
 
-            // Convert to array
-            const uniqueEngineerAssignments = Array.from(assignmentsByEngineer.values());
-
-            if (uniqueEngineerAssignments.length === 0) {
-              return (
-                <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg border">
-                  No active engineers assigned yet.
-                </div>
+              // Convert to array
+              const uniqueEngineerAssignments = Array.from(
+                assignmentsByEngineer.values(),
               );
-            }
 
-            return uniqueEngineerAssignments.map((assignment) => (
-              <div
-                key={`${assignment.engineer?.id}-${assignment.assignmentId}`}
-                className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800"
-              >
-                <TimelineSection
-                  assignmentId={assignment.assignmentId}
-                  jobId={validJobId}
-                  hasProposals={false}
-                  assignments={[assignment]}
-                />
-              </div>
-            ));
-          })()
-        )}
-      </div>
-    ),
-  },
+              if (uniqueEngineerAssignments.length === 0) {
+                return (
+                  <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg border">
+                    No active engineers assigned yet.
+                  </div>
+                );
+              }
+
+              return uniqueEngineerAssignments.map((assignment) => (
+                <div
+                  key={`${assignment.engineer?.id}-${assignment.assignmentId}`}
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800"
+                >
+                  <TimelineSection
+                    assignmentId={assignment.assignmentId}
+                    jobId={validJobId}
+                    hasProposals={false}
+                    assignments={[assignment]}
+                  />
+                </div>
+              ));
+            })()
+          )}
+        </div>
+      ),
+    },
     {
       label: JOB_TAB_LABELS.jobOverview,
       content: <JobOverviewSection {...jobOverview} />,
@@ -411,9 +446,24 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       label: JOB_TAB_LABELS.workLocation,
       content: (
         <LocationMap
-          workLocationLat={(job as Record<string, unknown>)?.workLocationLat as string | null | undefined}
-          workLocationLng={(job as Record<string, unknown>)?.workLocationLng as string | null | undefined}
-          workLocationName={(job as Record<string, unknown>)?.workLocationName as string | null | undefined}
+          workLocationLat={
+            (job as Record<string, unknown>)?.workLocationLat as
+              | string
+              | null
+              | undefined
+          }
+          workLocationLng={
+            (job as Record<string, unknown>)?.workLocationLng as
+              | string
+              | null
+              | undefined
+          }
+          workLocationName={
+            (job as Record<string, unknown>)?.workLocationName as
+              | string
+              | null
+              | undefined
+          }
           cityId={job?.cityId as number | null | undefined}
           stateId={job?.stateId as number | null | undefined}
           countryId={job?.countryId as number | null | undefined}
