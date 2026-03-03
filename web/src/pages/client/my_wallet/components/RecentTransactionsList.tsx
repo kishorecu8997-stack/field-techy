@@ -37,7 +37,7 @@ const RecentTransactionsList: React.FC = () => {
     },
     true,
   );
-  const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => {
+  const transactions: Transaction[] = (transactionsRaw?.transactions ?? []).map((tx) => {
     const rawAmount = Number(tx.amount);
     const amount = Number.isNaN(rawAmount) ? 0 : rawAmount;
 
