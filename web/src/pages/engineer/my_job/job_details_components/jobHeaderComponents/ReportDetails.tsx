@@ -97,7 +97,7 @@ const ReportDetails: React.FC = () => {
       time: "---",
     };
 
-    const resolvedInfo = formatApiDateTime(data.resolveAt) ?? {
+    const resolvedInfo = formatApiDateTime(data.resolvedAt) ?? {
       date: "---",
       time: "---",
     };
@@ -123,7 +123,7 @@ const ReportDetails: React.FC = () => {
         time: resolvedInfo.time,
         color:
           data.status === "resolved" ? "border-emerald-600" : "border-gray-300",
-        isActive: !!data.resolveAt,
+        isActive: !!data.resolvedAt,
       },
     ];
 
