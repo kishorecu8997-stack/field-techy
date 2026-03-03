@@ -1,28 +1,28 @@
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { scrollToTop } from "@/utils";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 import RichTextContent from "@/shared/components/RichTextContent";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
- * Terms & Conditions page displaying static policy content from CMS.
+ * About App page displaying information about the application.
+ * Fetches content from CMS API and renders directly with HTML sanitization.
  */
-const TermsAndConditions = () => {
-  const location = useLocation();
-  const { data: cmsData, isLoading, error } = useGetCmsContent("terms");
+const AboutApp = () => {
+  useEffect(() => {
+    scrollToTop();
+  }, []);
+
+  const { data: cmsData, isLoading, error } = useGetCmsContent("about-us");
 
   if (isLoading) {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
-          {!location.pathname.includes("/auth") && (
-            <MyJobsHeader
-              title="Terms & Conditions"
-              onSortChange={() => {}}
-              isShowSort={false}
-            />
-          )}
+          <MyJobsHeader title="About App" isShowSort={false} />
           <div className="flex items-center justify-center min-h-[400px]">
-            <p className="text-gray-500">Loading terms and conditions...</p>
+            <LoaderComponent />
           </div>
         </div>
       </div>
@@ -33,15 +33,9 @@ const TermsAndConditions = () => {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
-          {!location.pathname.includes("/auth") && (
-            <MyJobsHeader
-              title="Terms & Conditions"
-              onSortChange={() => {}}
-              isShowSort={false}
-            />
-          )}
+          <MyJobsHeader title="About App" isShowSort={false} />
           <div className="flex items-center justify-center min-h-[400px]">
-            <p className="text-red-500">Failed to load terms and conditions</p>
+            <p className="text-red-500">Failed to load about information</p>
           </div>
         </div>
       </div>
@@ -51,20 +45,20 @@ const TermsAndConditions = () => {
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
-        {!location.pathname.includes("/auth") && (
-          <MyJobsHeader
-            title={cmsData.data.title || "Terms & Conditions"}
-            onSortChange={() => {}}
-            isShowSort={false}
-          />
-        )}
+        <MyJobsHeader
+          title={cmsData.data.title || "About App"}
+          isShowSort={false}
+        />
 
+        {/* Render HTML content directly */}
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-          <RichTextContent html={cmsData.data.content} />
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+            <RichTextContent html={cmsData.data.content} />
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default TermsAndConditions;
+export default AboutApp;

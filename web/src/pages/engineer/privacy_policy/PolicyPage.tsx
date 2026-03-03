@@ -1,7 +1,7 @@
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useLocation } from "react-router-dom";
-import DOMPurify from "dompurify";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
+import RichTextContent from "@/shared/components/RichTextContent";
 
 /**
  * Privacy Policy page that conditionally renders a header based on route context.
@@ -65,23 +65,9 @@ const PolicyPage = () => {
         )}
 
         {/* Render HTML content directly */}
+
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-          <div
-            className="
-                 prose prose-lg dark:prose-invert max-w-none
-                 prose-headings:text-gray-900 dark:prose-headings:text-gray-100
-                 prose-p:text-gray-700 dark:prose-p:text-gray-300
-                 prose-a:text-teal-600 dark:prose-a:text-teal-400
-                 prose-strong:text-gray-900 dark:prose-strong:text-gray-100
-                 prose-ul:text-gray-700 dark:prose-ul:text-gray-300
-                 prose-ol:text-gray-700 dark:prose-ol:text-gray-300
-                 break-words              
-                 overflow-x-hidden         
-                 w-full "
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(cmsData.data.content),
-            }}
-          />
+          <RichTextContent html={cmsData.data.content} />
         </div>
       </div>
     </div>

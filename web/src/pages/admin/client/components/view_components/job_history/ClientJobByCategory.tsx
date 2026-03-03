@@ -14,6 +14,7 @@ import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { useAdminGetJobGraph } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useSearchParams } from "react-router-dom";
 import { formatDate } from "@/utils/formatDate";
+import type { AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];
@@ -27,6 +28,7 @@ interface ClientJobByCategoryProps {
   userId?: number;
   search?: string;
   setSearch?: (value: string) => void;
+  status?: AdminGetJobGraphQuery["status"];
 }
 
 /**
@@ -45,6 +47,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
   userId,
   search: externalSearch,
   setSearch: externalSetSearch,
+  status,
 }) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -97,7 +100,9 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
     {
       userId: userId ?? 0,
       interval: intervalMap[selectedDay || "monthly"],
+      status,
     },
+
     {
       enabled: userId != null,
     },
@@ -203,7 +208,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
               </h3>
               <SelectMenu
                 placeholder="Select Filter"
-                className="w-32"
+                className="w-32 z-20"
                 options={days}
                 value={selectedDay}
                 onChange={setSelectedDay}
