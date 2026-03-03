@@ -86,16 +86,42 @@ export interface ManageEngineerProps {
   name: string;
   email: string;
   phoneNumber: string;
-  location: string | null;
-  registrationDate: string;
-  balance: number;
-  profileStatus: string;
-  userStatus: string;
-  isEmployed?: boolean;
+  location: string | null; // fallback string like "City, Country"
+  cityId?: number;
+  stateId?: number;
+  countryId?: number;
+  postalCode?: string;
+  serviceCategoryId?: number;
+  employmentTypeId?: number | null;
+  hourlyRate?: number;
+  portfolioLink?: string;
+  employer?: string;
+  currentDesignation?: string | null;
+  experienceYears?: number;
+  locationEnabled?: boolean;
+  notificationEnabled?: boolean;
   averageRating: number;
-  statusHistory?: StatusHistoryType[];
+  profileStatus: string;
+  isEmployed?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  registrationDate: string;
+  userStatus: string;
+
+  // Location names
+  cityName?: string;
+  stateName?: string;
+  countryName?: string;
 
   // Optional nested objects
+  city?: { id: number; name: string };
+  state?: { id: number; name: string };
+  country?: { id: number; name: string };
+  profilePicture?: FileType;
+  resumeFile?: FileType;
+  govIdDoc?: FileType;
+  certificateDoc?: FileType;
+
   user?: {
     id: number;
     name: string;
@@ -113,6 +139,7 @@ export interface ManageEngineerProps {
   engineerID?: string;
   details?: DetailsTypes;
   walletBalance?: string;
+  balance?: number;
   kycStatus?: string;
   employmentStatus?: string;
   avgRating?: number;
@@ -129,7 +156,16 @@ export interface ManageEngineerProps {
 
   submittedDocuments?: string[];
   documents?: string;
+  statusHistory?: StatusHistoryType[];
 }
+
+export interface FileType {
+  id: number | null;
+  url: string;
+  filename: string;
+  size: string;
+}
+
 export interface SuspendEngineerFormData {
   suspendStartDate: Date | null;
   suspendEndDate: Date | null;

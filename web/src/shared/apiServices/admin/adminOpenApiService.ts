@@ -80,6 +80,8 @@ import {
   type AdminGetWalletOverviewData,
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
+  type AdminGetEngineersForManagementError,
+  adminGetEngineersForManagement,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -94,7 +96,6 @@ import {
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetJobDetailsOptions,
-  adminGetEngineersForManagementOptions,
   createOrUpdatePageMutation,
   addAndUpdateContactSupportMutation,
   getCmsPagesOptions,
@@ -347,11 +348,14 @@ export type AdminGetEngineersQuery = NonNullable<
   AdminGetEngineersForManagementData["query"]
 >;
 
+export type AdminManageEngineersResponse =
+  AdminGetEngineersForManagementResponses[200];
+
 export function useAdminManageEngineers(
   query?: AdminGetEngineersQuery,
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: AdminGetEngineersForManagementResponses) => void;
+    onSuccess?: (data: AdminManageEngineersResponse) => void;
     onError?: (error: unknown) => void;
   },
 ) {
@@ -364,11 +368,21 @@ export function useAdminManageEngineers(
       (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
-  return useQuery({
-    ...adminGetEngineersForManagementOptions({
-      client: apiClient,
-      query: mergedQuery,
-    }),
+  return useQuery<
+    AdminManageEngineersResponse,
+    AdminGetEngineersForManagementError
+  >({
+    queryKey: [...queryKeys.admin.manageEngineers, mergedQuery],
+    queryFn: async ({ signal }) => {
+      const { data } = await adminGetEngineersForManagement({
+        client: apiClient,
+        query: mergedQuery,
+        signal,
+        throwOnError: true,
+      });
+      return data as AdminManageEngineersResponse;
+    },
+    refetchOnMount: true,
     ...options,
   });
 }
@@ -465,7 +479,11 @@ export function useAdminEngineersByUserIdStatus(options?: {
       },
     }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["adminManageEngineers"] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+        refetchType: "all",
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

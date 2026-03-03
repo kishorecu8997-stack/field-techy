@@ -4,38 +4,31 @@ import Popup from "@/shared/components/Popup";
 import { validateDescription } from "@/utils/validate";
 import { IoCloseSharp } from "react-icons/io5";
 import { useFormContext, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
-
-type BlockEngineerForm = {
-  reason: string;
-};
+import type { BlockEngineerFormData } from "../types";
 
 export default function BlockEngineer({
   isBlockEngineer,
   setIsBlockEngineer,
+  onSubmit,
 }: {
   isBlockEngineer: boolean;
   setIsBlockEngineer: React.Dispatch<React.SetStateAction<boolean>>;
+  onSubmit?: SubmitHandler<BlockEngineerFormData>;
 }) {
-  const { handleSubmit } = useFormContext<BlockEngineerForm>();
-  // This function only executes if validation passes
-  const onSubmit: SubmitHandler<BlockEngineerForm> = () => {
-    // Add your API call logic here
-    toast.success("Engineer blocked successfully!");
-    setIsBlockEngineer(false);
-  };
-
+  const { handleSubmit } = useFormContext<BlockEngineerFormData>();
   return (
     <div>
       <Popup open={isBlockEngineer} onClose={() => setIsBlockEngineer(false)}>
         <div className="p-4">
           <div className="flex justify-between items-center">
-            <span className="font-bold">Block Engineer</span>
+            <span className="font-bold text-black dark:text-white">
+              Block Engineer
+            </span>
             <div
               className="text-xl font-semibold cursor-pointer"
               onClick={() => setIsBlockEngineer(false)}
             >
-              <IoCloseSharp />
+              <IoCloseSharp className="text-black dark:text-white" />
             </div>
           </div>
 
@@ -53,9 +46,11 @@ export default function BlockEngineer({
               Cancel
             </Button>
             <Button
-              type="submit"
+              type="button"
               className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleSubmit(async (data) => {
+                await onSubmit?.(data);
+              })}
             >
               Submit
             </Button>
