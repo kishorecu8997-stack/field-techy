@@ -19,7 +19,7 @@ fixLeafletIcon();
 
 // Handle map clicks and update map view
 const MapEventHandler: React.FC<{
-  onMapClick: (latlng: { lat: number; lng: number }) => void;
+  onMapClick: (latlng: { lat: number; lng: number }, name: string) => void;
   setPosition: React.Dispatch<React.SetStateAction<[number, number]>>;
 }> = ({ onMapClick, setPosition }) => {
   const map = useMap();
@@ -28,7 +28,7 @@ const MapEventHandler: React.FC<{
     click(e) {
       const { lat, lng } = e.latlng;
       setPosition([lat, lng]);
-      onMapClick(e.latlng);
+      onMapClick(e.latlng, "Selected Location");
       // Animate map to clicked location
       map.flyTo([lat, lng], map.getZoom());
     },

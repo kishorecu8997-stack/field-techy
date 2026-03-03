@@ -106,7 +106,9 @@ const BasicDetails = () => {
       navigate(absoluteUrls.client.auth.verification);
     },
     onError: (error: unknown) => {
-      toast.error(GlobalApiErrorHandler.handle(error, "Registration failed").message);
+      toast.error(
+        GlobalApiErrorHandler.handle(error, "Registration failed").message,
+      );
     },
   });
 
@@ -198,20 +200,20 @@ const BasicDetails = () => {
 
     return clientType === ClientTypeEnum.CORPORATE
       ? {
-        ...baseFields,
-        clientType: "corporate" as const, // API expects string literal "corporate"
-        companyName: data.companyName || "",
-        personName: data.contactPersonName || data.fullName || "",
-        address: data.address || "",
-        industryId: getIdValue(data.industry),
-        documentType: getStringValue(data.documentType) || undefined,
-        documentNumber: data.registrationNumber || undefined,
-        businessType: getStringValue(data.businessType) || undefined,
-      }
+          ...baseFields,
+          clientType: "corporate" as const, // API expects string literal "corporate"
+          companyName: data.companyName || "",
+          personName: data.contactPersonName || data.fullName || "",
+          address: data.address || "",
+          industryId: getIdValue(data.industry),
+          documentType: getStringValue(data.documentType) || undefined,
+          documentNumber: data.registrationNumber || undefined,
+          businessType: getStringValue(data.businessType) || undefined,
+        }
       : {
-        ...baseFields,
-        clientType: "home" as const, // API expects string literal "home"
-      };
+          ...baseFields,
+          clientType: "home" as const, // API expects string literal "home"
+        };
   };
 
   // Auto-save form changes to store

@@ -47,7 +47,9 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
       setIsOpen(true);
     },
     onError: (err: unknown) => {
-      toastError(GlobalApiErrorHandler.handle(err, "Failed to send OTP").message);
+      toastError(
+        GlobalApiErrorHandler.handle(err, "Failed to send OTP").message,
+      );
     },
   });
 

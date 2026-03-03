@@ -164,11 +164,11 @@ const BasicDetails = () => {
       postalCode: data.postalCode,
       skills: Array.isArray(data.skills)
         ? data.skills
-          .map((s: unknown) => {
-            const val = getIdValue(s);
-            return val !== undefined ? val : NaN;
-          })
-          .filter((n) => !isNaN(n))
+            .map((s: unknown) => {
+              const val = getIdValue(s);
+              return val !== undefined ? val : NaN;
+            })
+            .filter((n) => !isNaN(n))
         : [],
       serviceCategoryId: getIdValue(data.serviceCategory),
       hourlyRate: parseFloat(data.amount?.replace(/[^0-9.]/g, "")) || undefined,

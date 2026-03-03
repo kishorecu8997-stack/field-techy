@@ -212,7 +212,7 @@ const MapEventHandler: React.FC<{
 
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
         );
         const data = await res.json();
         const addressName = data.display_name || "Selected Location";
@@ -253,7 +253,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   initialPosition = [20.5937, 78.9629],
   initialZoom = 5,
   markers = [],
-  onMapClick = () => { },
+  onMapClick = () => {},
   viewOnly = false,
   onPositionChange,
   onSearchSelect,
@@ -277,7 +277,10 @@ const MapSearch: React.FC<MapComponentProps> = ({
   };
 
   // Handle map click
-  const handleMapClick = (latlng: { lat: number; lng: number }, name: string) => {
+  const handleMapClick = (
+    latlng: { lat: number; lng: number },
+    name: string,
+  ) => {
     // console.log("latlng :", latlng);
     const newPos: [number, number] = [latlng.lat, latlng.lng];
     setPosition(newPos);

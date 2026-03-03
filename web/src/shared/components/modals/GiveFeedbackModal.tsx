@@ -44,7 +44,10 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
         onClose?.(true);
       },
       onError: (error: unknown) => {
-        toast.error(GlobalApiErrorHandler.handle(error, "Failed to submit feedback").message);
+        toast.error(
+          GlobalApiErrorHandler.handle(error, "Failed to submit feedback")
+            .message,
+        );
       },
     });
 

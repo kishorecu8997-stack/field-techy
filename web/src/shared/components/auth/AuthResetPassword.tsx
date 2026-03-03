@@ -74,7 +74,9 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
       navigate(loginUrl);
     },
     onError: (err: unknown) => {
-      toastError(GlobalApiErrorHandler.handle(err, "Failed to reset password").message);
+      toastError(
+        GlobalApiErrorHandler.handle(err, "Failed to reset password").message,
+      );
     },
   });
 

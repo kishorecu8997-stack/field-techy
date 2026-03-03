@@ -30,7 +30,12 @@ export default function BlockClient({
       if (onSuccess) onSuccess();
     },
     onError: (error) => {
-      toast.error(GlobalApiErrorHandler.handle(error, "Failed to block client. Please try again.").message);
+      toast.error(
+        GlobalApiErrorHandler.handle(
+          error,
+          "Failed to block client. Please try again.",
+        ).message,
+      );
     },
   });
 

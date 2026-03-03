@@ -5,7 +5,6 @@ import { Button } from "./commonUI/Buttons";
  * 404 Not Found page with a link back to the home dashboard.
  */
 const NotFound = () => {
-
   const navigate = useNavigate();
 
   const handleGoToHome = () => {

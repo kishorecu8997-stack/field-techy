@@ -29,19 +29,21 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
     isError: txError,
   } = useClientTransactions({ limit: 5, sortOrder: "desc" }, true);
 
-  const transactions: Transaction[] = (transactionsRaw?.transactions ?? []).map((tx) => {
-    const amountNum = Number(tx.amount);
-    const safeAmount = Number.isNaN(amountNum) ? 0 : amountNum;
-    const txDate = new Date(tx.timestamp);
-    const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
-    return {
-      id: String(tx.id),
-      date: safeDate,
-      amount: safeAmount,
-      type: tx.type,
-      description: tx.description?.trim() ?? "Transaction",
-    };
-  });
+  const transactions: Transaction[] = (transactionsRaw?.transactions ?? []).map(
+    (tx) => {
+      const amountNum = Number(tx.amount);
+      const safeAmount = Number.isNaN(amountNum) ? 0 : amountNum;
+      const txDate = new Date(tx.timestamp);
+      const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
+      return {
+        id: String(tx.id),
+        date: safeDate,
+        amount: safeAmount,
+        type: tx.type,
+        description: tx.description?.trim() ?? "Transaction",
+      };
+    },
+  );
 
   // Format date to display as "27 Feb, 2024 | 11:54 AM"
   const formatDate = (date: Date): string => {
@@ -132,15 +134,17 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
 
   return (
     <div
-      className={`w-full max-w-md mx-auto rounded-lg overflow-hidden shadow-lg ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-800"
-        }`}
+      className={`w-full max-w-md mx-auto rounded-lg overflow-hidden shadow-lg ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-800"
+      }`}
     >
       {/* Balance Section */}
       <div className={`p-4 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
         <div className="">
           <p
-            className={`text-sm mb-1 ${isDarkMode ? "text-gray-300" : "text-gray-600"
-              }`}
+            className={`text-sm mb-1 ${
+              isDarkMode ? "text-gray-300" : "text-gray-600"
+            }`}
           >
             Current Balance
           </p>
@@ -149,9 +153,9 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
               {showBalance
                 ? balance?.balance != null
                   ? formatCurrency(
-                    Number(balance.balance),
-                    balance.currencyCode,
-                  )
+                      Number(balance.balance),
+                      balance.currencyCode,
+                    )
                   : "--"
                 : "******"}
             </p>
@@ -188,10 +192,11 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
           <div className="flex justify-end">
             <button
               onClick={() => onMenuItemClick(WALLET_COMPONENTS.ADD_FUND)}
-              className={`mt-4 px-6 py-2 rounded-full font-medium transition-colors cursor-pointer ${isDarkMode
+              className={`mt-4 px-6 py-2 rounded-full font-medium transition-colors cursor-pointer ${
+                isDarkMode
                   ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                   : "bg-emerald-700 hover:bg-emerald-800 text-white"
-                }`}
+              }`}
             >
               Add Fund
             </button>
@@ -252,21 +257,23 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                         </div>
                       </div>
                       <div
-                        className={`text-xs mt-1 ${isDarkMode ? "text-gray-400" : "text-gray-500"
-                          }`}
+                        className={`text-xs mt-1 ${
+                          isDarkMode ? "text-gray-400" : "text-gray-500"
+                        }`}
                       >
                         {formatDate(transaction.date)}
                       </div>
                     </div>
                     <div
-                      className={`font-medium ${transaction.type === "credit"
+                      className={`font-medium ${
+                        transaction.type === "credit"
                           ? isDarkMode
                             ? "text-green-400"
                             : "text-green-600"
                           : isDarkMode
                             ? "text-red-400"
                             : "text-red-600"
-                        }`}
+                      }`}
                     >
                       {transaction.type === "credit" ? "+" : "-"}
                       {formatCurrency(

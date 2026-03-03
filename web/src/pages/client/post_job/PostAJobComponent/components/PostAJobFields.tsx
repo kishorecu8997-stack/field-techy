@@ -63,10 +63,10 @@ const PostAJobFields = ({
     label: string;
     value: NonNullable<ClientPostJobData["body"]>["jobType"];
   }[] = [
-      { label: "On site", value: "On site" },
-      { label: "Remote", value: "Remote" },
-      { label: "Hybrid", value: "Hybrid" },
-    ];
+    { label: "On site", value: "On site" },
+    { label: "Remote", value: "Remote" },
+    { label: "Hybrid", value: "Hybrid" },
+  ];
 
   const serviceCategoryOptions = useMemo(
     () =>

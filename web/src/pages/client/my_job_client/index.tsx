@@ -28,11 +28,11 @@ const MyJobsClient: React.FC = () => {
   // Map the UI filter label → API jobStatus query param
   type ApiJobStatus = NonNullable<Parameters<typeof useClientGetJobs>[0]>;
   const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
-    [jobFilters[0]]: undefined,        // "All Jobs"  → no filter
-    [jobFilters[1]]: "In Progress",    // "In-Progress"
-    [jobFilters[2]]: "Closed",         // "Completed" → API uses "Closed"
-    [jobFilters[3]]: "Posted",         // "Posted"
-    [jobFilters[4]]: "Hold",           // "Hold"
+    [jobFilters[0]]: undefined, // "All Jobs"  → no filter
+    [jobFilters[1]]: "In Progress", // "In-Progress"
+    [jobFilters[2]]: "Closed", // "Completed" → API uses "Closed"
+    [jobFilters[3]]: "Posted", // "Posted"
+    [jobFilters[4]]: "Hold", // "Hold"
   };
 
   const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
