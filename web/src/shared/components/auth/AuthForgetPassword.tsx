@@ -7,7 +7,10 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
-import { useForgotPassword, useCheckUserExistenceMutation } from "@/shared/apiServices/commonOpenApiService";
+import {
+  useForgotPassword,
+  useCheckUserExistenceMutation,
+} from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
@@ -57,15 +60,15 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
   const handleSubmit = async (data: ForgetPasswordFormData) => {
     try {
       setIsCheckingUser(true);
-      
+
       // First check if user exists
       const existence = await checkUserExists({ email: data.email });
-      
+
       if (!existence?.emailExists) {
         toastError("This email is not registered in our system");
         return;
       }
-      
+
       // User exists, proceed to send OTP
       await forgotPassword({
         body: {

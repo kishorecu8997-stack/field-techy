@@ -123,8 +123,10 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
               {description}
               {contact && (
                 <span className="block mt-2 font-medium text-teal-700 dark:text-teal-400">
-                  {verificationType === "email" 
-                    ? contact.split("@")[0].slice(0, 2) + "***@" + contact.split("@")[1] 
+                  {verificationType === "email"
+                    ? contact.split("@")[0].slice(0, 2) +
+                      "***@" +
+                      contact.split("@")[1]
                     : "***" + contact.slice(-4)}
                 </span>
               )}
