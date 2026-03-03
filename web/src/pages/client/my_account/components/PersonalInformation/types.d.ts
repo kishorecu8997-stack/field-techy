@@ -16,7 +16,7 @@ interface PersonalInfo {
   phoneNumber: string;
   businessType?: string | number | null;
   industry?: string | number | null;
-  address?: string;
+  address?: string | null;
   country?: string | number | null;
   state?: string | number | null;
   city?: string | number | null;
