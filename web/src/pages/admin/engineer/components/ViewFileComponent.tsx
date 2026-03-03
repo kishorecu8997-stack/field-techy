@@ -8,6 +8,7 @@ import {
 } from "@/shared/apiServices/commonOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { Suspense } from "react";
+import { useAdminGetEngineerById } from "@/shared/apiServices/admin/adminOpenApiService";
 
 const PDFPreview = React.lazy(() => import("@/shared/components/PdfPreview"));
 interface ViewFileComponentProps {
@@ -15,6 +16,7 @@ interface ViewFileComponentProps {
   title?: string;
   fileType: ProfileFileType | null;
   userId?: number | null;
+  fileUrl?: string | null;
 }
 
 /**
@@ -29,18 +31,50 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   onClose,
   title = "View File",
   fileType,
+  fileUrl,
+  userId,
 }) => {
+  const shouldFetchFromAdmin = !!userId && !!fileType && !fileUrl;
+
+  const {
+    data: engineerDetails,
+    isLoading: isEngineerLoading,
+    isError: isEngineerError,
+  } = useAdminGetEngineerById(userId ?? 0, shouldFetchFromAdmin);
+
+  const adminFileUrl = (() => {
+    const docs = engineerDetails?.documents;
+    if (!docs || !fileType) return null;
+
+    switch (fileType) {
+      case "profilePicture":
+        return docs.profileImage?.url ?? null;
+      case "govIdDoc":
+        return docs.governmentId?.url ?? null;
+      case "certificateDoc":
+        return docs.qualificationCertificate?.url ?? null;
+      case "resumeFile":
+        return docs.resume?.url ?? null;
+      default:
+        return null;
+    }
+  })();
+
   const {
     data: downloadData,
     isLoading,
     isError,
-  } = useAppDownloadProfileFile(fileType, !!fileType);
+  } = useAppDownloadProfileFile(
+    fileType,
+    !!fileType && !fileUrl && !shouldFetchFromAdmin,
+  );
 
-  const downloadUrl = downloadData?.downloadUrl;
+  const previewUrl =
+    fileUrl ?? adminFileUrl ?? downloadData?.downloadUrl ?? undefined;
 
   const handleDownload = async () => {
-    if (downloadUrl) {
-      const response = await fetch(downloadUrl);
+    if (previewUrl) {
+      const response = await fetch(previewUrl);
       const blob = await response.blob();
 
       const blobUrl = window.URL.createObjectURL(blob);
@@ -57,7 +91,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   };
 
   const renderDocumentPreview = () => {
-    if (isLoading) {
+    if (isLoading || isEngineerLoading) {
       return (
         <div className="flex items-center justify-center p-8 min-h-[400px]">
           <LoaderComponent />
@@ -65,7 +99,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
       );
     }
 
-    if (isError || !downloadUrl) {
+    if (isError || isEngineerError || !previewUrl) {
       return (
         <div className="text-center p-8 min-h-[400px] flex flex-col items-center justify-center">
           <img
@@ -78,8 +112,8 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
       );
     }
 
-    const isPdfByExt = downloadUrl.match(/\.pdf(\?|$)/i);
-    const isImageByExt = downloadUrl.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i);
+    const isPdfByExt = previewUrl.match(/\.pdf(\?|$)/i);
+    const isImageByExt = previewUrl.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i);
 
     if (isPdfByExt) return renderPdfPreview();
     if (isImageByExt) return renderImagePreview();
@@ -93,7 +127,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
 
   const renderImagePreview = () => (
     <img
-      src={downloadUrl}
+      src={previewUrl}
       alt="Document Preview"
       className="w-full h-full dark:text-white object-contain"
     />
@@ -108,11 +142,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
       }
     >
       <div className="w-full flex items-center justify-center">
-        <PDFPreview
-          key={downloadUrl}
-          url={downloadUrl!}
-          className="h-[300px]"
-        />
+        <PDFPreview key={previewUrl} url={previewUrl} className="h-[300px]" />
       </div>
     </Suspense>
   );
@@ -124,7 +154,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
           {title}
         </h2>
         <div className="flex items-center gap-2">
-          {downloadUrl && (
+          {previewUrl && (
             <div
               onClick={handleDownload}
               className="p-2 text-gray-500 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer"

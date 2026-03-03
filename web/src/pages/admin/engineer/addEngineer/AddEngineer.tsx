@@ -2,7 +2,7 @@ import { absoluteUrls } from "@/config/urls";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -19,6 +19,7 @@ import type {
   AdminCreateEngineerData,
   AppMarkProfileFileUploadedData,
 } from "@/api";
+import { useCheckUserExistence } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * AddEngineer component provides a multi-step form interface for adding new engineers to the system.
@@ -76,7 +77,40 @@ export default function AddEngineer() {
     reValidateMode: "onChange",
   });
 
-  const { trigger, getValues, reset } = methods;
+  const { trigger, getValues, reset, setError, clearErrors } = methods;
+
+  const email = methods.watch("email");
+  const phone = methods.watch("phoneNumber");
+
+  const { data: userExists, isFetching: checkingUser } = useCheckUserExistence({
+    email,
+    phone,
+    enabled: (email?.length ?? 0) > 5 || (phone?.length ?? 0) > 7,
+  });
+
+  useEffect(() => {
+    if (checkingUser) return;
+
+    // Email check
+    if (userExists?.emailExists) {
+      setError("email", {
+        type: "manual",
+        message: "User already exists with this email",
+      });
+    } else {
+      clearErrors("email");
+    }
+
+    // Phone check
+    if (userExists?.phoneExists) {
+      setError("phoneNumber", {
+        type: "manual",
+        message: "User already exists with this phone number",
+      });
+    } else {
+      clearErrors("phoneNumber");
+    }
+  }, [userExists, checkingUser, setError, clearErrors]);
 
   const validateBasicInformation = () =>
     trigger([
@@ -146,8 +180,11 @@ export default function AddEngineer() {
     );
     return { body, files };
   };
-
   const handleNext = async () => {
+    if (userExists?.emailExists || userExists?.phoneExists) {
+      toast.error("User already exists");
+      return;
+    }
     let isValid = false;
 
     if (activeTab === "Basic Information") {
@@ -223,6 +260,11 @@ export default function AddEngineer() {
   };
 
   const handleSave = async () => {
+    if (userExists?.emailExists || userExists?.phoneExists) {
+      toast.error("User already exists");
+      return;
+    }
+
     const isValidBasic = await validateBasicInformation();
     if (!isValidBasic) return;
 
@@ -305,7 +347,7 @@ export default function AddEngineer() {
             <Button
               type="button"
               onClick={isLastTab ? handleSave : handleNext}
-              disabled={isSubmitting}
+              disabled={isSubmitting || checkingUser}
               className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
             >
               {isSubmitting ? "Saving…" : isLastTab ? "Save" : "Next"}

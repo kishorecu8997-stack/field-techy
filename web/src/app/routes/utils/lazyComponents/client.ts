@@ -109,3 +109,6 @@ export const ClientTermsAndConditions = React.lazy(
 export const ClientPrivacyPolicy = React.lazy(
   () => import("@/pages/client/privacy_policy/PolicyPage"),
 );
+export const ClientAboutApp = React.lazy(
+  () => import("@/pages/client/privacy_policy/AboutApp"),
+);
