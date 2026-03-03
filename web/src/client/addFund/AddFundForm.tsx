@@ -8,7 +8,10 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
-import { useCreatePaymentIntent } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useClientBalance,
+  useCreatePaymentIntent,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import { useThemeHook } from "@/shared/hooks/useThemeHook";
 import { useQueryClient } from "@tanstack/react-query";
 import { getClientBalanceQueryKey } from "@/api/@tanstack/react-query.gen";
@@ -28,11 +31,17 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
 
   const [amount, setAmount] = useState<number>(0);
   const [formError, setFormError] = useState<string | null>(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  const { mutateAsync, isLoading } = useCreatePaymentIntent();
+  const { mutateAsync, isLoading: isCreatingIntent } = useCreatePaymentIntent();
+  const { data: balanceArr, isLoading: isBalanceLoading } = useClientBalance();
+  const balance = Array.isArray(balanceArr) ? balanceArr[0] : balanceArr;
+  const currencyCode = balance?.currencyCode?.toLowerCase();
+  const isLoading = isCreatingIntent || isProcessingPayment || isBalanceLoading;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
     if (!stripe || !elements) {
       setFormError("Payment system not ready");
       return;
@@ -41,29 +50,35 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
       setFormError("Please enter a valid amount");
       return;
     }
+    if (!currencyCode) {
+      setFormError("Currency is not available. Please refresh and try again.");
+      return;
+    }
 
     try {
+      setIsProcessingPayment(true);
       const { clientSecret } = await mutateAsync({
-        body: { amount, currency: "usd" },
+        body: { amount, currency: currencyCode },
       });
 
-      let paymentSucceeded = false;
-
-      // if backend returns null or mock, treat as succeeded (fallback)
-      if (!clientSecret || clientSecret.startsWith("mock")) {
-        paymentSucceeded = true;
-      } else {
-        const result = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: elements.getElement(CardNumberElement)!,
-          },
-        });
-        if (result.error) {
-          throw new Error(result.error.message);
-        }
-        paymentSucceeded = result.paymentIntent?.status === "succeeded";
+      if (!clientSecret) {
+        throw new Error("Missing client secret from payment intent");
       }
 
+      const cardElement = elements.getElement(CardNumberElement);
+      if (!cardElement) {
+        throw new Error("Card details are not available");
+      }
+
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+        },
+      });
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+      const paymentSucceeded = result.paymentIntent?.status === "succeeded";
       if (paymentSucceeded) {
         await queryClient.invalidateQueries({
           queryKey: getClientBalanceQueryKey({ client: apiClient }),
@@ -76,7 +91,10 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "An unexpected error occurred";
+      setFormError(message);
       toastError(message);
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
 
@@ -153,7 +171,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
       <Button
         type="submit"
         loading={isLoading}
-        disabled={amount <= 0 || !stripe}
+        disabled={amount <= 0 || !stripe || !elements || !currencyCode || isLoading}
         className="w-full"
       >
         {amount > 0 ? "Pay Now" : "Enter amount"}
