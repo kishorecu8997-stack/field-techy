@@ -141,6 +141,7 @@ const ManageJobCategory: React.FC = () => {
             error={errorMessage}
             totalCount={totalCount}
             currentPage={page}
+            pageSize={pageSize}
             onPageChange={(p) => setPage(p)}
             onPageSizeChange={(size) => {
               setPageSize(size);
