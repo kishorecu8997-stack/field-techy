@@ -16,7 +16,7 @@ interface FormContainerProps<T extends FieldValues> {
    * Accepts UseFormReturn with flexible context and field values types
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  methods: UseFormReturn<T, any, any>;
+  methods: UseFormReturn<T>;
 
   /**
    * Optional callback function called when the form is submitted with valid data
