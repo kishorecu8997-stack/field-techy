@@ -15,7 +15,7 @@ interface ClientOTPPageProps {
   header?: string;
   description?: string;
   onClose?: () => void;
-  handleNavigate?: () => void;
+  handleNavigate?: (otp?: string) => void;
   buttonText?: string;
   verificationType: "email" | "phone";
   contact: string; // email or phone number
@@ -23,21 +23,23 @@ interface ClientOTPPageProps {
 }
 
 /**
- * Client-specific OTP verification component with API integration.
+ * ClientOTPPage
  *
- * This component handles OTP verification for both email and phone, making
- * actual API calls to verify the entered OTP code. It manages its own form
- * state, countdown timer, and loading/error states.
+ * A compact OTP verification component for client authentication flows.
+ * Supports email and phone verification, handles 6‑digit OTP input, countdown
+ * timer, resend functionality, and performs OTP validation using `useVerifyOtp`.
+ * Manages form state with react-hook-form and provides masked contact info,
+ * error handling, and loading states.
  *
- * @param {ClientOTPPageProps} props - Component props
- * @param {string} [props.header] - Modal title
- * @param {string} [props.description] - Description text
- * @param {() => void} [props.onClose] - Close modal callback
- * @param {() => void} [props.handleNavigate] - Success navigation callback
- * @param {string} [props.buttonText="Submit"] - Submit button text
- * @param {"email" | "phone"} props.verificationType - Type of verification
- * @param {string} props.contact - Email address or phone number to verify
- * @param {() => void} [props.onResendOTP] - Optional resend OTP callback
+ * @param {ClientOTPPageProps} props - Component properties.
+ * @param {string} [props.header] - Title text displayed at the top.
+ * @param {string} [props.description] - Description shown under the title.
+ * @param {() => void} [props.onClose] - Triggered when closing the modal.
+ * @param {(otp?: string) => void} [props.handleNavigate] - Called on successful OTP verification.
+ * @param {string} [props.buttonText] - Custom text for the submit button.
+ * @param {"email" | "phone"} props.verificationType - Determines OTP type.
+ * @param {string} props.contact - Email or phone number receiving the OTP.
+ * @param {() => void} [props.onResendOTP] - Fired when requesting a new OTP.
  */
 const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
   header,
@@ -68,20 +70,18 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
 
   const handleSubmit = async (data: OTPValues) => {
     try {
-      const body =
-        verificationType === "email"
-          ? { type: "email" as const, email: contact, otp: data.otp }
-          : { type: "phone" as const, phone: contact, otp: data.otp };
-
       await verifyOTP({
-        body: body as AppVerifyOtpData["body"] & {
+        body: {
+          type: verificationType,
+          code: data.otp,
+        } as AppVerifyOtpData["body"] & {
           email?: string;
           phone?: string;
           otp: string;
         },
         headers: { authorization: "" },
       });
-      handleNavigate?.();
+      handleNavigate?.(data.otp);
     } catch (error: unknown) {
       method.setError("otp", {
         type: "manual",
@@ -121,6 +121,15 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
             </h2>
             <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">
               {description}
+              {contact && (
+                <span className="block mt-2 font-medium text-teal-700 dark:text-teal-400">
+                  {verificationType === "email"
+                    ? contact.split("@")[0].slice(0, 2) +
+                      "***@" +
+                      contact.split("@")[1]
+                    : "***" + contact.slice(-4)}
+                </span>
+              )}
             </p>
           </div>
           <div className="p-2">
@@ -129,16 +138,14 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
               <span>
                 {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
               </span>
-              <button
+              <Button
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className="text-green-600 dark:text-green-400 font-medium bg-gray-200 dark:bg-gray-700 px-3 py-1.5 text-sm rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer disabled:opacity-50"
               >
                 Resend
-              </button>
+              </Button>
             </div>
           </div>
           <Button
