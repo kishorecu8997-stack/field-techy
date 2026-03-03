@@ -58,7 +58,6 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     isLoading: isFetchingInfo,
     isFetching,
   } = useClientGetCompanyInfo(true);
-  console.log(clientInfo);
 
   useEffect(() => {
     if (clientInfo) {
@@ -103,9 +102,9 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       companyName: corporateInfo?.companyName,
       contactPersonName: clientInfo?.name,
       phoneNumber: clientInfo?.phoneNumber,
-      businessType: corporateInfo?.businessTypeId,
+      businessType: corporateInfo?.businessType || clientInfo?.businessType,
       industry: corporateInfo?.industryId,
-      address: corporateInfo?.address,
+      address: corporateInfo?.address || clientInfo?.address || "",
       country: clientInfo?.countryId,
       state: clientInfo?.stateId,
       city: clientInfo?.cityId,
@@ -138,8 +137,8 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
 
   const parentStateId =
     typeof selectedStateValue === "object" &&
-    selectedStateValue !== null &&
-    "value" in selectedStateValue
+      selectedStateValue !== null &&
+      "value" in selectedStateValue
       ? (selectedStateValue as { value: string | number }).value
       : selectedStateValue;
 
@@ -310,11 +309,11 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
             businessTypes.length > 0
               ? businessTypes
               : [
-                  { value: "PRIVATE", label: "Private" },
-                  { value: "GOVERNMENT", label: "Government" },
-                  { value: "NGO", label: "NGO" },
-                  { value: "OTHER", label: "Other" },
-                ]
+                { value: "PRIVATE", label: "Private" },
+                { value: "GOVERNMENT", label: "Government" },
+                { value: "NGO", label: "NGO" },
+                { value: "OTHER", label: "Other" },
+              ]
           }
           required
         />
@@ -376,12 +375,12 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
                 typeof country === "string"
                   ? country
                   : String(
-                      country !== null &&
-                        typeof country === "object" &&
-                        "value" in country
-                        ? (country as { value: string | number }).value
-                        : country,
-                    ),
+                    country !== null &&
+                      typeof country === "object" &&
+                      "value" in country
+                      ? (country as { value: string | number }).value
+                      : country,
+                  ),
               ),
           }}
         />
