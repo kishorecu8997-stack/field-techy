@@ -30,9 +30,9 @@ import {
   type GetClientBalanceResponse,
   type GetClientTransactionsData,
   type GetClientTransactionsError,
-
-   type GetClientTransactionsResponse,
   type GetUserReportsData,
+   type GetClientTransactionsResponse,
+   type GetUserReportsResponses,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -56,9 +56,9 @@ import {
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
   getJobLogsOptions,
-  clientGetJobsQueryKey,
   submitReportMutation,
   getUserReportsOptions,
+  clientGetJobsQueryKey,
 } from "@/api/@tanstack/react-query.gen";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -451,6 +451,7 @@ export function useSaveReportClient(options?: {
   });
 }
 
+export type ReportIssue = GetUserReportsResponses[200]["data"][number];
 export function useGetReportClient(
   query: GetUserReportsData["query"],
   enabled: boolean = false,

@@ -1,5 +1,7 @@
-import type { GetUserReportsResponses } from "@/api";
-import { useGetReportEngineer } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useGetReportEngineer,
+  type ReportIssue,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import CustomTable, {
@@ -14,7 +16,6 @@ import { IoEye } from "react-icons/io5";
 import { LuCalendarDays, LuClock } from "react-icons/lu";
 
 type StatusType = "pending" | "resolved";
-type ReportIssue = GetUserReportsResponses[200]["data"][number];
 
 /**
  * ReportDetailsEngineer
