@@ -93,7 +93,11 @@ const JobHistory: React.FC<JobHistoryProps> = ({ userId }) => {
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
         userId={userId}
-        status={config.statusGroup ? statusGroupToGraphStatus[config.statusGroup] : undefined}
+        status={
+          config.statusGroup
+            ? statusGroupToGraphStatus[config.statusGroup]
+            : undefined
+        }
       />
     ),
   }));
