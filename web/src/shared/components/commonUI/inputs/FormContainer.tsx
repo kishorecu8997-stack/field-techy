@@ -13,8 +13,9 @@ import {
 interface FormContainerProps<T extends FieldValues> {
   /**
    * React Hook Form methods object containing form state, validation, and handlers
-   * @type {UseFormReturn<T>}
+   * Accepts UseFormReturn with flexible context and field values types
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   methods: UseFormReturn<T>;
 
   /**

@@ -37,23 +37,25 @@ const RecentTransactionsList: React.FC = () => {
     },
     true,
   );
-  const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => {
-    const rawAmount = Number(tx.amount);
-    const amount = Number.isNaN(rawAmount) ? 0 : rawAmount;
+  const transactions: Transaction[] = (transactionsRaw?.transactions ?? []).map(
+    (tx) => {
+      const rawAmount = Number(tx.amount);
+      const amount = Number.isNaN(rawAmount) ? 0 : rawAmount;
 
-    const signedAmount = tx.type === "credit" ? amount : -amount;
+      const signedAmount = tx.type === "credit" ? amount : -amount;
 
-    const txDate = new Date(tx.timestamp);
-    const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
+      const txDate = new Date(tx.timestamp);
+      const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
 
-    return {
-      id: String(tx.id),
-      date: safeDate,
-      amount: signedAmount,
-      type: tx.type,
-      description: tx.description?.trim() ?? "Transaction",
-    };
-  });
+      return {
+        id: String(tx.id),
+        date: safeDate,
+        amount: signedAmount,
+        type: tx.type,
+        description: tx.description?.trim() ?? "Transaction",
+      };
+    },
+  );
 
   // Pagination: slice transactions
   const indexOfLastTransaction = currentPage * transactionsPerPage;
