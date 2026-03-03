@@ -913,13 +913,11 @@ export function useAdminGetTransactionRequests(
 ) {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
-  const regionId =
-    query?.regionId ??
-    (selectedRegionId ? Number(selectedRegionId) : undefined);
-
   const mergedQuery: AdminGetTransactionRequestsQuery = {
     ...query,
-    regionId,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
   };
 
   return useQuery({
@@ -927,12 +925,6 @@ export function useAdminGetTransactionRequests(
       client: apiClient,
       query: mergedQuery,
     }),
-
-    enabled: !!regionId && (options?.enabled ?? true),
-
-    staleTime: 0,
-    gcTime: 1000 * 60 * 5,
-
     ...options,
   });
 }
@@ -992,23 +984,6 @@ export function useAdminDownloadInvoice(
     }),
     enabled: isValidId ? (options?.enabled ?? true) : false,
     ...options,
-  });
-}
-export function useAdminDeleteClientMutation(options?: {
-  onSuccess?: (data: AdminDeleteClientResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    ...adminDeleteClientMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.admin.manageClients,
-        exact: false,
-      });
-      options?.onSuccess?.(data);
-    },
-    onError: options?.onError,
   });
 }
 
@@ -1090,6 +1065,7 @@ export function useAdminDeleteEngineerMutation(options?: {
     onError: options?.onError,
   });
 }
+
 export function useAdminUpdateTransactionRequestStatus(options?: {
   onSuccess?: (data: AdminUpdateTransactionRequestStatusResponses[200]) => void;
   onError?: (error: unknown) => void;
@@ -1119,9 +1095,13 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
 
     onSuccess: async (data) => {
       await queryClient.refetchQueries({
-         predicate: (query) => {
+        predicate: (query) => {
           const key = query.queryKey?.[0] as { _id?: string } | undefined;
-          return key && typeof key === "object" && key._id === "adminGetTransactionRequests";
+          return (
+            key &&
+            typeof key === "object" &&
+            key._id === "adminGetTransactionRequests"
+          );
         },
         type: "all",
       });
