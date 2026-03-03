@@ -7,7 +7,7 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
-import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
+import { useForgotPassword, useCheckUserExistenceMutation } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
@@ -51,21 +51,17 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
     },
   });
 
-  // Check if user exists before sending OTP
-  const checkUserExists = async (email: string) => {
-    const { appCheckExistence } = await import("@/api/sdk.gen");
-    const response = await appCheckExistence({ query: { email } });
-    return response.data;
-  };
+  // Use useCheckUserExistenceMutation hook for checking if user exists
+  const { mutateAsync: checkUserExists } = useCheckUserExistenceMutation();
 
   const handleSubmit = async (data: ForgetPasswordFormData) => {
     try {
       setIsCheckingUser(true);
       
       // First check if user exists
-      const existenceData = await checkUserExists(data.email);
+      const existence = await checkUserExists({ email: data.email });
       
-      if (!existenceData?.emailExists) {
+      if (!existence?.emailExists) {
         toastError("This email is not registered in our system");
         return;
       }
