@@ -6,7 +6,7 @@ import { FaFile } from "react-icons/fa";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getLevelColor } from "@/utils/helpers";
 import { formatApiDate } from "@/utils/timelineUtils";
 import { useAdminResolveReport } from "@/shared/apiServices/admin/adminOpenApiService";
@@ -29,7 +29,6 @@ interface ReportTableProps {
   role: ReporterRole;
   filterParams: FilterDataProps;
 }
-
 
 /**
  * @component ReportTable
@@ -77,6 +76,12 @@ export default function ReportTable({
   const { showPopup } = usePopupStore();
   const { mutateAsync: resolveReport } = useAdminResolveReport();
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (role === "completed" || role === "all") {
+      refetch();
+    }
+  }, [role, refetch]);
 
   const filteredData = data
     .filter((e) => {
