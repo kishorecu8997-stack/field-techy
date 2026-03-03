@@ -285,6 +285,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           onClose={() => setOpen(false)}
           onAddProgressUpdate={onAddProgressUpdate}
           assignmentId={assignmentId}
+          jobId={jobId}
         />
       </Popup>
       {/* Confirmation Modal Popup */}

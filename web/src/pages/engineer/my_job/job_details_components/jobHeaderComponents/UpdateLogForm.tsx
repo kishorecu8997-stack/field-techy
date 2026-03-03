@@ -21,6 +21,7 @@ interface UpdateLogFormProps {
   onClose: () => void;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   assignmentId?: number;
+  jobId?: string | number;
 }
 /**
  * UpdateLogForm component for submitting job update logs.
@@ -29,7 +30,7 @@ interface UpdateLogFormProps {
  * Sends multiple progress updates with different statuses for UI display.
  * Uses react-hook-form for form handling and validation.
  */
-const UpdateLogForm = ({ onClose, assignmentId }: UpdateLogFormProps) => {
+const UpdateLogForm = ({ onClose, assignmentId, jobId }: UpdateLogFormProps) => {
   const formCtx = useForm<UpdateLogFormFields>({
     defaultValues: UPDATE_LOG_DEFAULTS,
   });
@@ -132,12 +133,14 @@ const UpdateLogForm = ({ onClose, assignmentId }: UpdateLogFormProps) => {
   return (
     <div className="flex flex-col p-6 gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold text-gray-900">
+        <h2 className="text-xl font-semibold text-white">
           {UPDATE_LOG_LABELS.title}
         </h2>
-        <span className="text-sm text-gray-500">
-          {UPDATE_LOG_LABELS.jobIdLabel} {UPDATE_LOG_LABELS.jobId}
-        </span>
+        {jobId && (
+          <span className="text-sm text-gray-200">
+            {UPDATE_LOG_LABELS.jobIdLabel} {jobId}
+          </span>
+        )}
       </div>
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <div className="mb-2">
