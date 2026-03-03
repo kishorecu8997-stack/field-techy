@@ -1,20 +1,22 @@
 import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import ClientOTPPage from "@/pages/client/auth/components/ClientOTPPage";
+import EngineerOTPPage from "@/pages/engineer/auth/components/EngineerOTPPage";
+import {
+  useCheckUserExistenceMutation,
+  useForgotPassword,
+} from "@/shared/apiServices/commonOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { MdOutlineMailOutline } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { absoluteUrls } from "@/config/urls";
-import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
-import EngineerOTPPage from "@/pages/engineer/auth/components/OTPPage";
-import ClientOTPPage from "@/pages/client/auth/components/OTPPage";
-import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
-import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
+import { useForm } from "react-hook-form";
+import { MdOutlineMailOutline } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 export type ForgetPasswordFormData = {
   email: string;
@@ -33,6 +35,7 @@ interface AuthForgetPasswordProps {
 
 const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCheckingUser, setIsCheckingUser] = useState(false);
   const navigate = useNavigate();
   const methods = useForm<ForgetPasswordFormData>({
     defaultValues: {
@@ -41,7 +44,7 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
   });
   const { success, error: toastError } = useToast();
 
-  const { mutate: forgotPassword, isPending } = useForgotPassword({
+  const { mutateAsync: forgotPassword, isPending } = useForgotPassword({
     onSuccess: () => {
       success("OTP sent to your email address");
       setIsOpen(true);
@@ -53,13 +56,34 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
     },
   });
 
-  const handleSubmit = (data: ForgetPasswordFormData) => {
-    forgotPassword({
-      body: {
-        email: data.email,
-        userRole: role,
-      },
-    });
+  // Use useCheckUserExistenceMutation hook for checking if user exists
+  const { mutateAsync: checkUserExists } = useCheckUserExistenceMutation();
+
+  const handleSubmit = async (data: ForgetPasswordFormData) => {
+    try {
+      setIsCheckingUser(true);
+
+      // First check if user exists
+      const existence = await checkUserExists({ email: data.email });
+
+      if (!existence?.emailExists) {
+        toastError("This email is not registered in our system");
+        return;
+      }
+
+      // User exists, proceed to send OTP
+      await forgotPassword({
+        body: {
+          email: data.email,
+          userRole: role,
+        },
+      });
+    } catch (error) {
+      // Show error to user when existence check fails
+      toastError("Unable to verify email. Please try again.");
+    } finally {
+      setIsCheckingUser(false);
+    }
   };
 
   const resetUrl =
@@ -67,15 +91,12 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
       ? absoluteUrls.client.auth.reset_password
       : absoluteUrls.engineer.auth.reset_password;
 
-  const handleOtpSubmit = (otpData: OTPValues) => {
-    const otp = otpData?.otp ? otpData.otp : "";
-
+  const handleOtpSubmit = (otp?: string) => {
+    // Store email and OTP for reset password page (validation already happened in popup)
+    sessionStorage.setItem("reset_password_email", methods.getValues("email"));
     if (otp) {
       sessionStorage.setItem("reset_password_otp", otp);
     }
-
-    sessionStorage.setItem("reset_password_email", methods.getValues("email"));
-
     navigate(`${resetUrl}?email=${methods.getValues("email")}`);
   };
 
@@ -114,8 +135,8 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 transition py-6"
-            loading={isPending}
-            disabled={isPending}
+            loading={isPending || isCheckingUser}
+            disabled={isPending || isCheckingUser}
           >
             Submit
           </Button>
@@ -127,14 +148,18 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
               header="Enter the OTP"
               description="We sent you an OTP code"
               onClose={() => setIsOpen(false)}
-              onSubmit={handleOtpSubmit}
+              verificationType="email"
+              contact={methods.getValues("email")}
+              handleNavigate={handleOtpSubmit}
             />
           ) : (
             <EngineerOTPPage
               header="Enter the OTP"
               description="We sent you an OTP code"
               onClose={() => setIsOpen(false)}
-              onSubmit={handleOtpSubmit}
+              verificationType="email"
+              contact={methods.getValues("email")}
+              handleNavigate={handleOtpSubmit}
             />
           )}
         </Popup>
