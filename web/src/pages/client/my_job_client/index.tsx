@@ -25,7 +25,18 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
  */
 const MyJobsClient: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
-  const { data: jobsData, isLoading } = useClientGetJobs();
+  // Map the UI filter label → API jobStatus query param
+  type ApiJobStatus = NonNullable<Parameters<typeof useClientGetJobs>[0]>;
+  const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
+    [jobFilters[0]]: undefined,        // "All Jobs"  → no filter
+    [jobFilters[1]]: "In Progress",    // "In-Progress"
+    [jobFilters[2]]: "Closed",         // "Completed" → API uses "Closed"
+    [jobFilters[3]]: "Posted",         // "Posted"
+    [jobFilters[4]]: "Hold",           // "Hold"
+  };
+
+  const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
+  const { data: jobsData, isLoading } = useClientGetJobs(apiJobStatus);
 
   const mapApiJobToUiJob = (apiJob: ClientGetJobsResponse[0]): Job => ({
     id: apiJob.id,
@@ -53,28 +64,10 @@ const MyJobsClient: React.FC = () => {
     postedTime: apiJob.createdAt || undefined,
   });
 
+  // allJobs is already filtered by the API — no client-side filtering needed
   const allJobs: Job[] = useMemo(() => {
     return (jobsData || []).map(mapApiJobToUiJob);
   }, [jobsData]);
-
-  const filteredJobs = useMemo(() => {
-    if (activeFilter === jobFilters[0]) {
-      return allJobs;
-    }
-    if (activeFilter === jobFilters[1]) {
-      return allJobs.filter((job) => job.status === JOB_STATUSES.inprogress);
-    }
-    if (activeFilter === jobFilters[2]) {
-      return allJobs.filter((job) => job.status === JOB_STATUSES.completed);
-    }
-    if (activeFilter === jobFilters[3]) {
-      return allJobs.filter((job) => job.status === JOB_STATUSES.posted);
-    }
-    if (activeFilter === jobFilters[4]) {
-      return allJobs.filter((job) => job.status === JOB_STATUSES.hold);
-    }
-    return allJobs.filter((job) => job.status === activeFilter);
-  }, [activeFilter, allJobs]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   useEffect(() => {
@@ -92,9 +85,9 @@ const MyJobsClient: React.FC = () => {
     scrollToTop();
   };
 
-  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
+  const totalPages = Math.ceil(allJobs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentJobs = filteredJobs.slice(startIndex, startIndex + itemsPerPage);
+  const currentJobs = allJobs.slice(startIndex, startIndex + itemsPerPage);
 
   if (isLoading) {
     return (
