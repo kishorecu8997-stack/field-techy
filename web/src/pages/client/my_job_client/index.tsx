@@ -77,15 +77,14 @@ const MyJobsClient: React.FC = () => {
     stateId: apiJob.stateId,
     countryId: apiJob.countryId,
     workLocationName: apiJob.workLocationName,
-    pay: apiJob.totalPrice && apiJob.currencySymbol
-      ? `${apiJob.currencySymbol}${apiJob.totalPrice}`
-      : apiJob.totalPrice
-        ? `${apiJob.totalPrice}`
-        : "N/A",
+    pay: apiJob.totalPrice != null && apiJob.totalPrice !== ""
+      ? `${apiJob.totalPrice}`
+      : "N/A",
     status: (apiJob.status?.toLowerCase() as JobStatus) || JOB_STATUSES.posted,
     serviceType: getServiceCategoryName(apiJob.serviceCategoryId),
     description: apiJob.jobDescription || undefined,
     postedTime: apiJob.createdAt || undefined,
+    currencySymbol: apiJob.currencySymbol || "$",
   });
 
   const allJobs: Job[] = useMemo(() => {

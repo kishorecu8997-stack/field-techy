@@ -3,6 +3,7 @@ import {
   useEngineerSearchJobs,
   useGetJobLogs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
@@ -28,20 +29,6 @@ import ReviewClientModal from "./job_details_components/jobHeaderComponents/Revi
 import JobTabSection from "./job_details_components/JobTabSection";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import ChatForJobs from "@/shared/components/ChatForJobs";
-import skillsData from "@/dummy_data/skills.json";
-import toolsData from "@/dummy_data/tools.json";
-
-// Create skill lookup map for fast ID to label conversion
-const skillMap = new Map<number, string>();
-skillsData.skills.forEach((skill) => {
-  skillMap.set(skill.id, skill.label);
-});
-
-// Create tool lookup map for fast ID to label conversion
-const toolMap = new Map<string, string>();
-toolsData.tools.forEach((tool) => {
-  toolMap.set(tool.id, tool.label);
-});
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -105,6 +92,9 @@ const mapJobToJobInfo = (
  */
 const mapJobToJobOverview = (
   job: EngineerSearchJobsResponse[number],
+  skillMap: Map<number, string>,
+  toolMap: Map<string, string>,
+  experienceLevelMap: Map<number, string>,
 ): JobOverviewProps => {
   // Extract basic job info
   const jobTitle = job?.jobTitle || "";
@@ -144,7 +134,16 @@ const mapJobToJobOverview = (
 
   // Extract work details
   const engagementModel = job.jobType || undefined;
-  const experienceLevel = job.experienceLevelId?.toString() || undefined;
+  
+  // Extract experience level - convert ID to label using experienceLevelMap
+  let experienceLevel: string | undefined;
+  if (job.experienceLevelId) {
+    const levelLabel = experienceLevelMap.get(job.experienceLevelId);
+    experienceLevel = levelLabel || job.experienceLevelId.toString();
+  } else {
+    experienceLevel = undefined;
+  }
+  
   const numberOfVacancies = job.vacancies ?? undefined;
 
   // Extract earnings info - engineers see totalPrice as total payment
@@ -205,6 +204,44 @@ const JobDetailsPage = () => {
   });
 
   const job = jobList?.[0];
+
+  // Fetch skills, tools and experience levels from the lookup API
+  const { data: skillsResponse } = useLookupData("skills");
+  const { data: toolsResponse } = useLookupData("tools");
+  const { data: experienceLevelsResponse } = useLookupData("experienceLevels");
+
+  // Create skill lookup map for fast ID to label conversion from API data
+  const skillMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (skillsResponse || []).forEach((skill) => {
+      map.set(skill.id, skill.name);
+    });
+    return map;
+  }, [skillsResponse]);
+
+  // Create tool lookup map for fast ID to label conversion from API data
+  const toolMap = useMemo(() => {
+    const map = new Map<string, string>();
+    (toolsResponse || []).forEach((tool) => {
+      map.set(String(tool.id), tool.name);
+    });
+    return map;
+  }, [toolsResponse]);
+
+  // Create experience level lookup map for fast ID to label conversion
+  const experienceLevelMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (experienceLevelsResponse || []).forEach((level) => {
+      map.set(level.id, level.name);
+    });
+    return map;
+  }, [experienceLevelsResponse]);
+
+  // Map job to JobOverviewProps using the lookup maps
+  const jobOverview = useMemo(() => {
+    if (!job) return undefined;
+    return mapJobToJobOverview(job, skillMap, toolMap, experienceLevelMap);
+  }, [job, skillMap, toolMap, experienceLevelMap]);
   const assignmentId = job?.assignmentId ?? undefined;
 
   // Fetch job logs to get revision requests from client
@@ -534,7 +571,7 @@ const JobDetailsPage = () => {
                         files: [],
                       }
                 }
-                jobOverview={job ? mapJobToJobOverview(job) : undefined}
+                jobOverview={job ? jobOverview : undefined}
               />
 
               {showFinalStatement && (

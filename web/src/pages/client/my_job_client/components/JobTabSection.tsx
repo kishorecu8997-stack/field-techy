@@ -2,7 +2,7 @@ import { useClientGetAssignmentDetails } from "@/shared/apiServices/client/clien
 import TabComponent from "@/shared/components/TabComponent";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import JobOverviewSection from "@/shared/components/JobOverviewSection";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import type {
   JobInfoSectionProps,
   JobTabSectionProps,
@@ -13,20 +13,7 @@ import LocationMap from "./tab_components/LocationMap";
 import ManageProposalsTab from "./tab_components/ManageProposalsTab";
 import TimelineSection from "./tab_components/timeline_section/TimelineSection";
 import type { JobOverviewProps } from "@/shared/components/types";
-import skillsData from "@/dummy_data/skills.json";
-import toolsData from "@/dummy_data/tools.json";
-
-// Create skill lookup map for fast ID to label conversion
-const skillMap = new Map<number, string>();
-skillsData.skills.forEach((skill) => {
-  skillMap.set(skill.id, skill.label);
-});
-
-// Create tool lookup map for fast ID to label conversion
-const toolMap = new Map<string, string>();
-toolsData.tools.forEach((tool) => {
-  toolMap.set(tool.id, tool.label);
-});
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 
 //future use
 // // Helper function to get skill name from ID
@@ -166,6 +153,9 @@ const mapClientJobToPayInfo = (
  */
 const mapClientJobToJobOverview = (
   job: JobTabSectionProps["job"],
+  skillMap: Map<number, string>,
+  toolMap: Map<string, string>,
+  experienceLevelMap: Map<number, string>,
 ): JobOverviewProps => {
   // Helper to safely cast job properties
   const getJobValue = <T,>(key: string): T | null | undefined => {
@@ -244,12 +234,25 @@ const mapClientJobToJobOverview = (
 
   // Extract work details
   const engagementModel = (getJobValue<string>("jobType") || getJobValue<string>("type")) || undefined;
-  const experienceLevel = 
-    getJobValue<string>("experienceLevel") || 
-    getJobValue<string>("experience") || 
-    getJobValue<string>("experienceLevelId") || 
-    getJobValue<number>("experienceLevelId")?.toString() ||
-    undefined;
+  
+  // Extract experience level - try to convert ID to label using experienceLevelMap
+  const experienceLevelId = getJobValue<string>("experienceLevelId") || getJobValue<number>("experienceLevelId")?.toString();
+  let experienceLevel: string | undefined;
+  
+  if (experienceLevelId) {
+    const numericId = parseInt(experienceLevelId, 10);
+    if (!isNaN(numericId)) {
+      // Try to find in experience level map
+      const levelLabel = experienceLevelMap.get(numericId);
+      experienceLevel = levelLabel || experienceLevelId;
+    } else {
+      experienceLevel = experienceLevelId;
+    }
+  } else {
+    // Fallback to string fields
+    experienceLevel = getJobValue<string>("experienceLevel") || getJobValue<string>("experience") || undefined;
+  }
+  
   const numberOfVacancies = job?.vacancies ?? undefined;
 
   // Extract earnings info
@@ -377,12 +380,47 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     }
   }, [selectedTab, activeTab]);
 
+  // Fetch skills, tools and experience levels from the lookup API
+  const { data: skillsResponse } = useLookupData("skills");
+  const { data: toolsResponse } = useLookupData("tools");
+  const { data: experienceLevelsResponse } = useLookupData("experienceLevels");
+
+  // Create skill lookup map for fast ID to label conversion from API data
+  const skillMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (skillsResponse || []).forEach((skill) => {
+      map.set(skill.id, skill.name);
+    });
+    return map;
+  }, [skillsResponse]);
+
+  // Create tool lookup map for fast ID to label conversion from API data
+  const toolMap = useMemo(() => {
+    const map = new Map<string, string>();
+    (toolsResponse || []).forEach((tool) => {
+      map.set(String(tool.id), tool.name);
+    });
+    return map;
+  }, [toolsResponse]);
+
+  // Create experience level lookup map for fast ID to label conversion
+  const experienceLevelMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (experienceLevelsResponse || []).forEach((level) => {
+      map.set(level.id, level.name);
+    });
+    return map;
+  }, [experienceLevelsResponse]);
+
   // Prepare job info for JobInfoSection using real API data
   const jobInfo = mapClientJobToJobInfo(job);
   const payInfo = mapClientJobToPayInfo(job);
 
   // Prepare job overview for JobOverviewSection using real API data
-  const jobOverview = mapClientJobToJobOverview(job);
+  const jobOverview = useMemo(
+    () => mapClientJobToJobOverview(job, skillMap, toolMap, experienceLevelMap),
+    [job, skillMap, toolMap, experienceLevelMap],
+  );
 
   // Calculate unprocessed proposals count for badge notification
   const processedStatuses = [
@@ -492,7 +530,16 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     },
     {
       label: JOB_TAB_LABELS.workLocation,
-      content: <LocationMap />,
+      content: (
+        <LocationMap
+          workLocationLat={(job as Record<string, unknown>)?.workLocationLat as string | null | undefined}
+          workLocationLng={(job as Record<string, unknown>)?.workLocationLng as string | null | undefined}
+          workLocationName={(job as Record<string, unknown>)?.workLocationName as string | null | undefined}
+          cityId={job?.cityId as number | null | undefined}
+          stateId={job?.stateId as number | null | undefined}
+          countryId={job?.countryId as number | null | undefined}
+        />
+      ),
     },
     // Add Manage Proposals tab when showManageProposals is true
     ...(showManageProposals
