@@ -126,9 +126,7 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className="text-green-600 dark:text-green-400 font-medium bg-gray-200 dark:bg-gray-700 px-3 py-1.5 text-sm rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Resend
               </Button>

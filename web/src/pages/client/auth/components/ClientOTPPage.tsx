@@ -127,14 +127,14 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
               <span>
                 {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
               </span>
-              <button
+              <Button
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
                 className="text-green-600 dark:text-green-400 font-medium bg-gray-200 dark:bg-gray-700 px-3 py-1.5 text-sm rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Resend
-              </button>
+              </Button>
             </div>
           </div>
           <Button
