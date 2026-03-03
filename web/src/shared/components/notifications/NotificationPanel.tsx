@@ -19,14 +19,7 @@ const NotificationPanel = ({
   const { setISOpenSidebar } = useDrawerStore();
   const { isPaused, pendingId } = useNotificationGate();
 
-  const groupedLast20 = Object.fromEntries(
-    Object.entries(grouped).map(([group, notifs]) => [
-      group,
-      notifs.slice(0, 20),
-    ]),
-  );
-
-  const allGroupsEmpty = Object.values(groupedLast20).every(
+  const allGroupsEmpty = Object.values(grouped).every(
     (notifs) => notifs.length === 0,
   );
 
@@ -67,7 +60,7 @@ const NotificationPanel = ({
             </p>
           </div>
         ) : (
-          Object.entries(groupedLast20).map(([dateGroup, notifs]) => {
+          Object.entries(grouped).map(([dateGroup, notifs]) => {
             if (notifs.length === 0) return null;
             return (
               <div key={dateGroup}>

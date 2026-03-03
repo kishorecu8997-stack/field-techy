@@ -34,7 +34,18 @@ const CommonNotificationPage: React.FC<CommonNotificationPageProps> = ({
     );
   }
 
-  const grouped = groupNotificationsByDate(notifications);
+  // Sort notifications newest-first so "last 20" picks the most recent ones
+  const sorted = [...notifications].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+
+  const unread = sorted.filter((n) => !n.read);
+  const hasUnread = unread.length > 0;
+
+  // Show all unread notifications; if none, fall back to the last 20
+  const visibleNotifications = hasUnread ? unread : sorted.slice(0, 20);
+
+  const grouped = groupNotificationsByDate(visibleNotifications);
 
   const handleDismiss = async (id: string | number) => {
     // Find the notification title for display in the confirmation popup
