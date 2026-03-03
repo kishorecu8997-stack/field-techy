@@ -65,10 +65,9 @@ const PolicyPage = () => {
         )}
 
         {/* Render HTML content directly */}
+
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-            <RichTextContent html={cmsData.data.content} />
-          </div>
+          <RichTextContent html={cmsData.data.content} />
         </div>
       </div>
     </div>

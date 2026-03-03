@@ -306,6 +306,7 @@ const BasicDetails = () => {
                   e.stopPropagation();
                   setTermsOpen(true);
                 }}
+                role="button"
               >
                 Terms and Conditions
               </span>
@@ -353,6 +354,7 @@ const BasicDetails = () => {
             <button
               onClick={() => setTermsOpen(false)}
               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none"
+              aria-label="Close terms and conditions"
             >
               ×
             </button>
@@ -374,9 +376,9 @@ const BasicDetails = () => {
                 </p>
               </div>
             ) : (
-             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow dark:text-gray-200">
-            <RichTextContent html={cmsData.data.content} />
-          </div>
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow dark:text-gray-200">
+                <RichTextContent html={cmsData.data.content} />
+              </div>
             )}
           </div>
         </div>

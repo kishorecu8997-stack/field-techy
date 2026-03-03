@@ -28,20 +28,29 @@ const ContactUs = () => {
       typeof contactData.data === "object" &&
       !Array.isArray(contactData.data)
     ) {
-      return [
-        {
+      const data = contactData.data;
+
+      const items = [];
+
+      if (data.phone) {
+        items.push({
           id: "1",
           label: "Call",
-          value: String(contactData.data.phone || ""),
+          value: String(data.phone),
           icon: <icons.phone className="text-white" />,
-        },
-        {
+        });
+      }
+
+      if (data.email) {
+        items.push({
           id: "2",
           label: "Email",
-          value: String(contactData.data.email || ""),
+          value: String(data.email),
           icon: <icons.email className="text-white" />,
-        },
-      ];
+        });
+      }
+
+      return items;
     }
 
     return [];
@@ -71,6 +80,12 @@ const ContactUs = () => {
           >
             Try Again
           </Button>
+        </div>
+      ) : contactDetails.length === 0 ? (
+        <div className="p-6 text-center text-gray-600 dark:text-gray-400">
+          <p className="font-medium text-lg mb-2">
+            No contact information available for now.
+          </p>
         </div>
       ) : (
         <ContactCard items={contactDetails} />

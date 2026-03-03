@@ -8,7 +8,10 @@ import { toast } from "react-toastify";
 import { useEffect } from "react";
 import type { ContactSupportFormData } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAddAndUpdateContactSupport, useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAddAndUpdateContactSupport,
+  useGetCmsContent,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
@@ -35,26 +38,66 @@ export default function ContactSupport() {
     refetch,
   } = useGetCmsContent("contact-info");
 
-  
   useEffect(() => {
-    if (contactResponse?.type === "contact-info" && contactResponse.data) {
+    if (
+      contactResponse?.type === "contact-info" &&
+      contactResponse.data &&
+      typeof contactResponse.data === "object" &&
+      !Array.isArray(contactResponse.data)
+    ) {
       reset({
-        email: contactResponse.data.email || "",
-        phoneNumber: contactResponse.data.phone || "",         
-        address: contactResponse.data.address || "",
-        copyright: contactResponse.data.copyright || "",
+        email:
+          (
+            contactResponse.data as {
+              email?: string;
+              phone?: string;
+              address?: string;
+              copyright?: string;
+            }
+          ).email || "",
+        phoneNumber:
+          (
+            contactResponse.data as {
+              email?: string;
+              phone?: string;
+              address?: string;
+              copyright?: string;
+            }
+          ).phone || "",
+        address:
+          (
+            contactResponse.data as {
+              email?: string;
+              phone?: string;
+              address?: string;
+              copyright?: string;
+            }
+          ).address || "",
+        copyright:
+          (
+            contactResponse.data as {
+              email?: string;
+              phone?: string;
+              address?: string;
+              copyright?: string;
+            }
+          ).copyright || "",
       });
     }
   }, [contactResponse, reset]);
 
   const mutation = useAddAndUpdateContactSupport({
     onSuccess: async (response) => {
-      toast.success(response.message || "Contact support updated successfully!");
+      toast.success(
+        response.message || "Contact support updated successfully!",
+      );
       await refetch();
     },
     onError: (error: unknown) => {
       const msg =
-        error instanceof Error ? error.message : "Failed to update contact support";
+        error instanceof Error
+          ? error.message
+          : "Failed to update contact support";
       toast.error(msg);
     },
   });
@@ -74,7 +117,7 @@ export default function ContactSupport() {
               await mutation.mutateAsync({
                 body: {
                   email: formData.email,
-                  phone: formData.phoneNumber,          
+                  phone: formData.phoneNumber,
                   address: formData.address,
                   copyright: formData.copyright,
                 },
@@ -103,7 +146,7 @@ export default function ContactSupport() {
     );
   }
 
- if (isError || contactResponse?.type !== "contact-info") {
+  if (isError || contactResponse?.type !== "contact-info") {
     return (
       <div className="bg-white rounded-lg p-8 text-center text-red-600 min-h-[300px] flex items-center justify-center">
         Failed to load contact support information
@@ -130,7 +173,11 @@ export default function ContactSupport() {
             />
           </div>
           <div className="flex-1">
-            <PhoneInputField name="phoneNumber" label="Mobile Number" required />
+            <PhoneInputField
+              name="phoneNumber"
+              label="Mobile Number"
+              required
+            />
           </div>
         </div>
 

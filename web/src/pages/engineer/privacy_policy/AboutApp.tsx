@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { scrollToTop } from "@/utils";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 import RichTextContent from "@/shared/components/RichTextContent";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * About App page displaying information about the application.
@@ -25,7 +26,7 @@ const AboutApp = () => {
             isShowSort={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
-            <p className="text-gray-500">Loading about information...</p>
+            <LoaderComponent />
           </div>
         </div>
       </div>

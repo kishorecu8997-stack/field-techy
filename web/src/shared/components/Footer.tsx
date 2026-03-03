@@ -17,6 +17,13 @@ import IconWithTheme from "./IconWithTheme";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "./commonUI/LoaderComponent";
 
+type ContactInfoData = {
+  email?: string;
+  phone?: string;
+  address?: string | null;
+  copyright?: string | null;
+};
+
 /**
  * Main footer component with company info, quick links, support options,
  * social media icons, and a report problem modal.
@@ -36,30 +43,34 @@ const Footer = () => {
   } = useGetCmsContent("contact-info");
 
   const getContactInfo = () => {
-  const defaultValues = {
-    phone: "+971 4580 8119",
-    email: "connect@fieldtechy.com",
-    address:
-      "Suite 302, Maple Leaf Building, Innovation District, Toronto, Canada",
-    copyright: "Copyright © 2025 Field Techy | All Rights Reserved.",
+    const defaults = {
+      phone: "+971 4580 8119",
+      email: "connect@fieldtechy.com",
+      address:
+        "Suite 302, Maple Leaf Building, Innovation District, Toronto, Canada",
+      copyright: "Copyright © 2025 Field Techy | All Rights Reserved.",
+    };
+
+    if (
+      !contactData ||
+      contactData.type !== "contact-info" ||
+      !contactData.data ||
+      typeof contactData.data !== "object" ||
+      Array.isArray(contactData.data)
+    ) {
+      return defaults;
+    }
+
+    const cms = contactData.data as ContactInfoData;
+
+    return {
+      phone: cms.phone ?? defaults.phone,
+      email: cms.email ?? defaults.email,
+      address: cms.address ?? defaults.address,
+      copyright: cms.copyright ?? defaults.copyright,
+    };
   };
 
-  if (
-    contactData?.type === "contact-info" &&
-    contactData?.data &&
-    typeof contactData.data === "object" &&
-    !Array.isArray(contactData.data)
-  ) {
-    return {
-      phone: String((contactData.data as any).phone ?? defaultValues.phone),
-      email: String((contactData.data as any).email ?? defaultValues.email),
-      address: String((contactData.data as any).address ?? defaultValues.address),
-      copyright: String((contactData.data as any).copyright ?? defaultValues.copyright),
-    };
-  }
-
-  return defaultValues;
-};
   const { phone, email, address, copyright } = getContactInfo();
 
   return (
@@ -71,7 +82,7 @@ const Footer = () => {
               <IconWithTheme
                 darkLogo={assetsConfig.logos.ftLogoWhite}
                 lightLogo={assetsConfig.logos.ftLogo}
-                className="h-12 "
+                className="h-12"
               />
             </div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
@@ -254,7 +265,9 @@ const Footer = () => {
                 <NavLink
                   to="#"
                   onClick={(e) => e.preventDefault()}
-                  className="text-gray-400 dark:text-gray-600 cursor-not-allowed pointer-events-none"
+                 className="text-gray-400 dark:text-gray-600 cursor-not-allowed pointer-events-none"
+                  aria-disabled="true"
+                  tabIndex={-1}
                 >
                   Video Tutorials
                 </NavLink>
@@ -288,6 +301,7 @@ const Footer = () => {
                 key={index}
                 href={href}
                 className="w-8 h-8 rounded-full bg-teal-700 flex items-center justify-center text-white hover:bg-teal-600 transition-colors"
+                aria-label={`Follow us on ${Icon.name.replace("Icon", "")}`}
               >
                 <Icon className="w-4 h-4" />
               </a>
