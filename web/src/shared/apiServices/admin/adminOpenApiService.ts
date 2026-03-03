@@ -1051,15 +1051,21 @@ export function useAdminGetReport(
     onError?: (error: unknown) => void;
   },
 ) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetReportsQuery = {
+    ...query,
+    regionId: Number(selectedRegionId),
+  };
   return useQuery({
     ...adminGetReportsOptions({
       client: apiClient,
-      query,
-         }),
+      query: mergedQuery,
+    }),
     ...options,
   });
 }
- 
+
 // ─── Job Graph ────────────────────────────────────────────────────────────────
 
 export type AdminGetJobGraphQuery = NonNullable<AdminGetJobGraphData["query"]>;
@@ -1085,7 +1091,7 @@ export function useAdminGetJobGraph(
     ...adminGetJobGraphOptions({
       client: apiClient,
       query: mergedQuery,
-          }),
+    }),
     ...options,
   });
 }
@@ -1096,9 +1102,15 @@ export function useAdminResolveReport(options?: {
   onSuccess?: (data: AdminUpdateReportResponse) => void;
   onError?: (error: unknown) => void;
 }) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   const queryClient = useQueryClient();
   return useMutation({
-    ...adminUpdateReportMutation({ client: apiClient }),
+    ...adminUpdateReportMutation({
+      client: apiClient,
+      query: {
+        regionId: Number(selectedRegionId),
+      },
+    }),
     onSuccess: (data: AdminUpdateReportResponse) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
