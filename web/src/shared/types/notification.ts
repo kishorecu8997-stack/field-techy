@@ -3,19 +3,19 @@
 export interface NotificationProps {
   id: string | number;
   type:
-    | "job_offer"
-    | "invitation"
-    | "revision"
-    | "payment_released"
-    | "proposal_received"
-    | "application_viewed"
-    | "view"
-    | "job_reminder"
-    | "withdrawal"
-    | "info"
-    | "warning"
-    | "error"
-    | "success";
+  | "job_offer"
+  | "invitation"
+  | "revision"
+  | "payment_released"
+  | "proposal_received"
+  | "application_viewed"
+  | "view"
+  | "job_reminder"
+  | "withdrawal"
+  | "info"
+  | "warning"
+  | "error"
+  | "success";
   title: string;
   message: string;
   jobTitle?: string;
@@ -48,4 +48,6 @@ export interface NotificationPanelProps {
   onMarkAsRead?: (id: string | number) => void;
   onMarkAllAsRead?: () => void;
   viewAllLink?: string;
+  /** Number of unread notifications hidden because the visible list was capped at MAX. */
+  unreadOverflow?: number;
 }

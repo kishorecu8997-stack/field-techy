@@ -49,7 +49,7 @@ class GlobalErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900">
           <ErrorState
             title="Application Error"
-            message="Something went wrong while rendering the page. Our team has been notified."
+            message="Something went wrong while rendering this page. Please try reloading, or contact support if the problem persists."
             retryLabel="Reload Page"
             onRetry={() => window.location.reload()}
           />
