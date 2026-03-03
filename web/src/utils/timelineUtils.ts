@@ -23,6 +23,32 @@ export const formatApiDate = (dateStr: string | null | undefined): string => {
 };
 
 /**
+ * const { date, time } = formatApiDate("2026-02-26T14:29:00Z");
+ * // returns { date: "26/02/2026", time: "02:29 PM" }
+ */
+export const formatApiDateTime = (dateStr: string | null | undefined) => {
+  if (!dateStr) return { date: "---", time: "---" };
+
+  const dateObj = new Date(dateStr);
+
+  // Split into Date: e.g., 26/02/2026
+  const date = dateObj.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  // Split into Time: e.g., 02:29 PM
+  const time = dateObj.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return { date, time };
+};
+
+/**
  * Timeline item return type from transformLogsToTimelineItems
  */
 export interface TimelineItem {
