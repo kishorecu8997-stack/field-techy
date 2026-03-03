@@ -65,6 +65,7 @@ export interface TimelineItem {
   description?: string | null;
   detailsType?: string;
   attachmentName?: string;
+  attachments?: Array<{ name: string; url: string }>;
   revisions?: Array<{
     revisionId: number;
     content: string;
@@ -286,22 +287,19 @@ export const transformSignOffsToItems = (
 ): TimelineItem[] => {
   if (!signOffs) return [];
   return signOffs.map((so) => {
-    // Build attachments array from attachmentUrl and signatureAttachmentUrl if available
+    // Build attachments array with proper labels for work submission and signature
     const attachments: Array<{ name: string; url: string }> = [];
 
     if (so.attachmentUrl) {
       attachments.push({
-        name:
-          so.attachmentUrl.split("/").pop()?.split("?")[0] || "Work Attachment",
+        name: "Work Submission",
         url: so.attachmentUrl,
       });
     }
 
     if (so.signatureAttachmentUrl) {
       attachments.push({
-        name:
-          so.signatureAttachmentUrl.split("/").pop()?.split("?")[0] ||
-          "Signature Attachment",
+        name: "Signature",
         url: so.signatureAttachmentUrl,
       });
     }

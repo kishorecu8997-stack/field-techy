@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@/shared/apiServices/apiClient";
+import { getJobLogs } from "@/api";
+import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
@@ -25,6 +29,7 @@ import {
   BREAK_REQUEST_MESSAGES,
 } from "@/dummy_data/breakRequestDummy";
 import { useEngineerRequestBreak } from "@/shared/apiServices/engineer/engineerOpenApiService";
+// import { queryKeys } from "@/shared/apiServices/queryKeys";
 
 /**
  * BreakRequestForm component for submitting engineer break requests.
@@ -38,17 +43,21 @@ const BreakRequestForm = ({
   onClose,
   onAddProgressUpdate,
   assignmentId,
+  jobStartDate,
+  jobEndDate,
 }: {
   onClose: () => void;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   assignmentId?: number;
+  jobStartDate?: string;
+  jobEndDate?: string;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formCtx = useForm<BreakRequestFormFields>({
     defaultValues: BREAK_REQUEST_DEFAULTS,
   });
 
-  const { watch, setValue } = formCtx;
+  const { watch, setValue, setError, clearErrors } = formCtx;
   const startTime = watch("startTime");
   const endTime = watch("endTime");
   const startDate = watch("startDate");
@@ -56,11 +65,32 @@ const BreakRequestForm = ({
   const requestType = watch("requestType");
   const isLongTermBreak = requestType === "Long Term Break";
 
+  const queryClient = useQueryClient();
+
   // Use the API mutation for submitting break request
   const breakRequestMutation = useEngineerRequestBreak({
     assignmentId,
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success(BREAK_REQUEST_MESSAGES.submitSuccess);
+
+      // Force refetch the job logs to update timeline immediately
+      if (assignmentId) {
+        try {
+          // Directly fetch the latest job logs from API
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId },
+          });
+
+          // Update the query cache with the new data using exact key from getJobLogsQueryKey
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          queryClient.setQueryData(exactQueryKey, response.data);
+        } catch (error) {
+          console.error("Failed to refetch timeline:", error);
+          // Fallback: try to invalidate all queries
+          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+      }
       onClose();
     },
     onError: (error) => {
@@ -71,13 +101,30 @@ const BreakRequestForm = ({
   });
 
   useEffect(() => {
+    // Validate end time is after start time
+    if (startTime && endTime) {
+      const start = new Date(`2000-01-01T${startTime}`);
+      const end = new Date(`2000-01-01T${endTime}`);
+      if (end <= start) {
+        setError("endTime", {
+          type: "manual",
+          message: "End time must be after start time",
+        });
+      } else {
+        clearErrors("endTime");
+      }
+    }
+  }, [startTime, endTime, setError, clearErrors]);
+
+  useEffect(() => {
     if (isLongTermBreak) {
       if (startDate && endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
         const diffTime = Math.abs(end.getTime() - start.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        setValue("duration", diffDays > 0 ? `${diffDays} days` : "");
+        const dayText = diffDays === 1 ? "day" : "days";
+        setValue("duration", diffDays > 0 ? `${diffDays} ${dayText}` : "");
       }
     } else {
       const duration = calculateTimeDuration(startTime, endTime);
@@ -86,10 +133,33 @@ const BreakRequestForm = ({
   }, [startTime, endTime, startDate, endDate, isLongTermBreak, setValue]);
 
   // compute today's start (00:00) and min end-date (one day after selected startDate)
-  const todayStart = (() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
+  // const todayStart = (() => {
+  //   const d = new Date();
+  //   d.setHours(0, 0, 0, 0);
+  //   return d;
+  // })();
+
+  // Calculate minimum start date: max of today and job start date
+  const minStartDate = (() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (jobStartDate) {
+      const jobStart = new Date(jobStartDate);
+      jobStart.setHours(0, 0, 0, 0);
+      return jobStart > today ? jobStart : today;
+    }
+    return today;
+  })();
+
+  // Calculate maximum end date based on job end date
+  const maxEndDate = (() => {
+    if (jobEndDate) {
+      const end = new Date(jobEndDate);
+      end.setHours(23, 59, 59, 999);
+      return end;
+    }
+    return undefined;
   })();
 
   const minEndDate = startDate
@@ -110,6 +180,16 @@ const BreakRequestForm = ({
   };
 
   const handleSubmit = async (data: BreakRequestFormFields) => {
+    // Validate end time is after start time for short term breaks
+    if (!isLongTermBreak && data.startTime && data.endTime) {
+      const start = new Date(`2000-01-01T${data.startTime}`);
+      const end = new Date(`2000-01-01T${data.endTime}`);
+      if (end <= start) {
+        toast.error("End time must be after start time");
+        return;
+      }
+    }
+
     // If assignmentId is provided, use the API
     if (assignmentId) {
       setIsSubmitting(true);
@@ -234,7 +314,7 @@ const BreakRequestForm = ({
 
         {!isLongTermBreak && (
           <div className="grid grid-cols-2 gap-4 mb-2">
-            <div className="relative z-10">
+            <div className="relative z-10 px-1">
               <CustomTimePicker
                 name="startTime"
                 label="Start Time"
@@ -242,7 +322,7 @@ const BreakRequestForm = ({
                 dropdownPosition="below"
               />
             </div>
-            <div className="relative z-10">
+            <div className="relative z-10 px-1">
               <CustomTimePicker
                 name="endTime"
                 label="End Time"
@@ -260,7 +340,8 @@ const BreakRequestForm = ({
               label="Start Date"
               required
               placeholder="Select start date"
-              minDate={todayStart}
+              minDate={minStartDate}
+              maxDate={maxEndDate}
               rules={{
                 validate: (value) => validateStartDate(value),
               }}
@@ -271,6 +352,7 @@ const BreakRequestForm = ({
               required
               placeholder="Select end date"
               minDate={minEndDate}
+              maxDate={maxEndDate}
               rules={{
                 validate: (value) => validateEndDate(value, startDate),
               }}
@@ -293,6 +375,13 @@ const BreakRequestForm = ({
             name="reason"
             required
             placeholder={BREAK_REQUEST_LABELS.reasonPlaceholder}
+            maxLength={50}
+            rules={{
+              maxLength: {
+                value: 50,
+                message: "Reason must be 50 characters or less",
+              },
+            }}
           />
         </div>
 

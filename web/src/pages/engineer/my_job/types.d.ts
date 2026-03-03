@@ -122,17 +122,22 @@ export interface JobHeaderCardProps {
   jobLocation?: string;
   numberOfVacancy?: number;
   numberOfApplicants?: number;
+  numberOfApprovedProposals?: number;
   hideDurationAndClient?: boolean;
+  hideClient?: boolean;
   activeTab?: string;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
   isFinalStatementSubmitted?: boolean;
+  isFinalStatementApproved?: boolean;
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
   allCardsApproved?: boolean;
   assignmentId?: number;
   progressUpdates?: ProgressUpdate[];
   jobId: string;
+  jobStartDate?: string;
+  jobEndDate?: string;
   onToggleChat?: (jobId: string) => void;
   onCloseChat?: () => void;
 }
@@ -160,7 +165,7 @@ export interface JobInfoSectionProps {
     title?: string;
     items: Array<{ text: string }>;
   };
-  files: string[];
+  files: Array<{ name: string; url: string }>;
 }
 
 /**
@@ -346,6 +351,7 @@ export type ProposalInfoTabProps = {
         attachments: FileList | null;
         attachmentUrl?: never;
       };
+  proposalAppliedDate?: string | null;
 };
 
 /**

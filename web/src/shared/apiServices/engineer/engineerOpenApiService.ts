@@ -518,12 +518,14 @@ export function useEngineerRequestStart(options?: {
   return useMutation({
     ...engineerRequestStartMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when start request is submitted
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -539,12 +541,14 @@ export function useEngineerSubmitSignOff(options?: {
   return useMutation({
     ...engineerSubmitSignOffMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when sign-off is submitted
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -560,12 +564,14 @@ export function useEngineerAddWorkLog(options?: {
   return useMutation({
     ...engineerAddWorkLogMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when work log is added
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -581,12 +587,14 @@ export function useEngineerSubmitRevision(options?: {
   return useMutation({
     ...engineerSubmitRevisionMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when revision is submitted
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -602,12 +610,18 @@ export function useEngineerRequestBreak(options?: {
   return useMutation({
     ...engineerRequestBreakMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format to invalidate timeline queries
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when break request is submitted
+      if (options?.assignmentId) {
+        // Use partial matching to invalidate job logs queries
+        queryClient.invalidateQueries({
+          queryKey: ["engineer", "jobLogs", options.assignmentId],
+        });
+        // Also invalidate any other job logs queries with the same assignmentId
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

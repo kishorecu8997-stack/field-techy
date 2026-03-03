@@ -37,7 +37,7 @@ const FilterPanel: React.FC<{
   );
 
   // Available filter options
-  const locationOptions = ["On-Site", "Remote", "Hybrid"];
+  const locationOptions = ["On site", "Remote", "Hybrid"];
   const categoryOptions = [
     "IT",
     "Construction",
