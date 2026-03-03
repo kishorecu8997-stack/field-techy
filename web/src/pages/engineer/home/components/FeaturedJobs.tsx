@@ -107,8 +107,11 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
  * matchScore: 85,
  * />
  */
-const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
+const FeatureJobCard: React.FC<
+  JobItem & { matchScore?: number; bookMarkRefetch?: () => void }
+> = (props) => {
   const job = props as JobItem;
+  const { bookMarkRefetch } = props;
   const matchScore = props.matchScore;
   const { data: engagementModels } = useLookupData("engagementModels");
   const { refetch } = useGetEngineerSavedJobs({
@@ -118,6 +121,7 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
   const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
     onSuccess: (response) => {
       refetch();
+      bookMarkRefetch?.();
       toast.success(
         response?.status === "saved"
           ? "Job saved successfully"
@@ -203,9 +207,9 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
             <div
               onClick={handleBookmarkClick}
               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
-              aria-label={job.status ? "Remove bookmark" : "Bookmark job"}
+              aria-label={job.isSaved ? "Remove bookmark" : "Bookmark job"}
             >
-              {job.status ? (
+              {job.isSaved ? (
                 <icons.bookmarkFilled className="h-5 w-5 text-teal-600 dark:text-teal-400" />
               ) : (
                 <icons.bookmark className="h-5 w-5" />
@@ -291,6 +295,7 @@ interface FeaturedJobsProps {
   userSkills?: string[];
   userTools?: string[];
   title?: string;
+  bookMarkRefetch?: () => void;
   onViewAll?: () => void;
 }
 const jobCardGradients = [
@@ -338,6 +343,7 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   jobs = [],
   userSkills = [],
   userTools = [],
+  bookMarkRefetch,
   title = "Featured Jobs",
   onViewAll,
 }) => {
@@ -380,7 +386,11 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
                 navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
               }}
             >
-              <FeatureJobCard {...job} matchScore={score} />
+              <FeatureJobCard
+                {...job}
+                matchScore={score}
+                bookMarkRefetch={bookMarkRefetch}
+              />
             </div>
           );
         })}
