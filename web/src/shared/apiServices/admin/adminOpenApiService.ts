@@ -498,27 +498,6 @@ export function useAdminCreateSubAdmin(options?: {
   });
 }
 
-
-// export function useAdminUpdateSubAdmin(options?: {
-//   onSuccess?: (data: AdminUpdateSubAdminResponses[200]) => void;
-//   onError?: (error: unknown) => void;
-// }) {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     ...adminUpdateSubAdminMutation({ client: apiClient }),
-//     onSuccess: async (data) => {
-//       await queryClient.refetchQueries({
-//         queryKey: ["adminGetSubAdmins"],
-//       });
-
-//       options?.onSuccess?.(data);
-//     },
-//     onError: options?.onError,
-//   });
-// }
-
-
 export function useAdminUpdateSubAdmin(options?: {
   onSuccess?: (data: AdminUpdateSubAdminResponses[200]) => void;
   onError?: (error: unknown) => void;
