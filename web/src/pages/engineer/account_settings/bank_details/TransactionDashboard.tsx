@@ -78,7 +78,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
       </div>
     );
 
-  const validTransactions = (transactionsRaw || []).filter(
+  const validTransactions = (transactionsRaw?.transactions ?? []).filter(
     (tx) => !isNaN(new Date(tx.timestamp).getTime()),
   );
 
@@ -147,11 +147,10 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
 
               <div
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className={`h-[42px] px-4 rounded-lg border flex items-center gap-2 text-sm font-medium transition-colors ${
-                  isFilterOpen
-                    ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
-                    : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                }`}
+                className={`h-[42px] px-4 rounded-lg border flex items-center gap-2 text-sm font-medium transition-colors ${isFilterOpen
+                  ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
+                  : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                  }`}
               >
                 <HiFilter className="w-4 h-4" />
                 Filters
