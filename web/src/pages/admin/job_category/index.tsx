@@ -116,7 +116,13 @@ const ManageJobCategory: React.FC = () => {
         : null;
 
   const columns: Column<ServerCategoryProps>[] = [
-    { key: "id", label: "Sr.No." },
+    {
+      key: "id",
+      label: "Sr.No.",
+      renderCell: (_row: ServerCategoryProps, index: number) => (
+        <div className="whitespace-nowrap">{index + 1}</div>
+      ),
+    },
     { key: "categoryName", label: "Category" },
     { key: "createdDate", label: "Created Date" },
     {
