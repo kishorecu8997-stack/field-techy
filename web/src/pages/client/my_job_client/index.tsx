@@ -8,7 +8,6 @@ import jobFilters, {
   SORT_OPTIONS,
   type Job,
   type JobStatus,
-  JOB_STATUSES,
   WORKING_TYPES,
 } from "../search_result/types";
 import JobCard from "./components/JobCard";
@@ -16,6 +15,7 @@ import { scrollToTop } from "@/utils";
 import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 import type { ClientGetJobsResponse } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { JOB_STATUSES } from "@/pages/engineer/search_result/types";
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -29,10 +29,10 @@ const MyJobsClient: React.FC = () => {
   type ApiJobStatus = NonNullable<Parameters<typeof useClientGetJobs>[0]>;
   const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
     [jobFilters[0]]: undefined, // "All Jobs"  → no filter
-    [jobFilters[1]]: "In Progress", // "In-Progress"
-    [jobFilters[2]]: "Closed", // "Completed" → API uses "Closed"
-    [jobFilters[3]]: "Posted", // "Posted"
-    [jobFilters[4]]: "Hold", // "Hold"
+    [jobFilters[1]]: JOB_STATUSES.inProgress, // "In-Progress"
+    [jobFilters[2]]: JOB_STATUSES.closed, // "Completed" → API uses "Closed"
+    [jobFilters[3]]: JOB_STATUSES.posted, // "Posted"
+    [jobFilters[4]]: JOB_STATUSES.hold, // "Hold"
   };
 
   const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
