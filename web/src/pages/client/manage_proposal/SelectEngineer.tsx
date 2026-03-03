@@ -115,7 +115,6 @@ const SelectEngineer = () => {
               setIsOpen(true);
               setSelectedIds([]);
             } catch (error) {
-              console.error(error);
               toast.error("Engineers were already invited.");
             }
           },
@@ -136,7 +135,6 @@ const SelectEngineer = () => {
       toast.success("Engineer invited successfully!");
       setIsOpen(true); // open modal
     } catch (error) {
-      console.error(error);
       toast.error("Engineer already invited");
     }
   };

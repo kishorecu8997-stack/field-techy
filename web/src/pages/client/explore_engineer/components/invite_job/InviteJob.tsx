@@ -39,11 +39,9 @@ const InviteJob: React.FC = () => {
 
   const { data: jobsData } = useClientGetJobs(true) as { data?: ClientGetJobsResponse };
 
-  const { mutateAsync: inviteEngineer } = useClientInviteEngineer({
-    onError: (error) => {
-      console.error("Invitation mutation error:", error);
-    },
-  });
+  const { mutateAsync: inviteEngineer } = useClientInviteEngineer({ 
+    
+   });
 
   const methods = useForm<SelectedJobCardId>({
     defaultValues: {
@@ -62,7 +60,6 @@ const InviteJob: React.FC = () => {
   const handleInviteClick = async (data: SelectedJobCardId) => {
     if (!engineer || engineer <= 0) {
       toast.error("Engineer ID is invalid");
-      console.error("Invalid engineer ID:", engineer);
       return;
     }
     if (!data.id || data.id.length === 0) {
@@ -70,20 +67,16 @@ const InviteJob: React.FC = () => {
       return;
     }
     try {
-      console.log("Sending invitations for jobs:", data.id, "to engineer:", engineer);
-      const invitations = data.id.map((jobId) => {
-        console.log("Preparing invite - jobId:", jobId, "engineerId:", engineer, "regionId:", regionId);
+       const invitations = data.id.map((jobId) => {
         // explicitly include regionId so backend always receives it
         const body: any = { jobId, engineerId: engineer };
         if (regionId !== undefined) body.regionId = regionId;
         return inviteEngineer({ body });
       });
       const results = await Promise.all(invitations);
-      console.log("All invitations sent successfully:", results);
       toast.success(`Invitation sent successfully`);
       setIsOpen(true);
     } catch (error: unknown) {
-      console.error("Invitation error details:", error);
       let errorMsg = "Failed to send invitation. Please try again.";
       if (error instanceof Error) {
         errorMsg = error.message;
