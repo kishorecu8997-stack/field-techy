@@ -181,7 +181,9 @@ export default function EditSubAdmin() {
                 label="Full Name"
                 type="text"
                 required
-                rules={{ validate: validateName }}
+                 rules={{
+                  validate: (v: string) => validateName(v),
+                }}
               />
 
               <PhoneInputField
