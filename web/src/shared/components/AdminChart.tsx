@@ -58,7 +58,7 @@ const GeneralChart = <T extends Record<string, unknown>>({
   legend,
   isLoading,
   error,
-  showCursor = true,
+  cursor = true,
 }: GeneralChartProps<T>) => {
   if (isLoading) {
     return (
@@ -126,9 +126,9 @@ const GeneralChart = <T extends Record<string, unknown>>({
 
         {showTooltip &&
           (CustomTooltip ? (
-            <Tooltip cursor={showCursor} content={<CustomTooltip />} />
+            <Tooltip cursor={cursor} content={<CustomTooltip />} />
           ) : (
-            <Tooltip cursor={showCursor} />
+            <Tooltip cursor={cursor} />
           ))}
 
         {showLegend && (
