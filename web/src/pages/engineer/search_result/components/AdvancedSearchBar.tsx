@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { Filters, SortOption } from "../types";
-import skillsData from "@/dummy_data/skills.json";
-import toolsData from "@/dummy_data/tools.json";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * AdvancedSearchBar component provides advanced filtering options for job listings
@@ -35,7 +34,7 @@ const AdvancedSearchBar: React.FC<{
   const serviceTypeOptions = ["Dedicated", "Dispatch", "Scheduled"];
   const experienceLevelOptions = ["Entry", "Mid", "Senior", "Lead"];
   const jobTypeOptions = ["Full-time", "Part-time", "Contract"];
-  const locationTypeOptions = ["On-site", "Remote", "Hybrid"];
+  const locationTypeOptions = ["On site", "Remote", "Hybrid"];
   const locationOptions = [
     "New York",
     "Los Angeles",
@@ -57,8 +56,14 @@ const AdvancedSearchBar: React.FC<{
     "Japanese",
   ];
   const slaLevelOptions = ["4 hours", "6 hours", "next-day", "thereafter"];
-  const skillsOptions = skillsData.skills.map((skill) => skill.label);
-  const toolsOptions = toolsData.tools.map((tool) => tool.label);
+
+  // Fetch skills and tools from the lookup API
+  const { data: skillsResponse } = useLookupData("skills");
+  const { data: toolsResponse } = useLookupData("tools");
+
+  // Create options arrays from API response
+  const skillsOptions = (skillsResponse || []).map((skill) => skill.name);
+  const toolsOptions = (toolsResponse || []).map((tool) => tool.name);
   // Save filters to session storage whenever they change
   useEffect(() => {
     sessionStorage.setItem(

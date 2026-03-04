@@ -62,7 +62,9 @@ const WorkSubmissionComponent: React.FC<{
     reviewComment,
   } = workSubmissions;
   const { showPopup } = usePopupStore();
-  const { mutateAsync: submitSignOff } = useEngineerSubmitSignOff();
+  const { mutateAsync: submitSignOff } = useEngineerSubmitSignOff({
+    assignmentId,
+  });
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (

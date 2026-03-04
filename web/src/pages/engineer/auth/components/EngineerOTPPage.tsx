@@ -8,36 +8,35 @@ import { useVerifyOtp } from "@/shared/apiServices/commonOpenApiService";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import type { AppVerifyOtpData } from "@/api";
 import type { OTPValues } from "@/shared/components/commonUI/inputs/types";
-
 export type { OTPValues } from "@/shared/components/commonUI/inputs/types";
 
 interface EngineerOTPPageProps {
   header?: string;
   description?: string;
   onClose?: () => void;
-  handleNavigate?: () => void;
+  handleNavigate?: (otp?: string) => void;
   buttonText?: string;
   verificationType: "email" | "phone";
   contact: string; // email or phone number
   onResendOTP?: () => void;
 }
-
 /**
- * Engineer-specific OTP verification component with API integration.
+ * EngineerOTPPage
  *
- * This component handles OTP verification for both email and phone, making
- * actual API calls to verify the entered OTP code. It manages its own form
- * state, countdown timer, and loading/error states.
+ * A reusable OTP verification component for email or phone authentication.
+ * It handles 6‑digit OTP input, countdown timer, resend logic, and OTP validation
+ * via the `useVerifyOtp` API hook. Displays masked contact information,
+ * manages form state with react-hook-form, and provides error and loading states.
  *
- * @param {EngineerOTPPageProps} props - Component props
- * @param {string} [props.header] - Modal title
- * @param {string} [props.description] - Description text
- * @param {() => void} [props.onClose] - Close modal callback
- * @param {() => void} [props.handleNavigate] - Success navigation callback
- * @param {string} [props.buttonText="Submit"] - Submit button text
- * @param {"email" | "phone"} props.verificationType - Type of verification
- * @param {string} props.contact - Email address or phone number to verify
- * @param {() => void} [props.onResendOTP] - Optional resend OTP callback
+ * @param {EngineerOTPPageProps} props - Props for the OTP component.
+ * @param {string} [props.header] - Title displayed at the top.
+ * @param {string} [props.description] - Description text shown under the title.
+ * @param {() => void} [props.onClose] - Triggered when the close icon is clicked.
+ * @param {(otp?: string) => void} [props.handleNavigate] - Fired on successful OTP verification.
+ * @param {string} [props.buttonText] - Custom label for the submit button.
+ * @param {"email" | "phone"} props.verificationType - Whether verifying an email or phone number.
+ * @param {string} props.contact - Email or phone number where the OTP was sent.
+ * @param {() => void} [props.onResendOTP] - Callback when user requests a new OTP.
  */
 const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
   header,
@@ -69,20 +68,18 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
 
   const handleSubmit = async (data: OTPValues) => {
     try {
-      const body =
-        verificationType === "email"
-          ? { type: "email" as const, email: contact, otp: data.otp }
-          : { type: "phone" as const, phone: contact, otp: data.otp };
-
       await verifyOtp({
-        body: body as AppVerifyOtpData["body"] & {
+        body: {
+          type: verificationType,
+          code: data.otp,
+        } as AppVerifyOtpData["body"] & {
           email?: string;
           phone?: string;
           otp: string;
         },
         headers: { authorization: "" },
       });
-      handleNavigate?.();
+      handleNavigate?.(data.otp);
     } catch (error: unknown) {
       method.setError("otp", {
         type: "manual",
@@ -116,6 +113,15 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
             </h2>
             <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">
               {description}
+              {contact && (
+                <span className="block mt-2 font-medium text-teal-700 dark:text-teal-400">
+                  {verificationType === "email"
+                    ? contact.split("@")[0].slice(0, 2) +
+                      "***@" +
+                      contact.split("@")[1]
+                    : "***" + contact.slice(-4)}
+                </span>
+              )}
             </p>
           </div>
           <div className="p-2">
@@ -128,9 +134,7 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className="text-green-600 dark:text-green-400 font-medium bg-gray-200 dark:bg-gray-700 px-3 py-1.5 text-sm rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer disabled:opacity-50"
               >
                 Resend
               </Button>

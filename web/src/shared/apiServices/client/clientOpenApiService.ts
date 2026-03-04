@@ -30,7 +30,9 @@ import {
   type GetClientBalanceResponse,
   type GetClientTransactionsData,
   type GetClientTransactionsError,
+  type GetUserReportsData,
   type GetClientTransactionsResponse,
+  type GetUserReportsResponses,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -54,6 +56,8 @@ import {
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
   getJobLogsOptions,
+  submitReportMutation,
+  getUserReportsOptions,
   clientGetJobsQueryKey,
 } from "@/api/@tanstack/react-query.gen";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
@@ -361,6 +365,7 @@ export function useClientGetAssignmentDetails(
 export function useClientActionOnAssignment(options?: {
   onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
+  assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
   const regionId = useClientRegionId();
@@ -382,6 +387,13 @@ export function useClientActionOnAssignment(options?: {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      // Invalidate job logs query when assignment action is performed
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -432,6 +444,35 @@ export function useClientCalculateJobPrice(
   });
 }
 
+export function useSaveReportClient(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...submitReportMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type ReportIssue = GetUserReportsResponses[200]["data"][number];
+export function useGetReportClient(
+  query: GetUserReportsData["query"],
+  enabled: boolean = false,
+) {
+  return useQuery({
+    ...getUserReportsOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
 export function useClientActionOnWorkLog(options?: {
   onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
@@ -456,11 +497,14 @@ export function useClientActionOnWorkLog(options?: {
       return data;
     },
     onSuccess: (data) => {
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when work log action is performed
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -491,11 +535,14 @@ export function useClientActionOnBreak(options?: {
       return data;
     },
     onSuccess: (data) => {
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when break action is performed
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
