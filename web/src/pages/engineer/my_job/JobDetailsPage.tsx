@@ -472,6 +472,29 @@ const JobDetailsPage = () => {
     job?.clientDetails?.personName ||
     `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
+  
+  // Format exact date range for display
+  const formatDateRange = () => {
+    if (!job?.startDate) return "";
+    const startDate = new Date(job.startDate);
+    const endDate = job.endDate ? new Date(job.endDate) : null;
+    
+    const formatDate = (date: Date) => {
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    };
+    
+    if (endDate) {
+      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+    }
+    return formatDate(startDate);
+  };
+  
+  const exactTimeline = formatDateRange();
+  
+  // Keep duration for other uses, but use exactTimeline for display
   const duration = getDurationString({
     startDateStr: job?.startDate || "",
     endDateStr: job?.endDate || "",
@@ -531,7 +554,7 @@ const JobDetailsPage = () => {
               <JobHeaderCard
                 title={jobTitle}
                 client={clientName}
-                duration={duration as string}
+                duration={exactTimeline || duration as string}
                 type={engagementType}
                 status={jobStatus}
                 setIsWorkSubmitted={setIsWorkSubmitted}
@@ -593,12 +616,14 @@ const JobDetailsPage = () => {
             <div className="lg:col-span-1">
               <ClientInfoCard
                 name={clientName}
-                memberSince={"-"}
-                location={jobLocation}
-                rating={0}
-                reviews={0}
+                memberSince="-"
+                location={job?.clientDetails?.address ?? jobLocation}
+                rating={job?.clientDetails?.averageRating ?? 0}
+                reviews={job?.clientDetails?.reviewCount ?? 0}
                 verifications={[]}
                 onOpenReview={() => setIsReviewOpen(true)}
+                phoneNumber={job?.clientDetails?.phoneNumber ?? undefined}
+                email={job?.clientDetails?.email ?? undefined}
               />
             </div>
           </div>

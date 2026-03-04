@@ -949,10 +949,13 @@ const TimelineSection: React.FC<{
 
   const actionRequiredCount = useMemo(() => {
     let count = actionRequiredProgressCards.length;
-    if (hasBreakData) {
-      count += Object.values(shortBreakStatuses).filter(
-        (s) => s === TIMELINE_STATUS.pending,
+    // Count pending break requests directly from apiBreakRequestsData
+    // This ensures we count break requests that are pending regardless of shortBreakStatuses state
+    if (hasBreakData && apiBreakRequestsData.length > 0) {
+      const pendingBreakCount = apiBreakRequestsData.filter(
+        (breakData) => breakData.status === "pending"
       ).length;
+      count += pendingBreakCount;
     }
     if (
       hasFinalStatementData &&
@@ -964,7 +967,7 @@ const TimelineSection: React.FC<{
   }, [
     actionRequiredProgressCards.length,
     hasBreakData,
-    shortBreakStatuses,
+    apiBreakRequestsData,
     hasFinalStatementData,
     finalStatementStatus,
     hasPendingStartRequest,

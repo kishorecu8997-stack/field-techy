@@ -100,6 +100,8 @@ export interface ClientInfoCardProps {
   verifications: string[];
   onOpenReview?: () => void;
   onClose?: () => void;
+  phoneNumber?: string;
+  email?: string;
 }
 
 export interface JobHeaderCardProps {

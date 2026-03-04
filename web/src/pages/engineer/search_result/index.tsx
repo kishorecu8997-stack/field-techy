@@ -159,6 +159,11 @@ const SearchResult = () => {
   const filteredJobs = useMemo(() => {
     let filtered = [...(jobs || [])];
 
+    // Filter out jobs where all vacancies are filled
+    filtered = filtered.filter(
+      (job) => (job.assignedEngineerCount ?? 0) < job.numberOfVacancy
+    );
+
     // Apply multiple job type filter (API only supports single jobType)
     // If more than one job type is selected, filter the rest client-side
     const selectedJobTypes =
