@@ -137,8 +137,8 @@ const ManageRateCards: React.FC = () => {
     {
       key: "id",
       label: "Sr.No.",
-      renderCell: (row: RateCardProps) => (
-        <div className="whitespace-nowrap">{row.id}</div>
+      renderCell: (_row: RateCardProps, index: number) => (
+        <div className="whitespace-nowrap">{index + 1}</div>
       ),
     },
     { key: "skillSet", label: "Service category",
