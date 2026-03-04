@@ -177,6 +177,7 @@ export default function Dashboard() {
                 xAxisDataKey="name"
                 yAxisDomain={[0, "auto"]}
                 aspectRatio={2}
+                showCursor={false}
                 series={[
                   {
                     dataKey: "users",
@@ -236,6 +237,7 @@ export default function Dashboard() {
               xAxisDataKey="name"
               yAxisDomain={[0, "auto"]}
               aspectRatio={2}
+              showCursor={false}
               series={[
                 {
                   dataKey: "jobs",
