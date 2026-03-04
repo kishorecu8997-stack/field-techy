@@ -179,3 +179,16 @@ export interface UpdateRateCardResponse {
 export interface DeleteRateCardResponse {
   message: string;
 }
+
+// Service Categories Types
+export interface ServiceCategoryItem {
+  id: number;
+  name: string;
+}
+
+export interface ServiceCategoriesResponse {
+  data: ServiceCategoryItem[];
+  total: number;
+  page: number;
+  limit: number;
+}

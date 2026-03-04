@@ -5,7 +5,7 @@ import {
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { useFormContext } from "react-hook-form";
 import { useEffect } from "react";
-import serviceCategories from "@/dummy_data/serviceCategories";
+import { useGetServiceCategories } from "@/shared/apiServices/admin/adminService";
 
 /*
  * RateCardForm
@@ -18,6 +18,15 @@ import serviceCategories from "@/dummy_data/serviceCategories";
  */
 const RateCardForm = () => {
   const ctx = useFormContext();
+
+  // Fetch service categories from API
+  const { data: serviceCategoriesData, isLoading } = useGetServiceCategories();
+
+  // Transform API data to SelectField options format
+  const serviceCategoryOptions = serviceCategoriesData?.data?.map((category) => ({
+    label: category.name,
+    value: `serviceCategory${category.id}`,
+  })) || [];
 
   // Set default value for rateType to Master Rate Card on component mount
   useEffect(() => {
@@ -42,7 +51,8 @@ const RateCardForm = () => {
         <SelectField
           name="serviceCategory"
           label="Service Category"
-          options={serviceCategories}
+          options={serviceCategoryOptions}
+          disabled={isLoading}
         />
       </div>
     </div>

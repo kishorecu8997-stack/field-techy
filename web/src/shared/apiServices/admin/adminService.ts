@@ -13,6 +13,7 @@ import type {
   UpdateRateCardParams,
   UpdateRateCardResponse,
   DeleteRateCardResponse,
+  ServiceCategoriesResponse,
 } from "./adminTypes";
 import { queryKeys } from "../queryKeys";
 import type { FileDownloadResponse } from "../client/clientTypes";
@@ -303,5 +304,16 @@ export function useDeleteRateCard(options?: {
     onError: (error) => {
       options?.onError?.(error);
     },
+  });
+}
+
+/** Hook to get all service categories */
+export function useGetServiceCategories(
+  options?: { enabled?: boolean },
+) {
+  return useQuery<ServiceCategoriesResponse>({
+    queryKey: [...queryKeys.admin.serviceCategories.all],
+    queryFn: () => AdminAdapter.getServiceCategories({ limit: 100 }),
+    enabled: options?.enabled ?? true,
   });
 }
