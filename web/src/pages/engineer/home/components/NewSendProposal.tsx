@@ -66,7 +66,7 @@ const NewSendProposal: React.FC<NewSendProposalProps> = ({ onCancel }) => {
               label="Proposal Description"
               required
               placeholder="Write your pitch to the client here..."
-              rules={validateDescription(50, 2000, "Proposal Description")}
+              rules={validateDescription(1, 50, "Proposal Description")}
             />
           </div>
 

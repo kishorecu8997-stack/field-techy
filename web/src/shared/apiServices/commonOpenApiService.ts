@@ -29,7 +29,10 @@ import {
   appCheckExistenceOptions,
   appResolveSignupRegionOptions,
 } from "@/api/@tanstack/react-query.gen";
-import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
+import {
+  appDownloadProfileFile as appDownloadProfileFileSdk,
+  appCheckExistence,
+} from "@/api/sdk.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
@@ -261,5 +264,17 @@ export function useAppResolveSignupRegion(enabled: boolean = true) {
   return useQuery({
     ...appResolveSignupRegionOptions({ client: apiClient }),
     enabled,
+  });
+}
+
+export function useCheckUserExistenceMutation() {
+  return useMutation({
+    mutationFn: async (params: { email?: string; phone?: string }) => {
+      const { data } = await appCheckExistence({
+        client: apiClient,
+        query: params,
+      });
+      return data;
+    },
   });
 }
