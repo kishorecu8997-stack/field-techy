@@ -272,30 +272,7 @@ const EngineersActions = ({
     setActiveTab?.("Job Information");
   };
 
-  const postStartActions = isFinalStatementSubmitted ? (
-    <div className="flex flex-wrap gap-4 w-fit">
-      <Button
-        variant="no_style"
-        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
-        onClick={() => onOpenViewClientFeedback?.()}
-        leftIcon={
-          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-        }
-      >
-        <span>View Feedback From Client</span>
-      </Button>
-      <Button
-        variant="no_style"
-        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
-        onClick={() => onOpenGiveClientFeedback?.()}
-        leftIcon={
-          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-        }
-      >
-        <span>Give Feedback On Client</span>
-      </Button>
-    </div>
-  ) : (
+  const postStartActions = !isFinalStatementSubmitted && (
     <div className="flex flex-wrap gap-2 w-fit">
       <Button
         className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
@@ -509,9 +486,33 @@ const EngineersActions = ({
           </div>
         ) : /* Final Statement Approved - Job Completed Status */
           isFinalStatementApproved ? (
-            <div className="flex flex-wrap gap-2 w-fit items-center">
-              <icons.checkCircle className="text-green-500 w-6 h-6" />
-              <span className="text-lg text-green-500">Job Completed</span>
+            <div className="flex flex-col items-end">
+              <div className="flex flex-wrap gap-2 w-fit items-center">
+                <icons.checkCircle className="text-green-500 w-6 h-6" />
+                <span className="text-lg text-green-500">Job Completed</span>
+              </div>
+              <div className="flex flex-wrap gap-4 w-fit">
+                <Button
+                  variant="no_style"
+                  className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
+                  onClick={() => onOpenViewClientFeedback?.()}
+                  leftIcon={
+                    <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  }
+                >
+                  <span>View Feedback From Client</span>
+                </Button>
+                <Button
+                  variant="no_style"
+                  className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
+                  onClick={() => onOpenGiveClientFeedback?.()}
+                  leftIcon={
+                    <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  }
+                >
+                  <span>Give Feedback On Client</span>
+                </Button>
+              </div>
             </div>
           ) : /* Applied Status */
             isApplied || isSubmitted ? (

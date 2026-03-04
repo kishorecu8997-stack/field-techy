@@ -236,6 +236,7 @@ export function useGetUserRatingAndReviews(enabled: boolean = true) {
   return useQuery({
     ...getUserRatingAndReviewsOptions({ client: apiClient }),
     enabled,
+    refetchOnMount: true,
   });
 }
 

@@ -3,7 +3,7 @@ import {
   useEngineerSearchJobs,
   useGetJobLogs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
+import { useGetUserRatingAndReviews, useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
@@ -29,6 +29,10 @@ import ReviewClientModal from "./job_details_components/jobHeaderComponents/Revi
 import JobTabSection from "./job_details_components/JobTabSection";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import ChatForJobs from "@/shared/components/ChatForJobs";
+import { usePopupStore } from "@/shared/store/popupStore";
+import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
+import { toast } from "react-toastify";
+import ViewClientFeedbackModal from "./job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -49,9 +53,9 @@ const mapJobToJobInfo = (
     },
     // Add total price if available
     job.totalPrice &&
-      job.currencySymbol && {
-        text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
-      },
+    job.currencySymbol && {
+      text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
+    },
     // Add work location
     job.workLocationName && { text: `Location: ${job.workLocationName}` },
   ].filter(Boolean) as Array<{ text: string }>;
@@ -104,24 +108,24 @@ const mapJobToJobOverview = (
   // Extract skills - convert IDs to labels using skillMap
   const skills = Array.isArray(job.skills)
     ? job.skills.map((skill) => {
-        const skillId =
-          typeof skill === "number" ? skill : parseInt(String(skill), 10);
-        const skillLabel = skillMap.get(skillId);
-        return skillLabel || String(skill);
-      })
+      const skillId =
+        typeof skill === "number" ? skill : parseInt(String(skill), 10);
+      const skillLabel = skillMap.get(skillId);
+      return skillLabel || String(skill);
+    })
     : [];
 
   // Extract tools - convert IDs to labels using toolMap
   const tools = Array.isArray(job.tools)
     ? job.tools.map((tool) => {
-        const toolId = String(tool);
-        const toolLabel = toolMap.get(toolId);
-        return {
-          name: toolLabel || String(tool),
-          price: "",
-          image: undefined,
-        };
-      })
+      const toolId = String(tool);
+      const toolLabel = toolMap.get(toolId);
+      return {
+        name: toolLabel || String(tool),
+        price: "",
+        image: undefined,
+      };
+    })
     : [];
 
   // Extract duration from startDate and endDate
@@ -201,6 +205,7 @@ const JobDetailsPage = () => {
   const [openChatJobId, setOpenChatJobId] = useState<string | null>(null);
   const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
   const [pageHeading, setPageHeading] = useState<string>("Job Details");
+  const { showPopup, closePopup } = usePopupStore();
 
   // Fetch job data from real API using search endpoint with jobId filter
   const { data: jobList, isLoading: isJobsLoading } = useEngineerSearchJobs({
@@ -266,8 +271,8 @@ const JobDetailsPage = () => {
           log.details || "Engineer submitted a progress update";
         const originalAttachment = log.attachmentUrl
           ? decodeURIComponent(
-              log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
-            )
+            log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
+          )
           : undefined;
         const originalAttachmentUrl = log.attachmentUrl;
 
@@ -294,13 +299,13 @@ const JobDetailsPage = () => {
           attachmentUrl: originalAttachmentUrl,
           timestamp: log.timestamp
             ? new Date(log.timestamp).toLocaleString("en-US", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              })
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })
             : "",
           statusText,
           statusColor:
@@ -349,6 +354,8 @@ const JobDetailsPage = () => {
     return !!signOff.status;
   }, [jobLogs]);
 
+  console.log("isFinalStatementSubmitted", isFinalStatementSubmitted);
+
   // Check if final statement has been approved by client
   const isFinalStatementApproved = useMemo(() => {
     if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
@@ -381,6 +388,35 @@ const JobDetailsPage = () => {
     });
   };
 
+  const { data: reviewsData } = useGetUserRatingAndReviews();
+
+  const handleOpenGiveClientFeedback = () => {
+    showPopup({
+      body: (
+        <GiveFeedbackModal
+          targetName={job?.clientDetails?.companyName ?? "Test Client"}
+          targetRole={job?.clientDetails?.clientType ?? "client"}
+          placeholder="Share your feedback about your experience with the client..."
+          assignmentId={job?.assignmentId ?? undefined}
+        />
+      ),
+    })
+  };
+
+  const handleOpenViewClientFeedback = () => {
+    showPopup({
+      body: (
+        <ViewClientFeedbackModal
+          onClose={closePopup}
+          clientName={reviewsData?.[0]?.reviewerName || clientName || "Client"}
+          clientImage={reviewsData?.[0]?.reviewerProfilePictureUrl ?? undefined}
+          rating={reviewsData?.[0]?.rating ?? undefined}
+          review={reviewsData?.[0]?.review ?? undefined}
+        />
+      ),
+    });
+  };
+
   // Close chat handler
   const handleCloseChat = () => {
     setOpenChatJobId(null);
@@ -404,7 +440,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -429,7 +465,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -448,7 +484,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -509,7 +545,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isReport={false}
           isShowBreadcrumb
           customLabels={
@@ -554,6 +590,8 @@ const JobDetailsPage = () => {
                 onToggleChat={handleToggleChat}
                 jobStartDate={job?.startDate || undefined}
                 jobEndDate={job?.endDate || undefined}
+                onOpenGiveClientFeedback={handleOpenGiveClientFeedback}
+                onOpenViewClientFeedback={handleOpenViewClientFeedback}
               />
 
               <JobTabSection
@@ -573,10 +611,10 @@ const JobDetailsPage = () => {
                   job
                     ? mapJobToJobInfo(job)
                     : {
-                        jobTitle: "",
-                        terms: { title: "Job Details", items: [] },
-                        files: [],
-                      }
+                      jobTitle: "",
+                      terms: { title: "Job Details", items: [] },
+                      files: [],
+                    }
                 }
                 jobOverview={job ? jobOverview : undefined}
               />
@@ -610,7 +648,7 @@ const JobDetailsPage = () => {
           isOpen={isReviewOpen}
           onClose={() => setIsReviewOpen(false)}
           clientName={clientName}
-          // onSubmit={handleSubmitReview}
+        // onSubmit={handleSubmitReview}
         />
       )}
     </div>
