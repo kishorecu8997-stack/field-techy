@@ -1,4 +1,5 @@
 import StateCard from "@/shared/components/AdminCard";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * JobsMetrics dashboard section.
@@ -11,6 +12,8 @@ import StateCard from "@/shared/components/AdminCard";
  */
 export default function JobsMetrics({
   jobsData,
+  isLoading,
+  isError,
 }: {
   jobsData?: {
     live: number;
@@ -18,7 +21,25 @@ export default function JobsMetrics({
     pending: number;
     disputed: number;
   };
+  isLoading: boolean;
+  isError: boolean;
 }) {
+  if (isLoading) {
+    return (
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-12 flex items-center justify-center">
+        <LoaderComponent />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-12 text-center text-red-600 font-medium">
+        Failed to load job metrics
+      </div>
+    );
+  }
+
   if (!jobsData) {
     return (
       <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-gray-500 font-medium">

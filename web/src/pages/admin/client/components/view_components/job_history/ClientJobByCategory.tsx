@@ -14,7 +14,7 @@ import { useAdminGetJobGraph } from "@/shared/apiServices/admin/adminOpenApiServ
 import { useSearchParams } from "react-router-dom";
 import { formatDate } from "@/utils/formatDate";
 import type { AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
-import { days } from "../../../types";
+import { days } from "@/pages/admin/dashboard/types";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];

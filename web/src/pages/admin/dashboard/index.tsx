@@ -12,6 +12,7 @@ import {
   useAdminGetUserGraph,
   useAdminGetDashboardStats,
 } from "@/shared/apiServices/admin/adminOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import {
   client,
   days,
@@ -35,7 +36,11 @@ import {
  * @returns {JSX.Element} Admin dashboard with metrics and charts.
  */
 export default function Dashboard() {
-  const { data: statsData } = useAdminGetDashboardStats();
+  const {
+    data: statsData,
+    isLoading: isStatsLoading,
+    isError: isStatsError,
+  } = useAdminGetDashboardStats();
 
   const tabs = [
     {
@@ -44,23 +49,43 @@ export default function Dashboard() {
         <Users
           engineerData={statsData?.engineer}
           clientData={statsData?.client}
+          isLoading={isStatsLoading}
+          isError={isStatsError}
         />
       ),
       hide: false,
     },
     {
       label: "Job Metrics",
-      content: <JobsMetrics jobsData={statsData?.jobs} />,
+      content: (
+        <JobsMetrics
+          jobsData={statsData?.jobs}
+          isLoading={isStatsLoading}
+          isError={isStatsError}
+        />
+      ),
       hide: false,
     },
     {
       label: "Financial Summary",
-      content: <FinancialSummary financeData={statsData?.finance} />,
+      content: (
+        <FinancialSummary
+          financeData={statsData?.finance}
+          isLoading={isStatsLoading}
+          isError={isStatsError}
+        />
+      ),
       hide: false,
     },
     {
       label: "Dispute Management Overview",
-      content: <DisputeManagement disputeData={statsData?.disputes} />,
+      content: (
+        <DisputeManagement
+          disputeData={statsData?.disputes}
+          isLoading={isStatsLoading}
+          isError={isStatsError}
+        />
+      ),
       hide: false,
     },
   ];
@@ -72,12 +97,20 @@ export default function Dashboard() {
     null,
   );
 
-  const { data: jobGraphData } = useAdminGetDashboardJobGraph({
+  const {
+    data: jobGraphData,
+    isLoading: isJobGraphLoading,
+    isError: isJobGraphError,
+  } = useAdminGetDashboardJobGraph({
     interval: jobsSelectedDays ? intervalMap[jobsSelectedDays] : "month",
     status: selectedStatus ? statusMap[selectedStatus] : undefined,
   });
 
-  const { data: userGraphData } = useAdminGetUserGraph({
+  const {
+    data: userGraphData,
+    isLoading: isUserGraphLoading,
+    isError: isUserGraphError,
+  } = useAdminGetUserGraph({
     interval: selectedDay ? intervalMap[selectedDay] : "month",
     role: selected ? roleMap[selected] : undefined,
   });
@@ -129,7 +162,15 @@ export default function Dashboard() {
                 />
               </div>
             </div>
-            {formattedUserData.length > 0 ? (
+            {isUserGraphLoading ? (
+              <div className="h-[400px] flex items-center justify-center">
+                <LoaderComponent />
+              </div>
+            ) : isUserGraphError ? (
+              <div className="h-[400px] flex items-center justify-center text-red-600 font-medium">
+                Failed to load user graph data
+              </div>
+            ) : formattedUserData.length > 0 ? (
               <GeneralChart
                 data={formattedUserData}
                 chartType="line"
@@ -180,7 +221,15 @@ export default function Dashboard() {
               />
             </div>
           </div>
-          {formattedJobData.length > 0 ? (
+          {isJobGraphLoading ? (
+            <div className="h-[400px] flex items-center justify-center">
+              <LoaderComponent />
+            </div>
+          ) : isJobGraphError ? (
+            <div className="h-[400px] flex items-center justify-center text-red-600 font-medium">
+              Failed to load job graph data
+            </div>
+          ) : formattedJobData.length > 0 ? (
             <GeneralChart
               data={formattedJobData}
               chartType="bar"

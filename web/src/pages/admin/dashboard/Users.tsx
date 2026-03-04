@@ -1,5 +1,6 @@
 import StateCard from "@/shared/components/AdminCard";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * Users dashboard section.
@@ -14,6 +15,8 @@ import AdminTabComponent from "@/shared/components/AdminTabComponent";
 export default function Users({
   engineerData,
   clientData,
+  isLoading,
+  isError,
 }: {
   engineerData?: {
     total: number;
@@ -26,7 +29,24 @@ export default function Users({
     active: number;
     blocked: number;
   };
+  isLoading: boolean;
+  isError: boolean;
 }) {
+  if (isLoading) {
+    return (
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-12 flex items-center justify-center">
+        <LoaderComponent />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-12 text-center text-red-600 font-medium">
+        Failed to load user statistics
+      </div>
+    );
+  }
   const displayEngineer = engineerData
     ? [
         { title: "Total Engineer", value: engineerData.total.toLocaleString() },

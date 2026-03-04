@@ -1,4 +1,5 @@
 import StateCard from "@/shared/components/AdminCard";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * DisputeManagement dashboard section.
@@ -11,13 +12,33 @@ import StateCard from "@/shared/components/AdminCard";
  */
 export default function DisputeManagement({
   disputeData,
+  isLoading,
+  isError,
 }: {
   disputeData?: {
     active: number;
     pending: number;
     resolved: number;
   };
+  isLoading: boolean;
+  isError: boolean;
 }) {
+  if (isLoading) {
+    return (
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-12 flex items-center justify-center">
+        <LoaderComponent />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-12 text-center text-red-600 font-medium">
+        Failed to load dispute overview
+      </div>
+    );
+  }
+
   if (!disputeData) {
     return (
       <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-gray-500 font-medium">
@@ -28,7 +49,7 @@ export default function DisputeManagement({
 
   const displayDisputes = [
     { title: "Active Disputes", value: disputeData.active.toLocaleString() },
-    { title: "Resoloved Disputes", value: disputeData.resolved.toLocaleString() },
+    { title: "Resolved Disputes", value: disputeData.resolved.toLocaleString() },
     { title: "Pending Disputes", value: disputeData.pending.toLocaleString() },
   ];
 

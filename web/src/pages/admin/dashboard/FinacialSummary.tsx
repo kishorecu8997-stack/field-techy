@@ -1,4 +1,5 @@
 import StateCard from "@/shared/components/AdminCard";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * FinancialSummary dashboard section.
@@ -11,12 +12,32 @@ import StateCard from "@/shared/components/AdminCard";
  */
 export default function FinancialSummary({
   financeData,
+  isLoading,
+  isError,
 }: {
   financeData?: {
     engineerPayout: number;
     totalRefund: number;
   };
+  isLoading: boolean;
+  isError: boolean;
 }) {
+  if (isLoading) {
+    return (
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-12 flex items-center justify-center">
+        <LoaderComponent />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-12 text-center text-red-600 font-medium">
+        Failed to load financial summary
+      </div>
+    );
+  }
+
   if (!financeData) {
     return (
       <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-gray-500 font-medium">
