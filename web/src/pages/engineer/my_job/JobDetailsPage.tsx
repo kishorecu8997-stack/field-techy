@@ -1,13 +1,19 @@
+import type { EngineerSearchJobsResponse } from "@/api";
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { useGetUserRatingAndReviews, useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import {
   useEngineerSearchJobs,
   useGetJobLogs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { useGetUserRatingAndReviews, useLookupData } from "@/shared/apiServices/commonOpenApiService";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import type { JobOverviewProps } from "@/shared/components/types";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { getDurationString } from "@/utils";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   JOB_STATUSES,
@@ -15,24 +21,17 @@ import {
   type AssignmentStatus,
   type JobStatus,
 } from "../search_result/types";
-import type {
-  ProgressUpdate,
-  OfferedJobStatusType,
-  JobInfoSectionProps,
-} from "./types.d";
-import type { JobOverviewProps } from "@/shared/components/types";
-import type { EngineerSearchJobsResponse } from "@/api";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
-import JobTabSection from "./job_details_components/JobTabSection";
-import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
-import ChatForJobs from "@/shared/components/ChatForJobs";
-import { usePopupStore } from "@/shared/store/popupStore";
-import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
-import { toast } from "react-toastify";
 import ViewClientFeedbackModal from "./job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
+import JobTabSection from "./job_details_components/JobTabSection";
+import type {
+  JobInfoSectionProps,
+  OfferedJobStatusType,
+  ProgressUpdate,
+} from "./types.d";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -354,8 +353,6 @@ const JobDetailsPage = () => {
     return !!signOff.status;
   }, [jobLogs]);
 
-  console.log("isFinalStatementSubmitted", isFinalStatementSubmitted);
-
   // Check if final statement has been approved by client
   const isFinalStatementApproved = useMemo(() => {
     if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
@@ -388,7 +385,7 @@ const JobDetailsPage = () => {
     });
   };
 
-  const { data: reviewsData } = useGetUserRatingAndReviews();
+  const { data: reviewsData } = useGetUserRatingAndReviews(true, assignmentId);
 
   const handleOpenGiveClientFeedback = () => {
     showPopup({
