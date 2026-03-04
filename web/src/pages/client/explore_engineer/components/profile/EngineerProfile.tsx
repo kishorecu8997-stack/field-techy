@@ -11,6 +11,7 @@ import EngineerProfileCard from "./EngineerProfileCard";
 import { useQuery } from "@tanstack/react-query";
 import { clientGetPublicEngineerProfileOptions } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
+import { Button } from "node_modules/@headlessui/react/dist/components/button/button";
 
 // will read portfolio link from API response
 
@@ -61,12 +62,12 @@ const EngineerProfile: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
                 Engineer profile not found or unavailable.
               </p>
-              <button
+              <Button
                 onClick={() => navigate(absoluteUrls.client.home.dashboard)}
                 className="px-6 py-2 bg-emerald-800 hover:bg-emerald-700 text-white rounded-lg transition-colors"
               >
                 Back to Explore Engineers
-              </button>
+              </Button>
             </div>
           </div>
         </div>

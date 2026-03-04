@@ -36,12 +36,10 @@ const InviteJob: React.FC = () => {
     scrollToTop();
   }, [currentPage]);
 
-
   const { data: jobsData } = useClientGetJobs(true) as { data?: ClientGetJobsResponse };
 
   const { mutateAsync: inviteEngineer } = useClientInviteEngineer({ 
-    
-   });
+    });
 
   const methods = useForm<SelectedJobCardId>({
     defaultValues: {
@@ -90,7 +88,7 @@ const InviteJob: React.FC = () => {
   };
 
   const itemsPerPage = 6;
-  // only show jobs that are posted and not already tied to this engineer
+  // only show jobs that are posted and not already invited to this engineer
   const postedJobs = (jobsData || [])
     .filter((j) => j.status?.toLowerCase() === "posted")
   const totalPages = Math.ceil(postedJobs.length / itemsPerPage);
