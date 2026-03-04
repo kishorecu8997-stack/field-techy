@@ -64,16 +64,19 @@ const Dashboard: React.FC = () => {
   }, [clientJobs]);
 
   // Fetch assignments for each in-progress job (max 4 jobs)
-  const assignmentQueries = inProgressJobIds.map((jobId) =>
-    useClientGetAssignmentDetails({ jobId }),
-  );
+  // Call hooks at top level with enabled flag to avoid calls when jobId is undefined
+  const assignmentData1 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[0] }, !!inProgressJobIds[0]);
+  const assignmentData2 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[1] }, !!inProgressJobIds[1]);
+  const assignmentData3 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[2] }, !!inProgressJobIds[2]);
+  const assignmentData4 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[3] }, !!inProgressJobIds[3]);
+  const assignmentQueries = [assignmentData1, assignmentData2, assignmentData3, assignmentData4];
 
   // Build a map of jobId to assignment data
   const jobAssignmentsMap = useMemo(() => {
     const map = new Map<number, { avatars: string[]; count: number }>();
     assignmentQueries.forEach((query, index) => {
       const jobId = inProgressJobIds[index];
-      if (query.data) {
+      if (jobId && query.data) {
         const assignments = query.data;
         const validAssignments = assignments.filter(
           (a) => a.engineer && a.assignmentStatus !== "rejected",
@@ -88,7 +91,7 @@ const Dashboard: React.FC = () => {
       }
     });
     return map;
-  }, [assignmentQueries, inProgressJobIds]);
+  }, [inProgressJobIds, assignmentQueries]);
 
   // Memoized map of service category ID to name
   const serviceCategoryMap = useMemo(() => {
