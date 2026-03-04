@@ -2,7 +2,6 @@ import {
   CustomTable,
   type Column,
 } from "@/shared/components/commonUI/custom_table";
-import { BANK_CARD_DATA } from "../types";
 import { useAdminGetEngineerHistory } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useParams } from "react-router-dom";
 import { useMemo, useState } from "react";
@@ -14,6 +13,9 @@ interface WalletTransaction {
   amount: number;
   status: "pending" | "approved" | "rejected";
 }
+interface WalletProps {
+  walletBalance?: number;
+}
 
 /**
  * Wallet Component
@@ -22,8 +24,7 @@ interface WalletTransaction {
  * Fetches data using engineer ID from URL parameters
  * Handles loading and error states gracefully
  */
-export default function Wallet() {
-  const data = BANK_CARD_DATA;
+export default function Wallet({ walletBalance }: WalletProps) {
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -108,68 +109,12 @@ export default function Wallet() {
   ];
 
   return (
-    <div className="p-8">
-      {/* CARD/BANK SECTION (dummy retained as requested) */}
-      <div className="text-sm border border-gray-200 rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm">
-        <h3 className="font-semibold text-gray-700 dark:text-white mb-4">
-          Card Detail
-        </h3>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">
-                Bank Name
-              </label>
-              <p className="font-semibold">{data.bankName}</p>
-            </div>
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">
-                Card Number
-              </label>
-              <p className="font-semibold">{data.cardNumber}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">
-                Bank Address
-              </label>
-              <p className="text-sm leading-tight">{data.bankAddress}</p>
-            </div>
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">
-                IBAN Number
-              </label>
-              <p className="font-semibold">{data.ibanNumber}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">
-                Card Holder Name
-              </label>
-              <p className="font-semibold text-gray-500">
-                {data.cardHolderName}
-              </p>
-            </div>
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">
-                Swift Code
-              </label>
-              <p className="font-semibold">{data.swiftCode}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div className="p-1">
       {/* Wallet Balance */}
-      <div className="flex gap-2 mb-2 mt-6 items-center">
+      <div className="flex gap-2 p-1 items-center">
         <p className="text-gray-500">Wallet Balance:</p>
         <span className="font-semibold text-[#666666]">
-          ₹{data.walletBalance}
+          {(walletBalance ?? 0).toLocaleString()}{" "}
         </span>
       </div>
 
