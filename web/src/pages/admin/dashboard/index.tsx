@@ -4,7 +4,6 @@ import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import SelectMenu from "@/shared/components/SelectMenu";
 import { useMemo, useState } from "react";
-import { days, client, status } from "@/dummy_data/adminDashboard";
 import JobsMetrics from "./JobMetrics";
 import FinancialSummary from "./FinacialSummary";
 import DisputeManagement from "./DisputeManagement";
@@ -14,8 +13,11 @@ import {
   useAdminGetDashboardStats,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import {
+  client,
+  days,
   intervalMap,
   roleMap,
+  status,
   statusMap,
   type IntervalType,
   type RoleType,
