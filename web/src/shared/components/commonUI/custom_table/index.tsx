@@ -66,9 +66,10 @@ export function CustomTable<T extends object>({
   const activePage = isExternalPagination
     ? (externalCurrentPage ?? 1)
     : currentPage;
-  const activePageSize = isExternalPagination && externalPageSize !== undefined 
-    ? externalPageSize 
-    : pageSize;
+  const activePageSize =
+    isExternalPagination && externalPageSize !== undefined
+      ? externalPageSize
+      : pageSize;
 
   // ---------- Fetch (Server Pagination) ----------
   useEffect(() => {
@@ -102,15 +103,12 @@ export function CustomTable<T extends object>({
       : allData.length;
 
   const paginatedData = useMemo(() => {
-    
     if (api) return allData;
-    
-    
+
     if (isExternalPagination) {
       return allData;
     }
-    
-    
+
     const start = (activePage - 1) * activePageSize;
     return allData.slice(start, start + activePageSize);
   }, [allData, activePage, activePageSize, api, isExternalPagination]);
