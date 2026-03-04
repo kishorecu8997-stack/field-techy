@@ -40,6 +40,10 @@ export interface RateCardProps {
   project: string;
   createdDate: string;
   status: boolean;
+  experienceLevels?: string[];
+  country?: string;
+  serviceCategoryId?: number;
+  countryId?: number;
 }
 
 export interface PricingFormValues {

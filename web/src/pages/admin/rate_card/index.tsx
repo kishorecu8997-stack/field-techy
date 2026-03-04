@@ -60,18 +60,22 @@ const ManageRateCards: React.FC = () => {
     
     return rateCardsResponse.data.map((item) => ({
       id: String(item.id),
-      skillSet: item.skillSet,
-      region: item.region,
-      location: item.location,
-      experienceLevel: item.experienceLevelId ? String(item.experienceLevelId) : "-",
-      hourly: "-",
-      halfDay: "-",
-      fullDay: "-",
-      weekly: "-",
-      monthly: "-",
-      project: "-", // Project field not available in API response
-      createdDate: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-",
+      skillSet: item.serviceCategory || "-",
+      region: item.region || "-",
+      location: item.country || "-",
+      experienceLevel: item.experienceLevels?.join(", ") || "-",
+      hourly: item.hourly || "-",
+      halfDay: item.halfDay || "-",
+      fullDay: item.fullDay || "-",
+      weekly: item.weekly || "-",
+      monthly: item.monthly || "-",
+      project: "-",
+      createdDate: item.createdDate ? new Date(item.createdDate).toLocaleDateString() : "-",
       status: true, // Default status
+      experienceLevels: item.experienceLevels,
+      country: item.country,
+      serviceCategoryId: item.serviceCategoryId,
+      countryId: item.countryId,
     }));
   }, [rateCardsResponse]);
 
@@ -137,62 +141,72 @@ const ManageRateCards: React.FC = () => {
         <div className="whitespace-nowrap">{row.id}</div>
       ),
     },
-    { key: "skillSet", label: "Service category" },
-    { key: "region", label: "Region" },
-    { key: "location", label: "Country" },
+    { key: "skillSet", label: "Service category",
+      renderCell: (row: RateCardProps) => (
+        <div className="whitespace-nowrap">{row.skillSet}</div>
+      ),
+    },
+    { key: "region", label: "Region",
+      renderCell: (row: RateCardProps) => (
+        <div className="whitespace-nowrap">{row.region}</div>
+      ),
+    },
+    { key: "location", label: "Country",
+      renderCell: (row: RateCardProps) => (
+        <div className="whitespace-nowrap">{row.location}</div>
+      ),
+    },
     {
       key: "experienceLevel",
       label: "Experience Level",
-      renderCell: (_row: RateCardProps) => (
+      renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">Level 1 - Junior (1-3 years)</div>
-          <div className="text-sm">Level 2 - Mid (3-5 years)</div>
-          <div className="text-sm">Level 3 - Senior (5+ years)</div>
+          {row.experienceLevels && row.experienceLevels.length > 0 ? (
+            row.experienceLevels.map((level, idx) => (
+              <div key={idx} className="text-sm">{level}</div>
+            ))
+          ) : (
+            <>
+              <div className="text-sm">Level 1 - Junior (1-3 years)</div>
+              <div className="text-sm">Level 2 - Mid (3-5 years)</div>
+              <div className="text-sm">Level 3 - Senior (5+ years)</div>
+            </>
+          )}
         </div>
       ),
     },
     { key: "hourly", label: "Hourly",
-      renderCell: (_row: RateCardProps) => (
+      renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
+          <div className="text-sm">{row.hourly !== "-" ? row.hourly : "-"}</div>
         </div>
       ),
     },
     { key: "halfDay", label: "Half-Day (4h)",
-      renderCell: (_row: RateCardProps) => (
+      renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
+          <div className="text-sm">{row.halfDay !== "-" ? row.halfDay : "-"}</div>
         </div>
       ),
     },
     { key: "fullDay", label: "Full-Day (8h)",
-      renderCell: (_row: RateCardProps) => (
+      renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
+          <div className="text-sm">{row.fullDay !== "-" ? row.fullDay : "-"}</div>
         </div>
       ),
     },
     { key: "weekly", label: "Weekly (5d)",
-      renderCell: (_row: RateCardProps) => (
+      renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
+          <div className="text-sm">{row.weekly !== "-" ? row.weekly : "-"}</div>
         </div>
       ),
     },
     { key: "monthly", label: "Monthly",
-      renderCell: (_row: RateCardProps) => (
+      renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
-          <div className="text-sm">-</div>
+          <div className="text-sm">{row.monthly !== "-" ? row.monthly : "-"}</div>
         </div>
       ),
     },

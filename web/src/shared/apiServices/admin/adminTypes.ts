@@ -99,8 +99,25 @@ export interface RateCardItem {
   engagementModelId: number;
 }
 
+// New API response types
+export interface RateCardDataItem {
+  id: number;
+  serviceCategory: string;
+  region: string;
+  country: string;
+  experienceLevels: string[];
+  hourly: string;
+  halfDay: string;
+  fullDay: string;
+  weekly: string;
+  monthly: string;
+  createdDate: string;
+  serviceCategoryId: number;
+  countryId: number;
+}
+
 export interface RateCardsResponse {
-  data: RateCardItem[];
+  data: RateCardDataItem[];
   total: number;
   page: number;
   limit: number;
