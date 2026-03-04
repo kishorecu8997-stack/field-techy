@@ -1,13 +1,9 @@
+import AdminFilter from "@/shared/components/AdminFilter";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
-import AllUsersReport from "./components/AllUsersReport";
-import ClientReport from "./components/ClientReport";
-import CompletedReport from "./components/CompletedReport";
-import EngineerReport from "./components/EngineerReport";
+import { useAdminReports } from "@/shared/hooks/useAdminReports";
 import { useState } from "react";
 import { BsFilterRight } from "react-icons/bs";
-import AdminFilter, {
-  type FilterDataProps,
-} from "@/shared/components/AdminFilter";
+import ReportTable from "./components/ReportTable";
 
 /**
  * AdminReportIssue page for admin. Presents AdminReportIssue in tabbed sections using
@@ -19,36 +15,108 @@ import AdminFilter, {
  */
 export default function AdminReportIssue() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const {
+    allData,
+    clientData,
+    engineerData,
+    completedData,
+    allLoading,
+    clientLoading,
+    engineerLoading,
+    completedLoading,
+    refetchAll,
+    refetchClient,
+    refetchEngineer,
+    refetchCompleted,
+    filterParams,
+    handleApplyFilters,
+    pagination: {
+      pageSize,
+      setPageSize,
+      allPage,
+      setAllPage,
+      clientPage,
+      setClientPage,
+      engineerPage,
+      setEngineerPage,
+      completedPage,
+      setCompletedPage,
+    },
+  } = useAdminReports();
 
-  // This prop function receives the filter object from the child
-  const handleApplyFilters = (data: FilterDataProps) => {
-    console.log("Filters Applied:", data);
-  };
   const tabs = [
     {
       label: "All Users",
-      content: <AllUsersReport />,
-      hide: false,
+      content: (
+        <ReportTable
+          filterParams={filterParams}
+          refetch={refetchAll}
+          role="all"
+          data={allData?.data ?? []}
+          total={allData?.total ?? 0}
+          isLoading={allLoading}
+          currentPage={allPage}
+          setCurrentPage={setAllPage}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+        />
+      ),
     },
     {
       label: "Client",
-      content: <ClientReport />,
-      hide: false,
+      content: (
+        <ReportTable
+          filterParams={filterParams}
+          refetch={refetchClient}
+          role="client"
+          data={clientData?.data ?? []}
+          total={clientData?.total ?? 0}
+          isLoading={clientLoading}
+          currentPage={clientPage}
+          setCurrentPage={setClientPage}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+        />
+      ),
     },
     {
       label: "Engineer",
-      content: <EngineerReport />,
-      hide: false,
+      content: (
+        <ReportTable
+          filterParams={filterParams}
+          refetch={refetchEngineer}
+          role="engineer"
+          data={engineerData?.data ?? []}
+          total={engineerData?.total ?? 0}
+          isLoading={engineerLoading}
+          currentPage={engineerPage}
+          setCurrentPage={setEngineerPage}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+        />
+      ),
     },
     {
       label: "Completed",
-      content: <CompletedReport />,
-      hide: false,
+      content: (
+        <ReportTable
+          filterParams={filterParams}
+          refetch={refetchCompleted}
+          role="completed"
+          data={completedData?.data ?? []}
+          total={completedData?.total ?? 0}
+          isLoading={completedLoading}
+          currentPage={completedPage}
+          setCurrentPage={setCompletedPage}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+        />
+      ),
     },
   ];
 
   return (
-    <div className="relative w-full h-full px-4 overflow-hidden">
+    <div className="relative w-full h-full px-4 overflow-y-auto">
       {/* Header Section */}
       <div className="flex justify-between items-center mt-2 mb-6">
         <p className="font-semibold text-xl">Reported Issue</p>

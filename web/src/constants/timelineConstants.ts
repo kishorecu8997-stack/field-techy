@@ -13,10 +13,13 @@ export const TIMELINE_CARD_COLORS = {
 export const MODAL_TITLES = {
   requestRevision: "Request Revision",
   shortBreakApproval: "Short Term Break Approval",
+  shortBreakRejection: "Short Term Break Rejection",
   jobApproval: "Approve Job Start",
   jobRejection: "Reject Job Start",
   finalStatementApproval: "Approve Final Statement",
   finalStatementRejection: "Reject Final Statement",
+  progressReject: "Reject Progress Update",
+  revisionReject: "Reject Revision Update",
 } as const;
 
 export const MODAL_MESSAGES = {
@@ -28,6 +31,10 @@ export const MODAL_MESSAGES = {
     "Are you sure you want to approve this final statement? The job will be marked as completed.",
   finalStatementRejectConfirm:
     "Are you sure you want to reject this final statement? The engineer will need to resubmit.",
+  progressRejectConfirm:
+    "Are you sure you want to reject this progress update? The engineer will need to resubmit.",
+  revisionRejectConfirm:
+    "Are you sure you want to reject this revision update? The engineer will need to resubmit.",
 } as const;
 
 export const TOAST_MESSAGES = {

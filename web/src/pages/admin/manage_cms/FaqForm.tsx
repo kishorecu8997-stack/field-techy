@@ -8,6 +8,7 @@ interface AddFaqProps {
   faqMode: "Add" | "Edit";
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   isLoading?: boolean;
+  validateSortOrder: (value: number) => true | string;
 }
 
 /**
@@ -26,6 +27,7 @@ export default function FaqForm({
   faqMode,
   setIsModalOpen,
   isLoading = false,
+  validateSortOrder,
 }: AddFaqProps) {
   const handleClose = () => {
     if (!isLoading) {
@@ -101,6 +103,7 @@ export default function FaqForm({
                 message: "Sort order must be 0 or greater",
               },
               valueAsNumber: true,
+              validate: validateSortOrder,
             }}
             placeholder="0"
             disabled={isLoading}

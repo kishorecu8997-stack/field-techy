@@ -3,6 +3,7 @@ import Accordion from "./Accordion";
 import ContactCard from "./ContactCard";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * Contact page featuring a header with a message icon and an expandable "Contact Us" section
@@ -13,40 +14,46 @@ const ContactUs = () => {
     data: contactData,
     isLoading: contactLoading,
     error: contactError,
-  } = useGetCmsContent("contact-info");
+    refetch,
+  } = useGetCmsContent("contact-info", {
+    enabled: true,
+    refetchInterval: () =>
+      document.visibilityState === "visible" ? 15000 : false,
+  });
 
   const getContactItems = () => {
-    let phone = "+91 12345 67890";
-    let email = "support@field-techy.com";
-
     if (
       contactData?.type === "contact-info" &&
       contactData.data &&
       typeof contactData.data === "object" &&
       !Array.isArray(contactData.data)
     ) {
-      if ("phone" in contactData.data && contactData.data.phone) {
-        phone = String(contactData.data.phone);
+      const data = contactData.data;
+
+      const items = [];
+
+      if (data.phone) {
+        items.push({
+          id: "1",
+          label: "Call",
+          value: String(data.phone),
+          icon: <icons.phone className="text-white" />,
+        });
       }
-      if ("email" in contactData.data && contactData.data.email) {
-        email = String(contactData.data.email);
+
+      if (data.email) {
+        items.push({
+          id: "2",
+          label: "Email",
+          value: String(data.email),
+          icon: <icons.email className="text-white" />,
+        });
       }
+
+      return items;
     }
 
-    return [
-      {
-        id: "1",
-        label: "Call",
-        value: phone,
-        icon: <icons.phone className="text-white" />,
-      },
-      {
-        id: "2",
-        label: "Email",
-        value: email,
-        icon: <icons.email className="text-white" />,
-      },
-    ];
+    return [];
   };
 
   const contactDetails = getContactItems();
@@ -60,11 +67,24 @@ const ContactUs = () => {
           <LoaderComponent />
         </div>
       ) : contactError ? (
-        <div className="flex items-center justify-center p-6 text-center">
+        <div className="p-6 text-center space-y-4">
           <p className="text-red-600 font-medium">
-            Failed to load contact information.
+            We’re currently experiencing technical issues.
             <br />
-            Showing default values.
+            Please try again.
+          </p>
+
+          <Button
+            onClick={() => refetch()}
+            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition"
+          >
+            Try Again
+          </Button>
+        </div>
+      ) : contactDetails.length === 0 ? (
+        <div className="p-6 text-center text-gray-600 dark:text-gray-400">
+          <p className="font-medium text-lg mb-2">
+            No contact information available for now.
           </p>
         </div>
       ) : (
@@ -80,9 +100,11 @@ const ContactUs = () => {
         <div className="p-5 bg-teal-900 rounded-full shadow-md">
           <icons.message className="h-10 w-10 text-gray-100" />
         </div>
+
         <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
           Contact Us
         </h1>
+
         <p className="text-center text-gray-600 dark:text-gray-300 max-w-lg">
           We’re here to support your job posting and hiring experience.
           <br />

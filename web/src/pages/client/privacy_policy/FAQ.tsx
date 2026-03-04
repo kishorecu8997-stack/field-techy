@@ -4,10 +4,6 @@ import { scrollToTop } from "@/utils";
 import { useGetCmsContent } from "@/shared/apiServices/admin/adminOpenApiService";
 import DOMPurify from "dompurify";
 
-interface FAQItem {
-  title: string;
-  description: string;
-}
 /**
  * FAQ page component that displays frequently asked questions fetched from CMS.
  *
@@ -29,33 +25,40 @@ const FAQ = () => {
     scrollToTop();
   }, []);
 
-  const { data: cmsData, isLoading, error } = useGetCmsContent("faq");
+  const {
+    data: cmsData,
+    isLoading,
+    error,
+  } = useGetCmsContent("faq", {
+    enabled: true,
+    refetchInterval: () =>
+      document.visibilityState === "visible" ? 15000 : false,
+  });
 
   const [search, setSearch] = useState("");
-  const [expandedIndex, setExpandedIndex] = useState<string | null>(null);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  const faqData: FAQItem[] = useMemo(() => {
-    if (!cmsData || !("type" in cmsData) || cmsData.type !== "faq") {
-      return [];
-    }
+  const faqData = useMemo(() => {
+    if (!cmsData || cmsData.type !== "faq") return [];
 
-    return [...cmsData.data]
-      .sort((a, b) => a.sortOrder - b.sortOrder)
+    return cmsData.data
+      .slice()
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
       .map((faq) => ({
+        id: faq.id,
         title: faq.question,
         description: DOMPurify.sanitize(faq.answer),
+        sortOrder: faq.sortOrder,
       }));
   }, [cmsData]);
-
   const filteredData = useMemo(() => {
     const searchText = search.toLowerCase();
 
-    return faqData.filter((item) => {
-      return (
+    return faqData.filter(
+      (item) =>
         item.title.toLowerCase().includes(searchText) ||
-        item.description.toLowerCase().includes(searchText)
-      );
-    });
+        item.description.toLowerCase().includes(searchText),
+    );
   }, [faqData, search]);
 
   if (isLoading) {
@@ -115,8 +118,8 @@ const FAQ = () => {
         {/* FAQ List */}
         {filteredData.length > 0 ? (
           <div className="space-y-4">
-            {filteredData.map((item, index) => {
-              const itemKey = `${item.title}-${index}`;
+            {filteredData.map((item) => {
+              const itemKey = item.id;
               const isExpanded = expandedIndex === itemKey;
 
               return (
@@ -139,12 +142,21 @@ const FAQ = () => {
                     <div className="px-6 pb-6">
                       <div
                         className="
-                       text-sm text-gray-600 dark:text-gray-400
-                       prose prose-sm dark:prose-invert      
-                       max-w-none
-                       break-words
-                       overflow-x-hidden
-                       w-full"
+    prose 
+    prose-lg 
+    dark:prose-invert 
+    max-w-none
+
+    [&_ul]:list-disc
+    [&_ul]:pl-6
+    [&_ol]:list-decimal
+    [&_ol]:pl-6
+    [&_li]:mb-1
+
+    break-words
+    overflow-x-hidden
+    w-full
+  "
                         dangerouslySetInnerHTML={{
                           __html: item.description,
                         }}

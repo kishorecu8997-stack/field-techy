@@ -5,6 +5,10 @@ import {
   useEngineerAddWorkLog,
   useEngineerRequestStart,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
+import { getJobLogs } from "@/api";
+import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
+import { apiClient } from "@/shared/apiServices/apiClient";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
@@ -14,6 +18,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * UpdateStatus Component
@@ -23,9 +28,63 @@ import { toast } from "react-toastify";
  * */
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   const { jobId } = useParams<{ jobId: string }>();
+  const queryClient = useQueryClient();
 
-  const { mutateAsync: requestStart } = useEngineerRequestStart();
-  const { mutateAsync: addWorkLog } = useEngineerAddWorkLog();
+  // Use jobId as assignmentId since that's what the API expects
+  const assignmentId = jobId ? Number(jobId) : undefined;
+
+  const { mutateAsync: requestStart } = useEngineerRequestStart({
+    assignmentId,
+    onSuccess: async () => {
+      // Force refetch the job logs to update timeline immediately
+      if (assignmentId) {
+        try {
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId },
+          });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          queryClient.setQueryData(exactQueryKey, response.data);
+          queryClient.setQueryData(
+            ["getJobLogs", { path: { assignmentId } }],
+            response.data,
+          );
+          queryClient.setQueryData(
+            queryKeys.engineer.jobLogs(assignmentId),
+            response.data,
+          );
+        } catch (error) {
+          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+      }
+    },
+  });
+  const { mutateAsync: addWorkLog } = useEngineerAddWorkLog({
+    assignmentId,
+    onSuccess: async () => {
+      // Force refetch the job logs to update timeline immediately
+      if (assignmentId) {
+        try {
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId },
+          });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          queryClient.setQueryData(exactQueryKey, response.data);
+          queryClient.setQueryData(
+            ["getJobLogs", { path: { assignmentId } }],
+            response.data,
+          );
+          queryClient.setQueryData(
+            queryKeys.engineer.jobLogs(assignmentId),
+            response.data,
+          );
+        } catch (error) {
+          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+      }
+    },
+  });
 
   // This will also replaced once the API is ready
   // const { mutateAsync: uploadFile } = useAppUploadProfileFile();

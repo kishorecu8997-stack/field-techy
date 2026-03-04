@@ -1,6 +1,8 @@
 export interface ContactSupportFormData {
   email: string;
   phoneNumber: string;
+  address: string;
+  copyright: string;
 }
 
 export interface FaqAddFormData {
