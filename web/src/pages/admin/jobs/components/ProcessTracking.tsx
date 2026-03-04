@@ -29,7 +29,10 @@ const ProcessTracking = () => {
   const formatTime = (timestamp: string) => {
     if (!timestamp) return "-";
     const date = new Date(timestamp);
-    return date.toLocaleTimeString("en-US", {
+    return date.toLocaleString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
