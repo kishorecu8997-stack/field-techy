@@ -12,6 +12,7 @@ import { CiEdit } from "react-icons/ci";
 import { FaUserShield } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAdminUpdateSubAdmin } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * `ManageSubAdmin` is a page component for displaying and managing sub-admin users.
@@ -40,39 +41,48 @@ export default function ManageSubAdmin() {
   const subAdmins = data?.data ?? [];
   type SubAdminItem = AdminGetSubAdminsResponses[200]["data"][number];
   const totalCount = data?.total ?? 0;
+  const updateSubAdminMutation = useAdminUpdateSubAdmin({
+    onSuccess: (data) => {
+      toast.success(data.message || "Status updated successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to update sub-admin status.");
+    },
+  });
 
-  const handleDisableSubAdmin = async (_row: SubAdminItem) => {
+  const handleToggleSubAdminStatus = async (row: SubAdminItem) => {
+    const isActive = row.userStatus === "active";
+    const newStatus = isActive ? "inactive" : "active";
+
     const result = await showPopup({
-      title: "Disable Sub-Admin",
-      body: "Are you sure you want to disable this sub-admin?",
+      title: `${isActive ? "Disable" : "Enable"} Sub-Admin`,
+      body: `Are you sure you want to ${isActive ? "disable" : "enable"} this sub-admin?`,
       actionButtons: [
+        { label: "Cancel", value: null, variant: "outline" },
         {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Disable",
-          value: "disable",
-          variant: "danger",
+          label: isActive ? "Disable" : "Enable",
+          value: "confirm",
+          variant: isActive ? "danger" : "primary",
         },
       ],
     });
 
-    if (result !== "disable") return;
+    if (result !== "confirm") return;
 
-    try {
-      // TODO: Replace with real API call
-      // await api.disableSubAdmin(row.id);
-
-      toast.success("Sub-admin disabled successfully!");
-
-      if (subAdmins.length === 1 && page > 1) {
-        setPage((prev) => prev - 1);
-      }
-    } catch (err) {
-      toast.error("Failed to disable sub-admin. Please try again.");
+    if (row.regionId == null) {
+      toast.error(
+        "Cannot update status: Region information is missing for this sub-admin.",
+      );
+      return;
     }
+
+    updateSubAdminMutation.mutate({
+      path: { userId: row.userId },
+      query: {
+        regionId: row.regionId,
+      },
+      body: { userStatus: newStatus },
+    });
   };
 
   const columns: Column<SubAdminItem>[] = [
@@ -124,10 +134,23 @@ export default function ManageSubAdmin() {
             <CiEdit className="text-blue-600" />
           </div>
           <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDisableSubAdmin(row)}
+            className={`p-2 rounded-md cursor-pointer ${
+              row.userStatus === "active" ? "bg-green-100" : "bg-red-100"
+            }`}
+            onClick={() => handleToggleSubAdminStatus(row)}
+            role="button"
+            tabIndex={0}
+            aria-label={
+              row.userStatus === "active"
+                ? "Disable sub-admin"
+                : "Enable sub-admin"
+            }
           >
-            <FaUserShield className="text-red-600" />
+            <FaUserShield
+              className={
+                row.userStatus === "active" ? "text-green-600" : "text-red-600"
+              }
+            />
           </div>
         </div>
       ),
