@@ -101,22 +101,16 @@ export function CustomTable<T extends object>({
       ? total
       : allData.length;
 
-  // When external pagination is used with data (no API), we receive already-paginated data from the server
-  // The totalCount tells us the total records, and data contains the current page items
-  // We should NOT do client-side slicing in this case since data is already the correct page
   const paginatedData = useMemo(() => {
-    // If using API (internal), data is fetched and paginated by the API
+    
     if (api) return allData;
     
-    // If using external pagination with data, the data is already the current page
-    // (from the API query that was called with page/limit params)
-    // We should return it as-is without slicing
+    
     if (isExternalPagination) {
       return allData;
     }
     
-    // Only do client-side pagination when there's no API and no external pagination
-    // This is purely client-side data without any server pagination
+    
     const start = (activePage - 1) * activePageSize;
     return allData.slice(start, start + activePageSize);
   }, [allData, activePage, activePageSize, api, isExternalPagination]);
