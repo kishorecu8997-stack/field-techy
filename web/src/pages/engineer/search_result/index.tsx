@@ -161,7 +161,7 @@ const SearchResult = () => {
 
     // Filter out jobs where all vacancies are filled
     filtered = filtered.filter(
-      (job) => (job.assignedEngineerCount ?? 0) < job.numberOfVacancy
+      (job) => (job.assignedEngineerCount ?? 0) < job.numberOfVacancy,
     );
 
     // Apply multiple job type filter (API only supports single jobType)

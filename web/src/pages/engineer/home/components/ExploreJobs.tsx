@@ -51,7 +51,7 @@ const ExploreJobs: React.FC = () => {
     const apiNewJobs = (apiJobs || []).filter(
       (job) =>
         job.status === "NEW" &&
-        (job.assignedEngineerCount ?? 0) < job.numberOfVacancy
+        (job.assignedEngineerCount ?? 0) < job.numberOfVacancy,
     );
     return apiNewJobs;
   }, [apiJobs]);

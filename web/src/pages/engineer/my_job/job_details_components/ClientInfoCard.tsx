@@ -68,7 +68,7 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
             {rating} • {reviews} Reviews
           </span>
         </div>
-{/* 
+        {/* 
         {phoneNumber && (
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <icons.phone className="h-4 w-4" />

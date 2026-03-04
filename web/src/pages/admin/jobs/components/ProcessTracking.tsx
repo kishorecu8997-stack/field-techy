@@ -40,23 +40,23 @@ const ProcessTracking = () => {
   };
 
   const columns = [
-    { 
-      key: "srNo", 
+    {
+      key: "srNo",
       label: "Sr.No.",
-      renderCell: (_row: any, index: number) => index + 1 
+      renderCell: (_row: any, index: number) => index + 1,
     },
-    { 
-      key: "timestamp", 
+    {
+      key: "timestamp",
       label: "Date and Time",
-      renderCell: (row: any) => formatTime(row.timestamp)
+      renderCell: (row: any) => formatTime(row.timestamp),
     },
     { key: "logType", label: "Work Log Type" },
     { key: "status", label: "Status" },
     { key: "details", label: "Details" },
-    { 
-      key: "updatedAt", 
+    {
+      key: "updatedAt",
       label: "Updated At",
-      renderCell: (row: any) => formatTime(row.updatedAt)
+      renderCell: (row: any) => formatTime(row.updatedAt),
     },
   ];
 

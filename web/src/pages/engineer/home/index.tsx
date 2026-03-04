@@ -65,7 +65,9 @@ const Home = () => {
         startDate: job.startDate || new Date().toISOString(),
         endDate: job.endDate || null,
         numberOfVacancy: job.vacancies || 1,
-        assignedEngineerCount: (job as unknown as { assignedEngineerCount?: number }).assignedEngineerCount || 0,
+        assignedEngineerCount:
+          (job as unknown as { assignedEngineerCount?: number })
+            .assignedEngineerCount || 0,
         experience: job.experienceLevelId || 0,
         salary: formattedPay,
         status: job.status || "NEW",
@@ -112,9 +114,8 @@ const Home = () => {
       jobs?.filter(
         (job) =>
           (job.status === "Posted" || job.status === "NEW") &&
-          (job.assignedEngineerCount ?? 0) < job.numberOfVacancy
-      ) ||
-      []
+          (job.assignedEngineerCount ?? 0) < job.numberOfVacancy,
+      ) || []
     );
   }, [jobs]);
 
@@ -123,9 +124,8 @@ const Home = () => {
       jobs?.filter(
         (job) =>
           (job.status === "Posted" || job.status === "NEW") &&
-          (job.assignedEngineerCount ?? 0) < job.numberOfVacancy
-      ) ||
-      []
+          (job.assignedEngineerCount ?? 0) < job.numberOfVacancy,
+      ) || []
     );
   }, [jobs]);
 

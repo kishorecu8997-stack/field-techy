@@ -472,28 +472,28 @@ const JobDetailsPage = () => {
     job?.clientDetails?.personName ||
     `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
-  
+
   // Format exact date range for display
   const formatDateRange = () => {
     if (!job?.startDate) return "";
     const startDate = new Date(job.startDate);
     const endDate = job.endDate ? new Date(job.endDate) : null;
-    
+
     const formatDate = (date: Date) => {
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const year = date.getFullYear();
       return `${day}/${month}/${year}`;
     };
-    
+
     if (endDate) {
       return `${formatDate(startDate)} - ${formatDate(endDate)}`;
     }
     return formatDate(startDate);
   };
-  
+
   const exactTimeline = formatDateRange();
-  
+
   // Keep duration for other uses, but use exactTimeline for display
   const duration = getDurationString({
     startDateStr: job?.startDate || "",
@@ -554,7 +554,7 @@ const JobDetailsPage = () => {
               <JobHeaderCard
                 title={jobTitle}
                 client={clientName}
-                duration={exactTimeline || duration as string}
+                duration={exactTimeline || (duration as string)}
                 type={engagementType}
                 status={jobStatus}
                 setIsWorkSubmitted={setIsWorkSubmitted}
