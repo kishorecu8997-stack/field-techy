@@ -9,12 +9,12 @@ import { absoluteUrls } from "@/config/urls";
 import type { JobItem } from "@/pages/admin/jobs/types";
 import GeneralChart from "@/shared/components/AdminChart";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { days } from "@/dummy_data/adminDashboard";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { useAdminGetJobGraph } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useSearchParams } from "react-router-dom";
 import { formatDate } from "@/utils/formatDate";
 import type { AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
+import { days } from "../../../types";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];

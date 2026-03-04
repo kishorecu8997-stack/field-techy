@@ -120,6 +120,13 @@ export const documentType: DocumentOption[] = [
   { value: "certificateDoc", label: "Certificate Document" },
 ];
 
+export const days = [
+  { id: 1, value: "daily", label: "Daily" },
+  { id: 2, value: "weekly", label: "Weekly" },
+  { id: 3, value: "monthly", label: "Monthly" },
+  { id: 3, value: "yearly", label: "Yearly" },
+];
+
 export const statusGroupToGraphStatus: Record<
   NonNullable<AdminGetClientHistoryQuery["statusGroup"]>,
   AdminGetJobGraphQuery["status"] | undefined
