@@ -26,17 +26,35 @@ const ProcessTracking = () => {
     { enabled: shouldFetch },
   );
 
+  const formatTime = (timestamp: string) => {
+    if (!timestamp) return "-";
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
   const columns = [
     { 
       key: "srNo", 
       label: "Sr.No.",
       renderCell: (_row: any, index: number) => index + 1 
     },
-    { key: "timestamp", label: "Date and Time" },
+    { 
+      key: "timestamp", 
+      label: "Date and Time",
+      renderCell: (row: any) => formatTime(row.timestamp)
+    },
     { key: "logType", label: "Work Log Type" },
     { key: "status", label: "Status" },
     { key: "details", label: "Details" },
-    { key: "updatedAt", label: "Updated At" },
+    { 
+      key: "updatedAt", 
+      label: "Updated At",
+      renderCell: (row: any) => formatTime(row.updatedAt)
+    },
   ];
 
   if (!shouldFetch) {
