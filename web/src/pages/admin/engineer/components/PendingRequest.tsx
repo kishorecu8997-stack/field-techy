@@ -5,9 +5,8 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +22,7 @@ import {
 import { useEngineerStatusChange } from "@/shared/hooks/useEngineerStatusChange";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import ViewFileComponent from "@/pages/admin/engineer/components/ViewFileComponent";
+import { getEngineerFileUrl } from "@/utils/getEngineerFileUrl";
 
 export default function PendingRequest() {
   const navigate = useNavigate();
@@ -32,18 +32,17 @@ export default function PendingRequest() {
     Record<number, EngineerStatusType>
   >({});
   const [search, setSearch] = useState("");
-  const [activeRowId, setActiveRowId] = useState<number | null>(null);
-  const [activeUserId, setActiveUserId] = useState<number | null>(null);
-  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
-    null,
-  );
-  const [isOpen, setIsOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<{
+    engineerId: number;
+    type: ProfileFileType;
+  } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   const {
     data: engineersResponse,
     isLoading,
+    isFetching,
     refetch,
   } = useAdminManageEngineers({
     page: currentPage,
@@ -77,6 +76,17 @@ export default function PendingRequest() {
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
+  const selectedEngineer = useMemo(() => {
+    if (!selectedFile) return null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
+  }, [engineerData, selectedFile]);
+
+  const isPreviewOpen = !!selectedFile && !!selectedEngineer;
+
   const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
@@ -91,8 +101,7 @@ export default function PendingRequest() {
             try {
               await deleteEngineer({ path: { userId: engineerData.userId } });
               toast.success("Engineer deleted successfully!");
-              // Refetch table data
-              refetch();
+              await refetch?.();
               close(true);
             } catch (error) {
               toast.error("Failed to delete engineer. Please try again.");
@@ -125,36 +134,33 @@ export default function PendingRequest() {
     {
       key: "details",
       label: "Details",
-      renderCell: (row) => (
-        <div className="text-sm flex items-center gap-2">
-          <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
-          <div>
-            <div className="font-semibold">{row.name}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {row.phoneNumber}
+      renderCell: (row) => {
+        const initials = row.name?.charAt(0).toUpperCase() || "E";
+        return (
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
+              {row.profilePicture?.url ? (
+                <img
+                  src={row.profilePicture.url}
+                  alt={row.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initials
+              )}
             </div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {row.email}
+            <div className="flex flex-col">
+              <div className="font-semibold">{row.name}</div>
+              <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                {row.phoneNumber}
+              </div>
+              <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                {row.email}
+              </div>
             </div>
           </div>
-        </div>
-      ),
-    },
-    {
-      key: "submittedDocuments",
-      label: "Submitted Documents",
-      renderCell: (row) => (
-        <div className="text-sm flex flex-col gap-1">
-          {row.submittedDocuments?.map((doc, idx) => (
-            <span
-              key={idx}
-              className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200"
-            >
-              {doc}
-            </span>
-          ))}
-        </div>
-      ),
+        );
+      },
     },
     {
       key: "documentType",
@@ -170,12 +176,19 @@ export default function PendingRequest() {
                 label: item.label ?? "",
               })) ?? []
             }
-            value={activeRowId === row.id ? selectedType : null}
+            value={
+              selectedFile?.engineerId === row.id ? selectedFile.type : null
+            }
             onChange={(value) => {
-              setActiveRowId(row.id);
-              setActiveUserId(row.userId);
-              setSelectedType(value as ProfileFileType | null);
-              setIsOpen(true);
+              if (!value) {
+                setSelectedFile(null);
+                return;
+              }
+
+              setSelectedFile({
+                engineerId: row.id,
+                type: value as ProfileFileType,
+              });
             }}
           />
         );
@@ -202,16 +215,11 @@ export default function PendingRequest() {
       renderCell: (row) => row.balance,
     },
     {
-      key: "kycStatus",
-      label: "KYC Status",
-      dataCellAlign: "center",
-      renderCell: (row) => row.profileStatus || "N/A",
-    },
-    {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
-      renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed"),
+      renderCell: (row) =>
+        (row.isEmployed ? "Employed" : "Unemployed").toUpperCase(),
     },
     {
       key: "avgRating",
@@ -296,18 +304,22 @@ export default function PendingRequest() {
             initialPageSize={pageSize}
             currentPage={currentPage}
             totalCount={engineersResponse?.total ?? 0}
-            loading={isLoading}
+            loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}
           />
         </div>
       </div>
-      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <ViewFileComponent
-          onClose={() => setIsOpen(false)}
-          userId={activeUserId}
-          fileType={selectedType}
-        />
+      <Popup open={isPreviewOpen} onClose={() => setSelectedFile(null)}>
+        {selectedFile && selectedEngineer && (
+          <ViewFileComponent
+            onClose={() => setSelectedFile(null)}
+            fileType={selectedFile.type}
+            userId={selectedEngineer.userId}
+            fileUrl={getEngineerFileUrl(selectedEngineer, selectedFile?.type)}
+            title={`${selectedEngineer.name}'s`}
+          />
+        )}
       </Popup>
     </div>
   );

@@ -1,13 +1,15 @@
-import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import type { Column } from "@/shared/components/commonUI/custom_table";
-import { FaUserCircle } from "react-icons/fa";
-import { Button } from "@/shared/components/commonUI/Buttons";
 import type { ManageEngineerProps } from "../types";
 import Popup from "@/shared/components/Popup";
-import { IoCloseSharp } from "react-icons/io5";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
+import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
+import ViewFileComponent from "@/pages/admin/engineer/components/ViewFileComponent";
+import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
+import SelectMenu from "@/shared/components/SelectMenu";
+import { documentType } from "../types";
+import { getEngineerFileUrl } from "@/utils/getEngineerFileUrl";
 
 /**
  * AllUsers Component
@@ -26,72 +28,161 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
  */
 
 export default function AllUsers() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
 
-  const filteredData = manageEngineer.filter((e) => {
-    const query = search.toLowerCase();
+  const [selectedFile, setSelectedFile] = useState<{
+    engineerId: number;
+    type: ProfileFileType;
+  } | null>(null);
 
-    return (
-      String(e.engineerCode ?? "")
-        .toLowerCase()
-        .includes(query) ||
-      e.name?.toLowerCase().includes(query) ||
-      e.email?.toLowerCase().includes(query) ||
-      e.location?.toLowerCase().includes(query)
-    );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const {
+    data: engineersResponse,
+    isLoading,
+    isFetching,
+  } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
   });
 
+  const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
+
+  const selectedEngineer = useMemo(() => {
+    if (!selectedFile) return null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
+  }, [engineerData, selectedFile]);
+
+  const isPreviewOpen = !!selectedFile && !!selectedEngineer;
+
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No." },
-    { key: "engineerID", label: "Engineer ID" },
+    {
+      label: "Sr.No.",
+      renderCell: (_row: ManageEngineerProps, index: number) =>
+        (currentPage - 1) * pageSize + index + 1,
+    },
+    {
+      key: "engineerID",
+      label: "Engineer ID",
+      renderCell: (row: ManageEngineerProps) => {
+        const id = row.engineerCode || "N/A";
+        return (
+          <div className="text-sm font-medium text-gray-900 dark:text-white">
+            {id}
+          </div>
+        );
+      },
+    },
     {
       key: "details",
       label: "Details",
-      renderCell: (row) => (
-        <div className="flex items-center gap-2">
-          <FaUserCircle className="h-6 w-6 text-gray-500" />
-          <div>
-            <div className="font-semibold">{row.name}</div>
-            <div className="text-sm text-gray-500">{row.phoneNumber}</div>
-            <div className="text-sm text-gray-500">{row.email}</div>
+      renderCell: (row) => {
+        const initials = row.name?.charAt(0).toUpperCase() || "E";
+        return (
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
+              {row.profilePicture?.url ? (
+                <img
+                  src={row.profilePicture.url}
+                  alt={row.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initials
+              )}
+            </div>
+            <div className="flex flex-col">
+              <div className="font-semibold">{row.name}</div>
+              <div className="text-sm text-gray-500">{row.phoneNumber}</div>
+              <div className="text-sm text-gray-500">{row.email}</div>
+            </div>
           </div>
+        );
+      },
+    },
+    {
+      key: "location",
+      label: "Location",
+      renderCell: (row) => (
+        <div className="text-sm text-gray-900 dark:text-white">
+          {row.location ??
+            ([row.cityName ?? "", row.countryName ?? ""]
+              .filter(Boolean)
+              .join(", ") ||
+              "N/A")}
         </div>
       ),
     },
-    { key: "location", label: "Location" },
     {
       key: "registrationDate",
       label: "Registration Date",
-      dataCellAlign: "center",
+      renderCell: (row) => (
+        <div className="text-center text-sm text-gray-900 dark:text-white">
+          {row.registrationDate
+            ? new Date(row.registrationDate).toLocaleDateString()
+            : "N/A"}
+        </div>
+      ),
     },
-    { key: "kycStatus", label: "KYC Status", dataCellAlign: "center" },
+    {
+      key: "kycStatus",
+      label: "KYC Status",
+      renderCell: (row) => (
+        <div className="text-center text-sm text-gray-900 dark:text-white">
+          {row.profileStatus?.toUpperCase() ?? "N/A"}
+        </div>
+      ),
+    },
     {
       key: "employmentStatus",
       label: "Employment Status",
-      dataCellAlign: "center",
-    },
-    { key: "avgRating", label: "Avg Rating", dataCellAlign: "center" },
-    {
-      key: "documents",
-      label: "Documents",
-      dataCellAlign: "center",
       renderCell: (row) => (
-        <Button
-          className="bg-teal-700 text-white"
-          onClick={() => {
-            setIsModalOpen(true);
-            setSelectedRowId(row.id);
+        <div className="text-center text-sm text-gray-900 dark:text-white">
+          {(row.isEmployed ? "Employed" : "Unemployed").toUpperCase()}
+        </div>
+      ),
+    },
+    {
+      key: "avgRating",
+      label: "Avg Rating",
+      renderCell: (row) => (
+        <div className="text-center text-sm text-gray-900 dark:text-white">
+          {(row.averageRating ?? 0).toFixed(1)}
+        </div>
+      ),
+    },
+    {
+      key: "documentType",
+      label: "View Documents",
+      renderCell: (row: ManageEngineerProps) => (
+        <SelectMenu
+          placeholder="Select Document"
+          className="w-36"
+          options={documentType.map((item) => ({
+            value: item.value ?? "",
+            label: item.label ?? "",
+          }))}
+          value={selectedFile?.engineerId === row.id ? selectedFile.type : null}
+          onChange={(value) => {
+            if (!value) {
+              setSelectedFile(null);
+              return;
+            }
+
+            setSelectedFile({
+              engineerId: row.id,
+              type: value as ProfileFileType,
+            });
           }}
-        >
-          {row.documents}
-        </Button>
+        />
       ),
     },
   ];
-
-  const selectedEngineer = filteredData.find((eng) => eng.id === selectedRowId);
 
   return (
     <div>
@@ -99,36 +190,30 @@ export default function AllUsers() {
         <div className="flex flex-wrap gap-4 items-center">
           <SearchInput value={search} onChange={setSearch} />
         </div>
-        <div className="w-full h-full overflow-auto">
+        <div className="h-full flex-1 overflow-y-auto">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredData}
-            initialPageSize={10}
+            data={engineerData}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
+            totalCount={engineersResponse?.total ?? 0}
+            loading={isLoading || isFetching}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
           />
         </div>
-        {isModalOpen && selectedEngineer && (
-          <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <span className="font-bold">
-                  View File for {selectedEngineer.name}
-                </span>
-                <div
-                  className="text-xl font-semibold cursor-pointer"
-                  onClick={() => setIsModalOpen(false)}
-                  aria-label="Close modal"
-                >
-                  <IoCloseSharp />
-                </div>
-              </div>
-              <div className="border border-gray-400 h-36 my-6 flex items-center justify-center">
-                {/* Replace with actual file/image if available */}
-                <img src="https://via.placeholder.com/500" alt="file" />
-              </div>
-            </div>
-          </Popup>
-        )}
       </div>
+      <Popup open={isPreviewOpen} onClose={() => setSelectedFile(null)}>
+        {selectedFile && selectedEngineer && (
+          <ViewFileComponent
+            onClose={() => setSelectedFile(null)}
+            fileType={selectedFile.type}
+            userId={selectedEngineer.userId}
+            fileUrl={getEngineerFileUrl(selectedEngineer, selectedFile?.type)}
+            title={`${selectedEngineer.name}'s`}
+          />
+        )}
+      </Popup>
     </div>
   );
 }

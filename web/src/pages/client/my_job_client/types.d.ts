@@ -74,7 +74,7 @@ export interface JobInfoSectionProps {
     title?: string;
     items: Array<{ text: string }>;
   };
-  files: string[];
+  files: Array<{ name: string; url: string }>;
 }
 
 export interface WorkInfoItem {
@@ -147,12 +147,14 @@ export type JobTabSectionProps = {
   jobID?: string;
   onToggleChat?: () => void;
   assignmentId?: number;
+  numberOfVacancy?: number;
   job?: {
     id: string | number;
     jobTitle?: string;
     title?: string;
     jobDescription?: string | null;
     status?: string | null;
+    vacancies?: number | null;
     [key: string]: unknown;
   };
   onToggleChat?: (jobId: string) => void;
