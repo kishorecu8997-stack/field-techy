@@ -6,7 +6,7 @@ import CustomTable, {
 } from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { absoluteUrls } from "@/config/urls";
-import React, { useState, useMemo } from "react"
+import React, { useState, useMemo } from "react";
 import { useAdminGetWalletOverview } from "@/shared/apiServices/admin/adminOpenApiService";
 
 
@@ -55,7 +55,6 @@ const EngineerWallet: React.FC = () => {
       };
     }
 
-    // fallback
     const cleaned = amountStr.replace(/[^0-9.]/g, "");
     return {
       symbol: "₹",
@@ -153,7 +152,7 @@ const EngineerWallet: React.FC = () => {
                     transactionId: row.transactionId,
                     usertype: "engineer",
                   },
-                },
+                }
               )
             }
           >

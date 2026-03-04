@@ -1,10 +1,8 @@
-import React, { useState, useMemo } from "react"
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
-import CustomTable, {
-  type Column,
-} from "@/shared/components/commonUI/custom_table"; 
+import CustomTable, { type Column } from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { absoluteUrls } from "@/config/urls";
 import { useAdminGetWalletOverview } from "@/shared/apiServices/admin/adminOpenApiService";
@@ -17,6 +15,7 @@ interface WalletTransaction {
   transactionType: "credit" | "debit";
   amount: string;
 }
+
 /**
  * @component ClientWallet
  * @description Renders the client wallet management page.
@@ -24,7 +23,6 @@ interface WalletTransaction {
  * It provides actions to navigate to a detailed view of a client's wallet or to delete a client.
  * @returns {JSX.Element} The rendered client wallet management component.
  */
-
 const ClientWallet: React.FC = () => {
   const navigate = useNavigate();
 
@@ -38,21 +36,20 @@ const ClientWallet: React.FC = () => {
     limit,
   });
 
-  const filtered = useMemo(() => {
-    const items = data?.clientDetails ?? [];
+  const items = useMemo(() => data?.clientDetails ?? [], [data]);
 
+  const filtered = useMemo(() => {
     if (!search.trim()) return items;
 
     const term = search.toLowerCase().trim();
 
-    return items.filter(
-      (tx: WalletTransaction) =>
-        tx.clientName?.toLowerCase().includes(term) ||
-        tx.mobileNo?.toLowerCase().includes(term) ||
-        tx.amount?.includes(term) ||
-        tx.transactionId?.toLowerCase().includes(term),
+    return items.filter((tx: WalletTransaction) =>
+      tx.clientName?.toLowerCase().includes(term) ||
+      tx.mobileNo?.toLowerCase().includes(term) ||
+      tx.amount?.toLowerCase().includes(term) ||
+      tx.transactionId?.toLowerCase().includes(term),
     );
-  }, [data?.clientDetails, search]);
+  }, [items, search]);
 
   const displayTotal = search.trim() ? filtered.length : (data?.total ?? 0);
 
@@ -81,8 +78,7 @@ const ClientWallet: React.FC = () => {
     {
       key: "sno",
       label: "Sr.No.",
-      renderCell: (_row: WalletTransaction, index: number) =>
-        (page - 1) * limit + index + 1,
+      renderCell: (_row, index) => (page - 1) * limit + index + 1,
     },
     {
       key: "clientDetails",
@@ -149,7 +145,7 @@ const ClientWallet: React.FC = () => {
                     transactionId: row.transactionId,
                     usertype: "client",
                   },
-                },
+                }
               )
             }
           >

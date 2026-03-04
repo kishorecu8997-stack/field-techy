@@ -3,6 +3,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState, useMemo, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
@@ -12,6 +13,7 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { toast } from "react-toastify";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
+
 /**
  * PendingTable Component
  *
@@ -41,10 +43,14 @@ interface TransactionRequestsQueryData {
 interface TableProps {
   active: boolean;
 }
+
 const PendingTable: React.FC<TableProps> = ({ active }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 10;
+
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
 
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
@@ -57,7 +63,6 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
     },
     {
       enabled: active,
-      staleTime: 0,
     },
   );
 
@@ -66,9 +71,9 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
   const updateStatusMutation = useAdminUpdateTransactionRequestStatus({
     onSuccess: () => {
       toast.success("Status updated successfully!");
+      refetch();
     },
-    onError: (error) => {
-      console.error("Status update error:", error);
+    onError: () => {
       toast.error("Failed to update status. Please try again.");
     },
   });
@@ -115,16 +120,12 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
       queryClient.setQueryData<TransactionRequestsQueryData>(
         queryKey,
         (old) => {
-          if (!old) {
-            return old;
-          }
-
+          if (!old) return old;
           const updatedData = {
             ...old,
             data: old.data.filter((item) => item.id !== row.id),
             total: Math.max(0, old.total - 1),
           };
-
           return updatedData;
         },
       );
@@ -139,7 +140,6 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
             variant: "outline",
             action: async (close: ClosePopup) => {
               queryClient.setQueryData(queryKey, previousData);
-
               close(false);
             },
           },
@@ -152,18 +152,13 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
               try {
                 await updateStatusMutation.mutateAsync({
                   query: { id: row.id },
-                  body: {
-                    status: newStatus,
-                  },
+                  body: { status: newStatus },
                 });
                 refetch();
-
                 close(true);
-              } catch (error) {
-                console.error("❌ API call failed:", error);
-
+              } catch {
+                toast.error("Failed to update status. Please try again.");
                 queryClient.setQueryData(queryKey, previousData);
-
                 close(false);
               }
             },
@@ -171,7 +166,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         ],
       });
     },
-    [queryClient, showPopup, updateStatusMutation, page, limit],
+    [queryClient, showPopup, updateStatusMutation, page, limit, refetch],
   );
 
   const columns: Column<TransactionRequest>[] = [
@@ -181,6 +176,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
       renderCell: (_row: TransactionRequest, index: number) =>
         (page - 1) * limit + index + 1,
     },
+
     {
       key: "clientDetails",
       label: "Client Details",
@@ -198,19 +194,24 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         </div>
       ),
     },
+
     {
       key: "walletBalance",
       label: "Wallet Balance",
       renderCell: (row: TransactionRequest) => {
-        const currency = row.currencyCode || "₹";
+        const currency = row.currencyCode || "-";
+        const amountNum = Number(row.amount || 0);
+
         return (
           <span className="font-medium">
             {currency}
-            {Number(row.amount || 0).toLocaleString("en-IN")}
+            {}
+            {amountNum.toLocaleString("en-IN")}
           </span>
         );
       },
     },
+
     {
       key: "status",
       label: "Status",
@@ -229,6 +230,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
                   : lowerValue === "reject"
                     ? "rejected"
                     : null;
+
               if (!normalizedStatus) return;
 
               handleStatusChange(row, normalizedStatus);
@@ -258,11 +260,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         </div>
 
         <div className="h-full flex-1 overflow-hidden">
-          {filteredData.length === 0 && !isLoading && (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              {search.trim() && " matching your search"}
-            </div>
-          )}
+         
 
           <CustomTable<TransactionRequest>
             columns={columns}
@@ -270,8 +268,27 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
             initialPageSize={limit}
             totalCount={displayTotal}
             currentPage={page}
-            onPageChange={setPage}
-            onPageSizeChange={setLimit}
+            onPageChange={(newPage) => {
+              setSearchParams(
+                (prev) => {
+                  const next = new URLSearchParams(prev);
+                  next.set("page", newPage.toString());
+                  return next;
+                },
+                { replace: true },
+              );
+            }}
+            onPageSizeChange={(newLimit) => {
+              setSearchParams(
+                (prev) => {
+                  const next = new URLSearchParams(prev);
+                  next.set("page", "1");
+                  next.set("limit", newLimit.toString());
+                  return next;
+                },
+                { replace: true },
+              );
+            }}
             loading={isLoading || updateStatusMutation.isPending}
           />
         </div>

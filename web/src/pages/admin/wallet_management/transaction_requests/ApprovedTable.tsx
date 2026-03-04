@@ -2,6 +2,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import React, { useState, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { useAdminGetTransactionRequests } from "@/shared/apiServices/admin/adminOpenApiService";
 
@@ -32,9 +33,12 @@ interface TableProps {
   active: boolean;
 }
 const ApprovedTable: React.FC<TableProps> = ({ active }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 10;
+
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
 
   const { data, isLoading } = useAdminGetTransactionRequests(
     {
@@ -44,7 +48,6 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
     },
     {
       enabled: active,
-      staleTime: 0,
     },
   );
 
@@ -98,31 +101,30 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
       label: "Wallet Balance",
       renderCell: (row: TransactionRequest) => {
         const amount = Number(row.amount || 0);
-        const currencyCode = row.currencyCode || "INR";
+        const currency = row.currencyCode || "₹";
 
-        const formattedAmount = new Intl.NumberFormat(undefined, {
-          style: "currency",
-          currency: currencyCode,
-          currencyDisplay: "code",
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 2,
-        }).format(amount);
-
-        return <span className="font-medium">{formattedAmount}</span>;
-      },
-    },
-    {
-      key: "status",
-      label: "Status",
-      renderCell: (row: TransactionRequest) => {
-        const status = row.status ?? "";
         return (
-          <span className="text-green-600 font-medium">
-            {status.charAt(0).toUpperCase() + status.slice(1)}
+          <span className="font-medium">
+            {currency} {}
+            {amount.toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </span>
         );
       },
     },
+
+    {
+      key: "status",
+      label: "Status",
+      renderCell: (row: TransactionRequest) => (
+        <span className="text-green-600 font-medium capitalize">
+          {row.status || "—"}
+        </span>
+      ),
+    },
+
     {
       key: "createdAt",
       label: "Date",
@@ -148,21 +150,34 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
           <SearchInput value={search} onChange={setSearch} />
         </div>
 
-        <div className="h-full flex-1 overflow-y-auto">
-          {filteredData.length === 0 && !isLoading && (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              {search.trim() && " matching your search"}
-            </div>
-          )}
-
+        <div className="h-full flex-1 overflow-hidden">
           <CustomTable<TransactionRequest>
             columns={columns}
             data={filteredData}
             initialPageSize={limit}
             totalCount={displayTotal}
             currentPage={page}
-            onPageChange={setPage}
-            onPageSizeChange={setLimit}
+            onPageChange={(newPage) => {
+              setSearchParams(
+                (prev) => {
+                  const next = new URLSearchParams(prev);
+                  next.set("page", newPage.toString());
+                  return next;
+                },
+                { replace: true },
+              );
+            }}
+            onPageSizeChange={(newLimit) => {
+              setSearchParams(
+                (prev) => {
+                  const next = new URLSearchParams(prev);
+                  next.set("page", "1");
+                  next.set("limit", newLimit.toString());
+                  return next;
+                },
+                { replace: true },
+              );
+            }}
             loading={isLoading}
           />
         </div>
