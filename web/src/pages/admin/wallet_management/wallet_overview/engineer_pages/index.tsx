@@ -9,7 +9,6 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useState, useMemo } from "react";
 import { useAdminGetWalletOverview } from "@/shared/apiServices/admin/adminOpenApiService";
 
-
 interface WalletTransaction {
   profileImageUrl: string | null;
   mobileNo: string | null;
@@ -152,7 +151,7 @@ const EngineerWallet: React.FC = () => {
                     transactionId: row.transactionId,
                     usertype: "engineer",
                   },
-                }
+                },
               )
             }
           >

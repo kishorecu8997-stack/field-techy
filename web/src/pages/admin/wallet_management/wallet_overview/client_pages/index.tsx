@@ -2,7 +2,9 @@ import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
-import CustomTable, { type Column } from "@/shared/components/commonUI/custom_table";
+import CustomTable, {
+  type Column,
+} from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { absoluteUrls } from "@/config/urls";
 import { useAdminGetWalletOverview } from "@/shared/apiServices/admin/adminOpenApiService";
@@ -43,11 +45,12 @@ const ClientWallet: React.FC = () => {
 
     const term = search.toLowerCase().trim();
 
-    return items.filter((tx: WalletTransaction) =>
-      tx.clientName?.toLowerCase().includes(term) ||
-      tx.mobileNo?.toLowerCase().includes(term) ||
-      tx.amount?.toLowerCase().includes(term) ||
-      tx.transactionId?.toLowerCase().includes(term),
+    return items.filter(
+      (tx: WalletTransaction) =>
+        tx.clientName?.toLowerCase().includes(term) ||
+        tx.mobileNo?.toLowerCase().includes(term) ||
+        tx.amount?.toLowerCase().includes(term) ||
+        tx.transactionId?.toLowerCase().includes(term),
     );
   }, [items, search]);
 
@@ -145,7 +148,7 @@ const ClientWallet: React.FC = () => {
                     transactionId: row.transactionId,
                     usertype: "client",
                   },
-                }
+                },
               )
             }
           >

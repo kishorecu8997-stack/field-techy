@@ -260,8 +260,6 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         </div>
 
         <div className="h-full flex-1 overflow-hidden">
-         
-
           <CustomTable<TransactionRequest>
             columns={columns}
             data={filteredData}

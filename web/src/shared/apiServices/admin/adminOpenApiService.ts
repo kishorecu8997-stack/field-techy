@@ -1407,7 +1407,7 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
   return useMutation({
     ...adminUpdateTransactionRequestStatusMutation({
       client: apiClient,
-      }),
+    }),
 
     mutationFn: (variables, context) => {
       return adminUpdateTransactionRequestStatusMutation({

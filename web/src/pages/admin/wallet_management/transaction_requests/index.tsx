@@ -44,7 +44,7 @@ export default function WalletTransactionRequests() {
           <AdminTabComponent
             tabs={tabs}
             activeTab={activeTab}
-            onTabChange={setActiveTab} 
+            onTabChange={setActiveTab}
           />
         </div>
       </div>
