@@ -205,7 +205,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         return (
           <span className="font-medium">
             {currency}
-            {}
+            {""}
             {amountNum.toLocaleString("en-IN")}
           </span>
         );

@@ -1,5 +1,7 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
-import CustomTable, { type Column } from "@/shared/components/commonUI/custom_table";
+import CustomTable, {
+  type Column,
+} from "@/shared/components/commonUI/custom_table";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMemo } from "react";
@@ -11,113 +13,100 @@ import {
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
 
-interface TransactionRow {
-  sno: number;
-  invoiceNumber: string;
-  dateTime: string;
-  transactionType: string;
-  amount: string;
-  paymentStatus: string;
-  category: string;
-  description: string | null;
-}
-
-/**
- * @component WalletView
- * @description Renders a detailed view of a specific transaction.
- * Fetches transactions and finds the one matching the URL parameter (id or invoice number).
- * Displays transaction details and allows invoice download.
- * @returns {JSX.Element} The rendered transaction details view
- */
 export default function WalletView() {
   const navigate = useNavigate();
   const { id: idParam } = useParams<{ id: string }>();
   const methods = useForm();
 
-  const { data, isLoading: isTransactionsLoading } = useAdminGetManageTransactions(
-    { limit: 9999 },
-    { enabled: !!idParam },
-  );
+  const { data, isLoading: isTransactionsLoading } =
+    useAdminGetManageTransactions({ limit: 9999 }, { enabled: !!idParam });
+
+  type TransactionType = NonNullable<typeof data>["data"][number];
 
   const selectedTransaction = useMemo(() => {
     if (!data?.data || !idParam) return null;
 
-    const numFromParam = Number(idParam);
+    const numericParam = Number(idParam);
 
-   
-    let tx = data.data.find((t) => t.invoiceNumber === idParam);
+    let transaction = data.data.find((item) => item.invoiceNumber === idParam);
 
- 
     if (
-      !tx &&
-      !isNaN(numFromParam) &&
-      Number.isInteger(numFromParam) &&
-      numFromParam > 0
+      !transaction &&
+      !isNaN(numericParam) &&
+      Number.isInteger(numericParam) &&
+      numericParam > 0
     ) {
-      tx = data.data.find((t) => t.id === numFromParam);
+      transaction = data.data.find((item) => item.id === numericParam);
     }
 
-    if (!tx && idParam.toUpperCase().startsWith("INV-")) {
-      const possibleIdStr = idParam.toUpperCase().replace("INV-", "").trim();
-      const possibleId = Number(possibleIdStr);
-      if (!isNaN(possibleId) && Number.isInteger(possibleId) && possibleId > 0) {
-        tx = data.data.find((t) => t.id === possibleId);
+    if (!transaction && idParam.toUpperCase().startsWith("INV-")) {
+      const extractedId = Number(
+        idParam.toUpperCase().replace("INV-", "").trim(),
+      );
+
+      if (
+        !isNaN(extractedId) &&
+        Number.isInteger(extractedId) &&
+        extractedId > 0
+      ) {
+        transaction = data.data.find((item) => item.id === extractedId);
       }
     }
 
-    return tx ?? null;
+    return transaction ?? null;
   }, [data?.data, idParam]);
 
-  const {
-    refetch: downloadInvoice,
-    isFetching: isDownloading,
-  } = useAdminDownloadInvoice(selectedTransaction?.id ?? 0, {
-    enabled: false,
-  });
+  const { refetch: downloadInvoice, isFetching: isDownloading } =
+    useAdminDownloadInvoice(selectedTransaction?.id ?? 0, {
+      enabled: false,
+    });
 
   const handleDownload = async () => {
-  if (!selectedTransaction?.id) {
-    toast.error("No transaction selected for download");
-    return;
-  }
-
-  try {
-    const response = await downloadInvoice();
-
-    if (!response?.data) {
-      toast.error("No invoice data received from server");
+    if (!selectedTransaction?.id) {
+      toast.error("No transaction selected for download");
       return;
     }
 
-    const blob = new Blob([response.data], { type: "application/pdf" });
-    const url = window.URL.createObjectURL(blob);
+    try {
+      const response = await downloadInvoice();
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = selectedTransaction.invoiceNumber
-      ? `${selectedTransaction.invoiceNumber}.pdf`
-      : `transaction-${selectedTransaction.id}.pdf`;
+      if (!response?.data) {
+        toast.error("No invoice data received from server");
+        return;
+      }
 
-    document.body.appendChild(link);
-    link.click();
+      const blob = new Blob([response.data], {
+        type: "application/pdf",
+      });
 
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+      const url = window.URL.createObjectURL(blob);
 
-    toast.success("Invoice downloaded successfully");
-  } catch (error) {
-    if (error instanceof Error) {
-      toast.error(error.message);
-    } else {
-      toast.error("Failed to download invoice. Please try again.");
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = selectedTransaction.invoiceNumber
+        ? `${selectedTransaction.invoiceNumber}.pdf`
+        : `transaction-${selectedTransaction.id}.pdf`;
+
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Invoice downloaded successfully");
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to download invoice. Please try again.",
+      );
     }
-  }
-};
-  const columns: Column<TransactionRow>[] = [
+  };
+
+  const columns: Column<TransactionType>[] = [
     {
-      key: "sno",
       label: "Sr.No.",
-      renderCell: () => 1, 
+      renderCell: (_row, index) => index + 1,
     },
     {
       key: "invoiceNumber",
@@ -125,9 +114,20 @@ export default function WalletView() {
       renderCell: (row) => row.invoiceNumber || "—",
     },
     {
-      key: "dateTime",
+      key: "timestamp",
       label: "Date & Time",
-      renderCell: (row) => row.dateTime,
+      renderCell: (row) => {
+        const safeTimestamp = row.timestamp ?? new Date().toISOString();
+
+        return new Date(safeTimestamp).toLocaleString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+      },
     },
     {
       key: "transactionType",
@@ -152,37 +152,9 @@ export default function WalletView() {
     {
       key: "description",
       label: "Description",
-      renderCell: (row) => row.description || "—",
+      renderCell: (row) => row.description ?? "—",
     },
   ];
-
-  const tableData = useMemo<TransactionRow[]>(() => {
-    if (!selectedTransaction) return [];
-
-    const safeTimestamp = selectedTransaction.timestamp ?? new Date().toISOString();
-    const formattedDate = new Date(safeTimestamp).toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-
-    return [
-      {
-        sno: 1,
-        invoiceNumber: selectedTransaction.invoiceNumber || "—",
-        dateTime: formattedDate,
-        transactionType: selectedTransaction.transactionType || "—",
-        amount: selectedTransaction.amount || "—",
-        paymentStatus: selectedTransaction.paymentStatus || "—",
-        category: selectedTransaction.category || "—",
-        description: selectedTransaction.description ?? "—",
-      },
-    ];
-  }, [selectedTransaction]);
-
 
   if (isTransactionsLoading) {
     return (
@@ -218,29 +190,22 @@ export default function WalletView() {
       </div>
 
       <div className="bg-white dark:bg-gray-700 rounded-lg shadow-sm p-6">
-        {/* Client Information */}
         <FormContainer methods={methods} className="mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">
-                 Name
-              </label>
+              <label className="block text-sm text-gray-500 mb-1">Name</label>
               <p className="font-medium">
                 {selectedTransaction.clientDetails?.name || "—"}
               </p>
             </div>
             <div>
-              <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">
-                Email
-              </label>
+              <label className="block text-sm text-gray-500 mb-1">Email</label>
               <p className="font-medium">
                 {selectedTransaction.clientDetails?.email || "—"}
               </p>
             </div>
             <div>
-              <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">
-                Phone
-              </label>
+              <label className="block text-sm text-gray-500 mb-1">Phone</label>
               <p className="font-medium">
                 {selectedTransaction.clientDetails?.phone || "—"}
               </p>
@@ -248,18 +213,16 @@ export default function WalletView() {
           </div>
         </FormContainer>
 
-        {/* Transaction Table */}
         <div className="mb-8">
-          <CustomTable<TransactionRow>
+          <CustomTable<TransactionType>
             columns={columns}
-            data={tableData}
+            data={[selectedTransaction]}
             initialPageSize={1}
             showPagination={false}
             loading={false}
           />
         </div>
 
-        {/* Download Button */}
         <div className="flex justify-end">
           <Button
             variant="solid"

@@ -103,11 +103,11 @@ const RejectedTable: React.FC<TableProps> = ({ active }) => {
       label: "Wallet Balance",
       renderCell: (row: TransactionRequest) => {
         const amount = Number(row.amount || 0);
-        const currency = row.currencyCode || "₹";
+        const currency = row.currencyCode || "-";
 
         return (
           <span className="font-medium">
-            {currency}{}
+            {currency} {""}
             {amount.toLocaleString("en-IN", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,

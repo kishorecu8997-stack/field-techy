@@ -120,7 +120,7 @@ const ClientWallet: React.FC = () => {
             }
           >
             {row.transactionType === "credit" ? "+" : "−"}
-            {symbol}
+            {symbol} {""}
             {value.toLocaleString("en-IN", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
