@@ -61,9 +61,6 @@ const JobDetails = () => {
     { label: "No of Engineers", value: engineers.length || "-" },
   ];
 
-  const handleStatusChange = () => {
-    alert("Job marked as completed!");
-  };
 
   if (!shouldFetch) {
     return (
@@ -93,7 +90,6 @@ const JobDetails = () => {
             jobId={job?.jobCode || String(job?.id ?? "N/A")}
             date={new Date(job?.createdAt || Date.now())}
             status={mapJobStatus(job?.status ?? undefined)}
-            onStatusChange={handleStatusChange}
           />
           <ContactDetailsCard
             client={{
