@@ -71,6 +71,10 @@ import {
   type AdminGetJobLogsResponse,
   type AdminGetJobTransactionsData,
   type AdminGetJobTransactionsResponses,
+  type AdminGetReportsResponse,
+  type AdminGetReportsData,
+  type AdminUpdateReportResponse,
+  type AdminUpdateReportData,
   type AdminGetManageTransactionsData,
   type AdminGetManageTransactionsResponse,
   type AdminGetManageTransactionsError,
@@ -81,6 +85,7 @@ import {
   type AdminDownloadInvoiceResponse,
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
+  type AdminUpdateTransactionRequestStatusResponses,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -120,12 +125,15 @@ import {
   adminGetJobGraphOptions,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
+  adminGetReportsOptions,
+  adminUpdateReportMutation,
   adminGetSubAdminsOptions,
   adminGetSubAdminsQueryKey,
   adminGetManageTransactionsOptions,
   adminGetTransactionRequestsOptions,
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
+  adminUpdateTransactionRequestStatusMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -501,10 +509,14 @@ export function useAdminCreateSubAdmin(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+
   return useMutation({
     ...adminCreateSubAdminMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: adminGetSubAdminsQueryKey() });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        queryKey: adminGetSubAdminsQueryKey(),
+      });
+
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -516,15 +528,20 @@ export function useAdminUpdateSubAdmin(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+
   return useMutation({
     ...adminUpdateSubAdminMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: adminGetSubAdminsQueryKey() });
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({
+        queryKey: adminGetSubAdminsQueryKey(),
+      });
+
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
 }
+
 export type AdminUpdateJobStatusBody = NonNullable<
   AdminUpdateJobStatusData["body"]
 >;
@@ -1040,6 +1057,31 @@ export function useAdminGetPaymentTransactions(
   });
 }
 
+export type AdminGetReportsQuery = NonNullable<AdminGetReportsData["query"]>;
+
+export function useAdminGetReport(
+  query?: AdminGetReportsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetReportsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetReportsQuery = {
+    ...query,
+    regionId: Number(selectedRegionId),
+  };
+  return useQuery({
+    ...adminGetReportsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
 // ─── Job Graph ────────────────────────────────────────────────────────────────
 
 export type AdminGetJobGraphQuery = NonNullable<AdminGetJobGraphData["query"]>;
@@ -1067,6 +1109,32 @@ export function useAdminGetJobGraph(
       query: mergedQuery,
     }),
     ...options,
+  });
+}
+
+export type AdminUpdateReportBody = AdminUpdateReportData["body"];
+
+export function useAdminResolveReport(options?: {
+  onSuccess?: (data: AdminUpdateReportResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateReportMutation({
+      client: apiClient,
+      query: {
+        regionId: Number(selectedRegionId),
+      },
+    }),
+    onSuccess: (data: AdminUpdateReportResponse) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageClients,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
   });
 }
 
@@ -1098,6 +1166,9 @@ export function useAdminGetSubAdmins(
       client: apiClient,
       query: mergedQuery,
     }),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
     ...options,
   });
 }
@@ -1322,6 +1393,56 @@ export function useAdminDeleteEngineerMutation(options?: {
       });
       options?.onSuccess?.(data);
     },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateTransactionRequestStatus(options?: {
+  onSuccess?: (data: AdminUpdateTransactionRequestStatusResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminUpdateTransactionRequestStatusMutation({
+      client: apiClient,
+    }),
+
+    mutationFn: (variables, context) => {
+      return adminUpdateTransactionRequestStatusMutation({
+        client: apiClient,
+      }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+          },
+        },
+        context,
+      );
+    },
+
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) => {
+          const firstKeyItem = query.queryKey?.[0];
+
+          if (!firstKeyItem || typeof firstKeyItem !== "object") {
+            return false;
+          }
+          return (
+            (firstKeyItem as { _id?: string })._id ===
+            "adminGetTransactionRequests"
+          );
+        },
+        type: "all",
+      });
+
+      options?.onSuccess?.(data);
+    },
+
     onError: options?.onError,
   });
 }
