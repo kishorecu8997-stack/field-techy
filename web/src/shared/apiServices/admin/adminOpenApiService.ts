@@ -507,10 +507,14 @@ export function useAdminCreateSubAdmin(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+
   return useMutation({
     ...adminCreateSubAdminMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: adminGetSubAdminsQueryKey() });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        queryKey: adminGetSubAdminsQueryKey(),
+      });
+
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -522,15 +526,20 @@ export function useAdminUpdateSubAdmin(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+
   return useMutation({
     ...adminUpdateSubAdminMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: adminGetSubAdminsQueryKey() });
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({
+        queryKey: adminGetSubAdminsQueryKey(),
+      });
+
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
 }
+
 export type AdminUpdateJobStatusBody = NonNullable<
   AdminUpdateJobStatusData["body"]
 >;
@@ -1155,6 +1164,9 @@ export function useAdminGetSubAdmins(
       client: apiClient,
       query: mergedQuery,
     }),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
     ...options,
   });
 }
