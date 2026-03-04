@@ -56,7 +56,6 @@ export default function EditSubAdmin() {
     },
   });
 
- 
   useEffect(() => {
     if (!subAdmin) return;
 
@@ -141,7 +140,6 @@ export default function EditSubAdmin() {
     handleSaveConfirmation(data);
   };
 
-
   if (isSubAdminsLoading || isRegionsLoading) {
     return (
       <div className="w-full h-full p-4 flex items-center justify-center min-h-[60vh]">
@@ -157,7 +155,6 @@ export default function EditSubAdmin() {
       </div>
     );
   }
-
 
   return (
     <div className="w-full h-full p-4">
@@ -175,13 +172,7 @@ export default function EditSubAdmin() {
         <FormContainer methods={methods} onSubmit={onSubmit}>
           <div className="grid md:flex gap-4 w-full">
             <div className="w-full md:w-1/2 space-y-2">
-              <InputField
-                name="name"
-                label="Full Name"
-                type="text"
-                required
-            
-              />
+              <InputField name="name" label="Full Name" type="text" required />
 
               <PhoneInputField
                 name="phoneNumber"
