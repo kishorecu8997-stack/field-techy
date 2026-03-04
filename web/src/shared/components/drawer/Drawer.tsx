@@ -40,7 +40,6 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   // Get client profile for dynamic title
   const clientProfile = useClientProfile();
-  const isCorporate = clientProfile?.clientType === "corporate" || clientProfile?.clientType === "CORPORATE";
 
   // Escape key & scroll lock effect
   useEffect(() => {
