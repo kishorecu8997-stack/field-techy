@@ -113,14 +113,14 @@ export default function Dashboard() {
               <div className="grid mt-2 md:md-0 md:flex gap-4">
                 <SelectMenu
                   placeholder="Filter By"
-                  className="md:w-32"
+                  className="md:w-28"
                   options={days}
                   value={selectedDay}
                   onChange={(val) => setSelectedDay(val as IntervalType)}
                 />
                 <SelectMenu
-                  placeholder="Select Filter"
-                  className="w-42"
+                  placeholder="Select Role"
+                  className="w-36"
                   options={client}
                   value={selected}
                   onChange={(val) => setSelected(val as RoleType)}
@@ -164,17 +164,17 @@ export default function Dashboard() {
             <div className="grid mt-4 md:mt-0 md:flex gap-4">
               <SelectMenu
                 placeholder="Filter By"
-                className="w-32"
-                options={status}
-                value={selectedStatus}
-                onChange={(val) => setSelectedStatus(val as StatusType)}
-              />
-              <SelectMenu
-                placeholder="Select Filter"
-                className="w-42"
+                className="w-28"
                 options={days}
                 value={jobsSelectedDays}
                 onChange={(val) => setJobsSelectedDays(val as IntervalType)}
+              />
+              <SelectMenu
+                placeholder="Select Status"
+                className="w-36"
+                options={status}
+                value={selectedStatus}
+                onChange={(val) => setSelectedStatus(val as StatusType)}
               />
             </div>
           </div>

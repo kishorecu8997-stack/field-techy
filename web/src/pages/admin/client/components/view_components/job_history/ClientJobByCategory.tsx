@@ -187,7 +187,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
       <div className="flex flex-wrap gap-4 items-center">
         <SearchInput value={search} onChange={setSearch} />
       </div>
-      <div className="h-full flex-1 overflow-y-auto mt-4">
+      <div className="h-full flex-1 mt-4">
         <CustomTable<JobItem>
           columns={columns}
           data={filteredData}
@@ -219,6 +219,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
               data={chartData}
               chartType="line"
               xAxisDataKey="name"
+              yAxisDomain={[0, "auto"]}
               aspectRatio={2}
               series={[
                 {
