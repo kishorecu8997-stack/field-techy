@@ -2,6 +2,7 @@ import { absoluteUrls } from "@/config/urls";
 import { jobOverviewData, serviceCategoriesData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
 import {
+  useClientGetAssignmentDetails,
   useClientGetCompanyInfo,
   useClientGetJobs,
   useClientJobOverviewDashboard,
@@ -53,6 +54,42 @@ const Dashboard: React.FC = () => {
   const { data: clientJobs } = useClientGetJobs(true);
   const { data: serviceCategories } = useServiceCategories();
 
+  // Get in-progress job IDs for fetching assignments
+  const inProgressJobIds = useMemo(() => {
+    if (!clientJobs) return [];
+    return clientJobs
+      .filter((job) => job.status === "In Progress")
+      .slice(0, 4)
+      .map((job) => job.id);
+  }, [clientJobs]);
+
+  // Fetch assignments for each in-progress job (max 4 jobs)
+  const assignmentQueries = inProgressJobIds.map((jobId) =>
+    useClientGetAssignmentDetails({ jobId }),
+  );
+
+  // Build a map of jobId to assignment data
+  const jobAssignmentsMap = useMemo(() => {
+    const map = new Map<number, { avatars: string[]; count: number }>();
+    assignmentQueries.forEach((query, index) => {
+      const jobId = inProgressJobIds[index];
+      if (query.data) {
+        const assignments = query.data;
+        const validAssignments = assignments.filter(
+          (a) => a.engineer && a.assignmentStatus !== "rejected",
+        );
+        const avatars = validAssignments
+          .map((a) => a.engineer?.profilePictureUrl)
+          .filter((url): url is string => !!url);
+        map.set(jobId, {
+          avatars,
+          count: validAssignments.length,
+        });
+      }
+    });
+    return map;
+  }, [assignmentQueries, inProgressJobIds]);
+
   // Memoized map of service category ID to name
   const serviceCategoryMap = useMemo(() => {
     const map = new Map<number, string>();
@@ -100,9 +137,11 @@ const Dashboard: React.FC = () => {
         serviceType: job.serviceCategoryId ? getServiceCategoryName(job.serviceCategoryId) : "Service not specified",
         pay: job.totalPrice ? `${job.currencySymbol || "$"}${job.totalPrice}` : "Price not set",
         status: "inprogress",
+        engineerAvatars: jobAssignmentsMap.get(job.id)?.avatars || [],
+        engineers: String(jobAssignmentsMap.get(job.id)?.count || 0),
       };
     });
-  }, [clientJobs, serviceCategoryMap]);
+  }, [clientJobs, serviceCategoryMap, jobAssignmentsMap]);
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
     checkLocationPermission();
