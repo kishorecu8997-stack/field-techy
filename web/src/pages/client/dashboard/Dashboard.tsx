@@ -6,6 +6,7 @@ import {
   useClientGetJobs,
   useClientJobOverviewDashboard,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import { useServiceCategories } from "@/shared/hooks/useLookup";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useFCM } from "@/shared/hooks/useFCM";
@@ -50,6 +51,26 @@ const Dashboard: React.FC = () => {
 
   // Fetch real jobs from API
   const { data: clientJobs } = useClientGetJobs(true);
+  const { data: serviceCategories } = useServiceCategories();
+
+  // Create a memoized map of service category ID to name
+  const serviceCategoryMap = useMemo(() => {
+    const map = new Map<number, string>();
+    if (serviceCategories) {
+      serviceCategories.forEach((category) => {
+        map.set(Number(category.id), category.name);
+      });
+    }
+    return map;
+  }, [serviceCategories]);
+
+  // Helper function to get service category name from ID
+  const getServiceCategoryName = (serviceCategoryId: number): string => {
+    return (
+      serviceCategoryMap.get(serviceCategoryId) ||
+      `Service Category ${serviceCategoryId}`
+    );
+  };
 
   // Filter in-progress jobs and map to Job type for display
   const inProgressJobsData = useMemo(() => {
@@ -72,7 +93,7 @@ const Dashboard: React.FC = () => {
         duration: job.endDate
           ? `${new Date(job.startDate || "").toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
           : "Duration not specified",
-        serviceType: job.serviceCategoryId ? `Category ID: ${job.serviceCategoryId}` : "Service not specified",
+        serviceType: job.serviceCategoryId ? getServiceCategoryName(job.serviceCategoryId) : "Service not specified",
         pay: job.totalPrice ? `${job.currencySymbol || "$"}${job.totalPrice}` : "Price not set",
         status: "inprogress",
       };
