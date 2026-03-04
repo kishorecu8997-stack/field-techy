@@ -54,7 +54,7 @@ const JobDetails = () => {
     { label: "Job Description", value: job?.jobDescription ?? "-" },
     { label: "Job Type", value: job?.jobType ?? "-" },
     { label: "Service Category", value: job?.categoryName ?? "-" },
-    { label: "Job Price", value: job?.totalPrice ?? "-" },
+    { label: "Job Price", value: (job as any)?.currencySymbol ? `${(job as any).currencySymbol}${job?.totalPrice}` : job?.totalPrice ?? "-" },
     { label: "Country", value: job?.countryName ?? "-" },
     { label: "State", value: job?.stateName ?? "-" },
     { label: "City", value: job?.cityName ?? "-" },
