@@ -3,7 +3,6 @@ import { InputField, PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { validateName } from "@/utils/validate";
 import { useForm } from "react-hook-form";
 import type { AddSubAdminForm } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -127,6 +126,14 @@ export default function AddSubAdmin() {
               close(true);
             } catch (error) {
               console.error(error);
+
+              const errorMessage =
+                error instanceof Error
+                  ? error.message
+                  : "Failed to update sub-admin. Please try again.";
+
+              toast.error(errorMessage);
+
               close(false);
             }
           },
@@ -162,9 +169,6 @@ export default function AddSubAdmin() {
                 placeholder="Enter Name"
                 required
                 allowedCharacters="string"
-                rules={{
-                  validate: (v: string) => validateName(v),
-                }}
               />
 
               <PhoneInputField

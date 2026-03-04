@@ -45,45 +45,45 @@ export default function ManageSubAdmin() {
     onSuccess: (data) => {
       toast.success(data.message || "Status updated successfully!");
     },
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
       toast.error("Failed to update sub-admin status.");
     },
   });
 
- const handleToggleSubAdminStatus = async (row: SubAdminItem) => {
-  const isActive = row.userStatus === "active";
-  const newStatus = isActive ? "inactive" : "active";
+  const handleToggleSubAdminStatus = async (row: SubAdminItem) => {
+    const isActive = row.userStatus === "active";
+    const newStatus = isActive ? "inactive" : "active";
 
-  const result = await showPopup({
-    title: `${isActive ? "Disable" : "Enable"} Sub-Admin`,
-    body: `Are you sure you want to ${isActive ? "disable" : "enable"} this sub-admin?`,
-    actionButtons: [
-      { label: "Cancel", value: null, variant: "outline" },
-      {
-        label: isActive ? "Disable" : "Enable",
-        value: "confirm",
-        variant: isActive ? "danger" : "primary",
+    const result = await showPopup({
+      title: `${isActive ? "Disable" : "Enable"} Sub-Admin`,
+      body: `Are you sure you want to ${isActive ? "disable" : "enable"} this sub-admin?`,
+      actionButtons: [
+        { label: "Cancel", value: null, variant: "outline" },
+        {
+          label: isActive ? "Disable" : "Enable",
+          value: "confirm",
+          variant: isActive ? "danger" : "primary",
+        },
+      ],
+    });
+
+    if (result !== "confirm") return;
+
+    if (row.regionId == null) {
+      toast.error(
+        "Cannot update status: Region information is missing for this sub-admin.",
+      );
+      return;
+    }
+
+    updateSubAdminMutation.mutate({
+      path: { userId: row.userId },
+      query: {
+        regionId: row.regionId,
       },
-    ],
-  });
-
-  if (result !== "confirm") return;
-
-  // ✅ Safety check + TypeScript narrowing (this removes the error)
-  if (row.regionId == null) {
-    toast.error("Cannot update status: Region information is missing for this sub-admin.");
-    return;
-  }
-
-  updateSubAdminMutation.mutate({
-    path: { userId: row.userId },
-    query: {
-      regionId: row.regionId,   
-    },
-    body: { userStatus: newStatus },
-  });
-};
+      body: { userStatus: newStatus },
+    });
+  };
 
   const columns: Column<SubAdminItem>[] = [
     {
@@ -140,7 +140,11 @@ export default function ManageSubAdmin() {
             onClick={() => handleToggleSubAdminStatus(row)}
             role="button"
             tabIndex={0}
-            aria-label={row.userStatus === "active" ? "Disable sub-admin" : "Enable sub-admin"}
+            aria-label={
+              row.userStatus === "active"
+                ? "Disable sub-admin"
+                : "Enable sub-admin"
+            }
           >
             <FaUserShield
               className={

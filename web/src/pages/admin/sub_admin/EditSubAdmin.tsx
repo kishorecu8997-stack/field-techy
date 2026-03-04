@@ -3,7 +3,6 @@ import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { validateName } from "@/utils/validate";
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
@@ -57,7 +56,7 @@ export default function EditSubAdmin() {
     },
   });
 
-  /* ------------------ RESET WHEN DATA LOADS ------------------ */
+ 
   useEffect(() => {
     if (!subAdmin) return;
 
@@ -142,7 +141,7 @@ export default function EditSubAdmin() {
     handleSaveConfirmation(data);
   };
 
-  /* ------------------ LOADING ------------------ */
+
   if (isSubAdminsLoading || isRegionsLoading) {
     return (
       <div className="w-full h-full p-4 flex items-center justify-center min-h-[60vh]">
@@ -159,7 +158,7 @@ export default function EditSubAdmin() {
     );
   }
 
-  /* ------------------ UI ------------------ */
+
   return (
     <div className="w-full h-full p-4">
       <div className="flex justify-between">
@@ -181,9 +180,7 @@ export default function EditSubAdmin() {
                 label="Full Name"
                 type="text"
                 required
-                 rules={{
-                  validate: (v: string) => validateName(v),
-                }}
+            
               />
 
               <PhoneInputField
