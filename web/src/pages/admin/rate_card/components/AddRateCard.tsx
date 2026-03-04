@@ -10,6 +10,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { absoluteUrls } from "@/config/urls";
 import { useCreateRateCard } from "@/shared/apiServices/admin/adminService";
 import type { CreateRateCardParams, CreateRateCardResponse } from "@/shared/apiServices/admin/adminTypes";
+import type { PricingFormValues } from "../types";
 
 /**
  * AddRateCard Component
@@ -26,12 +27,8 @@ import type { CreateRateCardParams, CreateRateCardResponse } from "@/shared/apiS
  */
 const AddRateCard = () => {
   const navigate = useNavigate();
-  const methods = useForm({
+  const methods = useForm<PricingFormValues>({
     defaultValues: {
-      rateType: "",
-      clientName: "",
-      projectName: "",
-      country: "",
       skills: [],
     },
   });
@@ -49,69 +46,83 @@ const AddRateCard = () => {
     },
   });
 
-  // Helper to map dropdown value to ID
-  const mapDropdownValueToId = (value: string): number => {
-    if (!value) return 0;
-    const num = parseInt(value.replace(/\D/g, ""));
-    return num || 0;
-  };
+  // Transform form data to new API format
+  const transformFormDataToApi = (formData: PricingFormValues): CreateRateCardParams => {
+    // Extract countryId from country field (e.g., "country1" -> 1)
+    const countryValue = formData.country || "";
+    const countryId = parseInt(countryValue.replace(/\D/g, "")) || 1;
+    
+    // Extract serviceCategoryId from serviceCategory field
+    const serviceCategoryValue = formData.serviceCategory || "";
+    const serviceCategoryId = parseInt(serviceCategoryValue.replace(/\D/g, "")) || 1;
 
-  // Helper to get engagement model ID from rate type
-  // Based on the form structure, we need to determine which engagement model to use
-  // Looking at the skills tiers, each has: hourly, halfDay, fullDay, weekly, monthly
-  // For simplicity, we'll use Monthly (3) as default or map based on what's filled
-  const getEngagementModelId = (): number => {
-    // Default to Monthly (3) - can be customized based on form selection
-    return 3;
-  };
+    // Transform skills/tiers to experienceLevels format
+    const experienceLevels: CreateRateCardParams["experienceLevels"] = [];
 
-  // Transform form data to API format
-  const transformFormDataToApi = (formData: any): CreateRateCardParams => {
-    const countryId = mapDropdownValueToId(formData.country);
-    const engagementModelId = getEngagementModelId();
-
-    // Transform skills to API format
-    // Each skill has tiers with: level (L1/L2/L3), hourly, halfDay, fullDay, weekly, monthly
-    const skills: CreateRateCardParams["skills"] = [];
+    // Map level string to order number
+    const levelOrderMap: Record<string, number> = {
+      L1: 1,
+      L2: 2,
+      L3: 3,
+    };
 
     formData.skills?.forEach((skill: any) => {
       skill.tiers?.forEach((tier: any) => {
-        // Map level to experienceLevelId
-        const levelMap: Record<string, number> = {
-          L1: 1, // Junior
-          L2: 2, // Mid
-          L3: 3, // Senior
-        };
-        const experienceLevelId = levelMap[tier.level] || 1;
+        const levelOrder = levelOrderMap[tier.level] || 1;
+        const label = tier.level || "";
 
-        // For serviceCategoryId, we'll use a default or derive from skill name
-        // Since the form doesn't have a direct service category selection in this component,
-        // we'll use a default value (1) - this should be updated based on actual requirements
-        const serviceCategoryId = 1;
+        // Convert tier values to numbers, defaulting to 0 if empty
+        const hourly = parseFloat(tier.hourly) || 0;
+        const halfDay4h = parseFloat(tier.halfDay) || 0;
+        const fullDay8h = parseFloat(tier.fullDay) || 0;
+        const weekly5d = parseFloat(tier.weekly) || 0;
+        const monthly = parseFloat(tier.monthly) || 0;
 
-        // Use the monthly rate as the primary rate (or we could use hourly/daily based on selection)
-        const rate = parseFloat(tier.monthly) || parseFloat(tier.hourly) || 
-                     parseFloat(tier.halfDay) || parseFloat(tier.fullDay) || 
-                     parseFloat(tier.weekly) || 0;
+        // Only add if there's at least one rate value
+        if (hourly > 0 || halfDay4h > 0 || fullDay8h > 0 || weekly5d > 0 || monthly > 0) {
+          // Check if we already have an entry for this level
+          const existingIndex = experienceLevels.findIndex(
+            (exp) => exp.levelOrder === levelOrder
+          );
 
-        if (rate > 0) {
-          skills.push({
-            serviceCategoryId,
-            experienceLevelId,
-            rate,
-          });
+          if (existingIndex >= 0) {
+            // Update existing entry with new rates (accumulate or average)
+            experienceLevels[existingIndex].rates = {
+              hourly: experienceLevels[existingIndex].rates.hourly || hourly,
+              halfDay4h: experienceLevels[existingIndex].rates.halfDay4h || halfDay4h,
+              fullDay8h: experienceLevels[existingIndex].rates.fullDay8h || fullDay8h,
+              weekly5d: experienceLevels[existingIndex].rates.weekly5d || weekly5d,
+              monthly: experienceLevels[existingIndex].rates.monthly || monthly,
+            };
+          } else {
+            // Add new experience level
+            experienceLevels.push({
+              levelOrder,
+              label,
+              rates: {
+                hourly,
+                halfDay4h,
+                fullDay8h,
+                weekly5d,
+                monthly,
+              },
+            });
+          }
         }
       });
     });
 
+    // Sort by level order
+    experienceLevels.sort((a, b) => a.levelOrder - b.levelOrder);
+
     return {
       countryId,
-      engagementModelId,
-      skills,
+      serviceCategoryId,
+      experienceLevels,
     };
   };
 
-  const handleSaveConfirmation = async (data: any) => {
+  const handleSaveConfirmation = async (data: PricingFormValues) => {
     await showPopup({
       title: "Add Rate Card",
       body: "Are you sure you want to save this details?",
@@ -135,7 +146,7 @@ const AddRateCard = () => {
     });
   };
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: PricingFormValues) => {
     handleSaveConfirmation(data);
   };
   return (

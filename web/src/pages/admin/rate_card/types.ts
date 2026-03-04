@@ -43,6 +43,9 @@ export interface RateCardProps {
 }
 
 export interface PricingFormValues {
+  rateType?: string;
+  country?: string;
+  serviceCategory?: string;
   skills: SkillPricing[];
 }
 

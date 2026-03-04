@@ -118,7 +118,29 @@ export interface RateCardSkill {
   rate: number;
 }
 
+// New API structure types
+export interface ExperienceLevelRate {
+  hourly: number;
+  halfDay4h: number;
+  fullDay8h: number;
+  weekly5d: number;
+  monthly: number;
+}
+
+export interface ExperienceLevel {
+  levelOrder: number;
+  label: string;
+  rates: ExperienceLevelRate;
+}
+
 export interface CreateRateCardParams {
+  countryId: number;
+  serviceCategoryId: number;
+  experienceLevels: ExperienceLevel[];
+}
+
+// Old API structure (kept for backward compatibility)
+export interface CreateRateCardParamsLegacy {
   countryId: number;
   engagementModelId: number;
   skills: RateCardSkill[];
