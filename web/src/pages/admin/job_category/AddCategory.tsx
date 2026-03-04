@@ -35,7 +35,9 @@ export default function AddCategory() {
           {
             predicate: (query) =>
               Array.isArray(query.queryKey) &&
-              query.queryKey[0] === "adminGetServiceCategories",
+              query.queryKey[0] !== null &&
+              typeof query.queryKey[0] === "object" &&
+              (query.queryKey[0] as { _id?: string })._id === "adminGetServiceCategories",
           },
           (oldData: unknown) => {
             if (!oldData || typeof oldData !== "object") return oldData;

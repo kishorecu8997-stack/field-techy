@@ -1,3 +1,4 @@
+import { formatAmount } from "@/utils/currency";
 import ContactDetailsCard from "@/shared/components/manage_job_components/ContactDetailsCard";
 import JobStatusCard from "@/shared/components/manage_job_components/JobStatusCard";
 import ManageJobDetails from "./ManageJobDetails";
@@ -54,7 +55,7 @@ const JobDetails = () => {
     { label: "Job Description", value: job?.jobDescription ?? "-" },
     { label: "Job Type", value: job?.jobType ?? "-" },
     { label: "Service Category", value: job?.categoryName ?? "-" },
-    { label: "Job Price", value: (job as any)?.currencySymbol ? `${(job as any).currencySymbol}${job?.totalPrice}` : job?.totalPrice ?? "-" },
+    { label: "Job Price", value: formatAmount(job?.totalPrice, (job as { currencySymbol?: string })?.currencySymbol) },
     { label: "Country", value: job?.countryName ?? "-" },
     { label: "State", value: job?.stateName ?? "-" },
     { label: "City", value: job?.cityName ?? "-" },
