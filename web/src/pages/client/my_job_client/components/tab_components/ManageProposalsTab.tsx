@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { IoAttach } from "react-icons/io5";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { DUMMY_TABS_LABELS } from "@/dummy_data/jobTabs/jobsectiondata";
@@ -7,6 +7,8 @@ import { clientGetAssignmentDetailsQueryKey } from "@/api/@tanstack/react-query.
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import Popup from "@/shared/components/Popup";
+import { IoCloseSharp } from "react-icons/io5";
 
 interface ManageProposalsTabProps {
   assignments?: Array<{
@@ -28,6 +30,7 @@ interface ManageProposalsTabProps {
   }>;
   isLoading?: boolean;
   jobId?: number;
+  numberOfVacancy?: number;
 }
 
 /**
@@ -38,10 +41,46 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
   assignments = [],
   isLoading = false,
   // jobId kept for future use
+  numberOfVacancy,
 }) => {
   const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
   const [rejectedProposals, setRejectedProposals] = useState<string[]>([]);
+  const [pendingApproveConfirmation, setPendingApproveConfirmation] = useState<
+    number | null
+  >(null);
+  const [pendingRejectConfirmation, setPendingRejectConfirmation] = useState<
+    number | null
+  >(null);
   const queryClient = useQueryClient();
+
+  // Calculate approved count from assignments
+  // Includes all statuses from initial assignment through final statement submission
+  const approvedStatuses = [
+    "assigned",
+    "accepted",
+    "started",
+    "start_pending_approval",
+    "submitted",
+    "submit_pending_approval",
+  ];
+  const approvedProposalsCount = assignments.filter(
+    (a) =>
+      approvedStatuses.includes((a.assignmentStatus || "").toLowerCase()) ||
+      acceptedProposals.includes(String(a.assignmentId)),
+  ).length;
+
+  // Sort proposals by appliedAt - first come first served
+  const sortedAssignments = useMemo(() => {
+    return [...assignments].sort((a, b) => {
+      const dateA = a.appliedAt ? new Date(a.appliedAt).getTime() : 0;
+      const dateB = b.appliedAt ? new Date(b.appliedAt).getTime() : 0;
+      return dateA - dateB; // Ascending order (earliest first)
+    });
+  }, [assignments]);
+
+  // Check if job is fully filled
+  const isJobFullyFilled =
+    numberOfVacancy !== undefined && approvedProposalsCount >= numberOfVacancy;
 
   const { mutateAsync: actionOnAssignment } = useClientActionOnAssignment({
     onSuccess: () => {
@@ -57,7 +96,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             query.queryKey[0]._id === "clientGetAssignmentDetails"
           ),
       });
-      window.location.reload();
+      // Note: Query invalidation handles UI update - no need for page reload
     },
     onError: (error) => {
       console.error("Failed to action on proposal:", error);
@@ -66,6 +105,13 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
   });
 
   const handleAcceptProposal = async (assignmentId: number) => {
+    // First show confirmation popup
+    setPendingApproveConfirmation(assignmentId);
+  };
+
+  const confirmAcceptProposal = async () => {
+    if (pendingApproveConfirmation === null) return;
+    const assignmentId = pendingApproveConfirmation;
     try {
       await actionOnAssignment({
         body: {
@@ -75,13 +121,22 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
         },
       });
       setAcceptedProposals((prev) => [...prev, String(assignmentId)]);
+      setPendingApproveConfirmation(null);
     } catch (error) {
       // Error is handled in onError callback
       console.error("Accept proposal error:", error);
+      setPendingApproveConfirmation(null);
     }
   };
 
   const handleRejectProposal = async (assignmentId: number) => {
+    // First show confirmation popup
+    setPendingRejectConfirmation(assignmentId);
+  };
+
+  const confirmRejectProposal = async () => {
+    if (pendingRejectConfirmation === null) return;
+    const assignmentId = pendingRejectConfirmation;
     try {
       await actionOnAssignment({
         body: {
@@ -91,9 +146,11 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
         },
       });
       setRejectedProposals((prev) => [...prev, String(assignmentId)]);
+      setPendingRejectConfirmation(null);
     } catch (error) {
       // Error is handled in onError callback
       console.error("Reject proposal error:", error);
+      setPendingRejectConfirmation(null);
     }
   };
 
@@ -111,7 +168,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
     "submitted",
     "rejected",
   ];
-  const remainingProposals = assignments.filter(
+  const remainingProposals = sortedAssignments.filter(
     (proposal) =>
       !processedStatuses.includes(
         proposal.assignmentStatus?.toLowerCase() || "",
@@ -128,7 +185,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
     );
   }
 
-  if (!assignments || assignments.length === 0) {
+  if (!sortedAssignments || sortedAssignments.length === 0) {
     return (
       <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg text-center">
         <p className="text-gray-600 dark:text-gray-400">
@@ -143,6 +200,21 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-white">
         {`${DUMMY_TABS_LABELS.proposalsHeading} (${remainingProposals.length})`}
       </h3>
+
+      {/* Vacancy Status Display */}
+      {numberOfVacancy !== undefined && (
+        <div
+          className={`mb-4 p-3 rounded-lg ${isJobFullyFilled ? "bg-red-50 dark:bg-red-900/20" : "bg-blue-50 dark:bg-blue-900/20"}`}
+        >
+          <p
+            className={`text-sm font-medium ${isJobFullyFilled ? "text-red-700 dark:text-red-400" : "text-blue-700 dark:text-blue-400"}`}
+          >
+            {isJobFullyFilled
+              ? `All ${numberOfVacancy} vacancy(ies) have been filled. No more approvals allowed.`
+              : `Approved: ${approvedProposalsCount} / ${numberOfVacancy} vacancies`}
+          </p>
+        </div>
+      )}
 
       {remainingProposals.map((proposal, idx) => (
         <div
@@ -207,12 +279,17 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             <Button
               variant="no_style"
               onClick={() => handleAcceptProposal(proposal.assignmentId)}
-              disabled={acceptedProposals.includes(
-                String(proposal.assignmentId),
-              )}
-              className="px-6 py-2 bg-green-800 hover:bg-green-900 text-white rounded transition font-medium disabled:opacity-50"
+              disabled={
+                acceptedProposals.includes(String(proposal.assignmentId)) ||
+                isJobFullyFilled
+              }
+              className={`px-6 py-2 rounded transition font-medium ${
+                isJobFullyFilled
+                  ? "bg-gray-400 cursor-not-allowed opacity-50"
+                  : "bg-green-800 hover:bg-green-900 text-white"
+              }`}
             >
-              {DUMMY_TABS_LABELS.accept}
+              {isJobFullyFilled ? "Vacancies Filled" : DUMMY_TABS_LABELS.accept}
             </Button>
           </div>
         </div>
@@ -225,6 +302,106 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           </p>
         </div>
       )}
+
+      {/* Approve Confirmation Popup */}
+      <Popup
+        open={pendingApproveConfirmation !== null}
+        onClose={() => setPendingApproveConfirmation(null)}
+      >
+        <div className="flex items-center justify-center px-0 w-full">
+          <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
+            <div className="p-6 pb-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                    Approve Proposal
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300 mt-2">
+                    Are you sure you want to approve this proposal? This action
+                    cannot be undone.
+                  </p>
+                </div>
+                <div
+                  onClick={() => setPendingApproveConfirmation(null)}
+                  aria-label="Close"
+                  className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                >
+                  <IoCloseSharp className="h-6 w-6" />
+                </div>
+              </div>
+            </div>
+            <div className="p-6 pt-0">
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="button"
+                  variant="solid"
+                  onClick={() => setPendingApproveConfirmation(null)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={confirmAcceptProposal}
+                  type="button"
+                  className="bg-green-800 hover:bg-green-900"
+                >
+                  Approve
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Popup>
+
+      {/* Reject Confirmation Popup */}
+      <Popup
+        open={pendingRejectConfirmation !== null}
+        onClose={() => setPendingRejectConfirmation(null)}
+      >
+        <div className="flex items-center justify-center px-0 w-full">
+          <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
+            <div className="p-6 pb-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                    Reject Proposal
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300 mt-2">
+                    Are you sure you want to reject this proposal? This action
+                    cannot be undone.
+                  </p>
+                </div>
+                <div
+                  onClick={() => setPendingRejectConfirmation(null)}
+                  aria-label="Close"
+                  className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                >
+                  <IoCloseSharp className="h-6 w-6" />
+                </div>
+              </div>
+            </div>
+            <div className="p-6 pt-0">
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="button"
+                  variant="solid"
+                  onClick={() => setPendingRejectConfirmation(null)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={confirmRejectProposal}
+                  type="button"
+                  className="bg-red-700 hover:bg-red-800"
+                >
+                  Reject
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Popup>
     </div>
   );
 };

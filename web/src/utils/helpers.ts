@@ -6,3 +6,14 @@ export const getStatusBadge = (status?: string) => {
   else if (status === "Failed") colorClass = "bg-red-100 text-red-800";
   return colorClass;
 };
+
+export const getLevelColor = (level?: string) => {
+  let colorClass = "bg-gray-300"; // Default
+
+  if (level === "low") colorClass = "bg-amber-300";
+  else if (level === "medium") colorClass = "bg-orange-500";
+  else if (level === "high") colorClass = "bg-red-500";
+  else if (level === "critical") colorClass = "bg-red-600";
+
+  return colorClass;
+};

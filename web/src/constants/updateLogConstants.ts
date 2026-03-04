@@ -12,7 +12,7 @@ export const UPDATE_LOG_DEFAULTS = {
 export const UPDATE_LOG_LABELS = {
   title: "Create Log",
   jobIdLabel: "Job ID:",
-  jobId: "001",
+  jobId: undefined as string | undefined, // Will be set dynamically from job data
   titleLabel: "Title",
   titlePlaceholder: "Enter title",
   titleRequiredMessage: "Title is required",

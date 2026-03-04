@@ -29,19 +29,21 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
     isError: txError,
   } = useClientTransactions({ limit: 5, sortOrder: "desc" }, true);
 
-  const transactions: Transaction[] = (transactionsRaw ?? []).map((tx) => {
-    const amountNum = Number(tx.amount);
-    const safeAmount = Number.isNaN(amountNum) ? 0 : amountNum;
-    const txDate = new Date(tx.timestamp);
-    const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
-    return {
-      id: String(tx.id),
-      date: safeDate,
-      amount: safeAmount,
-      type: tx.type,
-      description: tx.description?.trim() ?? "Transaction",
-    };
-  });
+  const transactions: Transaction[] = (transactionsRaw?.transactions ?? []).map(
+    (tx) => {
+      const amountNum = Number(tx.amount);
+      const safeAmount = Number.isNaN(amountNum) ? 0 : amountNum;
+      const txDate = new Date(tx.timestamp);
+      const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
+      return {
+        id: String(tx.id),
+        date: safeDate,
+        amount: safeAmount,
+        type: tx.type,
+        description: tx.description?.trim() ?? "Transaction",
+      };
+    },
+  );
 
   // Format date to display as "27 Feb, 2024 | 11:54 AM"
   const formatDate = (date: Date): string => {
