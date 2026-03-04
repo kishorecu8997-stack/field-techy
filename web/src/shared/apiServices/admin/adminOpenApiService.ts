@@ -85,6 +85,7 @@ import {
   type AdminDownloadInvoiceResponse,
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
+  type AdminUpdateTransactionRequestStatusResponses,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -132,6 +133,7 @@ import {
   adminGetTransactionRequestsOptions,
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
+  adminUpdateTransactionRequestStatusMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -1391,6 +1393,56 @@ export function useAdminDeleteEngineerMutation(options?: {
       });
       options?.onSuccess?.(data);
     },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateTransactionRequestStatus(options?: {
+  onSuccess?: (data: AdminUpdateTransactionRequestStatusResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminUpdateTransactionRequestStatusMutation({
+      client: apiClient,
+    }),
+
+    mutationFn: (variables, context) => {
+      return adminUpdateTransactionRequestStatusMutation({
+        client: apiClient,
+      }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+          },
+        },
+        context,
+      );
+    },
+
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) => {
+          const firstKeyItem = query.queryKey?.[0];
+
+          if (!firstKeyItem || typeof firstKeyItem !== "object") {
+            return false;
+          }
+          return (
+            (firstKeyItem as { _id?: string })._id ===
+            "adminGetTransactionRequests"
+          );
+        },
+        type: "all",
+      });
+
+      options?.onSuccess?.(data);
+    },
+
     onError: options?.onError,
   });
 }
