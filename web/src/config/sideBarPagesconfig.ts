@@ -212,7 +212,7 @@ export const sectionConfig: Record<
   string,
   {
     component: React.ComponentType<any> | string;
-    title: string;
+    title: string | ((clientType?: string) => string);
     parent?: string;
     actions?: React.ReactNode | React.ComponentType;
   }
@@ -367,7 +367,7 @@ export const sectionConfig: Record<
   clientAccount: { component: ClientAccountDrawerMenu, title: "My Profile" },
   company: {
     component: ClientPersonalInformation,
-    title: "Company Information",
+    title: (clientType) => clientType === "corporate" || clientType === "CORPORATE" ? "Company Information" : "Personal Information",
     parent: "clientAccount",
   },
 

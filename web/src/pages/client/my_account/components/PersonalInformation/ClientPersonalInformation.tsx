@@ -281,10 +281,10 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           />
         )}
         <InputField
-          label="Contact Person Name"
+          label={companyInfo?.clientType === "corporate" ? "Contact Person Name" : "First Name"}
           name="contactPersonName"
           type="text"
-          placeholder="Contact Person Name"
+          placeholder={companyInfo?.clientType === "corporate" ? "Contact Person Name" : "First Name"}
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
           rules={{ validate: (v: string) => validateName(v) }}
@@ -301,23 +301,25 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           verified={isPhoneVerified}
           setVerified={setIsPhoneVerified}
         />
-        <SelectField
-          label="Business Type"
-          name="businessType"
-          placeholder="Business Type"
-          leftIcon={<TbFileText className="text-lg text-gray-500" />}
-          options={
-            businessTypes.length > 0
-              ? businessTypes
-              : [
-                  { value: "PRIVATE", label: "Private" },
-                  { value: "GOVERNMENT", label: "Government" },
-                  { value: "NGO", label: "NGO" },
-                  { value: "OTHER", label: "Other" },
-                ]
-          }
-          required
-        />
+        {companyInfo?.clientType === "corporate" && (
+          <SelectField
+            label="Business Type"
+            name="businessType"
+            placeholder="Business Type"
+            leftIcon={<TbFileText className="text-lg text-gray-500" />}
+            options={
+              businessTypes.length > 0
+                ? businessTypes
+                : [
+                    { value: "PRIVATE", label: "Private" },
+                    { value: "GOVERNMENT", label: "Government" },
+                    { value: "NGO", label: "NGO" },
+                    { value: "OTHER", label: "Other" },
+                  ]
+            }
+            required
+          />
+        )}
 
         {companyInfo?.clientType === "corporate" && (
           <SelectField
