@@ -14,12 +14,12 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import {
   useAdminCreateSubAdmin,
   type AdminCreateSubAdminBody,
-} from "@/shared/apiServices/admin/adminOpenApiService";
-import { validatePassword } from "@/shared/libs/utils";
-import {
   LookupTable,
   useAppGetLookupData,
+  useAdminGetSubAdmins,
 } from "@/shared/apiServices/admin/adminOpenApiService";
+import { validatePassword } from "@/shared/libs/utils";
+import { useMemo } from "react";
 
 /**
  * `AddSubAdmin` is a page component for adding a new sub-admin user.
@@ -36,10 +36,12 @@ export default function AddSubAdmin() {
       region: "",
       password: "",
     },
+    mode: "onSubmit",
   });
 
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+
   const { data: regionsLookup } = useAppGetLookupData(LookupTable.Regions);
 
   const regionOptions =
@@ -48,17 +50,54 @@ export default function AddSubAdmin() {
       label: item.name ?? "Unknown",
     })) ?? [];
 
+  const { data: subAdminData } = useAdminGetSubAdmins({
+    page: 1,
+    limit: 1000,
+  });
+
+  const subAdminList = useMemo(() => {
+    return subAdminData?.data ?? [];
+  }, [subAdminData]);
+
+  const validateEmailUnique = (value: string) => {
+    if (!value) return true;
+
+    const exists = subAdminList.some(
+      (admin) => admin.email.toLowerCase() === value.toLowerCase(),
+    );
+
+    return exists ? "Email must be unique" : true;
+  };
+
+  const validatePhoneUnique = (value: string) => {
+    if (!value) return true;
+
+    const normalizedValue = value.replace(/\s+/g, "");
+
+    const exists = subAdminList.some(
+      (admin) =>
+        admin.phoneNumber &&
+        admin.phoneNumber.replace(/\s+/g, "") === normalizedValue,
+    );
+
+    return exists ? "Phone number must be unique" : true;
+  };
+
   const { mutateAsync: createSubAdmin } = useAdminCreateSubAdmin({
-    onError: (error) => {
-      toast.error("Failed to add Sub-Admin. Please try again.");
-      console.error("Create sub-admin error:", error);
+    onSuccess: () => {
+      toast.success("Sub-Admin added successfully!");
+      navigate(absoluteUrls.admin.home.manage_sub_admin);
+      methods.reset();
+    },
+    onError: () => {
+      toast.error("Failed to add Sub-Admin.");
     },
   });
 
   const handleSaveConfirmation = async (data: AddSubAdminForm) => {
     await showPopup({
       title: "Add Sub-Admin",
-      body: "Are you sure you want to save this details?",
+      body: "Are you sure you want to save these details?",
       actionButtons: [
         {
           label: "Cancel",
@@ -70,23 +109,26 @@ export default function AddSubAdmin() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            const payload: AdminCreateSubAdminBody = {
-              name: data.name,
-              email: data.email,
-              phoneNumber: data.phoneNumber,
-              password: data.password,
-            };
+            try {
+              const payload: AdminCreateSubAdminBody = {
+                name: data.name,
+                email: data.email,
+                phoneNumber: data.phoneNumber,
+                password: data.password,
+              };
 
-            await createSubAdmin({
-              query: {
-                regionId: Number(data.region),
-              },
-              body: payload,
-            });
-            toast.success("Sub-Admin added successfully!");
-            navigate(absoluteUrls.admin.home.manage_sub_admin);
-            methods.reset();
-            close(true);
+              await createSubAdmin({
+                query: {
+                  regionId: Number(data.region),
+                },
+                body: payload,
+              });
+
+              close(true);
+            } catch (error) {
+              console.error(error);
+              close(false);
+            }
           },
         },
       ],
@@ -103,12 +145,12 @@ export default function AddSubAdmin() {
         <p className="mt-2 mb-6 font-semibold">Add Sub-Admin</p>
         <Button
           variant="solid"
-          className=""
           onClick={() => navigate(absoluteUrls.admin.home.manage_sub_admin)}
         >
           Back
         </Button>
       </div>
+
       <div className="bg-white dark:bg-gray-700 rounded-lg p-4">
         <FormContainer methods={methods} onSubmit={handleSubmit}>
           <div className="grid md:flex gap-4 w-full">
@@ -120,13 +162,22 @@ export default function AddSubAdmin() {
                 placeholder="Enter Name"
                 required
                 allowedCharacters="string"
-                rules={{ validate: (v: string) => validateName(v) }}
+                rules={{
+                  validate: (v: string) => validateName(v),
+                }}
               />
+
               <PhoneInputField
                 name="phoneNumber"
                 label="Mobile Number"
                 required
+                rules={{
+                  validate: {
+                    unique: validatePhoneUnique,
+                  },
+                }}
               />
+
               <PasswordInput
                 name="password"
                 label="Password"
@@ -137,24 +188,31 @@ export default function AddSubAdmin() {
                 }}
               />
             </div>
+
             <div className="gap-4 w-1/2 space-y-2">
               <InputField
                 name="email"
                 label="Email Address"
-                type="text"
+                type="email"
                 required
-                rules={validateEmailRules}
+                rules={{
+                  ...validateEmailRules,
+                  validate: {
+                    unique: validateEmailUnique,
+                  },
+                }}
               />
 
               <SelectField
                 name="region"
-                label="Select Regions"
+                label="Select Region"
                 placeholder="Select Region"
                 options={regionOptions}
                 required
               />
             </div>
           </div>
+
           <div className="my-4 flex justify-end">
             <Button
               type="submit"

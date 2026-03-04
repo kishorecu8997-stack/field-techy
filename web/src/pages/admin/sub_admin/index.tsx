@@ -138,6 +138,9 @@ export default function ManageSubAdmin() {
               row.userStatus === "active" ? "bg-green-100" : "bg-red-100"
             }`}
             onClick={() => handleToggleSubAdminStatus(row)}
+            role="button"
+            tabIndex={0}
+            aria-label={row.userStatus === "active" ? "Disable sub-admin" : "Enable sub-admin"}
           >
             <FaUserShield
               className={

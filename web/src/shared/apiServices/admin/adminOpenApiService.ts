@@ -506,7 +506,7 @@ export function useAdminCreateSubAdmin(options?: {
     ...adminCreateSubAdminMutation({ client: apiClient }),
     onSuccess: async (data) => {
       await queryClient.refetchQueries({
-        queryKey: ["adminGetSubAdmins"],
+        queryKey: adminGetSubAdminsQueryKey(),
       });
 
       options?.onSuccess?.(data);
@@ -525,7 +525,7 @@ export function useAdminUpdateSubAdmin(options?: {
     ...adminUpdateSubAdminMutation({ client: apiClient }),
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
-        queryKey: adminGetSubAdminsQueryKey(), // ✅ THIS IS THE FIX
+        queryKey: adminGetSubAdminsQueryKey(),
       });
 
       options?.onSuccess?.(data);
