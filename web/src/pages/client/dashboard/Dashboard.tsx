@@ -57,19 +57,26 @@ const Dashboard: React.FC = () => {
     const inProgress = clientJobs
       .filter((job) => job.status === "In Progress")
       .slice(0, 4);
-    return inProgress.map((job): Job => ({
-      id: job.id,
-      title: job.jobTitle,
-      type: job.jobType === "On site" ? "on-site" : job.jobType === "Remote" ? "remote" : "hybrid",
-      startDate: job.startDate ? new Date(job.startDate).toLocaleDateString() : "Not scheduled",
-      location: job.workLocationName || "Location not specified",
-      duration: job.endDate
-        ? `${new Date(job.startDate || "").toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
-        : "Duration not specified",
-      serviceType: job.serviceCategoryId ? `Category ID: ${job.serviceCategoryId}` : "Service not specified",
-      pay: job.totalPrice ? `${job.currencySymbol || "$"}${job.totalPrice}` : "Price not set",
-      status: "inprogress",
-    }));
+    return inProgress.map((job): Job => {
+      // Build location string - use workLocationName if available, otherwise try coordinates
+      let locationText = job.workLocationName || "Location not specified";
+      if (!job.workLocationName && job.workLocationLat && job.workLocationLng) {
+        locationText = `${job.workLocationLat}, ${job.workLocationLng}`;
+      }
+      return {
+        id: job.id,
+        title: job.jobTitle,
+        type: job.jobType === "On site" ? "on-site" : job.jobType === "Remote" ? "remote" : "hybrid",
+        startDate: job.startDate ? new Date(job.startDate).toLocaleDateString() : "Not scheduled",
+        location: locationText,
+        duration: job.endDate
+          ? `${new Date(job.startDate || "").toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
+          : "Duration not specified",
+        serviceType: job.serviceCategoryId ? `Category ID: ${job.serviceCategoryId}` : "Service not specified",
+        pay: job.totalPrice ? `${job.currencySymbol || "$"}${job.totalPrice}` : "Price not set",
+        status: "inprogress",
+      };
+    });
   }, [clientJobs]);
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
