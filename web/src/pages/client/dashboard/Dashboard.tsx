@@ -53,7 +53,7 @@ const Dashboard: React.FC = () => {
   const { data: clientJobs } = useClientGetJobs(true);
   const { data: serviceCategories } = useServiceCategories();
 
-  // Create a memoized map of service category ID to name
+  // Memoized map of service category ID to name
   const serviceCategoryMap = useMemo(() => {
     const map = new Map<number, string>();
     if (serviceCategories) {
@@ -90,6 +90,10 @@ const Dashboard: React.FC = () => {
         type: job.jobType === "On site" ? "on-site" : job.jobType === "Remote" ? "remote" : "hybrid",
         startDate: job.startDate ? new Date(job.startDate).toLocaleDateString() : "Not scheduled",
         location: locationText,
+        workLocationName: job.workLocationName || null,
+        cityId: job.cityId,
+        stateId: job.stateId,
+        countryId: job.countryId,
         duration: job.endDate
           ? `${new Date(job.startDate || "").toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
           : "Duration not specified",
@@ -98,7 +102,7 @@ const Dashboard: React.FC = () => {
         status: "inprogress",
       };
     });
-  }, [clientJobs]);
+  }, [clientJobs, serviceCategoryMap]);
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
     checkLocationPermission();

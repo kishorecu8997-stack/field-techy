@@ -7,7 +7,65 @@ import {
 } from "react-icons/io5";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { useLookupData } from "@/shared/apiServices/client/clientOpenApiService";
+import { useMemo } from "react";
 import type { Job } from "../../search_result/types";
+
+/**
+ * Helper component to display job location with proper fallback
+ */
+const JobLocationDisplay: React.FC<{
+  countryId?: number;
+  stateId?: number;
+  cityId?: number;
+  workLocationName?: string | null;
+  fallback?: string;
+}> = ({ countryId, stateId, cityId, workLocationName, fallback }) => {
+  const { data: countries } = useLookupData("countries");
+  const { data: states } = useLookupData(
+    "states",
+    countryId ? String(countryId) : undefined,
+  );
+  const { data: cities } = useLookupData(
+    "cities",
+    stateId ? String(stateId) : undefined,
+  );
+
+  const countryName = useMemo(
+    () => countries?.find((c) => c.id === countryId)?.name,
+    [countries, countryId],
+  );
+  const stateName = useMemo(
+    () => states?.find((s) => s.id === stateId)?.name,
+    [states, stateId],
+  );
+  const cityName = useMemo(
+    () => cities?.find((c) => c.id === cityId)?.name,
+    [cities, cityId],
+  );
+
+  if (workLocationName) {
+    return <span>{workLocationName}</span>;
+  }
+
+  if (!countryId && !cityId) return <span>{fallback || "N/A"}</span>;
+
+  const parts = [];
+  if (cityName) parts.push(cityName);
+  if (stateName) parts.push(stateName);
+  else if (!cityName && cityId) parts.push(String(cityId));
+
+  if (countryName) parts.push(countryName);
+
+  if (parts.length === 0) {
+    const idParts = [];
+    if (cityId) idParts.push(cityId);
+    if (countryId) idParts.push(countryId);
+    return <span>{idParts.join(", ")}</span>;
+  }
+
+  return <span>{parts.join(", ")}</span>;
+};
 
 /**
  * `InProgressJobCard` is a component that displays a summary of an in-progress job.
@@ -50,7 +108,13 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
 
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
             <IoLocationOutline className="w-4 h-4 mr-2 flex-shrink-0" />
-            {job.location}
+            <JobLocationDisplay
+              countryId={job.countryId}
+              stateId={job.stateId}
+              cityId={job.cityId}
+              workLocationName={job.workLocationName}
+              fallback={job.location}
+            />
           </div>
 
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
