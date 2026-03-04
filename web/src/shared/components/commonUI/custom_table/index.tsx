@@ -25,6 +25,7 @@ export interface CustomTableProps<T extends object> {
   error?: string | null;
   totalCount?: number;
   currentPage?: number;
+  pageSize?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
 }
@@ -44,6 +45,7 @@ export function CustomTable<T extends object>({
   error: externalError,
   totalCount: externalTotalCount,
   currentPage: externalCurrentPage,
+  pageSize: externalPageSize,
   onPageChange: externalOnPageChange,
   onPageSizeChange: externalOnPageSizeChange,
 }: CustomTableProps<T>) {
@@ -64,7 +66,9 @@ export function CustomTable<T extends object>({
   const activePage = isExternalPagination
     ? (externalCurrentPage ?? 1)
     : currentPage;
-  const activePageSize = isExternalPagination ? initialPageSize : pageSize;
+  const activePageSize = isExternalPagination && externalPageSize !== undefined 
+    ? externalPageSize 
+    : pageSize;
 
   // ---------- Fetch (Server Pagination) ----------
   useEffect(() => {
@@ -98,8 +102,15 @@ export function CustomTable<T extends object>({
       : allData.length;
 
   const paginatedData = useMemo(() => {
+    
     if (api) return allData;
-    if (isExternalPagination) return allData;
+    
+    
+    if (isExternalPagination) {
+      return allData;
+    }
+    
+    
     const start = (activePage - 1) * activePageSize;
     return allData.slice(start, start + activePageSize);
   }, [allData, activePage, activePageSize, api, isExternalPagination]);
@@ -137,7 +148,7 @@ export function CustomTable<T extends object>({
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex flex-col flex-1 shadow overflow-hidden bg-white dark:bg-gray-900">
-        <div className="flex-1 overflow-auto min-h-[250px] max-h-[600px]">
+        <div className="flex-1 overflow-auto min-h-[350px]">
           {loading && (
             <div className="flex justify-center items-center py-10 w-full">
               <LoaderComponent />

@@ -127,13 +127,21 @@ const FAQ = () => {
                     <div className="px-6 pb-6">
                       <div
                         className="
-                        text-sm text-gray-600 dark:text-gray-400
-                        prose prose-sm dark:prose-invert      
-                        max-w-none
-                        break-words
-                        overflow-x-hidden
-                        w-full
-                        "
+    prose 
+    prose-lg 
+    dark:prose-invert 
+    max-w-none
+
+    [&_ul]:list-disc
+    [&_ul]:pl-6
+    [&_ol]:list-decimal
+    [&_ol]:pl-6
+    [&_li]:mb-1
+
+    break-words
+    overflow-x-hidden
+    w-full
+  "
                         dangerouslySetInnerHTML={{
                           __html: item.description,
                         }}

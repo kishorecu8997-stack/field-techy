@@ -35,12 +35,11 @@ export default function AddCategory() {
           {
             predicate: (query) =>
               Array.isArray(query.queryKey) &&
-              query.queryKey[0] &&
+              query.queryKey[0] !== null &&
               typeof query.queryKey[0] === "object" &&
-              (query.queryKey[0] as { _id?: string })._id ===
-                "adminGetServiceCategories",
+              (query.queryKey[0] as { _id?: string })._id === "adminGetServiceCategories",
           },
-          (oldData) => {
+          (oldData: unknown) => {
             if (!oldData || typeof oldData !== "object") return oldData;
             const prev = oldData as {
               data?: Array<{ id: number; name: string }>;
@@ -67,7 +66,7 @@ export default function AddCategory() {
       },
       onError: (error) => {
         const errorMessage =
-          error instanceof Error ? error.message : "Create category failed";
+          error instanceof Error ? error.message : "A category with this name already exists";
         toast.error(errorMessage);
       },
     });
