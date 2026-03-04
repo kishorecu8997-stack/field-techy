@@ -1,9 +1,9 @@
 import { absoluteUrls } from "@/config/urls";
 import { jobOverviewData, serviceCategoriesData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
-import { sampleJobs } from "@/dummy_data/searchDataClient";
 import {
   useClientGetCompanyInfo,
+  useClientGetJobs,
   useClientJobOverviewDashboard,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
@@ -48,10 +48,29 @@ const Dashboard: React.FC = () => {
     { ...jobOverviewData[2], count: summary?.cancelledJobsCount ?? 0 },
   ];
 
-  const inProgressJobsData = useMemo(
-    () => sampleJobs.filter((job) => job.status === "inprogress"),
-    [],
-  );
+  // Fetch real jobs from API
+  const { data: clientJobs } = useClientGetJobs(true);
+
+  // Filter in-progress jobs and map to Job type for display
+  const inProgressJobsData = useMemo(() => {
+    if (!clientJobs) return [];
+    const inProgress = clientJobs
+      .filter((job) => job.status === "In Progress")
+      .slice(0, 4);
+    return inProgress.map((job): Job => ({
+      id: job.id,
+      title: job.jobTitle,
+      type: job.jobType === "On site" ? "on-site" : job.jobType === "Remote" ? "remote" : "hybrid",
+      startDate: job.startDate ? new Date(job.startDate).toLocaleDateString() : "Not scheduled",
+      location: job.workLocationName || "Location not specified",
+      duration: job.endDate
+        ? `${new Date(job.startDate || "").toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
+        : "Duration not specified",
+      serviceType: job.serviceCategoryId ? `Category ID: ${job.serviceCategoryId}` : "Service not specified",
+      pay: job.totalPrice ? `${job.currencySymbol || "$"}${job.totalPrice}` : "Price not set",
+      status: "inprogress",
+    }));
+  }, [clientJobs]);
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
     checkLocationPermission();
