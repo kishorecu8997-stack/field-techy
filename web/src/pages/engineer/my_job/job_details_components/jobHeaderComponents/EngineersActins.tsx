@@ -69,7 +69,7 @@ const EngineersActions = ({
   onOpenGiveClientFeedback,
   onOpenViewClientFeedback,
   assignmentId,
-  // isSendProposal,
+  isSendProposal,
   // progressUpdates,
   numberOfVacancy,
   numberOfApprovedProposals,
@@ -383,6 +383,11 @@ const EngineersActions = ({
 
   // Extracted shared button logic to avoid duplication
   const renderJobActionButtons = () => {
+    // Hide Send Proposal button when engineer is currently filling the proposal form
+    if (isSendProposal) {
+      return null;
+    }
+
     if (hasJobStarted || hasStartPending) return postStartActions;
 
     if (canStartJob) {

@@ -136,6 +136,8 @@ export interface JobHeaderCardProps {
   onOpenViewClientFeedback?: () => void;
   allCardsApproved?: boolean;
   assignmentId?: number;
+  allAssignmentIds?: number[]; // For client side - multiple engineers
+  engineerNames?: string[]; // Engineer names corresponding to assignment IDs
   progressUpdates?: ProgressUpdate[];
   jobId: string;
   jobStartDate?: string;
@@ -212,6 +214,7 @@ export interface ProgressUpdate {
   startDate?: string;
   endDate?: string;
   duration?: string;
+  breakType?: "short_term" | "long_term";
   reason?: string;
   requestType?: string;
   // Log ID from the original API log (used for revision updates)

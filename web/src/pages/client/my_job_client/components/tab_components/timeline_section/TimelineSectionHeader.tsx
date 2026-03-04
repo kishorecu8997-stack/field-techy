@@ -35,6 +35,13 @@ interface TimelineSectionHeaderProps {
     attachmentUrl?: string | null;
     attachmentName?: string;
     attachments?: Array<{ name: string; url: string }>;
+    // Break request specific fields
+    startDate?: string;
+    endDate?: string;
+    breakType?: "short_term" | "long_term";
+    duration?: string;
+    detailsType?: string;
+    detailsLabel?: string;
   }>;
   apiRevisionUpdateDataList?: RevisionData[];
 }
@@ -118,6 +125,12 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-5">
                     {item.title}
+                    {/* Show break time/date for break items */}
+                    {item.detailsType === "break" && item.startDate && (
+                      <span className="text-xs font-normal text-gray-500 ml-1">
+                        ({item.startDate}{item.duration ? ` - ${item.duration}` : ""})
+                      </span>
+                    )}
                   </p>
                   {item.details && (
                     <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 break-all">

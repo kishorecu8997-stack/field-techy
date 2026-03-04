@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import { formatDateTime } from "@/utils/formatDateTime";
 import {
   formatApiDate,
+  formatTimeOnly,
+  formatDateOnly,
+  calculateBreakDuration,
   transformLogsToTimelineItems,
 } from "@/utils/timelineUtils";
 import type {
@@ -566,6 +569,29 @@ const TimelineSection: React.FC<{
             ? TIMELINE_CARD_COLORS.red
             : TIMELINE_CARD_COLORS.orange;
 
+      // Format start and end - show both time and date
+      const formatStartEnd = () => {
+        const startTime = formatTimeOnly(breakRequest.startAt);
+        const endTime = formatTimeOnly(breakRequest.endAt);
+        const startDate = formatDateOnly(breakRequest.startAt);
+        const endDate = formatDateOnly(breakRequest.endAt);
+        
+        if (breakRequest.type === "short_term") {
+          // Short term: show time and date
+          return `${startTime} - ${endTime} (${startDate})`;
+        } else {
+          // Long term: show date and time
+          return `${startDate} - ${endDate} (${startTime} - ${endTime})`;
+        }
+      };
+
+      // Calculate duration
+      const duration = calculateBreakDuration(
+        breakRequest.startAt,
+        breakRequest.endAt,
+        breakRequest.type
+      );
+
       return {
         id: `break-${breakRequest.id}`,
         requestId: breakRequest.id,
@@ -574,12 +600,14 @@ const TimelineSection: React.FC<{
         description: breakRequest.reason || "",
         timestamp: formatApiDate(breakRequest.createdAt),
         rawTimestamp: breakRequest.createdAt,
-        startDate: breakRequest.startAt,
+        startDate: formatStartEnd(), // Use formatted display string with time and date
         endDate: breakRequest.endAt,
         accentColor,
         buttons: ["reject", "approve"] as CardButtonType[],
         status: breakRequest.status,
         approverComment: breakRequest.approverComment || null,
+        breakType: breakRequest.type,
+        duration: duration,
       };
     });
   }, [jobLogs]);
@@ -751,6 +779,11 @@ const TimelineSection: React.FC<{
       attachmentUrl?: string | null;
       attachmentName?: string;
       attachments?: Array<{ name: string; url: string }>;
+      // Break request fields
+      startDate?: string;
+      duration?: string;
+      breakType?: "short_term" | "long_term";
+      detailsType?: string;
     };
 
     const itemsMap = new Map<string, TimelineItem>();
@@ -802,6 +835,11 @@ const TimelineSection: React.FC<{
               sortOrder: 0,
               itemType: uniqueKey,
               approverComment: breakReq.approverComment,
+              // Include break-specific fields
+              startDate: breakReq.startDate,
+              duration: breakReq.duration,
+              breakType: breakReq.breakType,
+              detailsType: "break",
             });
           }
         }

@@ -185,7 +185,7 @@ const FinalStatementForm = ({
   };
 
   return (
-    <div className="flex flex-col p-6 w-full">
+    <div className="flex flex-col p-1 ">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">

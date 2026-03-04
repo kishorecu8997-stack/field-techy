@@ -127,7 +127,7 @@ const PostJobPage = () => {
       {
         onSuccess: (response) => {
           setRateAndCurrency(
-            `${response.rate}${response.currencySymbol}`,
+            `${response.currencySymbol}${response.rate}`,
             response.currencyId,
           );
           setAmount(String(response.rate));
@@ -205,11 +205,11 @@ const PostJobPage = () => {
       ),
       body,
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        // {
+        //   label: "Cancel",
+        //   value: null,
+        //   variant: "outline",
+        // },
         {
           label: "Edit Details",
           value: "edit",

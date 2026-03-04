@@ -8,6 +8,12 @@ import {
 } from "@/shared/components/commonUI/inputs";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import SectionHeader from "../../SectionHeader";
+import { icons } from "@/config/icons";
+
+// Helper to check if a file is a PDF
+const isPdfFile = (file: File): boolean => {
+  return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+};
 
 interface ToolEntry {
   id: string; // Tool ID
@@ -391,13 +397,20 @@ const RequirementsSection = ({
                       {entry.images.map((img, imageIdx) => (
                         <div
                           key={`${img.name}-${imageIdx}`}
-                          className="h-11 w-11 overflow-hidden rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+                          className="h-11 w-11 overflow-hidden rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex items-center justify-center"
                         >
-                          <img
-                            src={img.url}
-                            alt={img.name}
-                            className="w-full h-full object-cover"
-                          />
+                          {isPdfFile(img.file) ? (
+                            <div className="flex flex-col items-center justify-center w-full h-full text-red-500">
+                              {icons.pdf && <icons.pdf className="w-6 h-6" />}
+                              <span className="text-[8px] leading-tight">PDF</span>
+                            </div>
+                          ) : (
+                            <img
+                              src={img.url}
+                              alt={img.name}
+                              className="w-full h-full object-cover"
+                            />
+                          )}
                         </div>
                       ))}
                     </div>

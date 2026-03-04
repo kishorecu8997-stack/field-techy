@@ -17,6 +17,7 @@ const OtherDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
           label="Additional Details"
           placeholder="Add any additional guidelines or notes"
           disabled={isDisable}
+          required
         />
         <FileUpload
           name="attachment"

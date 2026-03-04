@@ -52,6 +52,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   allCardsApproved,
   setOfferJobStatus,
   assignmentId,
+  allAssignmentIds,
+  engineerNames,
   progressUpdates,
   jobId,
   jobStartDate,
@@ -101,11 +103,12 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     if (isClient) {
       await showPopup({
         title: "",
-        body: <BreakRequestDetails onClose={closePopup} />,
+        body: <BreakRequestDetails onClose={closePopup} assignmentIds={allAssignmentIds} engineerNames={engineerNames} isClientView={true} />,
         actionButtons: [],
       });
     } else {
-      navigate(`/engineer/my-jobs/${params.jobId}/break-details`);
+      // Navigate to break-details with assignmentId
+      navigate(`/engineer/my-jobs/${params.jobId}/break-details?assignmentId=${assignmentId}`);
     }
   };
 
@@ -191,10 +194,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 onClick={handleBreakDetails}
               >
                 <span>{JOB_HEADER_COPY.breakDetails}</span>
-                <div className="relative">
-                  <FaBell size={20} />
-                  <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
-                </div>
+                <FaBell size={20} />
               </div>
             )}
             {/* On Site badge */}
@@ -220,7 +220,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                       {[
                         "Hold the job",
                         "Cancel the job",
-                        "Clone the job",
+                        // "Clone the job",
                         "Report Issue",
                       ].map((item) => (
                         <li key={item}>

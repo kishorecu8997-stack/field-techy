@@ -9,30 +9,54 @@ import { toast } from "react-toastify";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import Popup from "@/shared/components/Popup";
 import { IoCloseSharp } from "react-icons/io5";
-
+import { IoStar } from "react-icons/io5";
+ 
+interface Education {
+  institute: string;
+  degree: string;
+  year?: number;
+}
+ 
+interface Engineer {
+  id: number;
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  profilePicture?: string | null;
+  profilePictureId?: number | null;
+  profilePictureUrl?: string | null;
+  city?: string;
+  state?: string;
+  averageRating?: number | string | null;
+  reviewCount?: number | string | null;
+  hourlyRate?: number;
+  skills?: string[];
+  education?: Education[];
+  userId?: number;
+}
+ 
+interface Assignment {
+  assignmentId: number;
+  jobId: number;
+  engineerId: number;
+  assignmentStatus: string;
+  jobStatus?: string;
+  assignmentType?: string;
+  proposalDetail?: string | null;
+  proposalAttachmentUrl?: string | null;
+  proposalAttachmentId?: number | null;
+  appliedAt?: string | null;
+  invitedAt?: string | null;
+  engineer?: Engineer;
+}
+ 
 interface ManageProposalsTabProps {
-  assignments?: Array<{
-    assignmentId: number;
-    jobId: number;
-    engineerId: number;
-    assignmentStatus: string;
-    proposalDetail?: string | null;
-    proposalAttachmentUrl?: string | null;
-    proposalAttachmentId?: number | null;
-    appliedAt?: string | null;
-    invitedAt?: string | null;
-    engineer?: {
-      id: number;
-      name?: string;
-      email?: string;
-      profileImageUrl?: string;
-    };
-  }>;
+  assignments?: Assignment[];
   isLoading?: boolean;
   jobId?: number;
   numberOfVacancy?: number;
 }
-
+ 
 /**
  * ManageProposalsTab - Renders the proposals list with accept/reject actions
  * Uses API data from useClientGetAssignmentDetails
@@ -52,7 +76,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
     number | null
   >(null);
   const queryClient = useQueryClient();
-
+ 
   // Calculate approved count from assignments
   // Includes all statuses from initial assignment through final statement submission
   const approvedStatuses = [
@@ -68,7 +92,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       approvedStatuses.includes((a.assignmentStatus || "").toLowerCase()) ||
       acceptedProposals.includes(String(a.assignmentId)),
   ).length;
-
+ 
   // Sort proposals by appliedAt - first come first served
   const sortedAssignments = useMemo(() => {
     return [...assignments].sort((a, b) => {
@@ -77,11 +101,11 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       return dateA - dateB; // Ascending order (earliest first)
     });
   }, [assignments]);
-
+ 
   // Check if job is fully filled
   const isJobFullyFilled =
     numberOfVacancy !== undefined && approvedProposalsCount >= numberOfVacancy;
-
+ 
   const { mutateAsync: actionOnAssignment } = useClientActionOnAssignment({
     onSuccess: () => {
       toast.success("Proposal action completed successfully");
@@ -103,12 +127,12 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       toast.error("Failed to process proposal. Please try again.");
     },
   });
-
+ 
   const handleAcceptProposal = async (assignmentId: number) => {
     // First show confirmation popup
     setPendingApproveConfirmation(assignmentId);
   };
-
+ 
   const confirmAcceptProposal = async () => {
     if (pendingApproveConfirmation === null) return;
     const assignmentId = pendingApproveConfirmation;
@@ -128,12 +152,12 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       setPendingApproveConfirmation(null);
     }
   };
-
+ 
   const handleRejectProposal = async (assignmentId: number) => {
     // First show confirmation popup
     setPendingRejectConfirmation(assignmentId);
   };
-
+ 
   const confirmRejectProposal = async () => {
     if (pendingRejectConfirmation === null) return;
     const assignmentId = pendingRejectConfirmation;
@@ -153,7 +177,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       setPendingRejectConfirmation(null);
     }
   };
-
+ 
   // Filter proposals that haven't been processed yet
   // Also filter out proposals that are already approved/accepted from the API
   // Also filter out proposals where job has started (start_pending_approval, started, submitted, etc.)
@@ -176,7 +200,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       !acceptedProposals.includes(String(proposal.assignmentId)) &&
       !rejectedProposals.includes(String(proposal.assignmentId)),
   );
-
+ 
   if (isLoading) {
     return (
       <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg flex items-center justify-center min-h-[200px]">
@@ -184,7 +208,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       </div>
     );
   }
-
+ 
   if (!sortedAssignments || sortedAssignments.length === 0) {
     return (
       <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg text-center">
@@ -194,13 +218,13 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
       </div>
     );
   }
-
+ 
   return (
     <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg break-words">
       <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-white">
         {`${DUMMY_TABS_LABELS.proposalsHeading} (${remainingProposals.length})`}
       </h3>
-
+ 
       {/* Vacancy Status Display */}
       {numberOfVacancy !== undefined && (
         <div
@@ -215,7 +239,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           </p>
         </div>
       )}
-
+ 
       {remainingProposals.map((proposal, idx) => (
         <div
           key={proposal.assignmentId}
@@ -223,14 +247,43 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
         >
           <div className="flex justify-between items-start mb-4">
             <div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{`${DUMMY_TABS_LABELS.proposalPrefix} ${idx + 1}`}</p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                {`${DUMMY_TABS_LABELS.proposalPrefix} ${idx + 1}`}
+              </p>
+ 
               <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {proposal.engineer?.name || `Engineer #${proposal.engineerId}`}
               </h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+ 
+              {/* ⭐ Average Rating */}
+              {proposal.engineer?.averageRating && (
+                <div className="flex items-center gap-1 mt-1">
+                  <IoStar className="w-4 h-4 text-yellow-400" />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    {Number(proposal.engineer.averageRating).toFixed(2)}
+                  </span>
+                </div>
+              )}
+ 
+              {/* 🏷 Skills */}
+              {proposal.engineer?.skills?.length ? (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {proposal.engineer!.skills!.map((skill) => (
+                    <span
+                      key={skill}
+                      className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300 rounded-full"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+ 
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                 Status: {proposal.assignmentStatus}
               </p>
             </div>
+ 
             <span className="text-xs text-gray-500 dark:text-gray-400">
               {proposal.appliedAt || proposal.invitedAt
                 ? `${DUMMY_TABS_LABELS.receivedOn} ${new Date(
@@ -239,9 +292,11 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                 : ""}
             </span>
           </div>
+ 
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap break-words">
             {proposal.proposalDetail || "No proposal details provided"}
           </p>
+ 
           {(proposal.proposalAttachmentUrl ||
             proposal.proposalAttachmentId) && (
             <div className="mb-4">
@@ -251,10 +306,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all hover:bg-gray-200 dark:hover:bg-gray-600 transition"
               >
-                <IoAttach
-                  className="w-4 h-4 flex-shrink-0"
-                  aria-hidden="true"
-                />
+                <IoAttach className="w-4 h-4 flex-shrink-0" />
                 View Attachment
               </a>
             </div>
@@ -270,12 +322,12 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             >
               {DUMMY_TABS_LABELS.reject}
             </Button>
-            <Button
+            {/* <Button
               variant="no_style"
               className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               {DUMMY_TABS_LABELS.viewProfile}
-            </Button>
+            </Button> */}
             <Button
               variant="no_style"
               onClick={() => handleAcceptProposal(proposal.assignmentId)}
@@ -294,7 +346,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           </div>
         </div>
       ))}
-
+ 
       {remainingProposals.length === 0 && (
         <div className="p-6 bg-white dark:bg-gray-800 rounded-lg text-center">
           <p className="text-gray-600 dark:text-gray-400">
@@ -302,7 +354,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           </p>
         </div>
       )}
-
+ 
       {/* Approve Confirmation Popup */}
       <Popup
         open={pendingApproveConfirmation !== null}
@@ -352,7 +404,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           </div>
         </div>
       </Popup>
-
+ 
       {/* Reject Confirmation Popup */}
       <Popup
         open={pendingRejectConfirmation !== null}
@@ -405,5 +457,5 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
     </div>
   );
 };
-
+ 
 export default ManageProposalsTab;

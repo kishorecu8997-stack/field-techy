@@ -157,14 +157,14 @@ const ProposalForm = ({
           </div>
 
           <div className="border-t border-gray-200 dark:border-gray-700 pt-4 flex gap-2 justify-end">
-            <Button
+            {/* <Button
               variant="no_style"
               type="button"
               onClick={() => setShowReview(false)}
               className="px-4 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               {JOB_TAB_COPY.cancel}
-            </Button>
+            </Button> */}
             <Button
               variant="no_style"
               type="button"

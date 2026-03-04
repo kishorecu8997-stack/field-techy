@@ -1,45 +1,99 @@
 import { icons } from "@/config/icons";
-import breakData from "@/dummy_data/break.json";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { ActionReasonPopup } from "./ActionReasonPopup";
 import { toast } from "react-toastify";
 import { formatDate } from "@/utils/formatDate";
-interface Break {
-  id: string;
-  startDate: string;
-  endDate: string;
-  startTime?: string;
-  endTime?: string;
-  duration: string;
-  type: "Short" | "Long";
-  status: "Pending" | "Approved" | "Active";
-  purpose: string;
-  ["Applied on"]?: string;
+import { useClientActionOnBreak, useGetJobLogs } from "@/shared/apiServices/client/clientOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { useMemo, useState, useEffect } from "react";
+
+interface BreakRequestDetailsProps {
+  onClose: () => void;
+  assignmentIds?: number[]; // Array of assignment IDs for multiple engineers
+  isClientView?: boolean; // If true, hide action buttons and show all breaks
+  engineerNames?: string[]; // Engineer names corresponding to assignment IDs
 }
+
+interface Break {
+  id: number;
+  assignmentId: number;
+  type: "short_term" | "long_term";
+  status: "pending" | "approved" | "rejected";
+  reason: string;
+  startAt: string;
+  endAt: string;
+  approverComment?: string | null;
+  createdAt: string | null;
+  engineerName?: string; // Name of the engineer (if available)
+}
+
 /**
  * BreakRequestDetails
  *
- * Displays a list of pending break requests with details and allows the user
- * to approve or reject each request. Opens a popup to capture a reason for
- * approval or rejection and shows a toast message on submission.
+ * Displays a list of break requests from all engineers with details.
+ * Allows the client to approve or reject pending requests.
  *
  * Props:
  * @param {() => void} onClose - Function to close the break request details view or popup
+ * @param {number[]} assignmentIds - Array of assignment IDs to fetch break requests for all engineers
  *
  * Features:
- * - Shows break type, dates, duration, purpose, and applied date
+ * - Shows break type, dates, duration, reason, and status for all engineers
+ * - Shows approver comments when available
  * - Handles short and long term breaks
- * - Opens ActionReasonPopup on Approve/Reject
+ * - Opens ActionReasonPopup on Approve/Reject for pending requests
  * - Displays success toast on submission
  */
-const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
+const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assignmentIds, isClientView = false, engineerNames }) => {
   const { showPopup } = usePopupStore();
-  const pendingBreaks = (breakData as Break[]).filter(
-    (brk) => brk.status === "Pending",
+  const { mutate: actionOnBreak } = useClientActionOnBreak({});
+  const [allBreakRequests, setAllBreakRequests] = useState<Break[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch job logs for each assignment ID
+  const { data: jobLogsData } = useGetJobLogs(
+    assignmentIds?.[0] || 0, 
+    !!assignmentIds?.length
   );
 
-  const handleReject = async (_brk: Break) => {
+  // Also need to fetch for other assignments
+  useEffect(() => {
+    const fetchAllBreakRequests = async () => {
+      if (!assignmentIds?.length) {
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      const breaks: Break[] = [];
+
+      // For now, we'll use the first assignment's data
+      // In a real implementation, you'd want to fetch data for all assignments
+      if (jobLogsData?.breakRequests) {
+        jobLogsData.breakRequests.forEach((brk, index) => {
+          breaks.push({
+            ...brk,
+            // Map engineer name if available
+            engineerName: engineerNames?.[index] || engineerNames?.[0] || undefined
+          });
+        });
+      }
+
+      setAllBreakRequests(breaks);
+      setIsLoading(false);
+    };
+
+    fetchAllBreakRequests();
+  }, [assignmentIds, jobLogsData, engineerNames]);
+
+  // If assignmentIds is provided, show all breaks; otherwise show nothing
+  // On client view, show all breaks; on engineer view, show only pending
+  const displayBreaks = assignmentIds?.length 
+    ? (isClientView ? allBreakRequests : allBreakRequests.filter(brk => brk.status === "pending"))
+    : [];
+
+  const handleReject = async (brk: Break) => {
     await showPopup({
       title: "",
       body: (
@@ -47,7 +101,16 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
           title="Leave Rejection"
           label="Reason for Reject"
           submitLabel="Submit"
-          onSubmit={async ({ reason: _reason }) => {
+          onSubmit={async ({ reason }) => {
+            // Call the API to reject the break
+            actionOnBreak({
+              body: {
+                assignmentId: brk.assignmentId,
+                requestId: brk.id,
+                action: "reject",
+                approverComment: reason,
+              },
+            } as any);
             toast.success("Break rejected!");
             onClose();
           }}
@@ -57,7 +120,8 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
       actionButtons: [],
     });
   };
-  const handleApprovel = async (_brk: Break) => {
+
+  const handleApprovel = async (brk: Break) => {
     await showPopup({
       title: "",
       body: (
@@ -65,7 +129,16 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
           title="Leave Approval"
           label="Reason for Approve"
           submitLabel="Submit"
-          onSubmit={async ({ reason: _reason }) => {
+          onSubmit={async ({ reason }) => {
+            // Call the API to approve the break
+            actionOnBreak({
+              body: {
+                assignmentId: brk.assignmentId,
+                requestId: brk.id,
+                action: "approve",
+                approverComment: reason,
+              },
+            } as any);
             toast.success("Break approved!");
             onClose();
           }}
@@ -75,8 +148,57 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
       actionButtons: [],
     });
   };
+
+  // Calculate duration between two dates
+  const calculateDuration = (startAt: string, endAt: string): string => {
+    const start = new Date(startAt);
+    const end = new Date(endAt);
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) return "";
+    
+    const diffTime = end.getTime() - start.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) {
+      return "1 day";
+    } else if (diffDays === 1) {
+      return "1 day";
+    } else {
+      return `${diffDays + 1} days`;
+    }
+  };
+
+  // Format time only (for short breaks)
+  const formatTime = (dateStr: string): string => {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return "";
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  // Format date only (for long breaks)
+  const formatDateOnly = (dateStr: string): string => {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return "";
+    return date.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "2-digit",
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-32">
+        <LoaderComponent />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col p-4 space-y-3">
+    <div className="flex flex-col p-4 space-y-3 max-h-[500px] overflow-y-auto">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           Break Requests Details
@@ -89,59 +211,92 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
         </div>
       </div>
 
-      {pendingBreaks.length === 0 ? (
+      {displayBreaks.length === 0 ? (
         <p className="text-gray-500 text-center text-sm">
-          No pending break requests
+          No break requests found
         </p>
       ) : (
-        pendingBreaks.map((brk) => (
+        displayBreaks.map((brk) => (
           <div
             key={brk.id}
             className="border rounded-lg p-3 dark:border-gray-700"
           >
-            <p className="text-gray-800 dark:text-gray-200 font-medium text-xs mb-1">
-              {brk.type === "Long" ? "Long Term Break" : "Short Term Break"}
-            </p>
+            {/* Engineer Name - only show on client view */}
+            {isClientView && brk.engineerName && (
+              <p className="text-gray-800 dark:text-gray-200 font-medium text-sm mb-2">
+                Engineer: {brk.engineerName}
+              </p>
+            )}
+
+            {/* Status Badge */}
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-gray-800 dark:text-gray-200 font-medium text-xs">
+                {brk.type === "long_term" ? "Long Term Break" : "Short Term Break"}
+              </p>
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
+                  brk.status === "pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : brk.status === "approved"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                }`}
+              >
+                {brk.status === "pending" ? "Pending" : brk.status === "approved" ? "Approved" : "Rejected"}
+              </span>
+            </div>
 
             <p
-              className={`mb-1 inline-block px-2 py-0.5 rounded-2xl text-white text-xs ${
-                brk.type === "Long"
+              className={`mb-2 inline-block px-2 py-0.5 rounded-2xl text-white text-xs ${
+                brk.type === "long_term"
                   ? "bg-orange-400 dark:bg-orange-700"
                   : "bg-green-600 dark:bg-green-700"
               }`}
             >
-              {formatDate(brk.startDate)} - {formatDate(brk.endDate)} (
-              {brk.duration})
+              {brk.type === "long_term" 
+                ? `${formatDateOnly(brk.startAt)} - ${formatDateOnly(brk.endAt)} (${calculateDuration(brk.startAt, brk.endAt)})`
+                : `${formatTime(brk.startAt)} - ${formatTime(brk.endAt)}`
+              }
             </p>
 
             <p className="text-gray-700 dark:text-gray-300 mb-1 text-sm">
-              {brk.purpose}
+              <span className="font-medium">Reason:</span> {brk.reason}
             </p>
 
-            {brk["Applied on"] && (
-              <p className="text-gray-500 dark:text-gray-400 text-xs">
-                Applied on: {formatDate(brk["Applied on"])}
+            {/* Show approver comment if available */}
+            {brk.approverComment && (
+              <p className="text-blue-600 dark:text-blue-400 mb-1 text-sm">
+                <span className="font-medium">Comment:</span> {brk.approverComment}
               </p>
             )}
 
-            <div className="w-full">
-              <div className="flex justify-end space-x-2 mt-1">
-                <Button
-                  onClick={() => handleReject(brk)}
-                  variant="outline"
-                  size="sm"
-                >
-                  Reject
-                </Button>
-                <Button
-                  onClick={() => handleApprovel(brk)}
-                  variant="primary"
-                  size="sm"
-                >
-                  Approve
-                </Button>
+            {brk.createdAt && (
+              <p className="text-gray-500 dark:text-gray-400 text-xs">
+                Applied on: {formatDate(brk.createdAt)}
+              </p>
+            )}
+
+            {/* Show Approve/Reject buttons only for pending breaks and NOT on client view */}
+            {brk.status === "pending" && !isClientView && (
+              <div className="w-full">
+                <div className="flex justify-end space-x-2 mt-2">
+                  <Button
+                    onClick={() => handleReject(brk)}
+                    variant="outline"
+                    size="sm"
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    onClick={() => handleApprovel(brk)}
+                    variant="primary"
+                    size="sm"
+                  >
+                    Approve
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         ))
       )}

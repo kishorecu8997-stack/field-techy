@@ -253,6 +253,8 @@ const ClientJobDetails = () => {
                 numberOfApprovedProposals={numberOfApprovedProposals}
                 jobId={jobIdParam!}
                 onToggleChat={handleToggleChat}
+                allAssignmentIds={assignments.map((a) => a.assignmentId).filter(Boolean) as number[]}
+                engineerNames={assignments.map((a) => a.engineer?.name).filter(Boolean) as string[]}
               />
               <JobTabSection
                 status={(jobStatus as JobStatus) || "Posted"}
