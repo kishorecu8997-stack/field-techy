@@ -1,15 +1,18 @@
 import { absoluteUrls } from "@/config/urls";
-import { userList, type UserItem } from "@/dummy_data/admin/manageSubAdmin";
+import { type AdminGetSubAdminsResponses } from "@/api";
+import { useAdminGetSubAdmins } from "@/shared/apiServices/admin/adminOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import CustomTable, {
   type Column,
 } from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserShield } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAdminUpdateSubAdmin } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * `ManageSubAdmin` is a page component for displaying and managing sub-admin users.
@@ -21,44 +24,77 @@ import { toast } from "react-toastify";
 export default function ManageSubAdmin() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  //Delete confirmation
-  const handleDisableSubAdmin = async (job: UserItem) => {
-    await showPopup({
-      title: "Disable Sub-Admin",
-      body: "Are you sure you want to disable this sub-admin?",
+  useEffect(() => {
+    setPage(1);
+  }, [search, limit]);
+
+  const { data, isLoading } = useAdminGetSubAdmins({
+    page,
+    limit,
+    search: search.trim() || undefined,
+  });
+
+  const subAdmins = data?.data ?? [];
+  type SubAdminItem = AdminGetSubAdminsResponses[200]["data"][number];
+  const totalCount = data?.total ?? 0;
+  const updateSubAdminMutation = useAdminUpdateSubAdmin({
+    onSuccess: (data) => {
+      toast.success(data.message || "Status updated successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to update sub-admin status.");
+    },
+  });
+
+  const handleToggleSubAdminStatus = async (row: SubAdminItem) => {
+    const isActive = row.userStatus === "active";
+    const newStatus = isActive ? "inactive" : "active";
+
+    const result = await showPopup({
+      title: `${isActive ? "Disable" : "Enable"} Sub-Admin`,
+      body: `Are you sure you want to ${isActive ? "disable" : "enable"} this sub-admin?`,
       actionButtons: [
+        { label: "Cancel", value: null, variant: "outline" },
         {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Disable",
-          value: "disable",
-          variant: "danger",
-          action: async (close) => {
-            console.log("Disabling sub-admin:", job.id);
-            // TODO: call your disable API here
-            // await disableSubAdmin(job.id);
-            toast.success("Sub-admin disabled successfully!");
-            close(true);
-          },
+          label: isActive ? "Disable" : "Enable",
+          value: "confirm",
+          variant: isActive ? "danger" : "primary",
         },
       ],
     });
+
+    if (result !== "confirm") return;
+
+    if (row.regionId == null) {
+      toast.error(
+        "Cannot update status: Region information is missing for this sub-admin.",
+      );
+      return;
+    }
+
+    updateSubAdminMutation.mutate({
+      path: { userId: row.userId },
+      query: {
+        regionId: row.regionId,
+      },
+      body: { userStatus: newStatus },
+    });
   };
 
-  const columns: Column<UserItem>[] = [
+  const columns: Column<SubAdminItem>[] = [
     {
-      key: "id",
+      key: "srNo",
       label: "Sr.No.",
-      renderCell: (row: UserItem) => <span>{row.id}</span>,
+      renderCell: (_row, index) => (page - 1) * limit + index + 1,
     },
     {
       key: "name",
       label: "Name",
-      renderCell: (row: UserItem) => (
+      renderCell: (row) => (
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs">
             👤
@@ -70,37 +106,22 @@ export default function ManageSubAdmin() {
     {
       key: "email",
       label: "Email",
-      renderCell: (row: UserItem) => <span>{row.email}</span>,
+      renderCell: (row) => <span>{row.email}</span>,
     },
     {
       key: "phoneNumber",
       label: "Phone Number",
-      renderCell: (row: UserItem) => <span>{row.phoneNumber}</span>,
+      renderCell: (row) => <span>{row.phoneNumber || "—"}</span>,
     },
     {
-      key: "status",
-      label: "Status",
-      renderCell: (row: UserItem) => (
-        <span
-          className={`px-2 py-1 rounded-full text-xs ${
-            row.status === "Active"
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-          }`}
-        >
-          {row.status}
-        </span>
-      ),
-    },
-    {
-      key: "Region",
+      key: "regionName",
       label: "Region",
-      renderCell: (row: UserItem) => <span>{row.region}</span>,
+      renderCell: (row) => <span>{row.regionName || "—"}</span>,
     },
     {
       key: "action",
       label: "Action",
-      renderCell: (row: UserItem) => (
+      renderCell: (row) => (
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
@@ -113,10 +134,23 @@ export default function ManageSubAdmin() {
             <CiEdit className="text-blue-600" />
           </div>
           <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDisableSubAdmin(row)}
+            className={`p-2 rounded-md cursor-pointer ${
+              row.userStatus === "active" ? "bg-green-100" : "bg-red-100"
+            }`}
+            onClick={() => handleToggleSubAdminStatus(row)}
+            role="button"
+            tabIndex={0}
+            aria-label={
+              row.userStatus === "active"
+                ? "Disable sub-admin"
+                : "Enable sub-admin"
+            }
           >
-            <FaUserShield className="text-red-600" />
+            <FaUserShield
+              className={
+                row.userStatus === "active" ? "text-green-600" : "text-red-600"
+              }
+            />
           </div>
         </div>
       ),
@@ -125,11 +159,11 @@ export default function ManageSubAdmin() {
 
   return (
     <div className="w-full h-full p-4">
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <p className="mt-2 mb-6 font-semibold">Manage Sub-Admin</p>
         <div className="flex gap-2">
           <Button
-            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            className="w-fit bg-gradient-to-r from-teal-900 to-teal-700 text-white py-2 px-4 rounded-lg hover:opacity-90 transition"
             onClick={() =>
               navigate(absoluteUrls.admin.home.manage_sub_admin_add)
             }
@@ -138,15 +172,22 @@ export default function ManageSubAdmin() {
           </Button>
         </div>
       </div>
-      <div className="bg-white dark:bg-gray-700 rounded-lg p-4 pb-8">
+
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-4 pb-8 shadow-sm">
         <div className="mb-4">
-          <SearchInput />
+          <SearchInput value={search} onChange={setSearch} />
         </div>
-        <div className="h-full flex-1 overflow-y-auto">
-          <CustomTable<UserItem>
+
+        <div className="overflow-x-auto">
+          <CustomTable<SubAdminItem>
             columns={columns}
-            data={userList}
-            initialPageSize={10}
+            data={subAdmins}
+            loading={isLoading}
+            initialPageSize={limit}
+            onPageSizeChange={setLimit}
+            totalCount={totalCount}
+            currentPage={page}
+            onPageChange={setPage}
           />
         </div>
       </div>

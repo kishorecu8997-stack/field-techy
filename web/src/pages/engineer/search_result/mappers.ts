@@ -10,7 +10,6 @@ import type { JobItem } from "../home/types";
 export const mapApiJobToJobItem = (
   job: EngineerSearchJobsResponse[number],
 ): JobItem => {
-  console.log("job form api", job);
   return {
     id: String(job.id),
     clientId: String(job.clientId),
@@ -31,22 +30,25 @@ export const mapApiJobToJobItem = (
     skills: [],
     tools: [],
     toolImage: null,
+    currencySymbol: job.currencySymbol || "$",
     toolAdditionalBudget: null,
     status: job.status === "Posted" ? "NEW" : job.status || "NEW",
     postedTime: job.createdAt || "",
     jobDuration: "",
     client: {
       id: String(job.clientId),
-      companyName: "client name ",
-      contactPersonName: "N/A",
-      email: "",
-      phoneNumber: "",
-      address: "",
+      companyName:
+        job.clientDetails?.companyName || job.clientDetails?.personName || "",
+      contactPersonName: job.clientDetails?.personName || "N/A",
+      email: job.clientDetails?.email || "",
+      phoneNumber: job.clientDetails?.phoneNumber || "",
+      address: job.clientDetails?.address || "",
       city: "",
       country: "",
       postalCode: "",
       state: "",
-      clientType: "COMPANY",
+      clientType:
+        job.clientDetails?.clientType === "home" ? "INDIVIDUAL" : "COMPANY",
     },
   } as JobItem;
 };

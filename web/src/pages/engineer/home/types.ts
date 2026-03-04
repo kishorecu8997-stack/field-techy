@@ -24,6 +24,7 @@ export interface JobItem {
   experience: string | null | number;
   salary: string | null;
   budgetType: string | null;
+  currencySymbol?: string;
 
   status:
     | "Posted"
@@ -37,8 +38,8 @@ export interface JobItem {
   skills: string[] | null;
   tools: string[] | null;
 
-  toolImage: string | null;
-  toolAdditionalBudget: string | null;
+  toolImage?: string | null;
+  toolAdditionalBudget?: string | null;
   postedTime: string;
   jobDuration: string;
   rating?: number;

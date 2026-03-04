@@ -2,8 +2,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
-import { useState } from "react";
-import { FaUserCircle } from "react-icons/fa";
+import { useMemo, useState } from "react";
 import {
   documentType,
   SUSPEND_ENGINEER_DEFAULT_VALUES,
@@ -18,10 +17,15 @@ import SuspendEngineer from "./SuspendEngineer";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import BlockEngineer from "./BlockEngineer";
 import ActionsMenu from "./ActionMenu";
-import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminEngineersByUserIdStatus,
+  useAdminManageEngineers,
+  useAdminDeleteEngineerMutation,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import ViewFileComponent from "./ViewFileComponent";
 import SelectMenu from "@/shared/components/SelectMenu";
+import { getEngineerFileUrl } from "@/utils/getEngineerFileUrl";
 
 /**
  * InactiveUser Component
@@ -39,45 +43,69 @@ export default function InactiveUser() {
   });
 
   const { showPopup } = usePopupStore();
-  const [activeRowId, setActiveRowId] = useState<number | null>(null);
-  const [activeUserId, setActiveUserId] = useState<number | null>(null);
-  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
-    null,
-  );
-  const [isOpen, setIsOpen] = useState(false);
+  const [activeEngineer, setActiveEngineer] =
+    useState<ManageEngineerProps | null>(null);
+  const [selectedFile, setSelectedFile] = useState<{
+    engineerId: number;
+    type: ProfileFileType;
+  } | null>(null);
   const [showAction, setShowAction] = useState<number | null>(null);
   const [isSuspendEngineer, setIsSuspendEngineer] = useState<boolean>(false);
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+
+  const {
+    data: engineersResponse,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useAdminManageEngineers({
     page: currentPage,
     limit: pageSize,
     status: "inactive",
   });
 
+  const { mutateAsync: deleteEngineer } = useAdminDeleteEngineerMutation();
+
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
 
+  const selectedEngineer = useMemo(() => {
+    if (!selectedFile) return null;
+    return (
+      engineerData.find(
+        (engineer) => engineer.id === selectedFile.engineerId,
+      ) ?? null
+    );
+  }, [engineerData, selectedFile]);
+
+  const isPreviewOpen = !!selectedFile && !!selectedEngineer;
+
+  const { mutateAsync: updateEngineerStatus } =
+    useAdminEngineersByUserIdStatus();
+
   //Delete confirmation
-  const handleDeleteEngineer = async (job: ManageEngineerProps) => {
+  const handleDeleteEngineer = async (engineerData: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
       body: "Are you sure you want to delete this engineer?",
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        { label: "Cancel", value: null, variant: "outline" },
         {
           label: "Delete",
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting engineer:", job.id);
-            toast.success("Engineer deleted successfully!");
-            close(true);
+            try {
+              await deleteEngineer({ path: { userId: engineerData.userId } });
+              toast.success("Engineer deleted successfully!");
+              await refetch?.();
+              close(true);
+            } catch (error) {
+              toast.error("Failed to delete engineer. Please try again.");
+              console.error(error);
+            }
           },
         },
       ],
@@ -106,12 +134,21 @@ export default function InactiveUser() {
       key: "details",
       label: "Details",
       renderCell: (row: ManageEngineerProps) => {
+        const initials = row.name?.charAt(0).toUpperCase() || "E";
         return (
-          <div className="text-sm flex items-center gap-2">
-            <div>
-              <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0 border border-indigo-200 shadow-sm">
+              {row.profilePicture?.url ? (
+                <img
+                  src={row.profilePicture.url}
+                  alt={row.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initials
+              )}
             </div>
-            <div>
+            <div className="flex flex-col">
               <div className="font-semibold">{row.name}</div>
               <div className="text-sm text-neutral-500 dark:text-neutral-400">
                 {row.phoneNumber}
@@ -138,12 +175,19 @@ export default function InactiveUser() {
                 label: item.label ?? "",
               })) ?? []
             }
-            value={activeRowId === row.id ? selectedType : null}
+            value={
+              selectedFile?.engineerId === row.id ? selectedFile.type : null
+            }
             onChange={(value) => {
-              setActiveRowId(row.id);
-              setActiveUserId(row.userId);
-              setSelectedType(value as ProfileFileType | null);
-              setIsOpen(true);
+              if (!value) {
+                setSelectedFile(null);
+                return;
+              }
+
+              setSelectedFile({
+                engineerId: row.id,
+                type: value as ProfileFileType,
+              });
             }}
           />
         );
@@ -173,13 +217,14 @@ export default function InactiveUser() {
       key: "kycStatus",
       label: "KYC Status",
       dataCellAlign: "center",
-      renderCell: (row) => row.profileStatus || "N/A",
+      renderCell: (row) => row.profileStatus.toUpperCase() || "N/A",
     },
     {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
-      renderCell: (row) => (row.isEmployed ? "Employed" : "Unemployed"),
+      renderCell: (row) =>
+        (row.isEmployed ? "Employed" : "Unemployed").toUpperCase(),
     },
     {
       key: "avgRating",
@@ -198,8 +243,16 @@ export default function InactiveUser() {
           showAction={showAction}
           setShowAction={setShowAction}
           handleDelete={handleDeleteEngineer}
-          setIsSuspend={setIsSuspendEngineer}
-          setIsBlock={setIsBlockEngineer}
+          setIsSuspend={(v) => {
+            if (v) setActiveEngineer(row);
+            if (!v) setActiveEngineer(null);
+            setIsSuspendEngineer(v);
+          }}
+          setIsBlock={(v) => {
+            if (v) setActiveEngineer(row);
+            if (!v) setActiveEngineer(null);
+            setIsBlockEngineer(v);
+          }}
         />
       ),
     },
@@ -216,6 +269,19 @@ export default function InactiveUser() {
   };
 
   const handleSuspendSubmit = async (data: SuspendEngineerFormData) => {
+    if (!activeEngineer) {
+      toast.error("Please select an engineer to suspend.");
+      return;
+    }
+
+    const startDate = data.suspendStartDate;
+    const endDate = data.suspendEndDate;
+
+    if (!startDate || !endDate) {
+      toast.error("Please select both start and end dates.");
+      return;
+    }
+
     await showPopup({
       title: "Suspend Engineer",
       body: "Are you sure you want to suspend this engineer?",
@@ -226,11 +292,33 @@ export default function InactiveUser() {
           value: "save",
           variant: "danger",
           action: async (close) => {
-            console.log("Suspend data:", data);
-            close(true);
-            methods.reset();
-            setIsSuspendEngineer(false);
-            toast.success("Engineer suspended successfully!");
+            try {
+              await updateEngineerStatus({
+                path: { userId: activeEngineer.userId },
+                body: {
+                  userStatus: "suspended",
+                  reason: data.reason,
+                  startDate: startDate.toISOString(),
+                  endDate: endDate.toISOString(),
+                },
+              });
+
+              toast.success("Engineer suspended successfully!");
+              methods.reset();
+              setIsSuspendEngineer(false);
+              setActiveEngineer(null);
+              await refetch?.();
+              close(true);
+            } catch (error) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : typeof error === "string"
+                    ? error
+                    : "Failed to suspend engineer",
+              );
+              close(true);
+            }
           },
         },
       ],
@@ -238,6 +326,11 @@ export default function InactiveUser() {
   };
 
   const handleBlockSubmit = async (data: BlockEngineerFormData) => {
+    if (!activeEngineer) {
+      toast.error("Please select an engineer to block.");
+      return;
+    }
+
     await showPopup({
       title: "Block Engineer",
       body: "Are you sure you want to block this engineer?",
@@ -248,11 +341,31 @@ export default function InactiveUser() {
           value: "save",
           variant: "danger",
           action: async (close) => {
-            console.log("Block data:", data);
-            close(true);
-            methods.reset();
-            setIsBlockEngineer(false);
-            toast.success("Engineer blocked successfully!");
+            try {
+              await updateEngineerStatus({
+                path: { userId: activeEngineer.userId },
+                body: {
+                  userStatus: "blocked",
+                  reason: data.reason,
+                },
+              });
+
+              toast.success("Engineer blocked successfully!");
+              methods.reset();
+              setIsBlockEngineer(false);
+              setActiveEngineer(null);
+              await refetch?.();
+              close(true);
+            } catch (error) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : typeof error === "string"
+                    ? error
+                    : "Failed to block engineer",
+              );
+              close(true);
+            }
           },
         },
       ],
@@ -269,7 +382,7 @@ export default function InactiveUser() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={engineerData}
-            loading={isLoading}
+            loading={isLoading || isFetching}
             initialPageSize={pageSize}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
@@ -278,24 +391,30 @@ export default function InactiveUser() {
           />
         </div>
       </div>
-      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <ViewFileComponent
-          onClose={() => setIsOpen(false)}
-          userId={activeUserId}
-          fileType={selectedType}
-        />
+      <Popup open={isPreviewOpen} onClose={() => setSelectedFile(null)}>
+        {selectedFile && selectedEngineer && (
+          <ViewFileComponent
+            onClose={() => setSelectedFile(null)}
+            fileType={selectedFile.type}
+            userId={selectedEngineer.userId}
+            fileUrl={getEngineerFileUrl(selectedEngineer, selectedFile?.type)}
+            title={`${selectedEngineer.name}'s`}
+          />
+        )}
       </Popup>
       <FormContainer methods={methods} onSubmit={onSubmit}>
         {isSuspendEngineer && (
           <SuspendEngineer
             isSuspendEngineer={isSuspendEngineer}
             setIsSuspendEngineer={setIsSuspendEngineer}
+            onSubmit={handleSuspendSubmit}
           />
         )}
         {isBlockEngineer && (
           <BlockEngineer
             isBlockEngineer={isBlockEngineer}
             setIsBlockEngineer={setIsBlockEngineer}
+            onSubmit={handleBlockSubmit}
           />
         )}
       </FormContainer>

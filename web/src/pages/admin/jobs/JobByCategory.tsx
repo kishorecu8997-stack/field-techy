@@ -18,6 +18,8 @@ import { InputOutline } from "@/shared/components/InputOutline";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
   LookupTable,
+  type AdminUpdateJobStatusBody,
+  useAdminUpdateJobStatus,
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { JobByCategoryProps, JobItem } from "./types";
@@ -61,6 +63,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+  const { mutateAsync: updateJobStatus } = useAdminUpdateJobStatus();
 
   const { data: categories } = useAppGetLookupData("serviceCategories");
   const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
@@ -71,11 +74,43 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       label: cat.name,
     })) || [];
 
+  const normalizeStatus = (
+    status: string,
+  ): AdminUpdateJobStatusBody["status"] => {
+    const normalized = status.toLowerCase();
+    if (normalized === "cancel" || normalized === "cancelled") {
+      return "Cancelled";
+    }
+    if (normalized === "flag" || normalized === "flagged") {
+      return "Flagged";
+    }
+    return "Hold";
+  };
+
   const handleStatusChange = async (job: JobItem, status: string | null) => {
     if (!status) return;
+    const currentStatus = rowStatuses[job.id] ?? job.status ?? "";
+    const previousStatus = currentStatus;
+    const nextStatus = normalizeStatus(status);
+
+    if (
+      normalizeStatus(currentStatus) === "Cancelled" &&
+      nextStatus !== "Cancelled"
+    ) {
+      toast.error("Cannot update status of a Cancelled job");
+      return;
+    }
+
+    setRowStatuses((prev) => ({
+      ...prev,
+      [job.id]: nextStatus,
+    }));
+
+    let isSuccess = false;
+
     await showPopup({
-      title: `${status.charAt(0).toUpperCase() + status.slice(1)} Job`,
-      body: `${status === "pending" ? "Are you sure you want to mark this job as pending?" : `Are you sure you want to ${status} this job?`}`,
+      title: `${nextStatus} Job`,
+      body: `Are you sure you want to set this job to ${nextStatus}?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -85,20 +120,37 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
         {
           label: "Yes",
           value: "yes",
-          variant: status.toLowerCase() === "approve" ? "primary" : "danger",
+          variant: nextStatus.toLowerCase() === "hold" ? "warning" : "danger",
           action: async (close: (v: boolean) => void) => {
-            // TODO: call status update API
-            setRowStatuses((prev) => ({
-              ...prev,
-              [job.id]: status,
-            }));
-            toast.success(`Job Status has been set to ${status}`);
-            console.log("Updating status for job", job.id, "to", status);
-            close(true);
+            try {
+              await updateJobStatus({
+                query: { jobId: Number(job.id) },
+                body: { status: nextStatus },
+              });
+              isSuccess = true;
+              toast.success(`Job status updated to ${nextStatus}`);
+              close(true);
+            } catch (error) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : typeof error === "string"
+                    ? error
+                    : "Failed to update job status",
+              );
+              close(false);
+            }
           },
         },
       ],
     });
+
+    if (!isSuccess) {
+      setRowStatuses((prev) => ({
+        ...prev,
+        [job.id]: previousStatus,
+      }));
+    }
   };
 
   const columns: Column<JobItem>[] = [
@@ -174,14 +226,21 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       label: "Status",
       renderCell: (row: JobItem) => {
         if (showStatusSelect) {
+          const currentStatus = rowStatuses[row.id] ?? row.status ?? "";
+          const isCancelled =
+            normalizeStatus(currentStatus || "Hold") === "Cancelled";
+          const statusOptions = AllJobStatus.map((option) => ({
+            ...option,
+            disabled: isCancelled && option.value !== "Cancelled",
+          }));
           return (
             <SelectMenu
               placeholder="Select"
-              value={rowStatuses[row.id] ?? row.status ?? ""}
+              value={currentStatus}
               onChange={(value) => {
                 handleStatusChange(row, value);
               }}
-              options={AllJobStatus}
+              options={statusOptions}
               badge
             />
           );
@@ -192,14 +251,20 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
     {
       key: "action",
       label: "Action",
-      renderCell: () => (
+      renderCell: (row: JobItem) => (
         <div className="flex items-center gap-2">
-          <div
-            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
-            onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
+          <button
+            type="button"
+            className="p-2 bg-yellow-100 rounded-md cursor-pointer hover:bg-yellow-200 transition-colors"
+            onClick={() =>
+              navigate(
+                `${absoluteUrls.admin.home.manage_jobs_view}?jobId=${row.id}`,
+              )
+            }
+            aria-label={`View job details for job ${row.id}`}
           >
             <FiEye className="text-yellow-600" />
-          </div>
+          </button>
         </div>
       ),
     },

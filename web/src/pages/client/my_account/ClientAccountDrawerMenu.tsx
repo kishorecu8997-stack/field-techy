@@ -73,9 +73,6 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   // Use the custom hook to get/fetch profile
   const clientProfile = useClientProfile();
 
-  // Get client ID from store or fallback (though store should handle it)
-  const clientId = clientProfile?.id || "9f034ed8-2ea5-44b6-a410-973e559e2c47";
-
   const methods = useForm({
     defaultValues: {
       profileImage: profileImageUrl,
@@ -104,7 +101,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
     data: clientFiles = [],
     isLoading: isLoadingFiles,
     refetch: refetchFiles,
-  } = useClientFiles(clientId);
+  } = useClientFiles();
 
   // Filter out non-profile-pic files for the context
   const { documentFiles, profilePictureFile } = useMemo(() => {

@@ -15,11 +15,13 @@ import {
   type EngineerDeleteEducationResponse,
   type EngineerDeleteExperienceResponse,
   type EngineerGetMyJobsData,
+  type EngineerGetSavedJobsData,
   type EngineerRequestBreakResponse,
   type EngineerRequestStartResponse,
   type EngineerSearchJobsData,
   type EngineerSubmitRevisionResponse,
   type EngineerSubmitSignOffResponse,
+  type EngineerToggleSaveJobResponse,
   type EngineerUpdateEducationResponse,
   type EngineerUpdateExperienceResponse,
   type EngineerUpdatePersonalInfoResponse,
@@ -32,6 +34,8 @@ import {
   type GetEngineerTransactionsResponse,
   type GetOnboardingLinkResponse,
   type GetOnboardingLinkError,
+  type GetUserReportsData,
+  type GetUserReportsResponses,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -67,6 +71,11 @@ import {
   engineerGetProfileCompletionOptions,
   engineerGetMyDocumentsOptions,
   getOnboardingLinkMutation,
+  engineerGetSavedJobsOptions,
+  engineerToggleSaveJobMutation,
+  getEngineerEarningsOptions,
+  submitReportMutation,
+  getUserReportsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
@@ -515,12 +524,14 @@ export function useEngineerRequestStart(options?: {
   return useMutation({
     ...engineerRequestStartMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when start request is submitted
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -536,12 +547,14 @@ export function useEngineerSubmitSignOff(options?: {
   return useMutation({
     ...engineerSubmitSignOffMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when sign-off is submitted
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -557,12 +570,14 @@ export function useEngineerAddWorkLog(options?: {
   return useMutation({
     ...engineerAddWorkLogMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when work log is added
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -578,12 +593,14 @@ export function useEngineerSubmitRevision(options?: {
   return useMutation({
     ...engineerSubmitRevisionMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when revision is submitted
+      if (options?.assignmentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+          exact: false,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -599,12 +616,18 @@ export function useEngineerRequestBreak(options?: {
   return useMutation({
     ...engineerRequestBreakMutation({ client: apiClient }),
     onSuccess: (data) => {
-      // Use exact query key format to invalidate timeline queries
-      const exactQueryKey = [
-        { _id: "getJobLogs", path: { assignmentId: options?.assignmentId } },
-      ];
-      queryClient.invalidateQueries({ queryKey: exactQueryKey });
-      queryClient.invalidateQueries({ queryKey: [{ _id: "getJobLogs" }] });
+      // Invalidate job logs query when break request is submitted
+      if (options?.assignmentId) {
+        // Use partial matching to invalidate job logs queries
+        queryClient.invalidateQueries({
+          queryKey: ["engineer", "jobLogs", options.assignmentId],
+        });
+        // Also invalidate any other job logs queries with the same assignmentId
+        queryClient.invalidateQueries({
+          queryKey: ["getJobLogs"],
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -618,6 +641,63 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
       path: { assignmentId },
     }),
     enabled: enabled && !!assignmentId,
+  });
+}
+
+export function useStoreEngineerSaveJobs(options?: {
+  onSuccess?: (data: EngineerToggleSaveJobResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerToggleSaveJobMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useGetEngineerSavedJobs(
+  query: EngineerGetSavedJobsData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...engineerGetSavedJobsOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useSaveReportEngineer(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...submitReportMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type ReportIssue = GetUserReportsResponses[200]["data"][number];
+export function useGetReportEngineer(
+  query: GetUserReportsData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...getUserReportsOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
   });
 }
 
@@ -636,6 +716,7 @@ export function useEngineerBalance(enabled: boolean = true) {
     refetchOnWindowFocus: false,
   });
 }
+
 export function useEngineerTransactions(
   params: GetEngineerTransactionsData["query"] = {},
   enabled = true,
@@ -667,6 +748,15 @@ export function useEngineerTransactions(
 export function useEngineerGetMyJobs(enabled: boolean = true) {
   return useQuery({
     ...engineerGetMyJobsOptions({
+      client: apiClient,
+    }),
+    enabled,
+  });
+}
+
+export function useEngineerEarnings(enabled: boolean = true) {
+  return useQuery({
+    ...getEngineerEarningsOptions({
       client: apiClient,
     }),
     enabled,

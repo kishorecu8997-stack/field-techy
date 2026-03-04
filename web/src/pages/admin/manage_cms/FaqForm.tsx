@@ -8,6 +8,7 @@ interface AddFaqProps {
   faqMode: "Add" | "Edit";
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   isLoading?: boolean;
+  validateSortOrder: (value: number) => true | string;
 }
 
 /**
@@ -26,6 +27,7 @@ export default function FaqForm({
   faqMode,
   setIsModalOpen,
   isLoading = false,
+  validateSortOrder,
 }: AddFaqProps) {
   const handleClose = () => {
     if (!isLoading) {
@@ -101,6 +103,7 @@ export default function FaqForm({
                 message: "Sort order must be 0 or greater",
               },
               valueAsNumber: true,
+              validate: validateSortOrder,
             }}
             placeholder="0"
             disabled={isLoading}
@@ -114,7 +117,11 @@ export default function FaqForm({
             className="w-fit bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2.5 px-6 rounded-lg hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
-            {isLoading ? "Saving..." : faqMode === "Add" ? "Add FAQ" : "Update FAQ"}
+            {isLoading
+              ? "Saving..."
+              : faqMode === "Add"
+                ? "Add FAQ"
+                : "Update FAQ"}
           </Button>
         </div>
       </div>

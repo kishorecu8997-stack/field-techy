@@ -1,14 +1,17 @@
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { useNavigate } from "react-router-dom";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { useAdminGetEngineerById } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import BasicInformation from "./BasicInformation";
 import UserDocuments from "./Documents";
 import { FormProvider, useForm } from "react-hook-form";
 import type { EngineerFormData } from "../types";
 import DisputeReports from "./DisputeReports";
-import Previlage from "./Privilege";
 import Wallet from "./Wallet";
 import EngineerJobCategory from "./jobCategory";
+import type { AdminGetEngineerResponse } from "@/api";
 /**
  * UserDetails Component
  *
@@ -37,27 +40,58 @@ import EngineerJobCategory from "./jobCategory";
  */
 export default function UserDetails() {
   const navigate = useNavigate();
-  const methods = useForm<EngineerFormData>({});
+  const { id } = useParams<{ id: string }>();
+  const engineerId = Number(id);
+  const hasValidEngineerId = Number.isFinite(engineerId) && engineerId > 0;
+
+  const {
+    data: engineerData,
+    isLoading,
+    error,
+  } = useAdminGetEngineerById(engineerId, hasValidEngineerId);
+
+  const methods = useForm<EngineerFormData>({
+    defaultValues: {
+      name: "",
+      email: "",
+      phoneNumber: "",
+      profileImage: null,
+      address: "",
+      skills: [],
+      price: "",
+      serviceCategory: "",
+      portfolio: "",
+      designation: "",
+      location: "",
+      employer: "",
+      experience: "",
+      resume: null,
+      governmentId: null,
+      certificate: null,
+    },
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
+
+  useEffect(() => {
+    if (!engineerData) return;
+    methods.reset(mapEngineerToFormData(engineerData));
+  }, [engineerData, methods]);
 
   const tabs = [
     {
       label: "Basic Information",
-      content: <BasicInformation />,
+      content: <BasicInformation engineer={engineerData} />,
       hide: false,
     },
     {
       label: "Documents",
-      content: <UserDocuments />,
+      content: <UserDocuments isView />,
       hide: false,
     },
     {
       label: "Disputes & Reports",
       content: <DisputeReports />,
-      hide: false,
-    },
-    {
-      label: "Privileges",
-      content: <Previlage />,
       hide: false,
     },
     {
@@ -84,14 +118,58 @@ export default function UserDetails() {
       </div>
       <div className="mt-4">
         <FormProvider {...methods}>
-          <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
-            <AdminTabComponent
-              tabs={tabs}
-              defaultActiveTab="Basic Information"
-            />
-          </div>
+          {!hasValidEngineerId ? (
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
+              Missing engineer id in the URL.
+            </div>
+          ) : isLoading ? (
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-6 flex items-center justify-center">
+              <LoaderComponent />
+            </div>
+          ) : error ? (
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
+              An error occurred while fetching engineer details.
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
+              <AdminTabComponent
+                tabs={tabs}
+                defaultActiveTab="Basic Information"
+              />
+            </div>
+          )}
         </FormProvider>
       </div>
     </div>
   );
 }
+
+const toOptionalString = (value: unknown) =>
+  value === null || value === undefined ? "" : String(value);
+
+const mapEngineerToFormData = (
+  engineer: AdminGetEngineerResponse,
+): EngineerFormData => {
+  const skills = engineer.skills?.map((s) => String(s.id)) ?? [];
+
+  return {
+    name: engineer.name ?? "",
+    email: engineer.email ?? "",
+    phoneNumber: engineer.phoneNumber ?? "",
+    profileImage: engineer.documents?.profileImage?.url ?? null,
+    address: engineer.address ?? "",
+    skills,
+    price: toOptionalString(engineer.pricePerHour),
+    serviceCategory: engineer.serviceCategory
+      ? String(engineer.serviceCategory)
+      : "",
+    portfolio: engineer.portfolioLink ?? "",
+    designation: engineer.currentDesignation ?? "",
+    location: engineer.location?.city ?? engineer.city?.name ?? "",
+    employer: engineer.employer ?? "",
+    experience: toOptionalString(engineer.totalExperience),
+    resume: engineer.documents?.resume?.url ?? null,
+    governmentId: engineer.documents?.governmentId?.url ?? null,
+    certificate: engineer.documents?.qualificationCertificate?.url ?? null,
+  };
+};

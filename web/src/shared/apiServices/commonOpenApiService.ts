@@ -11,6 +11,8 @@ import {
   type AppMarkProfileFileUploadedResponse,
   type AppMarkProfileFileUploadedError,
   type CreateRateAndReviewAssignmentResponse,
+  type AppCheckExistenceData,
+  createRateAndReviewAssignment,
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -24,12 +26,24 @@ import {
   createRateAndReviewAssignmentMutation,
   getUserRatingAndReviewsOptions,
   getUserRatingAndReviewsQueryKey,
+  appCheckExistenceOptions,
+  appResolveSignupRegionOptions,
 } from "@/api/@tanstack/react-query.gen";
-import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
+import {
+  appDownloadProfileFile as appDownloadProfileFileSdk,
+  appCheckExistence,
+} from "@/api/sdk.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
+
+interface UseCheckUserExistenceParams {
+  email?: string;
+  phone?: string;
+  enabled?: boolean;
+}
 
 /**
  * Get download URL for a profile file.
@@ -101,7 +115,7 @@ export function useAppUploadProfileFile(options?: {
     };
     headers: { authorization: string };
   }) => {
-    return mutation.mutateAsync(params as any);
+    return mutation.mutateAsync(params);
   };
 
   return {
@@ -191,8 +205,23 @@ export function useCreateRateAndReviewAssignment(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const regionId = useUserSessionStore((s) => s.session?.regionId);
   return useMutation({
     ...createRateAndReviewAssignmentMutation({ client: apiClient }),
+    mutationFn: async (fnOptions) => {
+      const body = (
+        regionId !== undefined
+          ? { ...fnOptions?.body, regionId }
+          : fnOptions?.body
+      ) as (typeof fnOptions)["body"];
+      const { data } = await createRateAndReviewAssignment({
+        client: apiClient,
+        ...fnOptions,
+        body,
+        throwOnError: true,
+      });
+      return data!;
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: getUserRatingAndReviewsQueryKey({ client: apiClient }),
@@ -207,5 +236,45 @@ export function useGetUserRatingAndReviews(enabled: boolean = true) {
   return useQuery({
     ...getUserRatingAndReviewsOptions({ client: apiClient }),
     enabled,
+  });
+}
+
+export function useCheckUserExistence({
+  email,
+  phone,
+  enabled = true,
+}: UseCheckUserExistenceParams) {
+  const hasValue = Boolean(email || phone);
+
+  return useQuery({
+    ...appCheckExistenceOptions({
+      client: apiClient,
+      query: {
+        ...(email ? { email } : {}),
+        ...(phone ? { phone } : {}),
+      } satisfies AppCheckExistenceData["query"],
+    }),
+
+    enabled: enabled && hasValue,
+    staleTime: 0,
+    retry: false,
+  });
+}
+export function useAppResolveSignupRegion(enabled: boolean = true) {
+  return useQuery({
+    ...appResolveSignupRegionOptions({ client: apiClient }),
+    enabled,
+  });
+}
+
+export function useCheckUserExistenceMutation() {
+  return useMutation({
+    mutationFn: async (params: { email?: string; phone?: string }) => {
+      const { data } = await appCheckExistence({
+        client: apiClient,
+        query: params,
+      });
+      return data;
+    },
   });
 }

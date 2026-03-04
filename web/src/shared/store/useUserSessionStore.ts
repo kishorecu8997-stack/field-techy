@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useAdminCountryStore } from "./useAdminCountryStore";
 
 export interface UserSession {
   userId: string;
@@ -7,6 +8,7 @@ export interface UserSession {
   email?: string;
   accessToken: string;
   initiatedAt: number; // Timestamp when session was created (in milliseconds)
+  regionId?: number; // Extracted from JWT payload at login time
   // metadata: Record<string, string>;
 }
 
@@ -27,6 +29,7 @@ export const useUserSessionStore = create<UserSessionStore>()(
       session: null,
       setSession: (session) => set({ session }),
       logout: () => {
+        useAdminCountryStore.getState().clearRegion();
         set({ session: null });
         localStorage.clear();
       },

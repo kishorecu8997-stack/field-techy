@@ -27,8 +27,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "attachmentPlus"
     | "photoVideoAttachment"
     | "documentAttachment"
-    | "sendButtonChat";
-  size?: "sm" | "md" | "lg" | "icon";
+    | "sendButtonChat"
+    | "chats"
+    | "close"
+    | "callLogs"
+    | "rejectCall"
+    | "acceptCall"
+    | "cancel"
+    | "accept"
+    | "micOn"
+    | "micOff"
+    | "callControl"
+    | "endCall";
+  size?: "sm" | "md" | "lg" | "icon" | "chip";
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
@@ -104,6 +115,27 @@ export const Button: React.FC<ButtonProps> = ({
       "flex items-center gap-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer",
     sendButtonChat:
       "rounded-full bg-teal-700 text-white hover:bg-teal-600 cursor-pointer",
+    chats:
+      "bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors",
+    close: "p-1 text-gray-500 hover:text-gray-700 transition-colors",
+    callLogs:
+      "py-2 px-2.5 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center",
+    rejectCall:
+      "bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg shadow-sm flex items-center gap-2",
+    acceptCall:
+      "bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-lg shadow-sm flex items-center gap-2",
+    cancel:
+      "px-4 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors font-medium",
+    accept:
+      "px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium",
+    micOn:
+      "rounded-full bg-[#0d9488] hover:opacity-90 shadow-sm transition-all w-20 h-12 flex items-center justify-center",
+    micOff:
+      "rounded-full bg-gray-200 dark:bg-gray-600 opacity-60 hover:opacity-80 shadow-sm transition-all w-20 h-12 flex items-center justify-center",
+    callControl:
+      "rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 shadow-sm w-20 h-14",
+    endCall:
+      "rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-md w-20 h-14",
   };
 
   const sizeStyles: Record<string, string> = {
@@ -111,6 +143,7 @@ export const Button: React.FC<ButtonProps> = ({
     md: "h-11 px-4 text-sm",
     lg: "h-12 px-6 text-base",
     icon: "h-11 w-11",
+    chip: "h-9 px-3 py-1.5 text-sm",
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -125,7 +158,20 @@ export const Button: React.FC<ButtonProps> = ({
       className={cn(
         baseStyles,
         variantStyles[variant],
-        variant !== "dropdown" && sizeStyles[size],
+        variant !== "dropdown" &&
+          ![
+            "callLogs",
+            "rejectCall",
+            "acceptCall",
+            "cancel",
+            "accept",
+            "close",
+            "micOn",
+            "micOff",
+            "callControl",
+            "endCall",
+          ].includes(variant) &&
+          sizeStyles[size],
         fullWidth && "w-full",
         className,
       )}
@@ -134,11 +180,19 @@ export const Button: React.FC<ButtonProps> = ({
     >
       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 
-      {!loading && leftIcon && <span className="mr-2">{leftIcon}</span>}
+      {!loading && leftIcon && (
+        <span className="flex items-center justify-center mr-2">
+          {leftIcon}
+        </span>
+      )}
 
       {children && <span>{children}</span>}
 
-      {!loading && rightIcon && <span className="ml-2">{rightIcon}</span>}
+      {!loading && rightIcon && (
+        <span className="flex items-center justify-center ml-2">
+          {rightIcon}
+        </span>
+      )}
     </button>
   );
 };

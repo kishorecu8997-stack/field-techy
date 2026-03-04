@@ -2,7 +2,7 @@ import { absoluteUrls } from "@/config/urls";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,6 +11,15 @@ import BasicInformation from "./BasicInformation";
 import Documents from "./Documents";
 import ExperienceDetails from "./ExperienceDetails";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useAdminAddEngineer } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAppMarkProfileFileUploaded } from "@/shared/apiServices/commonOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
+import type {
+  AdminCreateEngineerData,
+  AppMarkProfileFileUploadedData,
+} from "@/api";
+import { useCheckUserExistence } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * AddEngineer component provides a multi-step form interface for adding new engineers to the system.
@@ -35,11 +44,16 @@ import { usePopupStore } from "@/shared/store/popupStore";
  *
  * @returns {JSX.Element} A multi-step form component for adding new engineers
  */
+
 export default function AddEngineer() {
   const [activeTab, setActiveTab] = useState("Basic Information");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { showPopup } = usePopupStore();
+  const { mutateAsync: addEngineer } = useAdminAddEngineer();
+  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
   const methods = useForm<EngineerFormData>({
     defaultValues: {
       name: "",
@@ -63,69 +77,182 @@ export default function AddEngineer() {
     reValidateMode: "onChange",
   });
 
-  const { trigger } = methods;
+  const { trigger, getValues, reset, setError, clearErrors } = methods;
 
+  const email = methods.watch("email");
+  const phone = methods.watch("phoneNumber");
+
+  const { data: userExists, isFetching: checkingUser } = useCheckUserExistence({
+    email,
+    phone,
+    enabled: (email?.length ?? 0) > 5 || (phone?.length ?? 0) > 7,
+  });
+
+  useEffect(() => {
+    if (checkingUser) return;
+
+    // Email check
+    if (userExists?.emailExists) {
+      setError("email", {
+        type: "manual",
+        message: "User already exists with this email",
+      });
+    } else {
+      clearErrors("email");
+    }
+
+    // Phone check
+    if (userExists?.phoneExists) {
+      setError("phoneNumber", {
+        type: "manual",
+        message: "User already exists with this phone number",
+      });
+    } else {
+      clearErrors("phoneNumber");
+    }
+  }, [userExists, checkingUser, setError, clearErrors]);
+
+  const validateBasicInformation = () =>
+    trigger([
+      "name",
+      "email",
+      "phoneNumber",
+      "address",
+      "skills",
+      "price",
+      "serviceCategory",
+    ]);
+
+  const validateExperienceDetails = () =>
+    trigger(["designation", "resume", "location", "employer", "experience"]);
+
+  const validateDocuments = () => trigger(["governmentId", "certificate"]);
+
+  const extractFile = (v: unknown) =>
+    v instanceof File ? v : (v instanceof FileList && v[0]) || null;
+  const buildPayload = (data: EngineerFormData) => {
+    const files = {
+      profilePicture: extractFile(data.profileImage),
+      govIdDoc: extractFile(data.governmentId),
+      certificateDoc: extractFile(data.certificate),
+      resumeFile: extractFile(data.resume),
+    };
+
+    const skillsArray =
+      typeof data.skills === "string"
+        ? data.skills.split(",").map((s) => s.trim())
+        : data.skills;
+
+    const body: AdminCreateEngineerData["body"] = {
+      name: data.name,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+
+      address: data.address || undefined,
+      serviceCategoryId: data.serviceCategory
+        ? Number(data.serviceCategory)
+        : undefined,
+
+      hourlyRate:
+        data.price !== null && data.price !== ""
+          ? Number(data.price)
+          : undefined,
+
+      portfolioLink: data.portfolio || "",
+      employer: data.employer || undefined,
+      currentDesignation: data.designation || undefined,
+
+      experienceYears: data.experience ? Number(data.experience) : null,
+
+      skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
+    };
+
+    (Object.entries(files) as [keyof typeof files, File | null][]).forEach(
+      ([key, file]) => {
+        if (!file) return;
+
+        body[key] = {
+          filename: file.name,
+          size: file.size,
+          mimeType: file.type,
+        };
+      },
+    );
+    return { body, files };
+  };
   const handleNext = async () => {
+    if (userExists?.emailExists || userExists?.phoneExists) {
+      toast.error("User already exists");
+      return;
+    }
     let isValid = false;
-    const data = methods.getValues();
-    console.log("data :", data);
+
     if (activeTab === "Basic Information") {
-      isValid = await trigger([
-        "name",
-        "email",
-        "phoneNumber",
-        "address",
-        "skills",
-        "price",
-        "serviceCategory",
-      ]);
+      isValid = await validateBasicInformation();
       if (isValid) setActiveTab("Experience Details");
     } else if (activeTab === "Experience Details") {
-      isValid = await trigger([
-        "designation",
-        "resume",
-        "location",
-        "employer",
-        "experience",
-      ]);
+      isValid = await validateExperienceDetails();
       if (isValid) setActiveTab("Documents");
     }
   };
 
-  const handlePrevious = async () => {
-    if (activeTab === "Experience Details") {
-      setActiveTab("Basic Information");
-    } else if (activeTab === "Documents") {
-      setActiveTab("Experience Details");
-    }
+  const handlePrevious = () => {
+    if (activeTab === "Experience Details") setActiveTab("Basic Information");
+    else if (activeTab === "Documents") setActiveTab("Experience Details");
   };
 
-  const { showPopup } = usePopupStore();
-
   const handleSaveConfirmation = async (data: EngineerFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Engineer",
       body: "Are you sure you want to save this details?",
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        { label: "Cancel", value: null, variant: "outline" },
         {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Engineer added successfully!");
-            navigate(absoluteUrls.admin.home.manage_engineer);
-            methods.reset();
-            close(true);
+          action: async (close) => {
+            try {
+              const { body, files } = buildPayload(data);
+              const res = await addEngineer({
+                body,
+              } as AdminCreateEngineerData);
+              if (res && "uploadUrls" in res && res.uploadUrls) {
+                const uploadUrls = res.uploadUrls as Record<
+                  string,
+                  { uploadUrl: string; fileId: number }
+                >;
+                for (const [key, { uploadUrl, fileId }] of Object.entries(
+                  uploadUrls,
+                )) {
+                  const file = files[key as keyof typeof files];
+                  if (!file) continue;
+
+                  const upload = await fetch(uploadUrl, {
+                    method: "PUT",
+                    body: file,
+                    headers: { "Content-Type": file.type },
+                  });
+                  if (upload.ok) {
+                    await markFileUploaded({
+                      body: { fileId },
+                    } as AppMarkProfileFileUploadedData);
+                  }
+                }
+              }
+
+              await queryClient.invalidateQueries({
+                queryKey: queryKeys.admin.manageEngineers,
+              });
+              toast.success("Engineer added successfully!");
+              reset();
+              navigate(absoluteUrls.admin.home.manage_engineer);
+              close(true);
+            } catch (error) {
+              console.error(error);
+              toast.error("Failed to add engineer");
+              close(false);
+            }
           },
         },
       ],
@@ -133,38 +260,59 @@ export default function AddEngineer() {
   };
 
   const handleSave = async () => {
-    const isValid = await trigger();
-    if (isValid) {
-      setIsSubmitting(true);
-      try {
-        const data = methods.getValues();
-        console.log("Full form ", data);
-        handleSaveConfirmation(data);
-      } finally {
-        setIsSubmitting(false);
-      }
+    if (userExists?.emailExists || userExists?.phoneExists) {
+      toast.error("User already exists");
+      return;
+    }
+
+    const isValidBasic = await validateBasicInformation();
+    if (!isValidBasic) return;
+
+    const isValidExperience = await validateExperienceDetails();
+    if (!isValidExperience) return;
+
+    const isValidDocs = await validateDocuments();
+    if (!isValidDocs) return;
+    setIsSubmitting(true);
+    try {
+      await handleSaveConfirmation(getValues());
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
   const tabs = [
-    {
-      label: "Basic Information",
-      content: <BasicInformation />,
-      hide: false,
-    },
-    {
-      label: "Experience Details",
-      content: <ExperienceDetails />,
-      hide: false,
-    },
-    {
-      label: "Documents",
-      content: <Documents />,
-      hide: false,
-    },
+    { label: "Basic Information", content: <BasicInformation /> },
+    { label: "Experience Details", content: <ExperienceDetails /> },
+    { label: "Documents", content: <Documents /> },
   ];
 
   const isLastTab = activeTab === "Documents";
+
+  const handleTabChange = async (nextTab: string) => {
+    if (nextTab === activeTab) return;
+
+    const order = ["Basic Information", "Experience Details", "Documents"];
+    const currentIndex = order.indexOf(activeTab);
+    const nextIndex = order.indexOf(nextTab);
+
+    if (nextIndex === -1) return;
+    if (nextIndex <= currentIndex) {
+      setActiveTab(nextTab);
+      return;
+    }
+
+    if (currentIndex < 1 && nextIndex >= 1) {
+      const ok = await validateBasicInformation();
+      if (!ok) return;
+    }
+
+    if (currentIndex < 2 && nextIndex >= 2) {
+      const ok = await validateExperienceDetails();
+      if (!ok) return;
+    }
+
+    setActiveTab(nextTab);
+  };
 
   return (
     <div className="w-full px-4 h-full mt-6">
@@ -182,7 +330,7 @@ export default function AddEngineer() {
           <AdminTabComponent
             tabs={tabs}
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={handleTabChange}
           />
 
           <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">
@@ -199,7 +347,7 @@ export default function AddEngineer() {
             <Button
               type="button"
               onClick={isLastTab ? handleSave : handleNext}
-              disabled={isSubmitting}
+              disabled={isSubmitting || checkingUser}
               className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
             >
               {isSubmitting ? "Saving…" : isLastTab ? "Save" : "Next"}

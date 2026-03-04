@@ -23,6 +23,32 @@ export const formatApiDate = (dateStr: string | null | undefined): string => {
 };
 
 /**
+ * const { date, time } = formatApiDate("2026-02-26T14:29:00Z");
+ * // returns { date: "26/02/2026", time: "02:29 PM" }
+ */
+export const formatApiDateTime = (dateStr: string | null | undefined) => {
+  if (!dateStr) return { date: "---", time: "---" };
+
+  const dateObj = new Date(dateStr);
+
+  // Split into Date: e.g., 26/02/2026
+  const date = dateObj.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  // Split into Time: e.g., 02:29 PM
+  const time = dateObj.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return { date, time };
+};
+
+/**
  * Timeline item return type from transformLogsToTimelineItems
  */
 export interface TimelineItem {
@@ -39,6 +65,7 @@ export interface TimelineItem {
   description?: string | null;
   detailsType?: string;
   attachmentName?: string;
+  attachments?: Array<{ name: string; url: string }>;
   revisions?: Array<{
     revisionId: number;
     content: string;
@@ -260,22 +287,19 @@ export const transformSignOffsToItems = (
 ): TimelineItem[] => {
   if (!signOffs) return [];
   return signOffs.map((so) => {
-    // Build attachments array from attachmentUrl and signatureAttachmentUrl if available
+    // Build attachments array with proper labels for work submission and signature
     const attachments: Array<{ name: string; url: string }> = [];
 
     if (so.attachmentUrl) {
       attachments.push({
-        name:
-          so.attachmentUrl.split("/").pop()?.split("?")[0] || "Work Attachment",
+        name: "Work Submission",
         url: so.attachmentUrl,
       });
     }
 
     if (so.signatureAttachmentUrl) {
       attachments.push({
-        name:
-          so.signatureAttachmentUrl.split("/").pop()?.split("?")[0] ||
-          "Signature Attachment",
+        name: "Signature",
         url: so.signatureAttachmentUrl,
       });
     }

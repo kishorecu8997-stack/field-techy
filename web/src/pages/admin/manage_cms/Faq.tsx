@@ -19,6 +19,7 @@ import {
   useUpdateFaq,
   useDeleteFaq,
 } from "@/shared/apiServices/admin/adminOpenApiService";
+import { AxiosError } from "axios";
 
 /**
  * @component Faq
@@ -43,7 +44,25 @@ export default function Faq() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const { showPopup } = usePopupStore();
 
-  const { data: cmsData, isLoading, error } = useGetCmsContent("faq");
+  const validateSortOrder = (value: number) => {
+    const sortOrderValue = Number(value) || 0;
+
+    const exists = faqList.some(
+      (faq) => faq.sortOrder === sortOrderValue && faq.id !== editingFaqId,
+    );
+
+    return exists ? "Sort order must be unique" : true;
+  };
+
+  const {
+    data: cmsData,
+    isLoading,
+    error,
+  } = useGetCmsContent("faq", {
+    enabled: true,
+    refetchInterval: () =>
+      document.visibilityState === "visible" ? 15000 : false,
+  });
 
   const createMutation = useCreateFaq({
     onSuccess: (data) => {
@@ -51,9 +70,17 @@ export default function Faq() {
       setIsModalOpen(false);
       methods.reset();
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Failed to add FAQ");
-      console.error("Error creating FAQ:", error);
+    onError: (error) => {
+      console.error(error);
+
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        return;
+      }
+
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to add FAQ";
+
+      toast.error(errorMessage);
     },
   });
 
@@ -64,9 +91,17 @@ export default function Faq() {
       setEditingFaqId(null);
       methods.reset();
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Failed to update FAQ");
-      console.error("Error updating FAQ:", error);
+    onError: (error) => {
+      console.error(error);
+
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        return;
+      }
+
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update FAQ";
+
+      toast.error(errorMessage);
     },
   });
 
@@ -74,9 +109,17 @@ export default function Faq() {
     onSuccess: (data) => {
       toast.success(data.message || "FAQ deleted successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Failed to delete FAQ");
-      console.error("Error deleting FAQ:", error);
+    onError: (error) => {
+      console.error(error);
+
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        return;
+      }
+
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete FAQ";
+
+      toast.error(errorMessage);
     },
   });
 
@@ -104,7 +147,6 @@ export default function Faq() {
     );
   }, [faqList, searchQuery]);
 
- 
   const handleDeleteFaq = async (faq: FaqItem) => {
     await showPopup({
       title: "Delete FAQ",
@@ -119,7 +161,7 @@ export default function Faq() {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          action: async (close: any) => {
+          action: async (close) => {
             try {
               await deleteMutation.mutateAsync({
                 path: { id: faq.id },
@@ -196,14 +238,14 @@ export default function Faq() {
           label: "Save",
           value: "save",
           variant: "primary",
-          action: async (close: any) => {
+          action: async (close) => {
             try {
               if (faqMode === "Add") {
                 await createMutation.mutateAsync({
                   body: {
                     question: data.question,
                     answer: data.answer,
-                    sortOrder: data.sortOrder || 0,
+                    sortOrder: Number(data.sortOrder) || 0,
                   },
                 });
               } else if (editingFaqId) {
@@ -212,7 +254,7 @@ export default function Faq() {
                   body: {
                     question: data.question,
                     answer: data.answer,
-                    sortOrder: data.sortOrder || 0,
+                    sortOrder: Number(data.sortOrder) || 0,
                   },
                 });
               }
@@ -281,7 +323,7 @@ export default function Faq() {
           />
         </div>
       </div>
-    
+
       {isModalOpen && (
         <Popup
           onClose={() => {
@@ -300,6 +342,7 @@ export default function Faq() {
               faqMode={faqMode}
               setIsModalOpen={setIsModalOpen}
               isLoading={createMutation.isPending || updateMutation.isPending}
+              validateSortOrder={validateSortOrder}
             />
           </FormContainer>
         </Popup>

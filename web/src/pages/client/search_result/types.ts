@@ -12,15 +12,17 @@ export const JOB_STATUSES = {
   hold: "hold",
 } as const;
 
-export type WorkingType = "on-site" | "remote";
+export type WorkingType = "on-site" | "remote" | "hybrid";
 export const WORKING_TYPES = {
   onsite: "on-site",
   remote: "remote",
+  hybrid: "hybrid",
 } as const;
 
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
   remote: "Remote",
+  hybrid: "Hybrid",
 } as const;
 
 export type LogStatus = "check-in" | "in-progress" | "delayed" | "approved";
@@ -59,12 +61,14 @@ export interface Job {
   engineers?: string;
   engineerAvatars?: string[];
   serviceType?: string;
+  serviceCategoryId?: number | null;
   countryId?: number;
   stateId?: number;
   cityId?: number;
   workLocationName?: string | null;
   numberOfVacancy?: number;
   numberOfApplicants?: number;
+  currencySymbol?: string;
 }
 
 /**

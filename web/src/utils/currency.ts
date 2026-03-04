@@ -90,3 +90,31 @@ export function testCurrencyDetection(
 ): void {
   detectCurrencyFromPhone(phoneNumber);
 }
+
+/**
+ * Formats a numeric amount with comma separators and 2 decimal places.
+ * Optionally prepends a currency symbol.
+ *
+ * @param value - The raw amount (number or numeric string). Pass "N/A" or null/undefined to get "N/A".
+ * @param currencySymbol - Optional symbol to prepend (e.g. "₹", "$", "£").
+ * @returns Formatted string like "₹ 218,241,320.00" or "N/A".
+ *
+ * @example
+ * formatAmount("218241320.00", "₹") // → "₹ 218,241,320.00"
+ * formatAmount(1500, "$")           // → "$ 1,500.00"
+ * formatAmount("N/A")               // → "N/A"
+ * formatAmount(null)                // → "N/A"
+ */
+export function formatAmount(
+  value: number | string | null | undefined,
+  currencySymbol?: string,
+): string {
+  if (value == null || value === "" || value === "N/A") return "N/A";
+  const num = typeof value === "number" ? value : parseFloat(value as string);
+  if (isNaN(num)) return "N/A";
+  const formatted = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num);
+  return currencySymbol ? `${currencySymbol} ${formatted}` : formatted;
+}

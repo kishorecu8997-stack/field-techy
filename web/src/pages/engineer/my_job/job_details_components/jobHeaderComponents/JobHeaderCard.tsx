@@ -13,10 +13,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import ReportPage from "@/pages/client/report";
 import { IoIosWarning } from "react-icons/io";
 import { absoluteUrls } from "@/config/urls";
-
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -39,11 +39,14 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   jobLocation,
   numberOfVacancy,
   numberOfApplicants,
+  numberOfApprovedProposals,
   hideDurationAndClient = false,
+  hideClient = false,
   activeTab,
   onAddProgressUpdate,
   onOpenFinalStatement,
   isFinalStatementSubmitted,
+  isFinalStatementApproved,
   onOpenGiveClientFeedback,
   onOpenViewClientFeedback,
   allCardsApproved,
@@ -51,6 +54,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   assignmentId,
   progressUpdates,
   jobId,
+  jobStartDate,
+  jobEndDate,
   onToggleChat,
 }) => {
   const params = useParams();
@@ -121,7 +126,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               </p>
             )}
             {(numberOfVacancy !== undefined ||
-              numberOfApplicants !== undefined) && (
+              numberOfApplicants !== undefined ||
+              numberOfApprovedProposals !== undefined) && (
               <p className="text-sm mt-1">
                 {numberOfVacancy !== undefined && (
                   <span>
@@ -129,7 +135,14 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                   </span>
                 )}
                 {numberOfVacancy !== undefined &&
-                  numberOfApplicants !== undefined && (
+                  numberOfApprovedProposals !== undefined && (
+                    <span className="ml-2 text-green-400">
+                      (Filled: {numberOfApprovedProposals}/{numberOfVacancy})
+                    </span>
+                  )}
+                {numberOfVacancy !== undefined &&
+                  (numberOfApplicants !== undefined ||
+                    numberOfApprovedProposals !== undefined) && (
                     <span>{JOB_HEADER_COPY.separator}</span>
                   )}
                 {numberOfApplicants !== undefined && (
@@ -162,16 +175,14 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
 
             {/* Break Details button - visible unless hideBreakDetails is true */}
             {onToggleChat && jobId && (
-              <button
-                className="bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors"
+              <Button
+                variant="chats"
+                size="chip"
+                leftIcon={<IoChatbubble size={18} />}
                 onClick={() => onToggleChat(jobId)}
               >
-                <span className="relative inline-block">
-                  <IoChatbubble size={16} />
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-                </span>
-                <span>Chats</span>
-              </button>
+                Chats
+              </Button>
             )}
 
             {!hideBreakDetails && (
@@ -188,7 +199,13 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
             {/* On Site badge */}
             <span className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium justify-items-center h-fit justify-center items-center text-gray-900 whitespace-nowrap">
-              {type === WORKING_TYPES.onsite ? "On Site" : "Remote"}
+              {type === WORKING_TYPES.onsite || type === "On site"
+                ? "On Site"
+                : type === WORKING_TYPES.remote || type === "Remote"
+                  ? "Remote"
+                  : type === WORKING_TYPES.hybrid || type === "Hybrid"
+                    ? "Hybrid"
+                    : type || "Remote"}
             </span>
             {/* Client menu */}
             {isClient && (
@@ -231,9 +248,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             <span className="flex items-center gap-1">
               {JOB_HEADER_COPY.clockIcon} {duration || "-"}
             </span>
-            <span>
-              {JOB_HEADER_COPY.clientLabel} {client || "-"}
-            </span>
+            {!hideClient && (
+              <span>
+                {JOB_HEADER_COPY.clientLabel} {client || "-"}
+              </span>
+            )}
           </div>
         )}
         {/* Client or Engineer actions */}
@@ -257,10 +276,15 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             onAddProgressUpdate={onAddProgressUpdate}
             onOpenFinalStatement={onOpenFinalStatement}
             isFinalStatementSubmitted={isFinalStatementSubmitted}
+            isFinalStatementApproved={isFinalStatementApproved}
             onOpenGiveClientFeedback={onOpenGiveClientFeedback}
             onOpenViewClientFeedback={onOpenViewClientFeedback}
             assignmentId={assignmentId}
             progressUpdates={progressUpdates}
+            numberOfVacancy={numberOfVacancy}
+            numberOfApprovedProposals={numberOfApprovedProposals}
+            jobStartDate={jobStartDate}
+            jobEndDate={jobEndDate}
           />
         )}
       </div>
@@ -270,6 +294,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           onClose={() => setOpen(false)}
           onAddProgressUpdate={onAddProgressUpdate}
           assignmentId={assignmentId}
+          jobId={jobId}
         />
       </Popup>
       {/* Confirmation Modal Popup */}

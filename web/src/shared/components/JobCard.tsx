@@ -1,11 +1,11 @@
 import { absoluteUrls } from "@/config/urls";
 import { WORKING_TYPES_PROPERTY } from "@/pages/engineer/search_result/types";
+import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
 import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";
 import { getDurationString, scrollToTop } from "@/utils";
-import { getCurrencyFromStorage } from "@/utils/currency";
+import { formatAmount } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
-import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
 
 interface JobCardProps {
   id: number;
@@ -16,6 +16,7 @@ interface JobCardProps {
   endDate?: string | null;
   workLocationName?: string | null;
   totalPrice?: string | null;
+  currencySymbol?: string;
   clientId: number;
   clientDetails?: {
     companyName?: string | null;
@@ -42,9 +43,11 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     workLocationName,
     totalPrice,
     clientDetails,
+    currencySymbol,
   } = props;
   const location = useLocation();
   const isClientPath = location.pathname.includes("/client");
+  const formattedPay = formatAmount(totalPrice, currencySymbol);
 
   // Only call this API if we are in the client module to avoid permission errors
   const { data: client } = useClientGetCompanyInfo(
@@ -82,12 +85,14 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           className={`px-2.5 py-1 rounded-md text-xs font-medium bg-teal-800 text-white dark:bg-teal-700 whitespace-nowrap`}
         >
           {(() => {
-            switch (jobType) {
-              case WORKING_TYPES_PROPERTY.onsite:
+            // Normalize jobType for comparison (handle case differences between API and constants)
+            const normalizedJobType = jobType?.toLowerCase();
+            switch (normalizedJobType) {
+              case WORKING_TYPES_PROPERTY.onsite.toLowerCase():
                 return WORKING_TYPES_PROPERTY.onsite;
-              case WORKING_TYPES_PROPERTY.remote:
+              case WORKING_TYPES_PROPERTY.remote.toLowerCase():
                 return WORKING_TYPES_PROPERTY.remote;
-              case WORKING_TYPES_PROPERTY.hybrid:
+              case WORKING_TYPES_PROPERTY.hybrid.toLowerCase():
                 return WORKING_TYPES_PROPERTY.hybrid;
               default:
                 return jobType || "Unknown";
@@ -114,10 +119,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         </div>
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
-          <span>
-            {getCurrencyFromStorage()}
-            {totalPrice || "0.00"}
-          </span>
+          <span>{formattedPay}</span>
         </div>
       </div>
 

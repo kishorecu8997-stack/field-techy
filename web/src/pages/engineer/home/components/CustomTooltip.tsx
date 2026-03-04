@@ -16,12 +16,14 @@ interface CustomTooltipProps {
   active?: boolean;
   payload?: { value: number }[];
   label?: string;
+  currencyCode: string;
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
   active,
   payload,
   label,
+  currencyCode,
 }) => {
   if (active && payload && payload.length) {
     return (
@@ -30,7 +32,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
           {label}
         </p>
         <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
-          {formatCurrency(payload[0].value)}
+          {formatCurrency(payload[0].value, currencyCode)}
         </p>
       </div>
     );

@@ -34,14 +34,14 @@ interface Document {
  * Props accepted by the DocumentCard component.
  *
  * @property {Document} document - The document data to render.
- * @property {(id: number) => void} onEdit - Callback invoked when the edit button is pressed.
- * @property {(id: number) => void} onDelete - Callback invoked when the delete button is pressed.
+ * @property {(id: number) => void} [onEdit] - Optional callback invoked when the edit button is pressed.
+ * @property {(id: number) => void} [onDelete] - Optional callback invoked when the delete button is pressed.
  * @property {number} id - Numeric identifier used when invoking callbacks.
  */
 interface DocumentCardProps {
   document: Document;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+  onEdit?: (id: number) => void;
+  onDelete?: (id: number) => void;
   onDownload?: (id: number) => void;
   onExpiryDateChange?: (id: number, expiryDate: string) => void;
   onAddMore?: () => void;
@@ -210,23 +210,27 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
             </button>
           )}
 
-          <button
-            onClick={() => onEdit(id)}
-            className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
-            aria-label="Edit document"
-            title="Edit"
-          >
-            <FiEdit2 />
-          </button>
+          {onEdit && (
+            <button
+              onClick={() => onEdit(id)}
+              className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
+              aria-label="Edit document"
+              title="Edit"
+            >
+              <FiEdit2 />
+            </button>
+          )}
 
-          <button
-            onClick={() => onDelete(id)}
-            className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
-            aria-label="Delete document"
-            title="Delete"
-          >
-            <RiDeleteBin6Line />
-          </button>
+          {onDelete && (
+            <button
+              onClick={() => onDelete(id)}
+              className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
+              aria-label="Delete document"
+              title="Delete"
+            >
+              <RiDeleteBin6Line />
+            </button>
+          )}
         </div>
       </div>
 

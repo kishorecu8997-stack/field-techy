@@ -3,9 +3,9 @@ import {
   useEngineerSearchJobs,
   useGetJobLogs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import ChatForJobs from "@/shared/components/ChatForJobs";
 import { getDurationString } from "@/utils";
 import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -20,6 +20,7 @@ import type {
   OfferedJobStatusType,
   JobInfoSectionProps,
 } from "./types.d";
+import type { JobOverviewProps } from "@/shared/components/types";
 import type { EngineerSearchJobsResponse } from "@/api";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
@@ -27,6 +28,7 @@ import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeade
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import JobTabSection from "./job_details_components/JobTabSection";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -65,12 +67,14 @@ const mapJobToJobInfo = (
   }
 
   // Handle attachment as file if available
-  const files: string[] = [];
+  const files: Array<{ name: string; url: string }> = [];
   if (job.attachmentUrl) {
-    // Extract filename from URL if it's a full URL
+    // Extract filename from URL if it's a full URL, removing query string parameters
     const urlParts = job.attachmentUrl.split("/");
-    const fileName = urlParts[urlParts.length - 1] || "Job Attachment";
-    files.push(fileName);
+    const fileNameWithParams =
+      urlParts[urlParts.length - 1] || "Job Attachment";
+    const fileName = fileNameWithParams.split("?")[0] || "Job Attachment";
+    files.push({ name: fileName, url: job.attachmentUrl });
   }
 
   return {
@@ -80,6 +84,99 @@ const mapJobToJobInfo = (
       items: termsItems,
     },
     files,
+  };
+};
+
+/**
+ * Maps API job data to JobOverviewProps format for the Job Overview tab
+ * Uses the same comprehensive format as the client-side implementation
+ */
+const mapJobToJobOverview = (
+  job: EngineerSearchJobsResponse[number],
+  skillMap: Map<number, string>,
+  toolMap: Map<string, string>,
+  experienceLevelMap: Map<number, string>,
+): JobOverviewProps => {
+  // Extract basic job info
+  const jobTitle = job?.jobTitle || "";
+  const jobDescription = job?.jobDescription || "";
+
+  // Extract skills - convert IDs to labels using skillMap
+  const skills = Array.isArray(job.skills)
+    ? job.skills.map((skill) => {
+        const skillId =
+          typeof skill === "number" ? skill : parseInt(String(skill), 10);
+        const skillLabel = skillMap.get(skillId);
+        return skillLabel || String(skill);
+      })
+    : [];
+
+  // Extract tools - convert IDs to labels using toolMap
+  const tools = Array.isArray(job.tools)
+    ? job.tools.map((tool) => {
+        const toolId = String(tool);
+        const toolLabel = toolMap.get(toolId);
+        return {
+          name: toolLabel || String(tool),
+          price: "",
+          image: undefined,
+        };
+      })
+    : [];
+
+  // Extract duration from startDate and endDate
+  let duration: string | undefined;
+  if (job.startDate && job.endDate) {
+    const start = new Date(job.startDate);
+    const end = new Date(job.endDate);
+    duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+  } else if (job.startDate) {
+    duration = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
+  }
+
+  // Extract work details
+  const engagementModel = job.jobType || undefined;
+
+  // Extract experience level - convert ID to label using experienceLevelMap
+  let experienceLevel: string | undefined;
+  if (job.experienceLevelId) {
+    const levelLabel = experienceLevelMap.get(job.experienceLevelId);
+    experienceLevel = levelLabel || job.experienceLevelId.toString();
+  } else {
+    experienceLevel = undefined;
+  }
+
+  const numberOfVacancies = job.vacancies ?? undefined;
+
+  // Extract earnings info - engineers see totalPrice as total payment
+  const totalPayment =
+    job.totalPrice && job.currencySymbol
+      ? `${job.currencySymbol}${job.totalPrice}`
+      : undefined;
+
+  // Extract additional details
+  const additionalDetails = job.additionalDetails
+    ? [job.additionalDetails]
+    : [];
+
+  // Extract attachments
+  const attachments: Array<{ name: string; url: string }> = [];
+  if (job.attachmentUrl) {
+    attachments.push({ name: "View Document", url: job.attachmentUrl });
+  }
+
+  return {
+    jobTitle,
+    jobDescription,
+    skills,
+    tools,
+    duration,
+    engagementModel,
+    experienceLevel,
+    numberOfVacancies,
+    totalPayment,
+    additionalDetails,
+    attachments,
   };
 };
 
@@ -98,11 +195,12 @@ const JobDetailsPage = () => {
   const [activeTab, setActiveTab] = useState(JOB_TAB_LABELS.timeline);
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [pageHeading, setPageHeading] = useState("Job Details");
   const [_offerJobStatus, setOfferJobStatus] = useState<
     OfferedJobStatusType | AssignmentStatus | undefined
   >();
+  const [openChatJobId, setOpenChatJobId] = useState<string | null>(null);
+  const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
+  const [pageHeading, setPageHeading] = useState<string>("Job Details");
 
   // Fetch job data from real API using search endpoint with jobId filter
   const { data: jobList, isLoading: isJobsLoading } = useEngineerSearchJobs({
@@ -110,6 +208,44 @@ const JobDetailsPage = () => {
   });
 
   const job = jobList?.[0];
+
+  // Fetch skills, tools and experience levels from the lookup API
+  const { data: skillsResponse } = useLookupData("skills");
+  const { data: toolsResponse } = useLookupData("tools");
+  const { data: experienceLevelsResponse } = useLookupData("experienceLevels");
+
+  // Create skill lookup map for fast ID to label conversion from API data
+  const skillMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (skillsResponse || []).forEach((skill) => {
+      map.set(skill.id, skill.name);
+    });
+    return map;
+  }, [skillsResponse]);
+
+  // Create tool lookup map for fast ID to label conversion from API data
+  const toolMap = useMemo(() => {
+    const map = new Map<string, string>();
+    (toolsResponse || []).forEach((tool) => {
+      map.set(String(tool.id), tool.name);
+    });
+    return map;
+  }, [toolsResponse]);
+
+  // Create experience level lookup map for fast ID to label conversion
+  const experienceLevelMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (experienceLevelsResponse || []).forEach((level) => {
+      map.set(level.id, level.name);
+    });
+    return map;
+  }, [experienceLevelsResponse]);
+
+  // Map job to JobOverviewProps using the lookup maps
+  const jobOverview = useMemo(() => {
+    if (!job) return undefined;
+    return mapJobToJobOverview(job, skillMap, toolMap, experienceLevelMap);
+  }, [job, skillMap, toolMap, experienceLevelMap]);
   const assignmentId = job?.assignmentId ?? undefined;
 
   // Fetch job logs to get revision requests from client
@@ -203,6 +339,25 @@ const JobDetailsPage = () => {
     return [...progressUpdates, ...apiProgressUpdates];
   }, [progressUpdates, apiProgressUpdates]);
 
+  // Check if final statement has been submitted and approved from job logs
+  const isFinalStatementSubmitted = useMemo(() => {
+    if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
+      return false;
+    }
+    const signOff = jobLogs.signOffSheets[0];
+    // Final statement is submitted if it has any status (pending, approved, or rejected)
+    return !!signOff.status;
+  }, [jobLogs]);
+
+  // Check if final statement has been approved by client
+  const isFinalStatementApproved = useMemo(() => {
+    if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
+      return false;
+    }
+    const signOff = jobLogs.signOffSheets[0];
+    return signOff.status === "approved";
+  }, [jobLogs]);
+
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
   };
@@ -210,16 +365,36 @@ const JobDetailsPage = () => {
   const handleOpenFinalStatement = () => setShowFinalStatement(true);
   const handleCloseFinalStatement = () => setShowFinalStatement(false);
 
-  // Handle chat toggle
-  const handleToggleChat = (_jobId: string) => {
-    setShowChat(true);
-    setPageHeading("Chats");
+  // Chat toggle function
+  const handleToggleChat = (jobId: string) => {
+    setOpenChatJobId((prev) => {
+      const isOpening = prev !== jobId;
+      if (isOpening) {
+        setBreadcrumbExtra("chats");
+        setPageHeading("Chats");
+        return jobId;
+      } else {
+        setBreadcrumbExtra(null);
+        setPageHeading("Job Details");
+        return null;
+      }
+    });
   };
 
+  // Close chat handler
   const handleCloseChat = () => {
-    setShowChat(false);
+    setOpenChatJobId(null);
+    setBreadcrumbExtra(null);
     setPageHeading("Job Details");
   };
+
+  // Breadcrumb segments for MyJobsHeader
+  const segments = [
+    "Engineer",
+    "my-jobs",
+    params.jobId ?? "",
+    breadcrumbExtra === "chats" ? "Chats" : null,
+  ].filter((v): v is string => typeof v === "string");
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {
@@ -292,6 +467,10 @@ const JobDetailsPage = () => {
   // Prepare mapped job data from API response - use job as the primary source
   const jobTitle = job?.jobTitle || "";
   const clientId = job?.clientId;
+  const clientName =
+    job?.clientDetails?.companyName ||
+    job?.clientDetails?.personName ||
+    `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
   const duration = getDurationString({
     startDateStr: job?.startDate || "",
@@ -331,24 +510,27 @@ const JobDetailsPage = () => {
           title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport={!showChat}
-          isShowSort={!showChat}
-          isChatVisible={showChat}
-          handleCloseChat={handleCloseChat}
+          isReport={false}
+          isShowBreadcrumb
           customLabels={
-            isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
+            isDummyJob
+              ? { "dummy-j1": "Network Engineer" }
+              : { [params.jobId || ""]: jobTitle }
           }
+          segments={segments}
+          isChatVisible={!!openChatJobId}
+          handleCloseChat={handleCloseChat}
         />
-        {showChat ? (
+        {openChatJobId ? (
           <div className="flex-1 overflow-y-auto">
-            <ChatForJobs jobId={String(params.jobId)} currentUser="Engineer" />
+            <ChatForJobs jobId={openChatJobId} currentUser="Engineer" />
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
             <div className="lg:col-span-2 space-y-6">
               <JobHeaderCard
                 title={jobTitle}
-                client={`Client #${clientId}`}
+                client={clientName}
                 duration={duration as string}
                 type={engagementType}
                 status={jobStatus}
@@ -360,13 +542,18 @@ const JobDetailsPage = () => {
                 setOfferJobStatus={setOfferJobStatus}
                 jobLocation={jobLocation}
                 numberOfVacancy={job?.vacancies ?? undefined}
+                numberOfApplicants={job?.assignmentId ? 1 : undefined}
                 activeTab={activeTab}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 onOpenFinalStatement={handleOpenFinalStatement}
+                isFinalStatementSubmitted={isFinalStatementSubmitted}
+                isFinalStatementApproved={isFinalStatementApproved}
                 assignmentId={assignmentId}
                 progressUpdates={allProgressUpdates}
                 jobId={params.jobId}
                 onToggleChat={handleToggleChat}
+                jobStartDate={job?.startDate || undefined}
+                jobEndDate={job?.endDate || undefined}
               />
 
               <JobTabSection
@@ -376,7 +563,8 @@ const JobDetailsPage = () => {
                 setSendProposal={setIsSendProposal}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
-                OfferJobStatus={assignmentStatus}
+                OfferJobStatus={_offerJobStatus || assignmentStatus}
+                setOfferJobStatus={setOfferJobStatus}
                 progressUpdates={allProgressUpdates}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 assignmentId={assignmentId}
@@ -390,6 +578,7 @@ const JobDetailsPage = () => {
                         files: [],
                       }
                 }
+                jobOverview={job ? jobOverview : undefined}
               />
 
               {showFinalStatement && (
@@ -403,7 +592,7 @@ const JobDetailsPage = () => {
             </div>
             <div className="lg:col-span-1">
               <ClientInfoCard
-                name={`Client #${clientId}`}
+                name={clientName}
                 memberSince={"-"}
                 location={jobLocation}
                 rating={0}
@@ -420,7 +609,7 @@ const JobDetailsPage = () => {
         <ReviewClientModal
           isOpen={isReviewOpen}
           onClose={() => setIsReviewOpen(false)}
-          clientName={`Client #${clientId}`}
+          clientName={clientName}
           // onSubmit={handleSubmitReview}
         />
       )}
