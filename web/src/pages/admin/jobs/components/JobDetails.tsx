@@ -45,7 +45,9 @@ const JobDetails = () => {
 
   const job = data?.job;
   const client = data?.client;
-  const engineers = data?.engineers ?? [];
+  const engineers = (data?.engineers ?? []).filter(
+    (engineer) => engineer.assignmentStatus === "started"
+  );
 
   const infoData = [
     { label: "Job Title", value: job?.jobTitle ?? "-" },
