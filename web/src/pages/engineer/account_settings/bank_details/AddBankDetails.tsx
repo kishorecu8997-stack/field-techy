@@ -57,9 +57,9 @@ const AddBankDetails = () => {
       console.log("onboardingResp", onboardingResp);
 
       const possibleUrl =
-        (onboardingResp as any)?.url ||
-        (onboardingResp as any)?.onboardingUrl ||
-        (onboardingResp as any)?.link;
+        typeof onboardingResp?.url === "string" && onboardingResp.url.trim()
+          ? onboardingResp.url
+          : null;
 
       if (!possibleUrl) {
         toast.error("Unable to start Stripe onboarding");

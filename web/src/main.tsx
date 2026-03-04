@@ -14,8 +14,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
 // initialize stripe promise directly
-const pk = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY 
-const stripePromise = loadStripe(pk);
+const publicKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY 
+const stripePromise = loadStripe(publicKey);
 
 /**
  * Creates a configured QueryClient instance with default query behaviors.

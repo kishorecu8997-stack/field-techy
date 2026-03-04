@@ -33,7 +33,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   const [formError, setFormError] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  const { mutateAsync, isLoading: isCreatingIntent } = useCreatePaymentIntent();
+  const { mutateAsync, isPending: isCreatingIntent } = useCreatePaymentIntent();
   const { data: balanceArr, isLoading: isBalanceLoading } = useClientBalance();
   const balance = Array.isArray(balanceArr) ? balanceArr[0] : balanceArr;
   const currencyCode = balance?.currencyCode?.toLowerCase();

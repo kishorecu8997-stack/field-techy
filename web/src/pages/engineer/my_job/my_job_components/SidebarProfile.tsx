@@ -1,17 +1,15 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
+import { useEngineerBalance, useEngineerGetProfileCompletion } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { formatCurrency } from "@/shared/libs/utils";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import { BOOKMARK_CHANGE_EVENT, getSavedJobs } from "@/utils/bookmarkUtils";
 import React, { useEffect, useState } from "react";
+import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
-import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
-import { useEngineerBalance } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { useEngineerGetProfileCompletion } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { formatCurrency } from "@/shared/libs/utils";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -182,7 +180,7 @@ const EarningsCard = () => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      {/* <div className="grid grid-cols-2 gap-3">
         <Button
           id="myEarnings"
           className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
@@ -203,7 +201,7 @@ const EarningsCard = () => {
         >
           Withdraw
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };
