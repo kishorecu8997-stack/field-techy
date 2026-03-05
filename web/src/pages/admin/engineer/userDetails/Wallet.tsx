@@ -20,7 +20,7 @@ interface WalletProps {
 /**
  * Wallet Component
  * Integrates real backend "wallet" transactions
- * Displays card details and a paginated transaction history table
+ * Displays a paginated wallet transaction history table
  * Fetches data using engineer ID from URL parameters
  * Handles loading and error states gracefully
  */
@@ -114,7 +114,7 @@ export default function Wallet({ walletBalance }: WalletProps) {
       <div className="flex gap-2 p-1 items-center">
         <p className="text-gray-500">Wallet Balance:</p>
         <span className="font-semibold text-[#666666]">
-          {(walletBalance ?? 0).toLocaleString()}{" "}
+          {(walletBalance ?? 0).toLocaleString()}
         </span>
       </div>
 
