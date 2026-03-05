@@ -81,12 +81,12 @@ const MyEarning = () => {
       const returnUrl = origin + routePath;
       const refreshUrl = origin + routePath;
 
-      console.log("Requesting onboarding link");
       const onboardingResp = await getOnboardingLinkAsync({
         body: { returnUrl, refreshUrl },
       });
+      //TODO: console logs for debugging purposes, it will be removed in production
       console.log("onboardingResp", onboardingResp);
-
+      
       const possibleUrl =
         typeof onboardingResp?.url === "string" && onboardingResp.url.trim()
           ? onboardingResp.url
