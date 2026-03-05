@@ -404,8 +404,8 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             onSortChange={() => {}}
-            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -429,8 +429,8 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             onSortChange={() => {}}
-            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <LoaderComponent />
@@ -448,8 +448,8 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             onSortChange={() => {}}
-            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -510,7 +510,7 @@ const JobDetailsPage = () => {
           title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport={false}
+          isShowSort={false}
           isShowBreadcrumb
           customLabels={
             isDummyJob

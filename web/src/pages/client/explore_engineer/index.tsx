@@ -40,6 +40,7 @@ const ExploreEngineer = () => {
           <MyJobsHeader
             title="Explore Engineers"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             isShowBreadcrumb={false}
             description={`10 jobs found`} // ✅ Updated count
           />

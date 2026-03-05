@@ -62,7 +62,6 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
             <MyJobsHeader
               title="Select Jobs"
               isShowBreadcrumb={true}
-              isReport={false}
               isShowSort={false}
               action={
                 <Button

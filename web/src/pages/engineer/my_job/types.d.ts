@@ -51,7 +51,6 @@ export interface MyJobsHeaderProps {
   onSortChange?: (sort: SortOption) => void;
   isShowBreadcrumb?: boolean;
   description?: string;
-  isReport?: boolean;
   isShowSort?: boolean;
   action?: React.ReactNode;
   isShowButton?: boolean;
