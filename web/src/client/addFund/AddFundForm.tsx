@@ -1,5 +1,4 @@
-import { getClientBalanceQueryKey } from "@/api/@tanstack/react-query.gen";
-import { apiClient } from "@/shared/apiServices/apiClient";
+
 import {
   useClientBalance,
   useCreatePaymentIntent,
@@ -16,7 +15,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { useQueryClient } from "@tanstack/react-query";
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -40,7 +39,6 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   });
   const isDark = useThemeHook();
   const { success, error: toastError } = useToast();
-  const queryClient = useQueryClient();
 
   const stripe = useStripe();
   const elements = useElements();
@@ -54,7 +52,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   const { mutateAsync, isPending: isCreatingIntent } = useCreatePaymentIntent();
   const { data: balanceArr, isLoading: isBalanceLoading } = useClientBalance();
   const balance = Array.isArray(balanceArr) ? balanceArr[0] : balanceArr;
-  const currencyCode = balance?.currencyCode?.toLowerCase();
+  const currencyCode = balance?.currencyCode?.toLowerCase() || "gbp";
   const isLoading = isCreatingIntent || isProcessingPayment || isBalanceLoading;
 
   const handleSubmit = async (data: { amount: number | string }) => {
@@ -98,9 +96,6 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
       }
       const status = result.paymentIntent?.status;
       if (status === "succeeded") {
-        await queryClient.invalidateQueries({
-          queryKey: getClientBalanceQueryKey({ client: apiClient }),
-        });
         success("Payment successful");
         onClose();
       } else if (status === "processing") {

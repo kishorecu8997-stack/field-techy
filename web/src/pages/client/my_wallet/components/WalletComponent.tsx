@@ -13,7 +13,6 @@ interface WalletComponentProps {
 }
 
 const WALLET_COMPONENTS = {
-  ADD_FUND: "clientAddFund",
   RECENT_TRANSACTIONS: "recentTransactions",
 };
 

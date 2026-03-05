@@ -2,6 +2,7 @@ import React from "react";
 import Popup from "@/shared/components/Popup";
 import AddFundForm from "./AddFundForm";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { IoClose } from "react-icons/io5";
 
 interface AddFundModalProps {
   onClose: () => void;
@@ -30,7 +31,7 @@ const AddFundModal: React.FC<AddFundModalProps> = ({ onClose, isOpen }) => {
         variant="no_style"
         className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
       >
-        &times;
+        <IoClose size={24} />
       </Button>
       <AddFundForm onClose={onClose} />
     </Popup>

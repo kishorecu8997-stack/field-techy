@@ -57,13 +57,12 @@ import {
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
   createPaymentIntentMutation,
-  getClientBalanceOptions,
-  getClientBalanceQueryKey,
   getJobLogsOptions,
   getUserReportsOptions,
   submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useClientBalanceStoreSync, useClientWalletStore } from "@/shared/store/useClientWalletStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
@@ -149,15 +148,7 @@ export function useClientUpdateCompanyInfo(options?: {
 }
 
 export function useClientBalance(enabled: boolean = true) {
-  return useQuery({
-    ...getClientBalanceOptions({
-      client: apiClient,
-    }),
-    enabled,
-    staleTime: 5 * 60 * 1000,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: false,
-  });
+  return useClientBalanceStoreSync(enabled);
 }
 
 // create-payment-intent for wallet top-up stripe integration
@@ -170,9 +161,7 @@ export function useCreatePaymentIntent(options?: {
     ...createPaymentIntentMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
-      queryClient.invalidateQueries({
-        queryKey: getClientBalanceQueryKey({ client: apiClient }),
-      });
+      useClientWalletStore.getState().fetchBalance();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -595,7 +584,7 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => {},
+    refetch: () => { },
   };
 }
 
