@@ -12,6 +12,11 @@ export type FiltersType = {
   skills: Set<number>;
 };
 
+/**
+ * `ExploreEngineer` is the main page component for browsing and finding engineers.
+ * It renders a layout with a header, a list of engineers (`EngineerListPage`),
+ * and a set of filters (`Filters`) in a sidebar.
+ */
 const ExploreEngineer = () => {
   // Filter state
   const [filters, setFilters] = useState<FiltersType>({

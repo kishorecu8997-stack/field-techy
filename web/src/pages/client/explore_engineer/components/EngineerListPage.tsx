@@ -79,8 +79,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({ filters, onTotalEng
   if (isLoading) {
     return <div className="text-center py-10">Loading engineers...</div>;
   }
-
-  // Handle page change
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });

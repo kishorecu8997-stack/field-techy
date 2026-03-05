@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { clientGetPublicEngineerProfileOptions } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 // will read portfolio link from API response
 
@@ -38,11 +39,7 @@ const EngineerProfile: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-[30rem] flex items-center justify-center">
-        <p className="text-gray-500 text-lg">Loading engineer details...</p>
-      </div>
-    );
+   <LoaderComponent/>
   }
 
   if (error || !data) {

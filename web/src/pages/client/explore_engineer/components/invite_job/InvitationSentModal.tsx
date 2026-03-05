@@ -22,7 +22,7 @@ const InvitationSentModal: React.FC<InvitationSentProps> = ({ onClose }) => {
       <div className="w-full max-w-md p-6 rounded-xl shadow-lg bg-white dark:bg-gray-900 transition-colors duration-300">
         {/* Close button */}
         <div className="flex justify-end items-end mb-6">
-          <AiOutlineClose onClick={onClose} className="cursor-pointer" />
+          <AiOutlineClose onClick={onClose} className="cursor-pointer text-black dark:text-white"/>
         </div>
         {/* Content */}
         <div className="text-center pb-4">

@@ -48,7 +48,7 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
           <NavLink to={detailsUrl} className="hover:text-teal-900 text-[1rem] whitespace-nowrap">
             <Button
               variant="primary"
-              className="bg-teal-800 dark:bg-teal text-white"
+              className="bg-teal-800 dark:bg-teal-500 text-white"
             >
               Invite to Job
             </Button>

@@ -14,6 +14,12 @@ import { useClientExploreEngineers } from "@/shared/apiServices/client/clientOpe
 import { useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
 import type { RatingValue } from "@/shared/libs/constants/filterOptions";
 
+/**
+ * Page component displaying detailed information about a specific job.
+ *
+ * @returns {JSX.Element} Job details page layout.
+ */
+
 const SelectEngineer = () => {
   const params = useParams();
   const jobId = Number(params.id);
