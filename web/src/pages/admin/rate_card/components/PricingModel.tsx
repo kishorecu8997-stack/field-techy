@@ -1,5 +1,4 @@
 import { defaultPricingTiers } from "@/dummy_data/admin/rateCard";
-import { experienceLevel } from "@/dummy_data/client";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import React, { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
@@ -35,15 +34,13 @@ const PricingModel: React.FC = () => {
   });
 
   const addExperinceLevel = () => {
-    // Add all 3 experience levels at once
-    experienceLevel.forEach((level) => {
-      append(
-        createDefaultSkill(
-          level.label,
-          Math.random().toString(36).substring(2, 15),
-        ),
-      );
-    });
+    // Add a single skill with all 3 experience levels (L1, L2, L3)
+    append(
+      createDefaultSkill(
+        "Experience Level",
+        Math.random().toString(36).substring(2, 15),
+      ),
+    );
     setIsExperienceLevelAdded(true);
   };
 

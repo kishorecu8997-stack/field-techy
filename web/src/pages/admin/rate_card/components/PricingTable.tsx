@@ -32,6 +32,7 @@ const PricingTable: React.FC<{
       <table className="w-full text-sm text-left border-collapse">
         <thead className="bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
           <tr>
+            <th className="px-4 py-2 font-semibold text-center">Experience Level</th>
             {headers.map((h) => (
               <th key={h} className="px-4 py-2 font-semibold text-center">
                 {h}
@@ -47,6 +48,9 @@ const PricingTable: React.FC<{
                 key={tier.level}
                 className="border-t border-gray-200 dark:border-gray-700"
               >
+                <td className="px-4 py-2 font-medium text-center text-gray-900 dark:text-gray-100">
+                  {tier.level} - {tier.description}
+                </td>
                 {fields.map((field) => (
                   <td key={field} className="px-4 py-2">
                     {editable ? (

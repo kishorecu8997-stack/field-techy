@@ -8,8 +8,9 @@ export const Accordion: React.FC<{
   title: string;
   children: React.ReactNode;
   remove?: () => void;
-}> = ({ title, children, remove }) => {
-  const [open, setOpen] = useState(false);
+  defaultOpen?: boolean;
+}> = ({ title, children, remove, defaultOpen = true }) => {
+  const [open, setOpen] = useState(defaultOpen);
 
   return (
     <div className="border-b border-gray-300 dark:border-gray-600">
