@@ -69,7 +69,7 @@ const pwaPlugin = VitePWA({
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/",  
+  base: "/",
   resolve: {
     alias: {
       "@": "/src", // Direct alias path for the src directory

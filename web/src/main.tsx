@@ -15,7 +15,13 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
 // initialize stripe promise directly
+
 const publicKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+if (!publicKey) {
+  throw new Error(
+    "Stripe publishable key is not set. Please configure VITE_STRIPE_PUBLISHABLE_KEY in your environment.",
+  );
+}
 const stripePromise = loadStripe(publicKey);
 
 /**

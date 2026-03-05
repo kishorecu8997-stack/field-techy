@@ -1,118 +1,62 @@
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useForm } from "react-hook-form";
+import BankDetailsForm from "./BankDetailsForm";
+import type { bankDetails } from "../types";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import {
-  useConnectStripeAccount,
-  useGetOnboardingLink,
-} from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
- * Page component that triggers Stripe Connect onboarding as soon as Add Bank is opened.
+ * Page component for adding new bank details using a controlled form with React Hook Form.
  */
 const AddBankDetails = () => {
+  const fromCtx = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      bankName: "",
+      bankAddress: "",
+      accountNumber: "",
+      swiftcode: "",
+      iban: "",
+      name: "",
+    },
+  });
+  const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
-  const hasStartedRef = useRef(false);
-  const [hasError, setHasError] = useState(false);
 
-  // Stripe connect account mutation (use async mutate for sequential flow)
-  const {
-    mutateAsync: connectStripeAccountAsync,
-    isPending: isConnectingStripe,
-  } = useConnectStripeAccount({
-    onError: (error) => {
-      console.error("Failed to connect Stripe account:", error);
-      toast.error("Failed to add bank details. Please try again.");
-    },
-  });
-
-  // Onboarding-link mutation (async)
-  const {
-    mutateAsync: getOnboardingLinkAsync,
-    isPending: isGettingOnboarding,
-  } = useGetOnboardingLink({
-    onError: (error) => {
-      console.error("Failed to fetch onboarding link:", error);
-    },
-    onSuccess: (linkData) => {
-      console.log("Onboarding link received:", linkData);
-    },
-  });
-
-  const startStripeOnboarding = useCallback(async () => {
-    setHasError(false);
-    try {
-      console.log("Calling connectStripeAccount mutation");
-      const stripeData = await connectStripeAccountAsync({});
-      console.log("connect success", stripeData);
-
-      // Return and refresh to a valid engineer page.
-      const origin = window.location.origin;
-      const fallbackPath = "/engineer/dashboard";
-      const currentPath = window.location.pathname || fallbackPath;
-      const routePath = currentPath.startsWith("/engineer")
-        ? currentPath
-        : fallbackPath;
-
-      const returnUrl = origin + routePath;
-      const refreshUrl = origin + routePath;
-
-      console.log("Requesting onboarding link");
-      const onboardingResp = await getOnboardingLinkAsync({
-        body: { returnUrl, refreshUrl },
-      });
-      console.log("onboardingResp", onboardingResp);
-
-      const possibleUrl =
-        typeof onboardingResp?.url === "string" && onboardingResp.url.trim()
-          ? onboardingResp.url
-          : null;
-
-      if (!possibleUrl) {
-        toast.error("Unable to start Stripe onboarding");
-        setHasError(true);
-        return;
-      }
-
-      setActiveKey("manageBankAccounts");
-      const opened = window.open(possibleUrl, "_blank", "noopener,noreferrer");
-      if (!opened) window.location.assign(possibleUrl);
-      toast.success("Bank details onboarding started");
-    } catch (err) {
-      console.error("connect or onboarding failed", err);
-      toast.error("Failed to connect or start onboarding");
-      setHasError(true);
-    }
-  }, [connectStripeAccountAsync, getOnboardingLinkAsync, setActiveKey]);
-
-  useEffect(() => {
-    if (hasStartedRef.current) return;
-    hasStartedRef.current = true;
-    void startStripeOnboarding();
-  }, [startStripeOnboarding]);
+  const handleSubmit = async (data: bankDetails) => {
+    await showPopup({
+      title: "Add Bank Details",
+      body: "Are you sure you want to add this bank details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "cancel",
+          variant: "danger",
+        },
+        {
+          label: "Yes, add",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Submitted data:", data);
+            toast.success("Bank details added successfully");
+            close(true);
+            setActiveKey("manageBankAccounts");
+          },
+        },
+      ],
+    });
+  };
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-3 py-10">
-      <p className="text-sm text-gray-600">
-        {isConnectingStripe || isGettingOnboarding
-          ? "Connecting your Stripe account..."
-          : "Redirecting you to Stripe onboarding..."}
-      </p>
-      {hasError ? (
-        <Button
-          onClick={() => void startStripeOnboarding()}
-          className="bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
-        >
-          Retry
-        </Button>
-      ) : null}
-
-      {/* Bank form flow disabled for now.
-      <FormContainer methods={fromCtx} onSubmit={handleSubmit} className="flex h-full flex-col">
-        <BankDetailsForm formType="add" isLoading={isConnectingStripe || isGettingOnboarding} />
-      </FormContainer>
-      */}
-    </div>
+    <FormContainer
+      methods={fromCtx}
+      onSubmit={handleSubmit}
+      className="flex h-full flex-col"
+    >
+      <BankDetailsForm formType="add" />
+    </FormContainer>
   );
 };
 

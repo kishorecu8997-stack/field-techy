@@ -35,10 +35,10 @@ const MyEarning = () => {
 
   const formattedBalance = showBalance
     ? (() => {
-        const amount = Number(balance?.balance);
-        const currency = balance?.currencyCode ?? "USD";
-        return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
-      })()
+      const amount = Number(balance?.balance);
+      const currency = balance?.currencyCode ?? "USD";
+      return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+    })()
     : "******";
 
   const [hasError, setHasError] = useState(false);
@@ -87,7 +87,19 @@ const MyEarning = () => {
           ? onboardingResp.url
           : null;
 
-      if (!possibleUrl) {
+      let isValidUrl = false;
+      if (possibleUrl) {
+        try {
+          const parsedUrl = new URL(possibleUrl);
+          isValidUrl =
+            parsedUrl.protocol === "https:" &&
+            parsedUrl.hostname.endsWith("stripe.com");
+        } catch {
+          isValidUrl = false;
+        }
+      }
+
+      if (!possibleUrl || !isValidUrl) {
         toast.error("Unable to start Stripe onboarding");
         setHasError(true);
         return;
@@ -103,19 +115,6 @@ const MyEarning = () => {
       setHasError(true);
     }
   }, [connectStripeAccountAsync, getOnboardingLinkAsync, setActiveKey]);
-
-  if (hasError) {
-    return (
-      hasError && (
-        <Button
-          onClick={() => void startStripeOnboarding()}
-          className="bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
-        >
-          Retry
-        </Button>
-      )
-    );
-  }
 
   const BankSection = () => {
     return (
@@ -157,13 +156,29 @@ const MyEarning = () => {
             />
           )}
         </div>
-        <div className="mt-4 flex gap-3 justify-end">
-          <Button
-            onClick={() => startStripeOnboarding()}
-            className="px-6 py-3 bg-gray-800 text-white rounded-full font-medium hover:bg-gray-700 transition dark:bg-transparent dark:border dark:border-teal-600 dark:text-white"
-          >
-            {bankDetailsButtonLabel}
-          </Button>
+        <div className="mt-4 flex flex-col items-end gap-2">
+          {hasError && (
+            <p className="text-sm text-red-500">
+              Failed to initiate onboarding. Please try again.
+            </p>
+          )}
+          <div className="flex gap-3 justify-end">
+            {hasError ? (
+              <Button
+                onClick={() => void startStripeOnboarding()}
+                className="bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded transition"
+              >
+                Retry
+              </Button>
+            ) : (
+              <Button
+                onClick={() => startStripeOnboarding()}
+                className="px-6 py-3 bg-gray-800 text-white rounded-full font-medium hover:bg-gray-700 transition dark:bg-transparent dark:border dark:border-teal-600 dark:text-white"
+              >
+                {bankDetailsButtonLabel}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     );

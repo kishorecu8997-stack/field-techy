@@ -123,10 +123,10 @@ const EarningsCard = () => {
   const balance = balanceArr?.[0];
   const formattedBalance = showBalance
     ? (() => {
-        const amount = Number(balance?.balance);
-        const currency = balance?.currencyCode ?? "USD";
-        return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
-      })()
+      const amount = Number(balance?.balance);
+      const currency = balance?.currencyCode ?? "USD";
+      return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+    })()
     : "******";
 
   return (
@@ -185,28 +185,6 @@ const EarningsCard = () => {
           </div>
         </div>
       </div>
-      {/* <div className="grid grid-cols-2 gap-3">
-        <Button
-          id="myEarnings"
-          className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
-          onClick={() => {
-            setActiveKey("manageBankAccounts", false);
-            setISOpenSidebar(true);
-          }}
-        >
-          Bank Details
-        </Button>
-        <Button
-          id="withdrawMoney"
-          className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
-          onClick={() => {
-            setActiveKey("withdraw", false);
-            setISOpenSidebar(true);
-          }}
-        >
-          Withdraw
-        </Button>
-      </div> */}
     </div>
   );
 };

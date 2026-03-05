@@ -78,15 +78,25 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
       if (result.error) {
         throw new Error(result.error.message);
       }
-      const paymentSucceeded = result.paymentIntent?.status === "succeeded";
-      if (paymentSucceeded) {
+      const status = result.paymentIntent?.status;
+      if (status === "succeeded") {
         await queryClient.invalidateQueries({
           queryKey: getClientBalanceQueryKey({ client: apiClient }),
         });
         success("Payment successful");
         onClose();
+      } else if (status === "processing") {
+        success("Payment is processing. Your balance will be updated shortly.");
+        onClose();
+      } else if (status === "requires_capture") {
+        success(
+          "Payment has been authorized and is awaiting capture. Your balance will be updated once the payment is finalized."
+        );
+        onClose();
       } else {
-        throw new Error("Payment could not be completed");
+        throw new Error(
+          `Payment could not be completed. Status: ${status ?? "unknown"}`
+        );
       }
     } catch (err: unknown) {
       const message =
@@ -100,7 +110,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
-      <h2 className="text-xl font-semibold">Add Funds</h2>  
+      <h2 className="text-xl font-semibold">Add Funds</h2>
       <div>
         <label className="block text-sm font-medium">Amount</label>
         <input
@@ -121,7 +131,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
                 base: {
                   fontSize: "16px",
                   color: isDark ? "#fff" : "#000",
-                  "::placeholder": { color: isDark ? "#aaa" : "#666" }, 
+                  "::placeholder": { color: isDark ? "#aaa" : "#666" },
                 },
                 invalid: { color: "#dc2626" },
               },
