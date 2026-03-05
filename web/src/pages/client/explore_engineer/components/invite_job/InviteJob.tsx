@@ -1,22 +1,21 @@
+import { absoluteUrls } from "@/config/urls";
 import { earningsData } from "@/dummy_data/jobDetails";
+import Pagination from "@/pages/engineer/search_result/components/Pagination";
+import { useClientGetJobs, useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import Popup from "@/shared/components/Popup";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import Pagination from "@/pages/engineer/search_result/components/Pagination";
+import { useCities, useCountries, useStates } from "@/shared/hooks/useLookup";
 import { scrollToTop } from "@/utils";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import { useClientGetJobs, useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
-import { absoluteUrls } from "@/config/urls";
+import { toast } from "react-toastify";
 import type { SelectedJobCardId } from "../../types";
-import type { ClientGetJobsResponse } from "@/api";
 import InvitationSentModal from "./InvitationSentModal";
 import JobInviteCard from "./JobInviteCard";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { useCountries, useStates, useCities } from "@/shared/hooks/useLookup";
 
 /**
  * A component that allows a client to select one or more jobs to invite an engineer to.
@@ -41,7 +40,7 @@ const { data: countries } = useCountries();
 const { data: states } = useStates();
 const { data: cities } = useCities();
 
-  const { data: jobsData } = useClientGetJobs(true) as { data?: ClientGetJobsResponse };
+  const { data: jobsData } = useClientGetJobs("Posted");
 
   const { mutateAsync: inviteEngineer } = useClientInviteEngineer({ 
     });

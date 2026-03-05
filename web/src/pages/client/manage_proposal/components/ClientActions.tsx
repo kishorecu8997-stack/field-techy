@@ -53,8 +53,8 @@ const ClientActions = ({
           >
             <span>View Feedback From Engineers</span>
           </Button>
-        ) 
-        {jobStatus === "Posted" && (
+        ) : (
+          jobStatus === "Posted" && (
           <Button
             variant="primary"
             onClick={() => {
@@ -63,7 +63,8 @@ const ClientActions = ({
           >
             Invite to Job
           </Button>
-        )}
+        ))
+        }
       </div>
     </>
   );
