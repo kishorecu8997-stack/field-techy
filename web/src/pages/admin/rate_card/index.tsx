@@ -54,29 +54,61 @@ const ManageRateCards: React.FC = () => {
     },
   });
 
-  // Transform API data to match table format
+  // Transform API data to match table format with grouped experience levels
   const tableData: RateCardProps[] = useMemo(() => {
     if (!rateCardsResponse?.data) return [];
     
-    return rateCardsResponse.data.map((item) => ({
-      id: String(item.id),
-      skillSet: item.serviceCategory || "-",
-      region: item.region || "-",
-      location: item.country || "-",
-      experienceLevel: item.experienceLevels?.join(", ") || "-",
-      hourly: item.hourly || "-",
-      halfDay: item.halfDay || "-",
-      fullDay: item.fullDay || "-",
-      weekly: item.weekly || "-",
-      monthly: item.monthly || "-",
-      project: "-",
-      createdDate: item.createdDate ? new Date(item.createdDate).toLocaleDateString() : "-",
-      status: true, // Default status
-      experienceLevels: item.experienceLevels,
-      country: item.country,
-      serviceCategoryId: item.serviceCategoryId,
-      countryId: item.countryId,
-    }));
+    // Group by serviceCategoryId
+    const groupedData = new Map<number, RateCardProps>();
+    
+    rateCardsResponse.data.forEach((item) => {
+      const key = item.serviceCategoryId;
+      
+      if (!groupedData.has(key)) {
+        // First entry for this service category - create base row
+        groupedData.set(key, {
+          id: String(item.id),
+          skillSet: item.serviceCategory || "-",
+          region: item.region || "-",
+          location: item.country || "-",
+          experienceLevel: item.experienceLevels?.join(", ") || "-",
+          hourly: "-",
+          halfDay: "-",
+          fullDay: "-",
+          weekly: "-",
+          monthly: "-",
+          project: "-",
+          createdDate: item.createdDate ? new Date(item.createdDate).toLocaleDateString() : "-",
+          status: true,
+          experienceLevels: ["L1", "L2", "L3"], // All three levels
+          country: item.country,
+          serviceCategoryId: item.serviceCategoryId,
+          countryId: item.countryId,
+          // Store individual rates per level
+          experienceLevelRates: {
+            L1: { hourly: "-", halfDay: "-", fullDay: "-", weekly: "-", monthly: "-" },
+            L2: { hourly: "-", halfDay: "-", fullDay: "-", weekly: "-", monthly: "-" },
+            L3: { hourly: "-", halfDay: "-", fullDay: "-", weekly: "-", monthly: "-" },
+          },
+        });
+      }
+      
+      // Get the existing row and update with this level's rates
+      const existingRow = groupedData.get(key)!;
+      const level = item.experienceLevels?.[0] as "L1" | "L2" | "L3";
+      
+      if (level && existingRow.experienceLevelRates) {
+        existingRow.experienceLevelRates[level] = {
+          hourly: item.hourly || "-",
+          halfDay: item.halfDay || "-",
+          fullDay: item.fullDay || "-",
+          weekly: item.weekly || "-",
+          monthly: item.monthly || "-",
+        };
+      }
+    });
+    
+    return Array.from(groupedData.values());
   }, [rateCardsResponse]);
 
   // Filter data based on search term
@@ -161,52 +193,54 @@ const ManageRateCards: React.FC = () => {
       label: "Experience Level",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          {row.experienceLevels && row.experienceLevels.length > 0 ? (
-            row.experienceLevels.map((level, idx) => (
-              <div key={idx} className="text-sm">{level}</div>
-            ))
-          ) : (
-            <>
-              <div className="text-sm">Level 1 - Junior (1-3 years)</div>
-              <div className="text-sm">Level 2 - Mid (3-5 years)</div>
-              <div className="text-sm">Level 3 - Senior (5+ years)</div>
-            </>
-          )}
+          <div className="text-sm font-medium">L1 - Junior (1-3 yrs)</div>
+          <div className="text-sm font-medium">L2 - Mid (3-5 yrs)</div>
+          <div className="text-sm font-medium">L3 - Senior (5+ yrs)</div>
         </div>
       ),
     },
     { key: "hourly", label: "Hourly",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.hourly !== "-" ? row.hourly : "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L1.hourly || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L2.hourly || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L3.hourly || "-"}</div>
         </div>
       ),
     },
     { key: "halfDay", label: "Half-Day (4h)",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.halfDay !== "-" ? row.halfDay : "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L1.halfDay || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L2.halfDay || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L3.halfDay || "-"}</div>
         </div>
       ),
     },
     { key: "fullDay", label: "Full-Day (8h)",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.fullDay !== "-" ? row.fullDay : "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L1.fullDay || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L2.fullDay || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L3.fullDay || "-"}</div>
         </div>
       ),
     },
     { key: "weekly", label: "Weekly (5d)",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.weekly !== "-" ? row.weekly : "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L1.weekly || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L2.weekly || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L3.weekly || "-"}</div>
         </div>
       ),
     },
     { key: "monthly", label: "Monthly",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.monthly !== "-" ? row.monthly : "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L1.monthly || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L2.monthly || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L3.monthly || "-"}</div>
         </div>
       ),
     },

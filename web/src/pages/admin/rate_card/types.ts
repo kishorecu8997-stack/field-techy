@@ -44,6 +44,11 @@ export interface RateCardProps {
   country?: string;
   serviceCategoryId?: number;
   countryId?: number;
+  experienceLevelRates?: {
+    L1: { hourly: string; halfDay: string; fullDay: string; weekly: string; monthly: string };
+    L2: { hourly: string; halfDay: string; fullDay: string; weekly: string; monthly: string };
+    L3: { hourly: string; halfDay: string; fullDay: string; weekly: string; monthly: string };
+  };
 }
 
 export interface PricingFormValues {
