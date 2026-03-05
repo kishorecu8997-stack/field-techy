@@ -20,7 +20,8 @@ import { mapApiJobToJobItem } from "@/pages/engineer/search_result/mappers";
  */
 const ExploreJobs: React.FC = () => {
   const profile = useEngineerProfile();
-  const { data: apiJobsResponse } = useEngineerSearchJobs({});
+  const { data: apiJobsResponse, refetch: searchJobsRefetch } =
+    useEngineerSearchJobs({});
 
   const apiJobs = useMemo(() => {
     return (apiJobsResponse || []).map(mapApiJobToJobItem);
@@ -321,6 +322,7 @@ const ExploreJobs: React.FC = () => {
                     userSkills={profile?.jobSkills || []}
                     userTools={profile?.tools || []}
                     navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
+                    onBookmarkChange={searchJobsRefetch}
                   />
                 ))
               ) : (

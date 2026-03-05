@@ -28,7 +28,7 @@ export interface JobItem {
   salary: string | null;
   budgetType: string | null;
   currencySymbol?: string;
-
+  isSaved?: boolean;
   status:
     | "Posted"
     | "In Progress"

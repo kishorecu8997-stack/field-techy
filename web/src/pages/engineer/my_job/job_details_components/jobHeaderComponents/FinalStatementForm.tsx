@@ -1,23 +1,23 @@
-import { useForm } from "react-hook-form";
-import { useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/shared/apiServices/apiClient";
 import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { TextareaInput } from "@/shared/components/commonUI/inputs";
-import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
-import { Button } from "@/shared/components/commonUI/Buttons";
 import { icons } from "@/config/icons";
-import { toast } from "react-toastify";
-import type { ProgressUpdate } from "../../types.d";
-import { usePopupStore } from "@/shared/store/popupStore";
 import {
   FINAL_STATEMENT_DEFAULTS,
   FINAL_STATEMENT_LABELS,
   FINAL_STATEMENT_MESSAGES,
 } from "@/constants/finalStatementConstants";
+import { apiClient } from "@/shared/apiServices/apiClient";
 import { useEngineerSubmitSignOff } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
+import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import type { ProgressUpdate } from "../../types.d";
 
 interface FinalStatementFields {
   notes: string;
@@ -25,13 +25,6 @@ interface FinalStatementFields {
   signatureFile: FileList | null;
 }
 
-/**
- * Final statement form for engineers to submit closing notes with proof and signature.
- * Uses react-hook-form plus shared inputs/upload for validation and attachments.
- * Pops a confirmation modal before posting updates to the timeline feed.
- * Emits two progress updates (waiting, then approved) via onAddProgressUpdate.
- * Shows toasts for success and supports optional onClose callback.
- */
 const FinalStatementForm = ({
   onClose,
   assignmentId,
@@ -42,23 +35,23 @@ const FinalStatementForm = ({
 }) => {
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
+
   const { mutateAsync: submitSignOff } = useEngineerSubmitSignOff({
     assignmentId,
     onSuccess: async () => {
       toast.success(FINAL_STATEMENT_MESSAGES.submitSuccess);
-      // Force refetch the job logs to update timeline immediately
+
       if (assignmentId) {
         try {
-          // Directly fetch the latest job logs from API
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
           });
 
-          // Use exact query key format from getJobLogsQueryKey
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId },
+          });
 
-          // Update using exact key and fallback keys
           queryClient.setQueryData(exactQueryKey, response.data);
           queryClient.setQueryData(
             ["getJobLogs", { path: { assignmentId } }],
@@ -73,6 +66,7 @@ const FinalStatementForm = ({
           queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
         }
       }
+
       onClose?.();
     },
     onError: (error) => {
@@ -80,12 +74,12 @@ const FinalStatementForm = ({
       toast.error("Failed to submit final statement. Please try again.");
     },
   });
+
   const formCtx = useForm<FinalStatementFields>({
     defaultValues: FINAL_STATEMENT_DEFAULTS,
   });
 
   const handleSubmit = async (data: FinalStatementFields) => {
-    // Show confirmation modal first
     await showPopup({
       title: FINAL_STATEMENT_LABELS.title,
       body: FINAL_STATEMENT_MESSAGES.modalBody,
@@ -109,11 +103,9 @@ const FinalStatementForm = ({
                 return;
               }
 
-              // Get the files from the form
               const taskFile = data.completedTaskFile?.[0];
               const signatureFile = data.signatureFile?.[0];
 
-              // Prepare attachment metadata if files exist
               const workAttachment = taskFile
                 ? {
                     filename: taskFile.name,
@@ -130,7 +122,6 @@ const FinalStatementForm = ({
                   }
                 : undefined;
 
-              // Call the API to submit final statement
               const response = await submitSignOff({
                 body: {
                   assignmentId: Number(assignmentId),
@@ -148,7 +139,6 @@ const FinalStatementForm = ({
                 },
               });
 
-              // Upload files to S3 if URLs are returned
               const uploadFile = async (file: File, url: string) => {
                 await fetch(url, {
                   method: "PUT",
@@ -157,12 +147,10 @@ const FinalStatementForm = ({
                 });
               };
 
-              // Upload work attachment if URL provided
               if (taskFile && response.workAttachmentUrl) {
                 await uploadFile(taskFile, response.workAttachmentUrl);
               }
 
-              // Upload signature attachment if URL provided
               if (signatureFile && response.signatureAttachmentUrl) {
                 await uploadFile(
                   signatureFile,
@@ -185,39 +173,45 @@ const FinalStatementForm = ({
   };
 
   return (
-    <div className="flex flex-col p-1 ">
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900">
-            {FINAL_STATEMENT_LABELS.title}
-          </h2>
-          <p className="text-sm text-gray-600">
-            {FINAL_STATEMENT_LABELS.subtitle}
-          </p>
-        </div>
-        {/* <Button
-          type="button"
-          variant="no_style"
-          className="text-gray-500 hover:text-gray-700"
-          onClick={onClose}
-          aria-label="Close"
-        >
-          <icons.close className="w-5 h-5" />
-        </Button> */}
-      </div>
+    <FormContainer
+      methods={formCtx}
+      onSubmit={handleSubmit}
+      className="flex flex-col h-[80vh] "
+    >
+      <div className="flex flex-col h-full w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
+        {/* Header */}
+        <div className="flex items-start justify-between px-6  bg-white dark:bg-gray-800 shrink-0">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              {FINAL_STATEMENT_LABELS.title}
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {FINAL_STATEMENT_LABELS.subtitle}
+            </p>
+          </div>
 
-      <FormContainer methods={formCtx} onSubmit={handleSubmit}>
-        <div className="mb-4">
+          <Button
+            type="button"
+            variant="no_style"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <icons.close className="w-5 h-5" />
+          </Button>
+        </div>
+
+        {/* Scrollable Body */}
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
           <TextareaInput
             name="notes"
             label={FINAL_STATEMENT_LABELS.notesLabel}
             required
             placeholder={FINAL_STATEMENT_LABELS.notesPlaceholder}
-            rules={{ required: FINAL_STATEMENT_LABELS.notesRequiredMessage }}
+            rules={{
+              required: FINAL_STATEMENT_LABELS.notesRequiredMessage,
+            }}
           />
-        </div>
 
-        <div className="mb-4">
           <FileUpload
             name="completedTaskFile"
             label={FINAL_STATEMENT_LABELS.completedTaskLabel}
@@ -225,9 +219,7 @@ const FinalStatementForm = ({
             accept=".pdf,.jpeg,.jpg,.png"
             placeholder={FINAL_STATEMENT_LABELS.completedTaskPlaceholder}
           />
-        </div>
 
-        <div className="mb-4">
           <FileUpload
             name="signatureFile"
             label={FINAL_STATEMENT_LABELS.signatureLabel}
@@ -237,24 +229,28 @@ const FinalStatementForm = ({
           />
         </div>
 
-        <div className="flex justify-end gap-3 pt-2">
-          <Button
-            variant="outline"
-            className="px-4"
-            type="button"
-            onClick={onClose}
-          >
-            {FINAL_STATEMENT_LABELS.cancel}
-          </Button>
-          <Button
-            className="bg-teal-800 hover:bg-teal-900 text-white px-5"
-            type="submit"
-          >
-            {FINAL_STATEMENT_LABELS.submitCta}
-          </Button>
+        {/* Footer */}
+        <div className="bg-white dark:bg-gray-800 px-6 shrink-0">
+          <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto"
+              type="button"
+              onClick={onClose}
+            >
+              {FINAL_STATEMENT_LABELS.cancel}
+            </Button>
+
+            <Button
+              className="bg-teal-800 hover:bg-teal-900 text-white w-full sm:w-auto"
+              type="submit"
+            >
+              {FINAL_STATEMENT_LABELS.submitCta}
+            </Button>
+          </div>
         </div>
-      </FormContainer>
-    </div>
+      </div>
+    </FormContainer>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin6Line, RiDownloadCloud2Line } from "react-icons/ri";
 import LoaderComponent from "./commonUI/LoaderComponent";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 const PDFPreview = React.lazy(() => import("./PdfPreview"));
 
@@ -68,6 +69,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
   id,
   showAddMoreButton = false,
 }) => {
+  const { showPopup } = usePopupStore();
   const [isEditing, setIsEditing] = React.useState(false);
   const [expiryDate, setExpiryDate] = React.useState(document.expiryDate || "");
   const renderPreview = (doc: Document) => {
@@ -143,6 +145,32 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 
   const handleAddMoreClick = () => {
     onAddMore?.();
+  };
+  
+  const handleDeleteClick = async () => {
+    if (!onDelete) return;
+
+    await showPopup({
+      title: "Delete Document",
+      body: `Are you sure you want to delete ${document.title}?`,
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "cancel",
+          variant: "outline",
+          action: (close) => close(true),
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          action: (close) => {
+            onDelete(id);
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   const isExpiringSoon = React.useMemo(() => {
@@ -223,7 +251,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 
           {onDelete && (
             <button
-              onClick={() => onDelete(id)}
+              onClick={handleDeleteClick}
               className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
               aria-label="Delete document"
               title="Delete"

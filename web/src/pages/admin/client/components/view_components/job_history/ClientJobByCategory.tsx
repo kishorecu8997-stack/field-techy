@@ -9,12 +9,12 @@ import { absoluteUrls } from "@/config/urls";
 import type { JobItem } from "@/pages/admin/jobs/types";
 import GeneralChart from "@/shared/components/AdminChart";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { days } from "@/dummy_data/adminDashboard";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { useAdminGetJobGraph } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useSearchParams } from "react-router-dom";
 import { formatDate } from "@/utils/formatDate";
 import type { AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
+import { days } from "@/pages/admin/dashboard/types";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];
@@ -187,7 +187,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
       <div className="flex flex-wrap gap-4 items-center">
         <SearchInput value={search} onChange={setSearch} />
       </div>
-      <div className="h-full flex-1 overflow-y-auto mt-4">
+      <div className="h-full flex-1 mt-4">
         <CustomTable<JobItem>
           columns={columns}
           data={filteredData}
@@ -219,6 +219,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
               data={chartData}
               chartType="line"
               xAxisDataKey="name"
+              yAxisDomain={[0, "auto"]}
               aspectRatio={2}
               series={[
                 {

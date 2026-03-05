@@ -33,6 +33,7 @@ export const mapApiJobToJobItem = (
     skills: [],
     tools: [],
     toolImage: null,
+    isSaved: job.isSaved,
     currencySymbol: job.currencySymbol || "$",
     toolAdditionalBudget: null,
     status: job.status === "Posted" ? "NEW" : job.status || "NEW",

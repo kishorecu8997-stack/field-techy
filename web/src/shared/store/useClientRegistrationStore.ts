@@ -162,6 +162,8 @@ interface ClientRegistrationState {
     enableNotifications: boolean;
     isApproved: boolean;
   };
+  resetEmail: () => void;
+  resetPhone: () => void;
 }
 
 const initialState = {
@@ -287,6 +289,14 @@ export const useClientRegistrationStore = create<ClientRegistrationState>()(
 
       setToken: (token) => {
         set({ token });
+      },
+
+      resetEmail: () => {
+        set({ emailVerified: false });
+      },
+
+      resetPhone: () => {
+        set({ mobileVerified: false });
       },
 
       markRegistrationComplete: () => {

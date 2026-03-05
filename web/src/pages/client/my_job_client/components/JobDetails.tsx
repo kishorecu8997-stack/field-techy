@@ -28,7 +28,7 @@ const JobsDetails: React.FC = () => {
     error,
     isError,
     refetch,
-  } = useClientGetJobs(true);
+  } = useClientGetJobs();
   // Find the specific job from the API data
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   const job =

@@ -41,11 +41,16 @@ async function sendToAllOpenTabs(message) {
         clients.forEach(client => {
             // Defensive check for existence and valid postMessage method
             if (client && typeof client.postMessage === 'function') {
-                client.postMessage({
-                    type: "FCM_MESSAGE",
-                    data: message,
-                });
-                sentCount++;
+                // IMPORTANT: Only relay to HIDDEN/BACKGROUND tabs.
+                // When the app tab is visible (focused), Firebase SDK's onMessage()
+                // already delivers the message — sending it here too causes duplicates.
+                if (client.visibilityState === 'hidden') {
+                    client.postMessage({
+                        type: "FCM_MESSAGE",
+                        data: message,
+                    });
+                    sentCount++;
+                }
             }
         });
 
@@ -90,7 +95,9 @@ self.addEventListener("push", async (event) => {
         const body = notification.body || data.body || "You have a new message";
         const icon = notification.icon || data.icon || "/favicon.svg";
         const badge = notification.badge || data.badge || "/favicon.svg";
-        const tag = notification.tag || data.tag || "fcm-message";
+        // Use a unique tag per message so the OS doesn't replace/collapse
+        // earlier notifications with the same tag. Fall back to a timestamp-based ID.
+        const tag = notification.tag || data.tag || `fcm-${Date.now()}`;
         const image = notification.image || data.image;
 
         const options = {

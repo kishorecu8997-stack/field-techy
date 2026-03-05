@@ -15,6 +15,7 @@ import type { AssignmentStatus } from "../search_result/types";
 import type { OfferedJobStatusType } from "../../engineer/my_job/types.d";
 import ChatForJobs from "@/shared/components/ChatForJobs";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { JOB_STATUSES } from "@/pages/engineer/search_result/types";
 // import ErrorState from "@/shared/components/commonUI/ErrorState";
 // import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
@@ -50,11 +51,7 @@ const ClientJobDetails = () => {
   } = useClientGetAssignmentDetails({ jobId }, !!jobId);
 
   // Fallback to useClientGetJobs if needed for job details
-  const {
-    data: jobsData,
-    // refetch,
-    // isLoading: jobsLoading,
-  } = useClientGetJobs(true);
+  const { data: jobsData } = useClientGetJobs();
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   // Extend the generated type to include clientDetails if it comes from the API but is missing in types
   type ExtendedJob = (typeof jobsArray)[0] & {
@@ -235,7 +232,7 @@ const ClientJobDetails = () => {
             <div className="lg:col-span-2 space-y-6">
               <JobHeaderCard
                 title={job?.jobTitle || ""}
-                client=""
+                client={job?.clientDetails?.personName || ""}
                 duration={durationDisplay}
                 type={job?.jobType || ""}
                 status={jobStatus}
@@ -247,7 +244,7 @@ const ClientJobDetails = () => {
                 OfferJobStatus={OfferJobStatus}
                 hideBreakDetails={isDummyNetworkEngineer}
                 hideClient={true}
-                jobLocation={undefined}
+                jobLocation={job?.workLocationName || ""}
                 numberOfVacancy={numberOfVacancy}
                 numberOfApplicants={assignments.length}
                 numberOfApprovedProposals={numberOfApprovedProposals}
@@ -255,6 +252,8 @@ const ClientJobDetails = () => {
                 onToggleChat={handleToggleChat}
                 allAssignmentIds={assignments.map((a) => a.assignmentId).filter(Boolean) as number[]}
                 engineerNames={assignments.map((a) => a.engineer?.name).filter(Boolean) as string[]}
+                allCardsApproved={job?.status === JOB_STATUSES.closed}
+                activeTab={activeTab}
               />
               <JobTabSection
                 status={(jobStatus as JobStatus) || "Posted"}

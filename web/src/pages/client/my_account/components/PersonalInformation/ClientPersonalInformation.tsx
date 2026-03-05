@@ -58,7 +58,6 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     isLoading: isFetchingInfo,
     isFetching,
   } = useClientGetCompanyInfo(true);
-  console.log(clientInfo);
 
   useEffect(() => {
     if (clientInfo) {
@@ -103,9 +102,9 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       companyName: corporateInfo?.companyName,
       contactPersonName: clientInfo?.name,
       phoneNumber: clientInfo?.phoneNumber,
-      businessType: corporateInfo?.businessTypeId,
+      businessType: corporateInfo?.businessType || clientInfo?.businessType,
       industry: corporateInfo?.industryId,
-      address: corporateInfo?.address,
+      address: corporateInfo?.address || clientInfo?.address || "",
       country: clientInfo?.countryId,
       state: clientInfo?.stateId,
       city: clientInfo?.cityId,

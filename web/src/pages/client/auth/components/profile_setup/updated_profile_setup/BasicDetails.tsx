@@ -48,6 +48,8 @@ const BasicDetails = () => {
     markStepCompleted,
     updateProfileData,
     setToken,
+    resetEmail,
+    resetPhone,
   } = useClientRegistrationStore();
   const [termsOpen, setTermsOpen] = useState(false);
   const {
@@ -106,13 +108,16 @@ const BasicDetails = () => {
         localStorage.setItem("auth_token", result.token);
         setToken(result.token);
       }
-
+      resetEmail();
+      resetPhone();
       toast.success("Profile registered successfully!");
       markStepCompleted(4);
-      navigate("/client/auth/verification");
+      navigate(absoluteUrls.client.auth.verification);
     },
     onError: (error: unknown) => {
-      toast.error(GlobalApiErrorHandler.handle(error).message);
+      toast.error(
+        GlobalApiErrorHandler.handle(error, "Registration failed").message,
+      );
     },
   });
 

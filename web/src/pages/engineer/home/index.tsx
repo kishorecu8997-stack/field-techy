@@ -78,6 +78,7 @@ const Home = () => {
         postedTime: job.createdAt || new Date().toISOString(),
         jobDuration: "10 Days",
         budgetType: null,
+        isSaved: job.isSaved,
         client: {
           id: job.clientId.toString(),
           clientType: clientDetails?.clientType || "unknown",
@@ -176,6 +177,7 @@ const Home = () => {
                 userTools={profile?.tools || []}
                 title="Featured Jobs"
                 onViewAll={handleExploreJobs}
+                bookMarkRefetch={refetch}
               />
             )}
 
@@ -187,6 +189,7 @@ const Home = () => {
                 onViewAll={handleExploreJobs}
                 title="Recommended Jobs"
                 totalJobs={recommendedJobs.length}
+                bookMarkRefetch={refetch}
               />
             )}
             {recommendedJobs.length > 5 && (

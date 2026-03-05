@@ -65,7 +65,9 @@ export const useClientStore = create<ClientStore>((set, get) => ({
             ? (profile.companyName ?? profile.name)
             : profile.name,
         address:
-          profile.clientType === "corporate" ? profile.address : undefined,
+          profile.clientType === "corporate"
+            ? (profile.address ?? undefined)
+            : undefined,
         profilePicture: profilePicUrl ?? null,
       };
 
