@@ -5,6 +5,7 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import jobFilters, {
   SORT_OPTIONS,
   type Job,
@@ -35,7 +36,16 @@ const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
  * @returns {React.ReactElement} The rendered "My Jobs" page for the client.
  */
 const MyJobsClient: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
+  const [searchParams] = useSearchParams();
+  const filterParam = searchParams.get("filter");
+
+  // Initialize activeFilter from URL query param if valid
+  const [activeFilter, setActiveFilter] = useState<string>(() => {
+    if (filterParam && jobFilters.includes(filterParam)) {
+      return filterParam;
+    }
+    return jobFilters[0];
+  });
 
   const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
   const { data: jobsData, isLoading } = useClientGetJobs(apiJobStatus);

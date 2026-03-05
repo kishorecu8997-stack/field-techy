@@ -214,7 +214,7 @@ const Dashboard: React.FC = () => {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">In-Progress Jobs</h2>
                 <NavLink
-                  to={absoluteUrls.client.home.my_jobs}
+                  to={`${absoluteUrls.client.home.my_jobs}?filter=In-Progress`}
                   onClick={() => scrollToTop()}
                   className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                 >
