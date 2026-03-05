@@ -1,27 +1,36 @@
-import React, { useState } from "react";
-import {
-  CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement,
-  useElements,
-  useStripe,
-} from "@stripe/react-stripe-js";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
+import { getClientBalanceQueryKey } from "@/api/@tanstack/react-query.gen";
+import { apiClient } from "@/shared/apiServices/apiClient";
 import {
   useClientBalance,
   useCreatePaymentIntent,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { InputField } from "@/shared/components/commonUI/inputs";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import { useThemeHook } from "@/shared/hooks/useThemeHook";
+import {
+  CardCvcElement,
+  CardExpiryElement,
+  CardNumberElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import { useQueryClient } from "@tanstack/react-query";
-import { getClientBalanceQueryKey } from "@/api/@tanstack/react-query.gen";
-import { apiClient } from "@/shared/apiServices/apiClient";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface AddFundFormProps {
   onClose: () => void;
 }
 
 const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
+  const formCtx = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      amount: 0,
+    },
+  });
   const isDark = useThemeHook();
   const { success, error: toastError } = useToast();
   const queryClient = useQueryClient();
@@ -29,7 +38,9 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   const stripe = useStripe();
   const elements = useElements();
 
-  const [amount, setAmount] = useState<number>(0);
+  const amountFromForm = formCtx.watch("amount");
+  const amount = Number(amountFromForm) || 0;
+
   const [formError, setFormError] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
@@ -39,14 +50,14 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   const currencyCode = balance?.currencyCode?.toLowerCase();
   const isLoading = isCreatingIntent || isProcessingPayment || isBalanceLoading;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (data: { amount: number | string }) => {
+    const finalAmount = Number(data.amount);
     setFormError(null);
     if (!stripe || !elements) {
       setFormError("Payment system not ready");
       return;
     }
-    if (amount <= 0) {
+    if (finalAmount <= 0) {
       setFormError("Please enter a valid amount");
       return;
     }
@@ -58,7 +69,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
     try {
       setIsProcessingPayment(true);
       const { clientSecret } = await mutateAsync({
-        body: { amount, currency: currencyCode },
+        body: { amount: finalAmount, currency: currencyCode },
       });
 
       if (!clientSecret) {
@@ -109,19 +120,18 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
+    <FormContainer methods={formCtx} onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
       <h2 className="text-xl font-semibold">Add Funds</h2>
-      <div>
-        <label className="block text-sm font-medium">Amount</label>
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-          min={0}
-          placeholder="0.00"
-          className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition dark:focus:ring-teal-400/50"
-        />
-      </div>
+      <InputField
+        name="amount"
+        label="Amount"
+        type="number"
+        required
+        rules={{
+          required: "Amount is required",
+          min: { value: 0, message: "Amount must be greater than 0" },
+        }}
+      />
       <div>
         <label className="block text-sm font-medium">Card number</label>
         <div className="mt-1 p-2 border rounded-md bg-white dark:bg-gray-800">
@@ -181,7 +191,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
       >
         {amount > 0 ? "Pay Now" : "Enter amount"}
       </Button>
-    </form>
+    </FormContainer>
   );
 };
 
