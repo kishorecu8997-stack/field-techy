@@ -65,6 +65,26 @@ export default function SuspendedUser() {
     );
   }, [engineerData, selectedFile]);
 
+  const filteredEngineers = useMemo(() => {
+  if (!search.trim()) return engineerData;
+
+  const term = search.toLowerCase();
+
+  return engineerData.filter((engineer) =>
+    [
+      engineer.engineerCode,
+      engineer.name,
+      engineer.email,
+      engineer.phoneNumber,
+      engineer.location,
+      engineer.cityName,
+      engineer.countryName,
+    ]
+      .filter(Boolean)
+      .some((value) => value!.toLowerCase().includes(term)),
+  );
+}, [engineerData, search]);
+
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
   const { mutateAsync: updateEngineerStatus } =
@@ -272,13 +292,17 @@ export default function SuspendedUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={engineerData}
             initialPageSize={pageSize}
             currentPage={currentPage}
             loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}
-            totalCount={engineersResponse?.total ?? 0}
+            data={filteredEngineers}
+                        totalCount={
+              search
+                ? filteredEngineers.length
+                : (engineersResponse?.total ?? 0)
+            }
           />
         </div>
       </div>

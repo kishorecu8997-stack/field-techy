@@ -5,6 +5,7 @@ export type EngineerAssignment = {
   jobStatus: string;
   assignmentType: string;
   proposalDetail: string;
+  invitedAt?: string | null;
   appliedAt: string | null;
   engineer?: {
     name?: string;

@@ -1,4 +1,4 @@
-import { chartData, days } from "@/dummy_data/admin/manageEngineer";
+import { days } from "@/dummy_data/admin/manageEngineer";
 import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import type { Column } from "@/shared/components/commonUI/custom_table";
@@ -8,6 +8,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { useAdminGetEngineerHistory } from "@/shared/apiServices/admin/adminOpenApiService";
 import React, { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { buildJobsChartData, coerceJobsChartGrouping } from "./jobChartUtils";
 import type { EngineerAssignment } from "./types";
 
 /**
@@ -58,6 +59,16 @@ const InvitedJob: React.FC = () => {
   const jobs: EngineerAssignment[] = useMemo(
     () => (engineerHistory?.data ?? []) as EngineerAssignment[],
     [engineerHistory?.data],
+  );
+
+  const jobChartData = useMemo(
+    () =>
+      buildJobsChartData(
+        jobs,
+        coerceJobsChartGrouping(selectedDay),
+        (a) => a.invitedAt ?? a.appliedAt ?? null,
+      ),
+    [jobs, selectedDay],
   );
 
   const filteredJobs = useMemo(() => {
@@ -129,10 +140,12 @@ const InvitedJob: React.FC = () => {
     },
     {
       key: "appliedAt",
-      label: "Applied Date",
+      label: "Invited Date",
       renderCell: (row) => (
         <span>
-          {row.appliedAt ? new Date(row.appliedAt).toLocaleString() : "N/A"}
+          {row.invitedAt || row.appliedAt
+            ? new Date(row.invitedAt || row.appliedAt!).toLocaleString()
+            : "N/A"}
         </span>
       ),
     },
@@ -194,13 +207,21 @@ const InvitedJob: React.FC = () => {
         </div>
 
         <GeneralChart
-          data={chartData}
+          data={jobChartData}
           chartType="line"
           xAxisDataKey="name"
           aspectRatio={2}
           series={[{ dataKey: "jobs", name: "Jobs", fill: "#e5e5e5" }]}
           customTooltip={CustomTooltip}
           height={400}
+          isLoading={isLoading}
+          error={
+            !hasValidUserId
+              ? "Missing engineer id in the URL."
+              : error
+                ? "An error occurred while fetching invited jobs."
+                : null
+          }
           showLegend
           legend={{
             verticalAlign: "top",
