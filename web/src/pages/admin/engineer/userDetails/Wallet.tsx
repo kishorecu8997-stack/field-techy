@@ -25,7 +25,6 @@ interface WalletProps {
  * Handles loading and error states gracefully
  */
 export default function Wallet({ walletBalance }: WalletProps) {
-
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const params = useParams();
