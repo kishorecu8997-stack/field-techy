@@ -3,6 +3,12 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { useThemeHook } from "@/shared/hooks/useThemeHook";
 import { useState } from "react";
 
+/*
+* TODO: implement add fund component
+* Add fund component will be used to add funds to the client's wallet
+* this component will open the add fund modal when the client clicks on the add fund button
+* @param buttonWidth - width of the add fund button
+*/
 const AddFundComponent = ({ buttonWidth }: { buttonWidth?: string }) => {
   const isDarkMode = useThemeHook();
   const [isOpen, setIsOpen] = useState(false);

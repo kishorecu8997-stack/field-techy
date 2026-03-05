@@ -8,6 +8,13 @@ interface AddFundModalProps {
   isOpen: boolean;
 }
 
+/*
+* TODO: implement add fund modal
+* Add fund modal will be used to add funds to the client's wallet
+* this modal will open when the client clicks on the add fund button
+* @param onClose - callback function to close the modal
+* @param isOpen - boolean to open the modal
+*/
 const AddFundModal: React.FC<AddFundModalProps> = ({ onClose, isOpen }) => {
   return (
     <Popup
