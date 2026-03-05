@@ -24,6 +24,13 @@ interface AddFundFormProps {
   onClose: () => void;
 }
 
+/*
+* TODO: implement add fund form
+* Add fund form will be used to add funds to the client's wallet
+* this form will call the create payment intent api to create a payment intent
+* 
+* @param onClose - callback function to close the modal
+*/
 const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   const formCtx = useForm({
     mode: "onSubmit",
