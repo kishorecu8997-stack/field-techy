@@ -1,12 +1,10 @@
 import type { EngineerAssignment } from "./types";
 
 export type JobsChartGrouping = "daily" | "weekly" | "monthly" | "yearly";
-
 export type JobsChartPoint = {
   name: string;
   jobs: number;
 };
-
 export function coerceJobsChartGrouping(
   value: string | null | undefined,
   fallback: JobsChartGrouping = "monthly",
@@ -113,7 +111,6 @@ export function buildJobsChartData(
       const point = buckets.get(key);
       if (point) point.jobs += 1;
     }
-
     return Array.from(buckets.values());
   }
 
