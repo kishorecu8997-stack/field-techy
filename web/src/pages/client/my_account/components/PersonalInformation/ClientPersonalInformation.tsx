@@ -105,7 +105,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       phoneNumber: clientInfo?.phoneNumber,
       businessType: corporateInfo?.businessTypeId,
       industry: corporateInfo?.industryId,
-      address: corporateInfo?.address,
+      address: clientInfo?.address,
       country: clientInfo?.countryId,
       state: clientInfo?.stateId,
       city: clientInfo?.cityId,
@@ -332,15 +332,17 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           />
         )}
 
-        <InputField
-          label="Address"
-          name="address"
-          type="text"
-          placeholder="Address"
-          leftIcon={<CiLocationOn className="text-lg text-gray-500" />}
-          required
-          rules={{ validate: (v: string) => validateAddress(v) }}
-        />
+        {companyInfo?.clientType === "corporate" && (
+          <InputField
+            label="Address"
+            name="address"
+            type="text"
+            placeholder="Address"
+            leftIcon={<CiLocationOn className="text-lg text-gray-500" />}
+            required
+            rules={{ validate: (v: string) => validateAddress(v) }}
+          />
+        )}
         <SelectField
           label="Country"
           name="country"
