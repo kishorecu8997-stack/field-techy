@@ -37,7 +37,7 @@ const ClientActions = ({
   return (
     <>
       <div className="flex flex-wrap gap-4 w-full justify-end">
-        {showFeedbackButton && (
+        {showFeedbackButton ? (
           <Button
             variant="no_style"
             className="text-white text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white rounded-none hover:rounded-t-lg hover:bg-white/4"
@@ -51,15 +51,16 @@ const ClientActions = ({
           >
             <span>View Feedback From Engineers</span>
           </Button>
+        ) : (
+          <Button
+            variant="primary"
+            onClick={() => {
+              navigate(URl);
+            }}
+          >
+            Invite to Job
+          </Button>
         )}
-        <Button
-          variant="primary"
-          onClick={() => {
-            navigate(URl);
-          }}
-        >
-          Invite to Job
-        </Button>
       </div>
     </>
   );

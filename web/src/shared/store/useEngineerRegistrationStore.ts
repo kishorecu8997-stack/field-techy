@@ -135,6 +135,8 @@ interface EngineerRegistrationState {
   setToken: (token: string) => void;
   markRegistrationComplete: () => void;
   getApiData: () => EngineerData;
+  resetEmail: () => void;
+  resetPhone: () => void;
 }
 
 const initialState = {
@@ -239,6 +241,14 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
 
       markRegistrationComplete: () => {
         set({ registrationComplete: true });
+      },
+
+      resetEmail: () => {
+        set({ emailVerified: false });
+      },
+
+      resetPhone: () => {
+        set({ mobileVerified: false });
       },
 
       getApiData: () => {

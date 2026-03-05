@@ -14,7 +14,7 @@ const JobDetails: React.FC = () => {
   const jobId = params.jobId;
 
   // Fetch jobs data from API
-  const { data: jobsData, isLoading, error } = useClientGetJobs(true);
+  const { data: jobsData, isLoading, error } = useClientGetJobs();
 
   // Check if jobsData is an array
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
