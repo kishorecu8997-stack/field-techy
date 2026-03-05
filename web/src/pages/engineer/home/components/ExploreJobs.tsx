@@ -49,7 +49,11 @@ const ExploreJobs: React.FC = () => {
 
   // Filter jobs by status NEW and add dummy job at the top
   const allNewJobs = useMemo(() => {
-    const apiNewJobs = (apiJobs || []).filter((job) => job.status === "NEW");
+    const apiNewJobs = (apiJobs || []).filter(
+      (job) =>
+        job.status === "NEW" &&
+        (job.assignedEngineerCount ?? 0) < job.numberOfVacancy,
+    );
     return apiNewJobs;
   }, [apiJobs]);
 
