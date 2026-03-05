@@ -27,7 +27,7 @@ const BankDetailsForm = ({
         <div className="p-4">
           <SelectField
             name="bankName"
-            label="Bankkkkk"
+            label="Bank"
             options={bankList}
             placeholder="Select a bank"
             required
