@@ -12,7 +12,9 @@ import { icons } from "@/config/icons";
 
 // Helper to check if a file is a PDF
 const isPdfFile = (file: File): boolean => {
-  return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  return (
+    file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")
+  );
 };
 
 interface ToolEntry {
@@ -402,7 +404,9 @@ const RequirementsSection = ({
                           {isPdfFile(img.file) ? (
                             <div className="flex flex-col items-center justify-center w-full h-full text-red-500">
                               {icons.pdf && <icons.pdf className="w-6 h-6" />}
-                              <span className="text-[8px] leading-tight">PDF</span>
+                              <span className="text-[8px] leading-tight">
+                                PDF
+                              </span>
                             </div>
                           ) : (
                             <img

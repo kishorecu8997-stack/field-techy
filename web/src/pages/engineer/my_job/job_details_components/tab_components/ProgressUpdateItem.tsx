@@ -57,9 +57,10 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
               : LABELS.progressUpdateFallback;
 
   // For break items, show time/date alongside title
-  const breakTimeDisplay = update.detailsType === "break" && update.startDate 
-    ? ` (${update.startDate}${update.duration ? ` - ${update.duration}` : ""})`
-    : "";
+  const breakTimeDisplay =
+    update.detailsType === "break" && update.startDate
+      ? ` (${update.startDate}${update.duration ? ` - ${update.duration}` : ""})`
+      : "";
 
   return (
     <div
@@ -76,7 +77,8 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
       <div className="flex justify-between items-start gap-4">
         <div className="flex-1">
           <p className="text-sm font-semibold text-gray-800 leading-5">
-            {updateTitle}{breakTimeDisplay}
+            {updateTitle}
+            {breakTimeDisplay}
           </p>
           {!isCollapsed && update.description && (
             <p className="text-sm text-gray-700 mt-1 whitespace-pre-line break-all leading-5">

@@ -128,7 +128,8 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                     {/* Show break time/date for break items */}
                     {item.detailsType === "break" && item.startDate && (
                       <span className="text-xs font-normal text-gray-500 ml-1">
-                        ({item.startDate}{item.duration ? ` - ${item.duration}` : ""})
+                        ({item.startDate}
+                        {item.duration ? ` - ${item.duration}` : ""})
                       </span>
                     )}
                   </p>
@@ -296,14 +297,12 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                                         d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
                                       />
                                     </svg>
-                                    {
-                                      decodeURIComponent(
-                                        revision.clientAttachmentUrl
-                                          .split("/")
-                                          .pop()
-                                          ?.split("?")[0] || ""
-                                      )
-                                    }
+                                    {decodeURIComponent(
+                                      revision.clientAttachmentUrl
+                                        .split("/")
+                                        .pop()
+                                        ?.split("?")[0] || "",
+                                    )}
                                   </a>
                                 </div>
                               )}

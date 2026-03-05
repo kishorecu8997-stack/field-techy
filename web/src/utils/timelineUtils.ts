@@ -77,10 +77,10 @@ export interface TimelineItem {
     status: string;
   }>;
   // Break request specific fields
-  startDate?: string;  // Formatted time range for short breaks or date range for long breaks
+  startDate?: string; // Formatted time range for short breaks or date range for long breaks
   endDate?: string;
   breakType?: "short_term" | "long_term";
-  duration?: string;  // Calculated duration of the break
+  duration?: string; // Calculated duration of the break
   detailsLabel?: string; // Label for the details button (e.g., "Break Details")
 }
 
@@ -348,7 +348,7 @@ export const transformBreakRequestsToItems = (
       const endTime = formatTimeOnly(br.endAt);
       const startDate = formatDateOnly(br.startAt);
       const endDate = formatDateOnly(br.endAt);
-      
+
       if (br.type === "short_term") {
         // Short term: show time and date
         return `${startTime} - ${endTime} (${startDate})`;

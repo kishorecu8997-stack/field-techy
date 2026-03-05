@@ -157,7 +157,8 @@ export const BillSummary = ({
       <div className="flex items-center justify-between text-lg font-semibold text-gray-900 dark:text-gray-100 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 rounded px-3 py-2">
         <span>Total Bill</span>
         <span>
-          {currencySymbol}{totalBill.toLocaleString("en-IN")}
+          {currencySymbol}
+          {totalBill.toLocaleString("en-IN")}
         </span>
       </div>
 

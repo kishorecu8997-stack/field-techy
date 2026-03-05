@@ -576,7 +576,7 @@ const TimelineSection: React.FC<{
         const endTime = formatTimeOnly(breakRequest.endAt);
         const startDate = formatDateOnly(breakRequest.startAt);
         const endDate = formatDateOnly(breakRequest.endAt);
-        
+
         if (breakRequest.type === "short_term") {
           // Short term: show time and date
           return `${startTime} - ${endTime} (${startDate})`;
@@ -590,7 +590,7 @@ const TimelineSection: React.FC<{
       const duration = calculateBreakDuration(
         breakRequest.startAt,
         breakRequest.endAt,
-        breakRequest.type
+        breakRequest.type,
       );
 
       return {

@@ -4,11 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import { icons } from "@/config/icons";
 
 export const DURATION_TYPES = ["short_term", "long_term"] as const;
-export const STATUS_TYPES = [
-  "pending",
-  "approved",
-  "rejected",
-] as const;
+export const STATUS_TYPES = ["pending", "approved", "rejected"] as const;
 
 type DurationType = (typeof DURATION_TYPES)[number];
 type StatusType = (typeof STATUS_TYPES)[number];
@@ -78,7 +74,9 @@ const StatusLegendItem: React.FC<StatusLegendItemProps> = ({
  * @param {BreakCalendarProps} props - Props including breakRequests from API
  * @returns {JSX.Element} Rendered break calendar
  */
-const BreakCalendar: React.FC<BreakCalendarProps> = ({ breakRequests = [] }) => {
+const BreakCalendar: React.FC<BreakCalendarProps> = ({
+  breakRequests = [],
+}) => {
   const statusConfig = {
     pending: {
       Icon: icons.pending,
@@ -114,10 +112,10 @@ const BreakCalendar: React.FC<BreakCalendarProps> = ({ breakRequests = [] }) => 
     const start = new Date(startAt);
     const end = new Date(endAt);
     if (isNaN(start.getTime()) || isNaN(end.getTime())) return "";
-    
+
     const diffTime = end.getTime() - start.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) {
       return "1 day";
     } else if (diffDays === 1) {

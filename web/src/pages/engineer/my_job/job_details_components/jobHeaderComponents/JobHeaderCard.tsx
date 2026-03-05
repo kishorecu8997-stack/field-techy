@@ -105,12 +105,21 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     if (isClient) {
       await showPopup({
         title: "",
-        body: <BreakRequestDetails onClose={closePopup} assignmentIds={allAssignmentIds} engineerNames={engineerNames} isClientView={true} />,
+        body: (
+          <BreakRequestDetails
+            onClose={closePopup}
+            assignmentIds={allAssignmentIds}
+            engineerNames={engineerNames}
+            isClientView={true}
+          />
+        ),
         actionButtons: [],
       });
     } else {
       // Navigate to break-details with assignmentId
-      navigate(`/engineer/my-jobs/${params.jobId}/break-details?assignmentId=${assignmentId}`);
+      navigate(
+        `/engineer/my-jobs/${params.jobId}/break-details?assignmentId=${assignmentId}`,
+      );
     }
   };
 

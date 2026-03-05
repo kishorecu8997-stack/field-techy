@@ -376,7 +376,7 @@ const BreakRequestForm = ({
             required
             placeholder={BREAK_REQUEST_LABELS.reasonPlaceholder}
             rules={{
-               maxLength: {
+              maxLength: {
                 value: 200,
                 message: "Reason must be 200 characters or less",
               },

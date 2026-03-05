@@ -4,7 +4,10 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { ActionReasonPopup } from "./ActionReasonPopup";
 import { toast } from "react-toastify";
 import { formatDate } from "@/utils/formatDate";
-import { useClientActionOnBreak, useGetJobLogs } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useClientActionOnBreak,
+  useGetJobLogs,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { useState, useEffect } from "react";
 
@@ -45,7 +48,12 @@ interface Break {
  * - Opens ActionReasonPopup on Approve/Reject for pending requests
  * - Displays success toast on submission
  */
-const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assignmentIds, isClientView = false, engineerNames }) => {
+const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
+  onClose,
+  assignmentIds,
+  isClientView = false,
+  engineerNames,
+}) => {
   const { showPopup } = usePopupStore();
   const { mutate: actionOnBreak } = useClientActionOnBreak({});
   const [allBreakRequests, setAllBreakRequests] = useState<Break[]>([]);
@@ -53,8 +61,8 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
 
   // Fetch job logs for each assignment ID
   const { data: jobLogsData } = useGetJobLogs(
-    assignmentIds?.[0] || 0, 
-    !!assignmentIds?.length
+    assignmentIds?.[0] || 0,
+    !!assignmentIds?.length,
   );
 
   // Also need to fetch for other assignments
@@ -75,7 +83,8 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
           breaks.push({
             ...brk,
             // Map engineer name if available
-            engineerName: engineerNames?.[index] || engineerNames?.[0] || undefined
+            engineerName:
+              engineerNames?.[index] || engineerNames?.[0] || undefined,
           });
         });
       }
@@ -89,8 +98,10 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
 
   // If assignmentIds is provided, show all breaks; otherwise show nothing
   // On client view, show all breaks; on engineer view, show only pending
-  const displayBreaks = assignmentIds?.length 
-    ? (isClientView ? allBreakRequests : allBreakRequests.filter(brk => brk.status === "pending"))
+  const displayBreaks = assignmentIds?.length
+    ? isClientView
+      ? allBreakRequests
+      : allBreakRequests.filter((brk) => brk.status === "pending")
     : [];
 
   const handleReject = async (brk: Break) => {
@@ -154,10 +165,10 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
     const start = new Date(startAt);
     const end = new Date(endAt);
     if (isNaN(start.getTime()) || isNaN(end.getTime())) return "";
-    
+
     const diffTime = end.getTime() - start.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) {
       return "1 day";
     } else if (diffDays === 1) {
@@ -231,7 +242,9 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
             {/* Status Badge */}
             <div className="flex items-center justify-between mb-2">
               <p className="text-gray-200 font-medium text-xs">
-                {brk.type === "long_term" ? "Long Term Break" : "Short Term Break"}
+                {brk.type === "long_term"
+                  ? "Long Term Break"
+                  : "Short Term Break"}
               </p>
               <span
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
@@ -242,7 +255,11 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
                       : "bg-red-100 text-red-800"
                 }`}
               >
-                {brk.status === "pending" ? "Pending" : brk.status === "approved" ? "Approved" : "Rejected"}
+                {brk.status === "pending"
+                  ? "Pending"
+                  : brk.status === "approved"
+                    ? "Approved"
+                    : "Rejected"}
               </span>
             </div>
 
@@ -253,10 +270,9 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
                   : "bg-green-600 dark:bg-green-700"
               }`}
             >
-              {brk.type === "long_term" 
+              {brk.type === "long_term"
                 ? `${formatDateOnly(brk.startAt)} - ${formatDateOnly(brk.endAt)} (${calculateDuration(brk.startAt, brk.endAt)})`
-                : `${formatTime(brk.startAt)} - ${formatTime(brk.endAt)}`
-              }
+                : `${formatTime(brk.startAt)} - ${formatTime(brk.endAt)}`}
             </p>
 
             <p className="text-gray-300 mb-1 text-sm">
@@ -266,7 +282,8 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
             {/* Show approver comment if available */}
             {brk.approverComment && (
               <p className="text-blue-600 dark:text-blue-400 mb-1 text-sm">
-                <span className="font-medium">Comment:</span> {brk.approverComment}
+                <span className="font-medium">Comment:</span>{" "}
+                {brk.approverComment}
               </p>
             )}
 
