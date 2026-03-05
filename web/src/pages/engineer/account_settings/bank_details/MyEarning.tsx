@@ -45,6 +45,7 @@ const MyEarning = () => {
 
   const { mutateAsync: connectStripeAccountAsync } = useConnectStripeAccount({
     onError: (error) => {
+      //TODO: console logs for debugging purposes, it will be removed in production
       console.error("Failed to connect Stripe account:", error);
       toast.error("Failed to edit bank details. Please try again.");
     },
@@ -52,18 +53,22 @@ const MyEarning = () => {
 
   const { mutateAsync: getOnboardingLinkAsync } = useGetOnboardingLink({
     onError: (error) => {
+      //TODO: console logs for debugging purposes, it will be removed in production
       console.error("Failed to fetch onboarding link:", error);
+      toast.error("Failed to edit bank details. Please try again.");
     },
     onSuccess: (linkData) => {
+      //TODO: console logs for debugging purposes, it will be removed in production
       console.log("Onboarding link received:", linkData);
+      toast.success("Bank details onboarding started");
     },
   });
 
   const startStripeOnboarding = useCallback(async () => {
     setHasError(false);
     try {
-      console.log("Calling connectStripeAccount mutation");
       const stripeData = await connectStripeAccountAsync({});
+      //TODO: console logs for debugging purposes, it will be removed in production
       console.log("connect success", stripeData);
 
       const origin = window.location.origin;

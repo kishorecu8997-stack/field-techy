@@ -4,7 +4,7 @@ import { Button } from "./commonUI/Buttons";
 import Drawer from "./drawer/Drawer";
 import { useState } from "react";
 import { useClientBalance } from "../apiServices/client/clientOpenApiService";
-import AddFundModelButton from "@/pages/client/my_wallet/components/AddFundModelButton";
+import AddFundComponent from "@/pages/client/my_wallet/components/AddFundComponent";
 
 /**
  * A card component that displays the user's wallet balance and provides
@@ -47,11 +47,11 @@ export const WalletCard: React.FC = () => {
             {showBalance
               ? balance?.balance != null
                 ? Number(balance.balance).toLocaleString("en-US", {
-                    style: "currency",
-                    currency: balance.currencyCode ?? "INR",
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })
+                  style: "currency",
+                  currency: balance.currencyCode ?? "INR",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
                 : "--"
               : "******"}
           </p>
@@ -89,7 +89,7 @@ export const WalletCard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <AddFundModelButton buttonWidth="w-full" />
+        <AddFundComponent buttonWidth="w-full" />
         <Button
           variant="primary"
           onClick={() => {

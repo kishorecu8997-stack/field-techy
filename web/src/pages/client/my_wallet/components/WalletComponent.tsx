@@ -6,7 +6,7 @@ import { useThemeHook } from "@/shared/hooks/useThemeHook";
 import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import type { Transaction } from "../types";
-import AddFundModelButton from "./AddFundModelButton";
+import AddFundComponent from "./AddFundComponent";
 
 interface WalletComponentProps {
   onMenuItemClick: (key: string) => void;
@@ -135,17 +135,15 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
 
   return (
     <div
-      className={`w-full max-w-md mx-auto rounded-lg overflow-hidden shadow-lg ${
-        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-800"
-      }`}
+      className={`w-full max-w-md mx-auto rounded-lg overflow-hidden shadow-lg ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-800"
+        }`}
     >
       {/* Balance Section */}
       <div className={`p-4 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
         <div className="">
           <p
-            className={`text-sm mb-1 ${
-              isDarkMode ? "text-gray-300" : "text-gray-600"
-            }`}
+            className={`text-sm mb-1 ${isDarkMode ? "text-gray-300" : "text-gray-600"
+              }`}
           >
             Current Balance
           </p>
@@ -154,9 +152,9 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
               {showBalance
                 ? balance?.balance != null
                   ? formatCurrency(
-                      Number(balance.balance),
-                      balance.currencyCode,
-                    )
+                    Number(balance.balance),
+                    balance.currencyCode,
+                  )
                   : "--"
                 : "******"}
             </p>
@@ -190,7 +188,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
               />
             )}
           </div>
-          <AddFundModelButton />
+          <AddFundComponent />
         </div>
       </div>
 
@@ -247,23 +245,21 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                         </div>
                       </div>
                       <div
-                        className={`text-xs mt-1 ${
-                          isDarkMode ? "text-gray-400" : "text-gray-500"
-                        }`}
+                        className={`text-xs mt-1 ${isDarkMode ? "text-gray-400" : "text-gray-500"
+                          }`}
                       >
                         {formatDate(transaction.date)}
                       </div>
                     </div>
                     <div
-                      className={`font-medium ${
-                        transaction.type === "credit"
-                          ? isDarkMode
-                            ? "text-green-400"
-                            : "text-green-600"
-                          : isDarkMode
-                            ? "text-red-400"
-                            : "text-red-600"
-                      }`}
+                      className={`font-medium ${transaction.type === "credit"
+                        ? isDarkMode
+                          ? "text-green-400"
+                          : "text-green-600"
+                        : isDarkMode
+                          ? "text-red-400"
+                          : "text-red-600"
+                        }`}
                     >
                       {transaction.type === "credit" ? "+" : "-"}
                       {formatCurrency(
