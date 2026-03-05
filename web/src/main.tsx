@@ -8,13 +8,14 @@ import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
 import "./shared/apiServices/utils/errorHandlerConfig";
 import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
 import { FCMHandler } from "./shared/components/FCMHandler.tsx";
+import GlobalErrorBoundary from "./shared/components/commonUI/GlobalErrorBoundary.tsx";
 
 // Stripe
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
 // initialize stripe promise directly
-const publicKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY 
+const publicKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = loadStripe(publicKey);
 
 /**
@@ -54,15 +55,17 @@ if (!root) {
 
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        <GlobalPopup />
-        <ToastHandler />
-        <FCMHandler />
-        <Elements stripe={stripePromise}>
-          <App />
-        </Elements>
-      </ToastProvider>
-    </QueryClientProvider>
+    <GlobalErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          <GlobalPopup />
+          <ToastHandler />
+          <FCMHandler />
+          <Elements stripe={stripePromise}>
+            <App />
+          </Elements>
+        </ToastProvider>
+      </QueryClientProvider>
+    </GlobalErrorBoundary>
   </React.StrictMode>,
 );

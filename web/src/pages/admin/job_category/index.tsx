@@ -6,9 +6,7 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import React, { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
-import {
-  useAdminGetServiceCategories,
-} from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminGetServiceCategories } from "@/shared/apiServices/admin/adminOpenApiService";
 
 export interface ServerCategoryProps {
   id: string;

@@ -8,6 +8,7 @@ import {
 } from "@/shared/apiServices/notifications/notificationOpenApiService";
 import type { FCMMessage } from "@/shared/store/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import type { AppGetNotificationsResponse } from "@/api/types.gen";
 
 type CachedNotification = Omit<
@@ -20,8 +21,11 @@ export const FCMHandler = () => {
     useTokenStore();
   const { setFcmToken } = useDeviceStore();
   const queryClient = useQueryClient();
+  const { session } = useUserSessionStore();
 
   useEffect(() => {
+    if (!session) return;
+
     const initializeFCM = async () => {
       try {
         await fcmService.initialize({
@@ -123,6 +127,7 @@ export const FCMHandler = () => {
     setErrorMessage,
     queryClient,
     setFcmToken,
+    session,
   ]);
 
   return null;

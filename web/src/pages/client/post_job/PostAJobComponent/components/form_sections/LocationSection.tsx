@@ -27,6 +27,7 @@ const LocationSection = ({
   const {
     watch,
     formState: { errors },
+    setValue,
   } = useFormContext();
   const locationType = watch("locationType");
 
@@ -109,7 +110,43 @@ const LocationSection = ({
             <SectionHeader title="Work Location" />
           </div>
           <div className="px-3 pb-8">
-            <MapWithSearch className="h-[380px]" />
+            <MapWithSearch
+              className="h-[380px]"
+              onMapClick={(
+                latlng: { lat: number; lng: number },
+                name: string,
+              ) => {
+                setValue("workLocationLat", latlng.lat, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+                setValue("workLocationLng", latlng.lng, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+                setValue("workLocationName", name, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+              }}
+              onSearchSelect={(
+                latlng: { lat: number; lng: number },
+                name: string,
+              ) => {
+                setValue("workLocationLat", latlng.lat, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+                setValue("workLocationLng", latlng.lng, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+                setValue("workLocationName", name, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+              }}
+            />
           </div>
         </div>
       )}
