@@ -78,36 +78,33 @@ const AddRateCard = () => {
         const weekly5d = parseFloat(tier.weekly) || 0;
         const monthly = parseFloat(tier.monthly) || 0;
 
-        // Only add if there's at least one rate value
-        if (hourly > 0 || halfDay4h > 0 || fullDay8h > 0 || weekly5d > 0 || monthly > 0) {
-          // Check if we already have an entry for this level
-          const existingIndex = experienceLevels.findIndex(
-            (exp) => exp.levelOrder === levelOrder
-          );
+        // Check if we already have an entry for this level
+        const existingIndex = experienceLevels.findIndex(
+          (exp) => exp.levelOrder === levelOrder
+        );
 
-          if (existingIndex >= 0) {
-            // Update existing entry with new rates (accumulate or average)
-            experienceLevels[existingIndex].rates = {
-              hourly: experienceLevels[existingIndex].rates.hourly || hourly,
-              halfDay4h: experienceLevels[existingIndex].rates.halfDay4h || halfDay4h,
-              fullDay8h: experienceLevels[existingIndex].rates.fullDay8h || fullDay8h,
-              weekly5d: experienceLevels[existingIndex].rates.weekly5d || weekly5d,
-              monthly: experienceLevels[existingIndex].rates.monthly || monthly,
-            };
-          } else {
-            // Add new experience level
-            experienceLevels.push({
-              levelOrder,
-              label,
-              rates: {
-                hourly,
-                halfDay4h,
-                fullDay8h,
-                weekly5d,
-                monthly,
-              },
-            });
-          }
+        if (existingIndex >= 0) {
+          // Update existing entry with new rates
+          experienceLevels[existingIndex].rates = {
+            hourly: hourly || experienceLevels[existingIndex].rates.hourly,
+            halfDay4h: halfDay4h || experienceLevels[existingIndex].rates.halfDay4h,
+            fullDay8h: fullDay8h || experienceLevels[existingIndex].rates.fullDay8h,
+            weekly5d: weekly5d || experienceLevels[existingIndex].rates.weekly5d,
+            monthly: monthly || experienceLevels[existingIndex].rates.monthly,
+          };
+        } else {
+          // Add new experience level
+          experienceLevels.push({
+            levelOrder,
+            label,
+            rates: {
+              hourly,
+              halfDay4h,
+              fullDay8h,
+              weekly5d,
+              monthly,
+            },
+          });
         }
       });
     });
