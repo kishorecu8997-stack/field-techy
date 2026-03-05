@@ -198,13 +198,13 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
   }
 
   return (
-    <div className="flex flex-col p-4 space-y-3 max-h-[500px] overflow-y-auto">
+    <div className="flex flex-col p-6 gap-4 max-h-[500px] overflow-y-auto">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <h2 className="text-xl font-semibold text-white">
           Break Requests Details
         </h2>
         <div
-          className="cursor-pointer text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+          className="cursor-pointer text-gray-300 hover:text-white"
           onClick={onClose}
         >
           <icons.close className="w-5 h-5" />
@@ -212,25 +212,25 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
       </div>
 
       {displayBreaks.length === 0 ? (
-        <p className="text-gray-500 text-center text-sm">
+        <p className="text-gray-400 text-center text-sm">
           No break requests found
         </p>
       ) : (
         displayBreaks.map((brk) => (
           <div
             key={brk.id}
-            className="border rounded-lg p-3 dark:border-gray-700"
+            className="border border-[#3D4F6A] rounded-lg p-3 bg-[#223554]"
           >
             {/* Engineer Name - only show on client view */}
             {isClientView && brk.engineerName && (
-              <p className="text-gray-800 dark:text-gray-200 font-medium text-sm mb-2">
+              <p className="text-gray-200 font-medium text-sm mb-2">
                 Engineer: {brk.engineerName}
               </p>
             )}
 
             {/* Status Badge */}
             <div className="flex items-center justify-between mb-2">
-              <p className="text-gray-800 dark:text-gray-200 font-medium text-xs">
+              <p className="text-gray-200 font-medium text-xs">
                 {brk.type === "long_term" ? "Long Term Break" : "Short Term Break"}
               </p>
               <span
@@ -259,7 +259,7 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
               }
             </p>
 
-            <p className="text-gray-700 dark:text-gray-300 mb-1 text-sm">
+            <p className="text-gray-300 mb-1 text-sm">
               <span className="font-medium">Reason:</span> {brk.reason}
             </p>
 
@@ -271,7 +271,7 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({ onClose, assi
             )}
 
             {brk.createdAt && (
-              <p className="text-gray-500 dark:text-gray-400 text-xs">
+              <p className="text-gray-400 text-xs">
                 Applied on: {formatDate(brk.createdAt)}
               </p>
             )}

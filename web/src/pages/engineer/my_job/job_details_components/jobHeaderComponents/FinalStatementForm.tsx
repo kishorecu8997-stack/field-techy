@@ -178,26 +178,26 @@ const FinalStatementForm = ({
       onSubmit={handleSubmit}
       className="flex flex-col h-[80vh] "
     >
-      <div className="flex flex-col h-full w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
+      <div className="flex flex-col h-full w-full rounded-lg overflow-hidden">
         {/* Header */}
-        <div className="flex items-start justify-between px-6  bg-white dark:bg-gray-800 shrink-0">
+        <div className="flex items-start justify-between px-6 shrink-0">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 className="text-lg font-semibold text-white">
               {FINAL_STATEMENT_LABELS.title}
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-300">
               {FINAL_STATEMENT_LABELS.subtitle}
             </p>
           </div>
 
-          <Button
+          {/* <Button
             type="button"
             variant="no_style"
             onClick={onClose}
             aria-label="Close"
           >
-            <icons.close className="w-5 h-5" />
-          </Button>
+            <icons.close className="w-5 h-5 text-gray-300 hover:text-white" />
+          </Button> */}
         </div>
 
         {/* Scrollable Body */}
@@ -230,7 +230,7 @@ const FinalStatementForm = ({
         </div>
 
         {/* Footer */}
-        <div className="bg-white dark:bg-gray-800 px-6 shrink-0">
+        <div className="px-6 shrink-0">
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
             <Button
               variant="outline"
