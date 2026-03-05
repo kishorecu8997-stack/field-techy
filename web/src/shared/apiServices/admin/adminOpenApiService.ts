@@ -26,6 +26,11 @@ import {
   type AdminGetJobDetailsResponse,
   type AdminGetJobGraphData,
   type AdminGetJobGraphResponse,
+  type AdminGetUserGraphData,
+  type AdminGetUserGraphResponse,
+  type AdminGetDashboardJobGraphData,
+  type AdminGetDashboardJobGraphResponse,
+  type GetDashboardStatsResponse,
   type AdminGetSubAdminsData,
   type AdminGetSubAdminsResponse,
   type AdminGetEngineersForManagementData,
@@ -85,6 +90,7 @@ import {
   type AdminDownloadInvoiceResponse,
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
+  type AdminUpdateTransactionRequestStatusResponses,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -122,6 +128,9 @@ import {
   adminCreateSubAdminMutation,
   adminUpdateSubAdminMutation,
   adminGetJobGraphOptions,
+  adminGetUserGraphOptions,
+  adminGetDashboardJobGraphOptions,
+  getDashboardStatsOptions,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
   adminGetReportsOptions,
@@ -132,6 +141,7 @@ import {
   adminGetTransactionRequestsOptions,
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
+  adminUpdateTransactionRequestStatusMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   useMutation,
@@ -1110,6 +1120,90 @@ export function useAdminGetJobGraph(
   });
 }
 
+// ─── Dashboard Stats ──────────────────────────────────────────────────────────
+
+export function useAdminGetDashboardStats(options?: {
+  enabled?: boolean;
+  onSuccess?: (data: GetDashboardStatsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useQuery({
+    ...getDashboardStatsOptions({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
+    ...options,
+  });
+}
+
+// ─── Dashboard Job Graph ──────────────────────────────────────────────────────
+
+export type AdminGetDashboardJobGraphQuery = NonNullable<
+  AdminGetDashboardJobGraphData["query"]
+>;
+
+export function useAdminGetDashboardJobGraph(
+  query: AdminGetDashboardJobGraphQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetDashboardJobGraphResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetDashboardJobGraphQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetDashboardJobGraphOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+// ─── User Graph ───────────────────────────────────────────────────────────────
+
+export type AdminGetUserGraphQuery = NonNullable<
+  AdminGetUserGraphData["query"]
+>;
+
+export function useAdminGetUserGraph(
+  query: AdminGetUserGraphQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetUserGraphResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetUserGraphQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetUserGraphOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
 export type AdminUpdateReportBody = AdminUpdateReportData["body"];
 
 export function useAdminResolveReport(options?: {
@@ -1391,6 +1485,56 @@ export function useAdminDeleteEngineerMutation(options?: {
       });
       options?.onSuccess?.(data);
     },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateTransactionRequestStatus(options?: {
+  onSuccess?: (data: AdminUpdateTransactionRequestStatusResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminUpdateTransactionRequestStatusMutation({
+      client: apiClient,
+    }),
+
+    mutationFn: (variables, context) => {
+      return adminUpdateTransactionRequestStatusMutation({
+        client: apiClient,
+      }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+          },
+        },
+        context,
+      );
+    },
+
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) => {
+          const firstKeyItem = query.queryKey?.[0];
+
+          if (!firstKeyItem || typeof firstKeyItem !== "object") {
+            return false;
+          }
+          return (
+            (firstKeyItem as { _id?: string })._id ===
+            "adminGetTransactionRequests"
+          );
+        },
+        type: "all",
+      });
+
+      options?.onSuccess?.(data);
+    },
+
     onError: options?.onError,
   });
 }

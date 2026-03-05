@@ -17,6 +17,7 @@ interface SimpleSelectProps {
   className?: string;
   badge?: boolean;
   disableSelected?: boolean;
+  disabled?: boolean;
 }
 
 /**
@@ -34,6 +35,7 @@ const SelectMenu = ({
   className = "",
   badge,
   disableSelected = false,
+  disabled = false,
 }: SimpleSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<"bottom" | "top">("bottom");
@@ -106,7 +108,11 @@ const SelectMenu = ({
     setIsOpen(false);
   };
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  const toggleDropdown = () => {
+    if (!disabled) {
+      setIsOpen(!isOpen);
+    }
+  };
 
   const selectedOption = options.find((opt) => opt.value === selectedValue);
 
@@ -118,7 +124,7 @@ const SelectMenu = ({
         className={`flex space-x-2 items-center justify-between px-3 py-2 border border-gray-300 dark:border-gray-800 rounded-md
          ${
            badge ? `${selectedOption?.bg ?? ""}` : "bg-white dark:bg-gray-800"
-         } cursor-pointer hover:border-gray-400 min-w-[120px]`}
+         } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:border-gray-400"} min-w-[120px]`}
       >
         <span
           className={` ${
@@ -149,7 +155,7 @@ const SelectMenu = ({
         )}
       </div>
 
-      {isOpen && (
+      {isOpen && !disabled && (
         <ul
           className={`absolute z-10 w-full ${
             position === "bottom"

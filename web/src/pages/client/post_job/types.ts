@@ -156,6 +156,9 @@ export interface PostAJobFieldsProps {
     images: { name: string; url: string; file: File }[];
   }[];
   toolEntriesCount?: number;
+  workLocationLat?: number | null;
+  workLocationLng?: number | null;
+  workLocationName?: string | null;
 }
 
 export interface PostOption {

@@ -26,5 +26,5 @@ export interface FaqItem {
 export interface FaqAddFormData {
   question: string;
   answer: string;
-  sortOrder?: number;
+  sortOrder: number;
 }
