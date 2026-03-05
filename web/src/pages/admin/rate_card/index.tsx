@@ -191,7 +191,7 @@ const ManageRateCards: React.FC = () => {
     {
       key: "experienceLevel",
       label: "Experience Level",
-      renderCell: (row: RateCardProps) => (
+      renderCell: (_row: RateCardProps) => (
         <div className="flex flex-col gap-1">
           <div className="text-sm font-medium">L1 - Junior (1-3 yrs)</div>
           <div className="text-sm font-medium">L2 - Mid (3-5 yrs)</div>
