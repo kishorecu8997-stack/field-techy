@@ -1,22 +1,22 @@
 import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import ClientOTPPage from "@/pages/client/auth/components/ClientOTPPage";
+import EngineerOTPPage from "@/pages/engineer/auth/components/EngineerOTPPage";
+import {
+  useCheckUserExistenceMutation,
+  useForgotPassword,
+} from "@/shared/apiServices/commonOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { MdOutlineMailOutline } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { absoluteUrls } from "@/config/urls";
-import {
-  useForgotPassword,
-  useCheckUserExistenceMutation,
-} from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
-import EngineerOTPPage from "@/pages/engineer/auth/components/EngineerOTPPage";
-import ClientOTPPage from "@/pages/client/auth/components/ClientOTPPage";
-import type { AppForgotPasswordError } from "@/api";
+import { useForm } from "react-hook-form";
+import { MdOutlineMailOutline } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 export type ForgetPasswordFormData = {
   email: string;
@@ -49,8 +49,10 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
       success("OTP sent to your email address");
       setIsOpen(true);
     },
-    onError: (err: AppForgotPasswordError) => {
-      toastError(err?.error || "Failed to send OTP");
+    onError: (err: unknown) => {
+      toastError(
+        GlobalApiErrorHandler.handle(err, "Failed to send OTP").message,
+      );
     },
   });
 

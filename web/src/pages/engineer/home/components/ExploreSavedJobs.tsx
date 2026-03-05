@@ -42,7 +42,7 @@ const ExploreSavedJobs = () => {
     jobTypeEnum: "",
   });
 
-  const { data } = useGetEngineerSavedJobs({
+  const { data, refetch } = useGetEngineerSavedJobs({
     limit: 10,
     page: currentPage,
     jobType: (filters.jobTypeEnum as JobType) || null,
@@ -56,6 +56,7 @@ const ExploreSavedJobs = () => {
 
   useEffect(() => {
     scrollToTop();
+    refetch();
   }, [filters, currentPage]);
 
   const savedJobs: JobItem[] = useMemo(() => {
@@ -80,7 +81,7 @@ const ExploreSavedJobs = () => {
         salary: job.totalPrice ?? null,
         currencySymbol: job.currencySymbol ?? "$",
         budgetType: job.rateCardId ? String(job.rateCardId) : null,
-
+        isSaved: job.isSaved,
         status: job.status || "",
 
         skills:
@@ -188,6 +189,7 @@ const ExploreSavedJobs = () => {
                   job={job}
                   showBookmark={true}
                   navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
+                  onBookmarkChange={refetch}
                 />
               ))
             ) : (

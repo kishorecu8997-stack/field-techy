@@ -48,4 +48,6 @@ export interface NotificationPanelProps {
   onMarkAsRead?: (id: string | number) => void;
   onMarkAllAsRead?: () => void;
   viewAllLink?: string;
+  /** Number of unread notifications hidden because the visible list was capped at MAX. */
+  unreadOverflow?: number;
 }

@@ -47,7 +47,7 @@ const JobDetails = () => {
   const job = data?.job;
   const client = data?.client;
   const engineers = (data?.engineers ?? []).filter(
-    (engineer) => engineer.assignmentStatus === "started"
+    (engineer) => engineer.assignmentStatus === "started",
   );
 
   const infoData = [
@@ -55,13 +55,18 @@ const JobDetails = () => {
     { label: "Job Description", value: job?.jobDescription ?? "-" },
     { label: "Job Type", value: job?.jobType ?? "-" },
     { label: "Service Category", value: job?.categoryName ?? "-" },
-    { label: "Job Price", value: formatAmount(job?.totalPrice, (job as { currencySymbol?: string })?.currencySymbol) },
+    {
+      label: "Job Price",
+      value: formatAmount(
+        job?.totalPrice,
+        (job as { currencySymbol?: string })?.currencySymbol,
+      ),
+    },
     { label: "Country", value: job?.countryName ?? "-" },
     { label: "State", value: job?.stateName ?? "-" },
     { label: "City", value: job?.cityName ?? "-" },
     { label: "No of Engineers", value: engineers.length || "-" },
   ];
-
 
   if (!shouldFetch) {
     return (

@@ -232,10 +232,20 @@ export function useCreateRateAndReviewAssignment(options?: {
   });
 }
 
-export function useGetUserRatingAndReviews(enabled: boolean = true) {
+export function useGetUserRatingAndReviews(
+  enabled: boolean = true,
+  assignmentId?: number,
+) {
   return useQuery({
     ...getUserRatingAndReviewsOptions({ client: apiClient }),
     enabled,
+    refetchOnMount: true,
+    select: assignmentId
+      ? (data) =>
+          Array.isArray(data)
+            ? data.filter((r) => r.jobAssignmentId === assignmentId)
+            : data
+      : undefined,
   });
 }
 
