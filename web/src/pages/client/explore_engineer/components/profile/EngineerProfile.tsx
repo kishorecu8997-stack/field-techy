@@ -14,8 +14,6 @@ import { apiClient } from "@/shared/apiServices/apiClient";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
-// will read portfolio link from API response
-
 /**
  * EngineerProfile fetches a public engineer profile by id and renders details.
  */

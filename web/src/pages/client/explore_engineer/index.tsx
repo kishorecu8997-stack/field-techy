@@ -3,6 +3,7 @@ import EngineerListPage from "./components/EngineerListPage";
 import Filters from "@/shared/components/Filters";
 import { SORT_OPTIONS } from "@/pages/client/search_result/types";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export type FiltersType = {
   location: number | null;
@@ -18,10 +19,16 @@ export type FiltersType = {
  * and a set of filters (`Filters`) in a sidebar.
  */
 const ExploreEngineer = () => {
-  // Filter state
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Get category from URL params and convert to number
+  const categoryFromUrl = searchParams.get("category");
+  const initialCategory = categoryFromUrl ? parseInt(categoryFromUrl, 10) : null;
+  
+  // Filter state - initialize with category from URL
   const [filters, setFilters] = useState<FiltersType>({
     location: null,
-    category: null,
+    category: initialCategory,
     rating: null,
     experience: 0,
     skills: new Set(),
@@ -29,8 +36,23 @@ const ExploreEngineer = () => {
 
   const [totalEngineerCount, setTotalEngineerCount] = useState<number>(0);
 
+  // Update URL when category filter changes
   const handleFilterChange = (newFilters: Partial<FiltersType>) => {
-    setFilters((prev) => ({ ...prev, ...newFilters }));
+    setFilters((prev) => {
+      const updatedFilters = { ...prev, ...newFilters };
+      
+      // Update URL params when category changes
+      if (newFilters.category !== undefined) {
+        if (newFilters.category === null) {
+          searchParams.delete("category");
+        } else {
+          searchParams.set("category", String(newFilters.category));
+        }
+        setSearchParams(searchParams, { replace: true });
+      }
+      
+      return updatedFilters;
+    });
   };
 
   const handleClearAllFilters = () => {
@@ -41,6 +63,9 @@ const ExploreEngineer = () => {
       experience: 0,
       skills: new Set(),
     });
+    // Clear category from URL
+    searchParams.delete("category");
+    setSearchParams(searchParams, { replace: true });
   };
 
   return (
