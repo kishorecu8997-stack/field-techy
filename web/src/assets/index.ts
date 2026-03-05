@@ -12,7 +12,7 @@ import people from "./people.svg";
 import ftLogoWhite from "./ft_logo_white.svg";
 import placeholderImage from "./placeholder_img.svg";
 import adminCard from "./admin-card-icon.svg";
-import user from "./user-image/user.png";
+import user from "./user-image/placeholdr_user.svg";
 import circle_tick from "./circle_tick_icon.svg";
 import ft_landing from "./ft-landing/ft_landing_banner.png";
 import job_assignment from "./ft-landing/job_assignment.png";

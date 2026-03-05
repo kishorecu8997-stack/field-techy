@@ -16,23 +16,24 @@ export function useCountUp(target: number, duration: number = 1000) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (target === 0) return;
-    const steps = 30;
-    const increment = target / steps;
-    const interval = duration / steps;
+    let startTime: number | null = null;
+    let animationFrame: number;
 
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+
+      const currentCount = Math.floor(progress * target);
+      setCount(currentCount);
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(step);
       }
-    }, interval);
+    };
 
-    return () => clearInterval(timer);
+    animationFrame = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(animationFrame);
   }, [target, duration]);
 
   return count;

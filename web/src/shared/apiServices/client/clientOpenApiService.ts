@@ -19,6 +19,7 @@ import {
   type ClientCalculateJobPriceData,
   type ClientGetAssignmentDetailsData,
   type ClientGetCompanyInfoResponse,
+  type ClientGetJobsData,
   type ClientGetRateCardData,
   type ClientGetRateCardResponse,
   type ClientInviteEngineerResponse,
@@ -246,10 +247,14 @@ export function useClientPostJob(options?: {
   });
 }
 
-export function useClientGetJobs(enabled: boolean = true) {
+export function useClientGetJobs(
+  jobStatus?: NonNullable<ClientGetJobsData["query"]>["jobStatus"],
+  enabled: boolean = true,
+) {
   return useQuery({
     ...clientGetJobsOptions({
       client: apiClient,
+      query: jobStatus ? { jobStatus } : undefined,
     }),
     enabled: enabled,
     staleTime: 0,
