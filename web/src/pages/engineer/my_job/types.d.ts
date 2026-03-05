@@ -121,6 +121,7 @@ export interface JobHeaderCardProps {
   >;
   OfferJobStatus?: AssignmentStatus | OfferedJobStatusType | undefined;
   hideBreakDetails?: boolean;
+  hideChats?: boolean;
   jobLocation?: string;
   numberOfVacancy?: number;
   numberOfApplicants?: number;
@@ -132,6 +133,7 @@ export interface JobHeaderCardProps {
   onOpenFinalStatement?: () => void;
   isFinalStatementSubmitted?: boolean;
   isFinalStatementApproved?: boolean;
+  isFinalStatementRejected?: boolean;
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
   allCardsApproved?: boolean;

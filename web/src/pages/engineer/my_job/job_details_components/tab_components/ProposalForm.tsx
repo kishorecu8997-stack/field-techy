@@ -74,8 +74,8 @@ const ProposalForm = ({
                 rules={{
                   required: JOB_TAB_COPY.proposalDescriptionRequired,
                   maxLength: {
-                    value: 50,
-                    message: "Proposal description cannot exceed 50 characters",
+                    value: 200,
+                    message: "Proposal description cannot exceed 200 characters",
                   },
                 }}
               />

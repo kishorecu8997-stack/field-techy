@@ -36,6 +36,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   setActiveTab,
   OfferJobStatus,
   hideBreakDetails = false,
+  hideChats = false,
   jobLocation,
   numberOfVacancy,
   numberOfApplicants,
@@ -47,6 +48,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onOpenFinalStatement,
   isFinalStatementSubmitted,
   isFinalStatementApproved,
+  isFinalStatementRejected,
   onOpenGiveClientFeedback,
   onOpenViewClientFeedback,
   allCardsApproved,
@@ -176,8 +178,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               </div>
             </div>
 
-            {/* Break Details button - visible unless hideBreakDetails is true */}
-            {onToggleChat && jobId && (
+            {/* Chats button - visible unless hideChats is true */}
+            {onToggleChat && jobId && !hideChats && (
               <Button
                 variant="chats"
                 size="chip"
@@ -277,6 +279,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             onOpenFinalStatement={onOpenFinalStatement}
             isFinalStatementSubmitted={isFinalStatementSubmitted}
             isFinalStatementApproved={isFinalStatementApproved}
+            isFinalStatementRejected={isFinalStatementRejected}
             onOpenGiveClientFeedback={onOpenGiveClientFeedback}
             onOpenViewClientFeedback={onOpenViewClientFeedback}
             assignmentId={assignmentId}

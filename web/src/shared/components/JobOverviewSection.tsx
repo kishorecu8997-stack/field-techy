@@ -26,6 +26,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
   weeklyPayNote,
   additionalDetails = [],
   attachments = [],
+  userType = 'client',
 }) => {
   const attachmentItems: Attachment[] = attachments.map((item) =>
     typeof item === "string" ? { name: item, url: "" } : item,
@@ -180,12 +181,26 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
         </div>
       )}
 
-      {/* Earnings Per Engineer Section */}
-      {(weeklyPay || toolAllowance || totalPayment) && (
+      {userType === 'engineer' && (weeklyPay || toolAllowance || totalPayment) && (
         <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             Earnings Per Engineer
           </h3>
+          {totalPayment && (
+            <p className="text-sm font-bold text-gray-900 dark:text-white mb-4">
+              {(() => {
+                const numericValue = parseFloat(totalPayment.replace(/[^0-9.-]+/g, ''));
+                if (!isNaN(numericValue)) {
+                  const vacancies = numberOfVacancies || 1;
+                  const perEngineer = (numericValue / vacancies).toFixed(2);
+                  const currencyMatch = totalPayment.match(/^([^0-9.]+)/);
+                  const currencySymbol = currencyMatch ? currencyMatch[1] : '₹';
+                  return `${currencySymbol}${perEngineer}`;
+                }
+                return '';
+              })()}
+            </p>
+          )}
 
           <div className="space-y-4">
             {weeklyPay && (
@@ -227,6 +242,18 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
               </p>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Total Cost Section - Only show for clients */}
+      {userType === 'client' && totalPayment && (
+        <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Total Cost
+          </h3>
+          <p className="text-sm font-bold text-gray-900 dark:text-white">
+            {totalPayment}
+          </p>
         </div>
       )}
 

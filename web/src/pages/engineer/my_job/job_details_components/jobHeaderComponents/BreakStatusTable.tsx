@@ -5,7 +5,7 @@ import {
 } from "@/shared/components/commonUI/custom_table";
 import { icons } from "@/config/icons";
 import { HiEye } from "react-icons/hi";
-import { Button } from "@/shared/components/commonUI/Buttons";
+// import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 
 // API types for break requests from GetJobLogsResponse
@@ -37,16 +37,16 @@ type DisplayBreak = {
   approverComment?: string | null;
 };
 
-const formatDateShort = (dateStr: string): string => {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  if (isNaN(date.getTime())) return "";
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-};
+// const formatDateShort = (dateStr: string): string => {
+//   if (!dateStr) return "";
+//   const date = new Date(dateStr);
+//   if (isNaN(date.getTime())) return "";
+//   return date.toLocaleDateString("en-US", {
+//     month: "short",
+//     day: "numeric",
+//     year: "numeric",
+//   });
+// };
 
 // Calculate duration between two dates
 const calculateDuration = (startAt: string, endAt: string, breakType: string): string => {

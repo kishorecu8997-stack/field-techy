@@ -358,6 +358,15 @@ const JobDetailsPage = () => {
     return signOff.status === "approved";
   }, [jobLogs]);
 
+  // Check if final statement has been rejected by client
+  const isFinalStatementRejected = useMemo(() => {
+    if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
+      return false;
+    }
+    const signOff = jobLogs.signOffSheets[0];
+    return signOff.status === "rejected";
+  }, [jobLogs]);
+
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
   };
@@ -495,10 +504,15 @@ const JobDetailsPage = () => {
   const exactTimeline = formatDateRange();
 
   // Keep duration for other uses, but use exactTimeline for display
-  const duration = getDurationString({
-    startDateStr: job?.startDate || "",
-    endDateStr: job?.endDate || "",
-  });
+  // Only call getDurationString if both dates are available
+  const getJobDuration = (): string => {
+    if (!job?.startDate) return "N/A";
+    if (!job?.endDate) return "N/A";
+    return getDurationString({
+      startDateStr: job.startDate,
+      endDateStr: job.endDate,
+    });
+  };
 
   const engagementTypeMapping: Record<string, string> = {
     "On site": "ON_SITE",
@@ -525,6 +539,10 @@ const JobDetailsPage = () => {
 
   // Get assignment status from API data (maps to OfferedJobStatusType via EngineersActions)
   const assignmentStatus = job?.assignmentStatus as AssignmentStatus;
+
+  // Determine if proposal is approved (hide buttons when not approved)
+  // Show buttons only after the job has started
+  const isProposalApproved = assignmentStatus === "started";
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -554,7 +572,7 @@ const JobDetailsPage = () => {
               <JobHeaderCard
                 title={jobTitle}
                 client={clientName}
-                duration={exactTimeline || (duration as string)}
+                duration={exactTimeline || getJobDuration()}
                 type={engagementType}
                 status={jobStatus}
                 setIsWorkSubmitted={setIsWorkSubmitted}
@@ -571,10 +589,13 @@ const JobDetailsPage = () => {
                 onOpenFinalStatement={handleOpenFinalStatement}
                 isFinalStatementSubmitted={isFinalStatementSubmitted}
                 isFinalStatementApproved={isFinalStatementApproved}
+                isFinalStatementRejected={isFinalStatementRejected}
                 assignmentId={assignmentId}
                 progressUpdates={allProgressUpdates}
                 jobId={params.jobId}
                 onToggleChat={handleToggleChat}
+                hideChats={!isProposalApproved}
+                hideBreakDetails={!isProposalApproved}
                 jobStartDate={job?.startDate || undefined}
                 jobEndDate={job?.endDate || undefined}
               />

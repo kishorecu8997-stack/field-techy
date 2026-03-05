@@ -279,7 +279,8 @@ const TimelineSection: React.FC<{
       return (
         status === "approved" ||
         status === "pending" ||
-        status === "revision_requested"
+        status === "revision_requested" ||
+        status === "rejected"
       );
     }
     return true;

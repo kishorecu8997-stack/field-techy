@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { formatDate } from "@/utils/formatDate";
 import { useClientActionOnBreak, useGetJobLogs } from "@/shared/apiServices/client/clientOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 interface BreakRequestDetailsProps {
   onClose: () => void;

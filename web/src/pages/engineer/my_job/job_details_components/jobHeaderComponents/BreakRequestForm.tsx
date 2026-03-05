@@ -290,7 +290,7 @@ const BreakRequestForm = ({
         <h2 className="text-lg font-semibold text-gray-900">
           {BREAK_REQUEST_LABELS.title}
         </h2>
-        <Button
+        {/* <Button
           type="button"
           variant="headerClose"
           className="absolute right-0 top-0"
@@ -298,7 +298,7 @@ const BreakRequestForm = ({
           aria-label="Close"
         >
           <icons.close className="w-5 h-5" />
-        </Button>
+        </Button> */}
       </div>
 
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
@@ -375,10 +375,9 @@ const BreakRequestForm = ({
             name="reason"
             required
             placeholder={BREAK_REQUEST_LABELS.reasonPlaceholder}
-            maxLength={200}
             rules={{
-              maxLength: {
-                value: 0,
+               maxLength: {
+                value: 200,
                 message: "Reason must be 200 characters or less",
               },
             }}

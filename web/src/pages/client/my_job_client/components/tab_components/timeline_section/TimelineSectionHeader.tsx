@@ -287,6 +287,7 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                                       fill="none"
                                       viewBox="0 0 24 24"
                                       stroke="currentColor"
+                                      aria-hidden="true"
                                     >
                                       <path
                                         strokeLinecap="round"
@@ -296,10 +297,12 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                                       />
                                     </svg>
                                     {
-                                      revision.clientAttachmentUrl
-                                        .split("/")
-                                        .pop()
-                                        ?.split("?")[0]
+                                      decodeURIComponent(
+                                        revision.clientAttachmentUrl
+                                          .split("/")
+                                          .pop()
+                                          ?.split("?")[0] || ""
+                                      )
                                     }
                                   </a>
                                 </div>

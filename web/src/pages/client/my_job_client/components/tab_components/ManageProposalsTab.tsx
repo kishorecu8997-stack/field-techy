@@ -40,7 +40,7 @@ interface Assignment {
   jobId: number;
   engineerId: number;
   assignmentStatus: string;
-  jobStatus?: string;
+  jobStatus?: string | null;
   assignmentType?: string;
   proposalDetail?: string | null;
   proposalAttachmentUrl?: string | null;
