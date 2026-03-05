@@ -1,6 +1,9 @@
 import { toast } from "react-toastify";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { useConnectStripeAccount, useGetOnboardingLink } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useConnectStripeAccount,
+  useGetOnboardingLink,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
@@ -13,24 +16,28 @@ const AddBankDetails = () => {
   const [hasError, setHasError] = useState(false);
 
   // Stripe connect account mutation (use async mutate for sequential flow)
-  const { mutateAsync: connectStripeAccountAsync, isPending: isConnectingStripe } =
-    useConnectStripeAccount({
-      onError: (error) => {
-        console.error("Failed to connect Stripe account:", error);
-        toast.error("Failed to add bank details. Please try again.");
-      },
-    });
+  const {
+    mutateAsync: connectStripeAccountAsync,
+    isPending: isConnectingStripe,
+  } = useConnectStripeAccount({
+    onError: (error) => {
+      console.error("Failed to connect Stripe account:", error);
+      toast.error("Failed to add bank details. Please try again.");
+    },
+  });
 
   // Onboarding-link mutation (async)
-  const { mutateAsync: getOnboardingLinkAsync, isPending: isGettingOnboarding } =
-    useGetOnboardingLink({
-      onError: (error) => {
-        console.error("Failed to fetch onboarding link:", error);
-      },
-      onSuccess: (linkData) => {
-        console.log("Onboarding link received:", linkData);
-      },
-    });
+  const {
+    mutateAsync: getOnboardingLinkAsync,
+    isPending: isGettingOnboarding,
+  } = useGetOnboardingLink({
+    onError: (error) => {
+      console.error("Failed to fetch onboarding link:", error);
+    },
+    onSuccess: (linkData) => {
+      console.log("Onboarding link received:", linkData);
+    },
+  });
 
   const startStripeOnboarding = useCallback(async () => {
     setHasError(false);

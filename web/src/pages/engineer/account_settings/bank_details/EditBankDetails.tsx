@@ -15,23 +15,27 @@ const EditBankDetails = () => {
   const hasStartedRef = useRef(false);
   const [hasError, setHasError] = useState(false);
 
-  const { mutateAsync: connectStripeAccountAsync, isPending: isConnectingStripe } =
-    useConnectStripeAccount({
-      onError: (error) => {
-        console.error("Failed to connect Stripe account:", error);
-        toast.error("Failed to edit bank details. Please try again.");
-      },
-    });
+  const {
+    mutateAsync: connectStripeAccountAsync,
+    isPending: isConnectingStripe,
+  } = useConnectStripeAccount({
+    onError: (error) => {
+      console.error("Failed to connect Stripe account:", error);
+      toast.error("Failed to edit bank details. Please try again.");
+    },
+  });
 
-  const { mutateAsync: getOnboardingLinkAsync, isPending: isGettingOnboarding } =
-    useGetOnboardingLink({
-      onError: (error) => {
-        console.error("Failed to fetch onboarding link:", error);
-      },
-      onSuccess: (linkData) => {
-        console.log("Onboarding link received:", linkData);
-      },
-    });
+  const {
+    mutateAsync: getOnboardingLinkAsync,
+    isPending: isGettingOnboarding,
+  } = useGetOnboardingLink({
+    onError: (error) => {
+      console.error("Failed to fetch onboarding link:", error);
+    },
+    onSuccess: (linkData) => {
+      console.log("Onboarding link received:", linkData);
+    },
+  });
 
   const startStripeOnboarding = useCallback(async () => {
     setHasError(false);

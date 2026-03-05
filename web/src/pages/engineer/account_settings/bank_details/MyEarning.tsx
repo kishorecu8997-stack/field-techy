@@ -11,7 +11,10 @@ import {
   useEngineerGetPersonalInfo,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { formatCurrency } from "@/shared/libs/utils";
-import { useConnectStripeAccount, useGetOnboardingLink } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useConnectStripeAccount,
+  useGetOnboardingLink,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { toast } from "react-toastify";
 import { useCallback, useState } from "react";
 /**
@@ -29,7 +32,7 @@ const MyEarning = () => {
   const bankDetailsButtonLabel = hasCompletedOnboarding
     ? "Edit Bank Details"
     : "Add Bank Details";
-  
+
   const formattedBalance = showBalance
     ? (() => {
         const amount = Number(balance?.balance);
@@ -38,27 +41,23 @@ const MyEarning = () => {
       })()
     : "******";
 
-
-
   const [hasError, setHasError] = useState(false);
 
-  const { mutateAsync: connectStripeAccountAsync} =
-    useConnectStripeAccount({
-      onError: (error) => {
-        console.error("Failed to connect Stripe account:", error);
-        toast.error("Failed to edit bank details. Please try again.");
-      },
-    });
+  const { mutateAsync: connectStripeAccountAsync } = useConnectStripeAccount({
+    onError: (error) => {
+      console.error("Failed to connect Stripe account:", error);
+      toast.error("Failed to edit bank details. Please try again.");
+    },
+  });
 
-  const { mutateAsync: getOnboardingLinkAsync } =
-    useGetOnboardingLink({
-      onError: (error) => {
-        console.error("Failed to fetch onboarding link:", error);
-      },
-      onSuccess: (linkData) => {
-        console.log("Onboarding link received:", linkData);
-      },
-    });
+  const { mutateAsync: getOnboardingLinkAsync } = useGetOnboardingLink({
+    onError: (error) => {
+      console.error("Failed to fetch onboarding link:", error);
+    },
+    onSuccess: (linkData) => {
+      console.log("Onboarding link received:", linkData);
+    },
+  });
 
   const startStripeOnboarding = useCallback(async () => {
     setHasError(false);
@@ -105,9 +104,9 @@ const MyEarning = () => {
     }
   }, [connectStripeAccountAsync, getOnboardingLinkAsync, setActiveKey]);
 
-
-  if(hasError) {
-    return  hasError && (
+  if (hasError) {
+    return (
+      hasError && (
         <Button
           onClick={() => void startStripeOnboarding()}
           className="bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
@@ -115,9 +114,10 @@ const MyEarning = () => {
           Retry
         </Button>
       )
-    };
+    );
+  }
 
-    const BankSection = () => {
+  const BankSection = () => {
     return (
       <div>
         <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -164,7 +164,6 @@ const MyEarning = () => {
           >
             {bankDetailsButtonLabel}
           </Button>
-          
         </div>
       </div>
     );

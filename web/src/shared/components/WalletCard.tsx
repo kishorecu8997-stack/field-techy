@@ -89,7 +89,7 @@ export const WalletCard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-       <AddFundModelButton buttonWidth="w-full"/>
+        <AddFundModelButton buttonWidth="w-full" />
         <Button
           variant="primary"
           onClick={() => {

@@ -6,12 +6,7 @@ import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import React, { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import {
-  FaChevronRight,
-  FaCog,
-  FaSignOutAlt,
-  FaUser,  
-} from "react-icons/fa";
+import { FaChevronRight, FaCog, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";

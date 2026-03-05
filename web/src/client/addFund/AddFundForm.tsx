@@ -100,11 +100,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
-      <h2 className="text-xl font-semibold">Add Funds</h2>
-
-
-      
-
+      <h2 className="text-xl font-semibold">Add Funds</h2>  
       <div>
         <label className="block text-sm font-medium">Amount</label>
         <input
@@ -116,7 +112,6 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
           className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition dark:focus:ring-teal-400/50"
         />
       </div>
-
       <div>
         <label className="block text-sm font-medium">Card number</label>
         <div className="mt-1 p-2 border rounded-md bg-white dark:bg-gray-800">

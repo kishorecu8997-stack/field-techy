@@ -32,7 +32,7 @@ import {
   type GetClientTransactionsError,
   type GetClientTransactionsResponse,
   type GetUserReportsData,
-  type GetUserReportsResponses
+  type GetUserReportsResponses,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -61,7 +61,7 @@ import {
   getClientBalanceQueryKey,
   getJobLogsOptions,
   getUserReportsOptions,
-  submitReportMutation
+  submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

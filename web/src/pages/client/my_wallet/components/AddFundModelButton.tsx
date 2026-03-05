@@ -3,7 +3,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { useThemeHook } from "@/shared/hooks/useThemeHook";
 import { useState } from "react";
 
-const AddFundModelButton = ({buttonWidth}:{buttonWidth?: string}) => {
+const AddFundModelButton = ({ buttonWidth }: { buttonWidth?: string }) => {
   const isDarkMode = useThemeHook();
   const [isOpen, setIsOpen] = useState(false);
   return (
