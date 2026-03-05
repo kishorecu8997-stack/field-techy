@@ -47,17 +47,19 @@ const AdminFilter: React.FC<AdminFilterProps> = ({
   const dateInputRef = useRef<HTMLInputElement>(null);
 
   const toggleFilter = (level: string) => {
+    setSelectedDate("");
     setFilters((prev) =>
       prev.includes(level) ? prev.filter((i) => i !== level) : [...prev, level],
     );
   };
 
   const handleDateClick = () => {
+    setFilters([]);
     dateInputRef.current?.showPicker();
   };
 
   const handleReset = () => {
-    setSortBy("Date & Time");
+    setSortBy("");
     setSelectedDate("");
     setFilters([]);
   };
@@ -151,40 +153,42 @@ const AdminFilter: React.FC<AdminFilterProps> = ({
             <hr className="border-gray-200 dark:border-gray-800" />
 
             {/* 2. Filter Section */}
-            <div>
-              <div className="flex items-center gap-3 text-gray-400 dark:text-gray-500 mb-6">
-                <ListFilter size={22} />
-                <span className="text-lg font-bold">Filter</span>
-              </div>
+            {sortBy === "Priority" && (
+              <div>
+                <div className="flex items-center gap-3 text-gray-400 dark:text-gray-500 mb-6">
+                  <ListFilter size={22} />
+                  <span className="text-lg font-bold">Filter</span>
+                </div>
 
-              <div className="space-y-4">
-                {["Level 1", "Level 2"].map((level) => (
-                  <div
-                    key={level}
-                    className="flex items-center gap-4 cursor-pointer"
-                    onClick={() => toggleFilter(level)}
-                  >
+                <div className="space-y-4">
+                  {["high", "low", "medium", "critical"].map((level) => (
                     <div
-                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                        filters.includes(level)
-                          ? "bg-gray-200 dark:bg-gray-700 border-gray-400 dark:border-gray-500"
-                          : "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
-                      }`}
+                      key={level}
+                      className="flex items-center gap-4 cursor-pointer"
+                      onClick={() => toggleFilter(level)}
                     >
-                      {filters.includes(level) && (
-                        <Check
-                          size={16}
-                          className="text-gray-600 dark:text-gray-300 stroke-[4px]"
-                        />
-                      )}
+                      <div
+                        className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                          filters.includes(level)
+                            ? "bg-gray-200 dark:bg-gray-700 border-gray-400 dark:border-gray-500"
+                            : "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+                        }`}
+                      >
+                        {filters.includes(level) && (
+                          <Check
+                            size={16}
+                            className="text-gray-600 dark:text-gray-300 stroke-[4px]"
+                          />
+                        )}
+                      </div>
+                      <span className="text-md font-semibold text-gray-700 dark:text-gray-300">
+                        {level}
+                      </span>
                     </div>
-                    <span className="text-md font-semibold text-gray-700 dark:text-gray-300">
-                      {level}
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* 3. Footer Buttons */}

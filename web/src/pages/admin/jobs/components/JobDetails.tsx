@@ -1,3 +1,4 @@
+import { formatAmount } from "@/utils/currency";
 import ContactDetailsCard from "@/shared/components/manage_job_components/ContactDetailsCard";
 import JobStatusCard from "@/shared/components/manage_job_components/JobStatusCard";
 import ManageJobDetails from "./ManageJobDetails";
@@ -45,23 +46,27 @@ const JobDetails = () => {
 
   const job = data?.job;
   const client = data?.client;
-  const engineers = data?.engineers ?? [];
+  const engineers = (data?.engineers ?? []).filter(
+    (engineer) => engineer.assignmentStatus === "started",
+  );
 
   const infoData = [
     { label: "Job Title", value: job?.jobTitle ?? "-" },
     { label: "Job Description", value: job?.jobDescription ?? "-" },
     { label: "Job Type", value: job?.jobType ?? "-" },
     { label: "Service Category", value: job?.categoryName ?? "-" },
-    { label: "Job Price", value: job?.totalPrice ?? "-" },
+    {
+      label: "Job Price",
+      value: formatAmount(
+        job?.totalPrice,
+        (job as { currencySymbol?: string })?.currencySymbol,
+      ),
+    },
     { label: "Country", value: job?.countryName ?? "-" },
     { label: "State", value: job?.stateName ?? "-" },
     { label: "City", value: job?.cityName ?? "-" },
     { label: "No of Engineers", value: engineers.length || "-" },
   ];
-
-  const handleStatusChange = () => {
-    alert("Job marked as completed!");
-  };
 
   if (!shouldFetch) {
     return (
@@ -91,7 +96,6 @@ const JobDetails = () => {
             jobId={job?.jobCode || String(job?.id ?? "N/A")}
             date={new Date(job?.createdAt || Date.now())}
             status={mapJobStatus(job?.status ?? undefined)}
-            onStatusChange={handleStatusChange}
           />
           <ContactDetailsCard
             client={{

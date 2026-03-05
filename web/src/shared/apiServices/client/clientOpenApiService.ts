@@ -31,7 +31,9 @@ import {
   type GetClientBalanceResponse,
   type GetClientTransactionsData,
   type GetClientTransactionsError,
+  type GetUserReportsData,
   type GetClientTransactionsResponse,
+  type GetUserReportsResponses,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -55,6 +57,8 @@ import {
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
   getJobLogsOptions,
+  submitReportMutation,
+  getUserReportsOptions,
   clientGetJobsQueryKey,
 } from "@/api/@tanstack/react-query.gen";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
@@ -438,6 +442,35 @@ export function useClientCalculateJobPrice(
 ) {
   return useQuery({
     ...clientCalculateJobPriceOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useSaveReportClient(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...submitReportMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type ReportIssue = GetUserReportsResponses[200]["data"][number];
+export function useGetReportClient(
+  query: GetUserReportsData["query"],
+  enabled: boolean = false,
+) {
+  return useQuery({
+    ...getUserReportsOptions({
       client: apiClient,
       query,
     }),

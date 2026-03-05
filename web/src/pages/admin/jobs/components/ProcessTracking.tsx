@@ -26,13 +26,38 @@ const ProcessTracking = () => {
     { enabled: shouldFetch },
   );
 
+  const formatTime = (timestamp: string) => {
+    if (!timestamp) return "-";
+    const date = new Date(timestamp);
+    return date.toLocaleString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
   const columns = [
-    { key: "id", label: "Sr.No." },
-    { key: "timestamp", label: "Date and Time" },
+    {
+      key: "srNo",
+      label: "Sr.No.",
+      renderCell: (_row: any, index: number) => index + 1,
+    },
+    {
+      key: "timestamp",
+      label: "Date and Time",
+      renderCell: (row: any) => formatTime(row.timestamp),
+    },
     { key: "logType", label: "Work Log Type" },
     { key: "status", label: "Status" },
     { key: "details", label: "Details" },
-    { key: "updatedAt", label: "Updated At" },
+    {
+      key: "updatedAt",
+      label: "Updated At",
+      renderCell: (row: any) => formatTime(row.updatedAt),
+    },
   ];
 
   if (!shouldFetch) {

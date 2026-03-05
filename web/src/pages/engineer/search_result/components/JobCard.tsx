@@ -14,57 +14,8 @@ import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { JobItem } from "../../home/types";
-import { getExperienceLevel } from "../types";
+import { getExperienceLevel, JOB_STATUSES } from "../types";
 import { Badge } from "./BadgeVariant";
-
-// ── Status maps (module-scope so they're never recreated) ──────────────────
-// Keys must be all-lowercase (matches `status.toLowerCase()` at runtime).
-const STATUS_VARIANT_MAP = {
-  new: "green",
-  offer: "blue",
-  applied: "yellow",
-  inprogress: "teal",
-  "in progress": "teal",
-  completed: "gray",
-  notified: "purple",
-  unallocated: "yellow",
-  partiallyassigned: "amber",
-  assigned: "teal",
-  selected: "blue",
-  hold: "red",
-  posted: "blue",
-  draft: "gray",
-  canceled: "rose",
-  cancelled: "rose",
-  escalationinprogress: "pink",
-  workinprogress: "teal",
-  closed: "gray",
-  flagged: "amber",
-} as const;
-
-/** Human-readable labels — keys must stay in sync with STATUS_VARIANT_MAP. */
-const STATUS_LABEL_MAP: Record<string, string> = {
-  new: "New",
-  offer: "Offer",
-  applied: "Applied",
-  inprogress: "In Progress",
-  "in progress": "In Progress",
-  completed: "Completed",
-  notified: "Notified",
-  unallocated: "Unallocated",
-  partiallyassigned: "Partially Assigned",
-  assigned: "Assigned",
-  selected: "Selected",
-  hold: "On Hold",
-  posted: "Posted",
-  draft: "Draft",
-  canceled: "Canceled",
-  cancelled: "Cancelled",
-  escalationinprogress: "Escalation In Progress",
-  workinprogress: "Work In Progress",
-  closed: "Closed",
-  flagged: "Flagged",
-};
 
 dayjs.extend(relativeTime);
 
@@ -211,6 +162,7 @@ const JobCard: React.FC<{
   userTools?: (string | number)[];
 }> = ({
   job,
+  onBookmarkChange,
   showBookmark = true,
   navigateToJob = "#",
   userSkills = [],
@@ -234,8 +186,10 @@ const JobCard: React.FC<{
       limit: 10,
       page: 1,
     });
+
     const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
       onSuccess: (response) => {
+        onBookmarkChange?.();
         refetch();
         toast.success(
           response?.status === "saved"
@@ -282,6 +236,7 @@ const JobCard: React.FC<{
         status: job.status,
         skills: job.skills,
         tools: job.tools,
+        isSaved: job.isSaved,
         description: job.jobDescription || getString("description") || "",
         postedTime: job.postedTime ? dayjs(job.postedTime).fromNow() : "Just now",
         experience: job.experience,
@@ -309,12 +264,32 @@ const JobCard: React.FC<{
         },
       });
     };
+    const STATUS_VARIANT_MAP = {
+      new: "green",
+      offer: "blue",
+      applied: "yellow",
+      inprogress: "teal",
+      completed: "gray",
+      notified: "purple",
+      unallocated: "yellow",
+      partiallyAssigned: "amber",
+      assigned: "teal",
+      selected: "blue",
+      hold: "red",
+      draft: "gray",
+      canceled: "rose",
+      escalationInProgress: "pink",
+      workInProgress: "teal",
+      closed: "gray",
+    } as const;
 
     const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
     const statusKey = (
       statusKeyRaw in STATUS_VARIANT_MAP ? statusKeyRaw : undefined
     ) as keyof typeof STATUS_VARIANT_MAP | undefined;
-    const statusLabel = STATUS_LABEL_MAP[statusKeyRaw] ?? job.status;
+    const statusLabel = statusKey
+      ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
+      : job.status;
 
     const salaryDisplay = jobData.salary ?? "-";
     const hasSalary = Boolean(jobData.salary);
@@ -456,10 +431,10 @@ const JobCard: React.FC<{
                   onClick={handleBookmarkClick}
                   className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
                   aria-label={
-                    job?.status === "unsaved" ? "Remove bookmark" : "Add bookmark"
+                    jobData.isSaved ? "Remove bookmark" : "Add bookmark"
                   }
                 >
-                  {job?.status === "unsaved" ? (
+                  {jobData?.isSaved ? (
                     <icons.bookmarkFilled className="w-4 h-4 text-green-600 dark:text-green-400" />
                   ) : (
                     <icons.bookmark className="w-4 h-4" />
