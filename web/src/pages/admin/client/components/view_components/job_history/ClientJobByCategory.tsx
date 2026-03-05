@@ -221,11 +221,12 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
               xAxisDataKey="name"
               yAxisDomain={[0, "auto"]}
               aspectRatio={2}
+              cursor={{ fill: "#9ca3af", fillOpacity: 0.05 }}
               series={[
                 {
                   dataKey: "jobs",
                   name: "Jobs",
-                  fill: "#0f766e",
+                  fill: "#6b7280",
                 },
               ]}
               customTooltip={CustomTooltip}
