@@ -1,3 +1,4 @@
+import type { SubmitReportResponses } from "@/api";
 import { useSaveReportClient } from "@/shared/apiServices/client/clientOpenApiService";
 import { useSaveReportEngineer } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -11,6 +12,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
+type SaveReportResponse = SubmitReportResponses["201"];
 type PriorityLevel = "high" | "low" | "medium" | "critical";
 
 type PostReportProps = {
@@ -80,12 +82,27 @@ const ReportPage = ({
             };
 
             const mutationOptions = {
-              onSuccess: () => {
-                toast.success("Report submitted successfully!");
-                refetchCount();
-                reset();
-                onClose();
-                close(true);
+              onSuccess: async (response: SaveReportResponse) => {
+                try {
+                  // 1. Handle S3 Upload if URL exists
+                  if (selectedFile && response?.uploadUrl) {
+                    const uploadResult = await fetch(response.uploadUrl, {
+                      method: "PUT",
+                      body: selectedFile,
+                      headers: { "Content-Type": selectedFile.type },
+                    });
+
+                    if (!uploadResult.ok) throw new Error("S3 Upload Failed");
+                  }
+                  toast.success("Report submitted successfully!");
+                  refetchCount();
+                  reset();
+                  onClose();
+                  close(true);
+                } catch (error) {
+                  console.error("Upload Error:", error);
+                  toast.error("Report saved, but file upload failed.");
+                }
               },
               onError: () => {
                 toast.error("Failed to submit report.");
