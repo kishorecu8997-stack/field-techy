@@ -56,6 +56,22 @@ const InprogressJob: React.FC = () => {
     { enabled: hasValidUserId },
   );
 
+  /**
+   * Separate fetch for chart data so chart is not tied to table pagination.
+   * Uses a fixed page and a high limit to approximate full history.
+   */
+  const { data: engineerHistoryForChart } = useAdminGetEngineerHistory(
+    hasValidUserId ? userId : 0,
+    {
+      page: 1,
+      limit: 1000,
+      type: "jobs",
+      statusGroup: "inProgress",
+    },
+    { enabled: hasValidUserId },
+  );
+  const chartJobs = (engineerHistoryForChart?.data ?? []) as EngineerAssignment[];
+
   const jobs: EngineerAssignment[] = useMemo(
     () => (engineerHistory?.data ?? []) as EngineerAssignment[],
     [engineerHistory?.data],
@@ -64,11 +80,11 @@ const InprogressJob: React.FC = () => {
   const jobChartData = useMemo(
     () =>
       buildJobsChartData(
-        jobs,
+        chartJobs,
         coerceJobsChartGrouping(selectedDay),
         (a) => a.appliedAt ?? a.invitedAt ?? null,
       ),
-    [jobs, selectedDay],
+    [chartJobs, selectedDay],
   );
 
   const filteredJobs = useMemo(() => {

@@ -53,17 +53,33 @@ const AppliedJob: React.FC = () => {
     { enabled: hasValidUserId },
   );
 
-  /** Raw API data */
+  /** Raw API data for table (paginated) */
   const assignments = (engineerHistory?.data ?? []) as EngineerAssignment[];
 
+  /**
+   * Separate fetch for chart data so chart is not tied to table pagination.
+   * Uses a fixed page and a high limit to approximate full history.
+   */
+  const { data: engineerHistoryForChart } = useAdminGetEngineerHistory(
+    hasValidUserId ? userId : 0,
+    {
+      page: 1,
+      limit: 1000,
+      type: "jobs",
+      statusGroup: "applied",
+    },
+    { enabled: hasValidUserId },
+  );
+  const chartAssignments = (engineerHistoryForChart?.data ?? []) as EngineerAssignment[];
+  
   const jobChartData = useMemo(
     () =>
       buildJobsChartData(
-        assignments,
+        chartAssignments,
         coerceJobsChartGrouping(selectedDay),
         (a) => a.appliedAt ?? a.invitedAt ?? null,
       ),
-    [assignments, selectedDay],
+    [chartAssignments, selectedDay],
   );
 
   /**

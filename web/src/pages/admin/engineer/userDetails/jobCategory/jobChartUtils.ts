@@ -63,20 +63,20 @@ function getDefaultDateString(assignment: EngineerAssignment) {
 function formatLabel(date: Date, grouping: JobsChartGrouping) {
   switch (grouping) {
     case "daily":
-      return new Intl.DateTimeFormat(undefined, {
-        month: "short",
-        day: "numeric",
-      }).format(date);
     case "weekly":
       return new Intl.DateTimeFormat(undefined, {
+        timeZone: "UTC",
         month: "short",
         day: "numeric",
       }).format(date);
+
     case "monthly":
       return new Intl.DateTimeFormat(undefined, {
+        timeZone: "UTC",
         month: "short",
         year: "numeric",
       }).format(date);
+
     case "yearly":
       return String(date.getUTCFullYear());
   }
