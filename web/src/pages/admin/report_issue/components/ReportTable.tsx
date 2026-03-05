@@ -89,6 +89,7 @@ export default function ReportTable({
     .filter((e) => {
       const query = search.toLowerCase();
       const matchesSearch =
+        String(e.jobId).includes(query) ||
         e.issueCategory.toLowerCase().includes(query) ||
         e.detailedDescription.toLowerCase().includes(query) ||
         e.priorityLevel.toLowerCase().includes(query) ||
