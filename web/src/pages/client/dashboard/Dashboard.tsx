@@ -50,8 +50,8 @@ const Dashboard: React.FC = () => {
     { ...jobOverviewData[2], count: summary?.cancelledJobsCount ?? 0 },
   ];
 
-  // Fetch real jobs from API
-  const { data: clientJobs } = useClientGetJobs(true);
+  // Fetch all jobs from API
+  const { data: clientJobs } = useClientGetJobs();
   const { data: serviceCategories } = useServiceCategories();
 
   // Get in-progress job IDs for fetching assignments
