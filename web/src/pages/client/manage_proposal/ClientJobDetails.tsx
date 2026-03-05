@@ -51,9 +51,7 @@ const ClientJobDetails = () => {
   } = useClientGetAssignmentDetails({ jobId }, !!jobId);
 
   // Fallback to useClientGetJobs if needed for job details
-  const {
-    data: jobsData,
-  } = useClientGetJobs();
+  const { data: jobsData } = useClientGetJobs();
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   // Extend the generated type to include clientDetails if it comes from the API but is missing in types
   type ExtendedJob = (typeof jobsArray)[0] & {

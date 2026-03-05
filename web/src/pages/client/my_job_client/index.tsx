@@ -21,11 +21,11 @@ import { useServiceCategories } from "@/shared/hooks/useLookup";
 // Map the UI filter label → API jobStatus query param
 type ApiJobStatus = NonNullable<Parameters<typeof useClientGetJobs>[0]>;
 const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
-  [jobFilters[0]]: undefined,              // "All Jobs"    → no filter
+  [jobFilters[0]]: undefined, // "All Jobs"    → no filter
   [jobFilters[1]]: API_JOB_STATUSES.inProgress, // "In-Progress" → "In Progress"
-  [jobFilters[2]]: API_JOB_STATUSES.closed,     // "Completed"   → "Closed"
-  [jobFilters[3]]: API_JOB_STATUSES.posted,     // "Posted"      → "Posted"
-  [jobFilters[4]]: API_JOB_STATUSES.hold,       // "Hold"        → "Hold"
+  [jobFilters[2]]: API_JOB_STATUSES.closed, // "Completed"   → "Closed"
+  [jobFilters[3]]: API_JOB_STATUSES.posted, // "Posted"      → "Posted"
+  [jobFilters[4]]: API_JOB_STATUSES.hold, // "Hold"        → "Hold"
 };
 
 /**
@@ -85,7 +85,7 @@ const MyJobsClient: React.FC = () => {
           ? WORKING_TYPES.remote
           : apiJob.jobType === "Hybrid"
             ? WORKING_TYPES.hybrid
-            : (apiJob.jobType as Job["type"]) ?? WORKING_TYPES.remote,
+            : ((apiJob.jobType as Job["type"]) ?? WORKING_TYPES.remote),
     startDate: apiJob.startDate
       ? new Date(apiJob.startDate).toDateString()
       : "N/A",

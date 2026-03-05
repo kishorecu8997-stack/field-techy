@@ -108,18 +108,18 @@ const FinalStatementForm = ({
 
               const workAttachment = taskFile
                 ? {
-                  filename: taskFile.name,
-                  size: taskFile.size,
-                  mimeType: taskFile.type,
-                }
+                    filename: taskFile.name,
+                    size: taskFile.size,
+                    mimeType: taskFile.type,
+                  }
                 : undefined;
 
               const signatureAttachment = signatureFile
                 ? {
-                  filename: signatureFile.name,
-                  size: signatureFile.size,
-                  mimeType: signatureFile.type,
-                }
+                    filename: signatureFile.name,
+                    size: signatureFile.size,
+                    mimeType: signatureFile.type,
+                  }
                 : undefined;
 
               const response = await submitSignOff({
@@ -179,7 +179,6 @@ const FinalStatementForm = ({
       className="flex flex-col h-[80vh] "
     >
       <div className="flex flex-col h-full w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
-
         {/* Header */}
         <div className="flex items-start justify-between px-6  bg-white dark:bg-gray-800 shrink-0">
           <div>
@@ -250,7 +249,6 @@ const FinalStatementForm = ({
             </Button>
           </div>
         </div>
-
       </div>
     </FormContainer>
   );

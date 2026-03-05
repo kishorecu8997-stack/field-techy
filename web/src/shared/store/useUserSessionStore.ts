@@ -9,7 +9,7 @@ export interface UserSession {
   accessToken: string;
   initiatedAt: number; // Timestamp when session was created (in milliseconds)
   regionId?: number; // Extracted from JWT payload at login time
-  metadata: Record<string, string>;
+  metadata?: Record<string, string>;
 }
 
 interface UserSessionStore {
@@ -34,13 +34,16 @@ export const useUserSessionStore = create<UserSessionStore>()(
         localStorage.clear();
 
         if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.getRegistrations().then((registrations) => {
-            for (const registration of registrations) {
-              registration.unregister();
-            }
-          }).catch((err) => {
-            console.error("Service worker unregistration failed", err);
-          });
+          navigator.serviceWorker
+            .getRegistrations()
+            .then((registrations) => {
+              for (const registration of registrations) {
+                registration.unregister();
+              }
+            })
+            .catch((err) => {
+              console.error("Service worker unregistration failed", err);
+            });
         }
       },
     }),

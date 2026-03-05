@@ -128,41 +128,41 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             {(numberOfVacancy !== undefined ||
               numberOfApplicants !== undefined ||
               numberOfApprovedProposals !== undefined) && (
-                <p className="text-sm mt-1">
-                  {numberOfVacancy !== undefined && (
-                    <span>
-                      {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
+              <p className="text-sm mt-1">
+                {numberOfVacancy !== undefined && (
+                  <span>
+                    {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
+                  </span>
+                )}
+                {numberOfVacancy !== undefined &&
+                  numberOfApprovedProposals !== undefined && (
+                    <span className="ml-2 text-green-400">
+                      (Filled: {numberOfApprovedProposals}/{numberOfVacancy})
                     </span>
                   )}
-                  {numberOfVacancy !== undefined &&
-                    numberOfApprovedProposals !== undefined && (
-                      <span className="ml-2 text-green-400">
-                        (Filled: {numberOfApprovedProposals}/{numberOfVacancy})
-                      </span>
-                    )}
-                  {numberOfVacancy !== undefined &&
-                    (numberOfApplicants !== undefined ||
-                      numberOfApprovedProposals !== undefined) && (
-                      <span>{JOB_HEADER_COPY.separator}</span>
-                    )}
-                  {numberOfApplicants !== undefined && (
-                    <span>
-                      {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
-                    </span>
+                {numberOfVacancy !== undefined &&
+                  (numberOfApplicants !== undefined ||
+                    numberOfApprovedProposals !== undefined) && (
+                    <span>{JOB_HEADER_COPY.separator}</span>
                   )}
-                </p>
-              )}
+                {numberOfApplicants !== undefined && (
+                  <span>
+                    {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
+                  </span>
+                )}
+              </p>
+            )}
           </div>
           <div className="flex gap-2 items-center">
             <div
               onClick={() =>
                 isClient
                   ? navigate(
-                    `${absoluteUrls.client.home.my_jobs}/${params.jobId}/report_updates`,
-                  )
+                      `${absoluteUrls.client.home.my_jobs}/${params.jobId}/report_updates`,
+                    )
                   : navigate(
-                    `${absoluteUrls.engineer.home.my_jobs}/${params.jobId}/report_updates`,
-                  )
+                      `${absoluteUrls.engineer.home.my_jobs}/${params.jobId}/report_updates`,
+                    )
               }
               className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
             >

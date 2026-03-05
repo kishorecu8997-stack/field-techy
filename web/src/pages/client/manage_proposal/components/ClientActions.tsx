@@ -18,7 +18,6 @@ const ClientActions = ({
   activeTab?: string;
   allCardsApproved?: boolean;
 }) => {
-
   const navigate = useNavigate();
   const { id, jobId } = useParams();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();

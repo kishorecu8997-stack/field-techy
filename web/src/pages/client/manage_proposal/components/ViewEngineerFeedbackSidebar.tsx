@@ -73,10 +73,11 @@ const ViewEngineerFeedbackSidebar = () => {
                         <FaStar
                           key={i}
                           aria-hidden="true"
-                          className={`w-4 h-4 ${i < safeRating
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300 dark:text-gray-500"
-                            }`}
+                          className={`w-4 h-4 ${
+                            i < safeRating
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300 dark:text-gray-500"
+                          }`}
                         />
                       ));
                     })()}

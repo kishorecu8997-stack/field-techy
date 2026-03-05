@@ -446,11 +446,11 @@ const TimelineSection: React.FC<{
     return progressLogs.map((progressLog) => {
       const attachments = progressLog.attachmentUrl
         ? [
-          {
-            name: "View Document",
-            url: progressLog.attachmentUrl,
-          },
-        ]
+            {
+              name: "View Document",
+              url: progressLog.attachmentUrl,
+            },
+          ]
         : undefined;
 
       let title = progressLog.title || "Progress Update";
@@ -543,13 +543,13 @@ const TimelineSection: React.FC<{
       ),
       attachments: latestRevision?.attachmentUrl
         ? [
-          {
-            name:
-              latestRevision.attachmentUrl.split("/").pop()?.split("?")[0] ||
-              "Attachment",
-            url: latestRevision.attachmentUrl,
-          },
-        ]
+            {
+              name:
+                latestRevision.attachmentUrl.split("/").pop()?.split("?")[0] ||
+                "Attachment",
+              url: latestRevision.attachmentUrl,
+            },
+          ]
         : undefined,
       accentColor: TIMELINE_CARD_COLORS.orange,
       buttons: ["reject", "requestRevision", "approve"] as CardButtonType[],
@@ -1069,10 +1069,10 @@ const TimelineSection: React.FC<{
           clientComment: notes,
           clientAttachment: attachment?.[0]
             ? {
-              filename: attachment[0].name,
-              size: attachment[0].size,
-              mimeType: attachment[0].type,
-            }
+                filename: attachment[0].name,
+                size: attachment[0].size,
+                mimeType: attachment[0].type,
+              }
             : undefined,
         },
       });
@@ -1091,10 +1091,10 @@ const TimelineSection: React.FC<{
             clientComment: notes,
             clientAttachment: attachment?.[0]
               ? {
-                filename: attachment[0].name,
-                size: attachment[0].size,
-                mimeType: attachment[0].type,
-              }
+                  filename: attachment[0].name,
+                  size: attachment[0].size,
+                  mimeType: attachment[0].type,
+                }
               : undefined,
           },
         });
@@ -1532,10 +1532,10 @@ const TimelineSection: React.FC<{
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="space-y-6">
         {engineerData ||
-          hasPendingProposal ||
-          apiTimelineItems.length > 0 ||
-          (hasFinalStatementData &&
-            finalStatementStatus === TIMELINE_STATUS.pending) ? (
+        hasPendingProposal ||
+        apiTimelineItems.length > 0 ||
+        (hasFinalStatementData &&
+          finalStatementStatus === TIMELINE_STATUS.pending) ? (
           <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/50">
               {engineerData ? (
@@ -1599,8 +1599,9 @@ const TimelineSection: React.FC<{
                   }
                 >
                   <HiChevronDown
-                    className={`h-5 w-5 text-gray-500 transition-transform ${isSectionCollapsed ? "" : "rotate-180"
-                      }`}
+                    className={`h-5 w-5 text-gray-500 transition-transform ${
+                      isSectionCollapsed ? "" : "rotate-180"
+                    }`}
                   />
                 </button>
               </div>
@@ -1651,44 +1652,44 @@ const TimelineSection: React.FC<{
                         revisionUpdateCardData={
                           revisionData
                             ? {
-                              id: `revision-${revisionData.logId}`,
-                              type: "revisionRequestUpdate" as const,
-                              title: "Revision Request",
-                              description:
-                                revisionData.revisions?.[0]?.clientComment ||
-                                "",
-                              timestamp:
-                                revisionData.revisions?.[0]?.createdAt || "",
-                              accentColor: TIMELINE_CARD_COLORS.orange,
-                              buttons: [
-                                "reject",
-                                "requestRevision",
-                                "approve",
-                              ] as CardButtonType[],
-                              revisions: (revisionData.revisions?.map(
-                                (r) => ({
-                                  revisionId: r.revisionId,
-                                  logId: revisionData.logId,
-                                  content: r.content,
-                                  attachmentUrl: r.attachmentUrl,
-                                  clientComment: r.clientComment,
-                                  clientAttachmentUrl: r.clientAttachmentUrl,
-                                  createdAt: r.createdAt,
-                                  updatedAt: r.updatedAt,
-                                  status: r.status,
-                                }),
-                              ) || []) as TimelineRevisionData[],
-                            }
+                                id: `revision-${revisionData.logId}`,
+                                type: "revisionRequestUpdate" as const,
+                                title: "Revision Request",
+                                description:
+                                  revisionData.revisions?.[0]?.clientComment ||
+                                  "",
+                                timestamp:
+                                  revisionData.revisions?.[0]?.createdAt || "",
+                                accentColor: TIMELINE_CARD_COLORS.orange,
+                                buttons: [
+                                  "reject",
+                                  "requestRevision",
+                                  "approve",
+                                ] as CardButtonType[],
+                                revisions: (revisionData.revisions?.map(
+                                  (r) => ({
+                                    revisionId: r.revisionId,
+                                    logId: revisionData.logId,
+                                    content: r.content,
+                                    attachmentUrl: r.attachmentUrl,
+                                    clientComment: r.clientComment,
+                                    clientAttachmentUrl: r.clientAttachmentUrl,
+                                    createdAt: r.createdAt,
+                                    updatedAt: r.updatedAt,
+                                    status: r.status,
+                                  }),
+                                ) || []) as TimelineRevisionData[],
+                              }
                             : {
-                              id: "no-revision",
-                              type: "revisionRequestUpdate" as const,
-                              title: "",
-                              description: "",
-                              timestamp: "",
-                              accentColor: TIMELINE_CARD_COLORS.orange,
-                              buttons: [],
-                              revisions: [],
-                            }
+                                id: "no-revision",
+                                type: "revisionRequestUpdate" as const,
+                                title: "",
+                                description: "",
+                                timestamp: "",
+                                accentColor: TIMELINE_CARD_COLORS.orange,
+                                buttons: [],
+                                revisions: [],
+                              }
                         }
                         revisionRequestUpdateCardData={
                           apiRevisionRequestData || {
@@ -1784,7 +1785,7 @@ const TimelineSection: React.FC<{
                  * 2. hasPendingStartRequest is true but no JOB_STARTED log yet (engineer requested to start)
                  */}
                 {(showJobStartedCard && apiJobStartedData) ||
-                  (hasPendingStartRequest && !apiJobStartedData) ? (
+                (hasPendingStartRequest && !apiJobStartedData) ? (
                   <JobStartedCard
                     isCollapsed={isJobCollapsed}
                     cardData={

@@ -243,7 +243,8 @@ const MapEventHandler: React.FC<{
         onMapClick(e.latlng, addressName);
       } catch (error) {
         // Ignore errors caused by deliberately aborting the request.
-        if (error instanceof DOMException && error.name === "AbortError") return;
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
         onMapClick(e.latlng, "Selected Location");
       }
     },
@@ -279,7 +280,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   initialPosition = [20.5937, 78.9629],
   initialZoom = 5,
   markers = [],
-  onMapClick = () => { },
+  onMapClick = () => {},
   viewOnly = false,
   onPositionChange,
   onSearchSelect,
