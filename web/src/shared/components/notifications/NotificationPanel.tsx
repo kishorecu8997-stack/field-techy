@@ -15,18 +15,12 @@ const NotificationPanel = ({
   onMarkAsRead,
   onMarkAllAsRead,
   viewAllLink,
+  unreadOverflow = 0,
 }: NotificationPanelProps) => {
   const { setISOpenSidebar } = useDrawerStore();
   const { isPaused, pendingId } = useNotificationGate();
 
-  const groupedLast20 = Object.fromEntries(
-    Object.entries(grouped).map(([group, notifs]) => [
-      group,
-      notifs.slice(0, 20),
-    ]),
-  );
-
-  const allGroupsEmpty = Object.values(groupedLast20).every(
+  const allGroupsEmpty = Object.values(grouped).every(
     (notifs) => notifs.length === 0,
   );
 
@@ -67,7 +61,7 @@ const NotificationPanel = ({
             </p>
           </div>
         ) : (
-          Object.entries(groupedLast20).map(([dateGroup, notifs]) => {
+          Object.entries(grouped).map(([dateGroup, notifs]) => {
             if (notifs.length === 0) return null;
             return (
               <div key={dateGroup}>
@@ -100,6 +94,25 @@ const NotificationPanel = ({
           })
         )}
       </div>
+
+      {/* Overflow banner — shown when the unread list was capped at MAX */}
+      {unreadOverflow > 0 && (
+        <div className="sticky bottom-0 mt-3 flex items-center justify-between gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 dark:border-amber-700/50 dark:bg-amber-900/20">
+          <span className="text-xs font-medium text-amber-800 dark:text-amber-300">
+            {unreadOverflow} more unread notification
+            {unreadOverflow > 1 ? "s" : ""} not shown
+          </span>
+          {viewAllLink && (
+            <NavLink
+              to={viewAllLink}
+              onClick={() => setISOpenSidebar(false)}
+              className="shrink-0 text-xs font-semibold text-amber-700 underline hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-200"
+            >
+              View all unread
+            </NavLink>
+          )}
+        </div>
+      )}
     </div>
   );
 };

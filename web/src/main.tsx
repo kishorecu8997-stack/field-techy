@@ -8,6 +8,7 @@ import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
 import "./shared/apiServices/utils/errorHandlerConfig";
 import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
 import { FCMHandler } from "./shared/components/FCMHandler.tsx";
+import GlobalErrorBoundary from "./shared/components/commonUI/GlobalErrorBoundary.tsx";
 
 /**
  * Creates a configured QueryClient instance with default query behaviors.
@@ -46,13 +47,15 @@ if (!root) {
 
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        <GlobalPopup />
-        <ToastHandler />
-        <FCMHandler />
-        <App />
-      </ToastProvider>
-    </QueryClientProvider>
+    <GlobalErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          <GlobalPopup />
+          <ToastHandler />
+          <FCMHandler />
+          <App />
+        </ToastProvider>
+      </QueryClientProvider>
+    </GlobalErrorBoundary>
   </React.StrictMode>,
 );

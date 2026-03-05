@@ -162,6 +162,7 @@ const JobCard: React.FC<{
   userTools?: (string | number)[];
 }> = ({
   job,
+  onBookmarkChange,
   showBookmark = true,
   navigateToJob = "#",
   userSkills = [],
@@ -185,8 +186,10 @@ const JobCard: React.FC<{
     limit: 10,
     page: 1,
   });
+
   const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
     onSuccess: (response) => {
+      onBookmarkChange?.();
       refetch();
       toast.success(
         response?.status === "saved"
@@ -233,6 +236,7 @@ const JobCard: React.FC<{
       status: job.status,
       skills: job.skills,
       tools: job.tools,
+      isSaved: job.isSaved,
       description: job.jobDescription || getString("description") || "",
       postedTime: job.postedTime ? dayjs(job.postedTime).fromNow() : "Just now",
       experience: job.experience,
@@ -260,7 +264,6 @@ const JobCard: React.FC<{
       },
     });
   };
-
   const STATUS_VARIANT_MAP = {
     new: "green",
     offer: "blue",
@@ -428,10 +431,10 @@ const JobCard: React.FC<{
                 onClick={handleBookmarkClick}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
                 aria-label={
-                  job?.status === "unsaved" ? "Remove bookmark" : "Add bookmark"
+                  jobData.isSaved ? "Remove bookmark" : "Add bookmark"
                 }
               >
-                {job?.status === "unsaved" ? (
+                {jobData?.isSaved ? (
                   <icons.bookmarkFilled className="w-4 h-4 text-green-600 dark:text-green-400" />
                 ) : (
                   <icons.bookmark className="w-4 h-4" />

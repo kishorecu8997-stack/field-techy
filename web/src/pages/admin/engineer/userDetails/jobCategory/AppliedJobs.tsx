@@ -77,6 +77,11 @@ const AppliedJob: React.FC = () => {
    */
   const columns: Column<EngineerAssignment>[] = [
     {
+      key: "assignmentId",
+      label: "Assignment ID",
+      renderCell: (row) => <span>{row.assignmentId}</span>,
+    },
+    {
       key: "jobId",
       label: "Job ID",
       renderCell: (row) => <span>{row.jobId}</span>,
