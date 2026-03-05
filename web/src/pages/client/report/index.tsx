@@ -23,9 +23,11 @@ type PostReportProps = {
 const ReportPage = ({
   open,
   onClose,
+  refetchCount,
 }: {
   open: boolean;
   onClose: () => void;
+  refetchCount: () => void;
 }) => {
   const { showPopup } = usePopupStore();
   const { jobId } = useParams();
@@ -77,23 +79,23 @@ const ReportPage = ({
               attachment: attachmentData,
             };
 
-            try {
-              if (isClient) {
-                saveClientReport({
-                  body: reportPayload,
-                });
-              } else {
-                saveEngineerReport({
-                  body: reportPayload,
-                });
-              }
+            const mutationOptions = {
+              onSuccess: () => {
+                toast.success("Report submitted successfully!");
+                refetchCount();
+                reset();
+                onClose();
+                close(true);
+              },
+              onError: () => {
+                toast.error("Failed to submit report.");
+              },
+            };
 
-              toast.success("Report submitted successfully!");
-              reset();
-              close(true);
-              onClose();
-            } catch {
-              toast.error("Failed to submit report.");
+            if (isClient) {
+              saveClientReport({ body: reportPayload }, mutationOptions);
+            } else {
+              saveEngineerReport({ body: reportPayload }, mutationOptions);
             }
           },
         },
