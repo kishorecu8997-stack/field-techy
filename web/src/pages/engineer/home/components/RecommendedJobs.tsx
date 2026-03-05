@@ -8,6 +8,7 @@ interface RecommendedJobsProps {
   userSkills?: string[];
   userTools?: string[];
   title?: string;
+  bookMarkRefetch?: () => void;
   onViewAll?: () => void;
   totalJobs?: number;
 }
@@ -19,6 +20,7 @@ interface RecommendedJobsProps {
  * @returns {JSX.Element} The rendered RecommendedJobs component.
  */
 const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
+  bookMarkRefetch,
   jobs = [],
   userSkills = [],
   userTools = [],
@@ -47,6 +49,7 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
           userSkills={userSkills}
           userTools={userTools}
           navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
+          onBookmarkChange={bookMarkRefetch}
         />
       ))}
     </div>

@@ -45,6 +45,8 @@ const BasicDetails = () => {
     updateProfileData,
     markStepCompleted,
     setToken,
+    resetEmail,
+    resetPhone,
   } = useEngineerRegistrationStore();
 
   const [termsOpen, setTermsOpen] = useState(false);
@@ -87,13 +89,16 @@ const BasicDetails = () => {
         localStorage.setItem("auth_token", result.token);
         setToken(result.token);
       }
-
       toast.success("Profile details submitted successfully!");
       markStepCompleted(3);
+      resetEmail();
+      resetPhone();
       navigate(absoluteUrls.engineer.auth.verification);
     },
     onError: (error: unknown) => {
       toast.error(GlobalApiErrorHandler.handle(error).message);
+      resetEmail();
+      resetPhone();
     },
   });
   // Check for existing registration session
@@ -142,6 +147,7 @@ const BasicDetails = () => {
     });
     return () => subscription.unsubscribe();
   }, [formCtx, updateProfileData]);
+
   const handleSubmit = async (data: EngineerBasicDetails) => {
     type ValWithValue = { value: unknown };
     // Extract IDs from select objects - OpenAPI expects number IDs
