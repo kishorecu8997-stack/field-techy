@@ -127,6 +127,7 @@ export interface GeneralChartProps<
   showTooltip?: boolean;
   showGrid?: boolean;
   aspectRatio?: number;
+  cursor?: boolean | Record<string, unknown>;
   yAxisDomain?: [
     number | "auto" | "dataMin" | "dataMax",
     number | "auto" | "dataMin" | "dataMax",
