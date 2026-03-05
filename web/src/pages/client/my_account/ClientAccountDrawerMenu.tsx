@@ -10,8 +10,7 @@ import {
   FaChevronRight,
   FaCog,
   FaSignOutAlt,
-  FaUser,
-  FaWallet,
+  FaUser,  
 } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { RiLockPasswordFill } from "react-icons/ri";
@@ -141,7 +140,6 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
     // },
     { label: "Company Information", icon: FaUser, key: "company" },
     { label: "Documents", icon: IoDocumentText, key: "document" },
-    { label: "Payment Methods", icon: FaWallet, key: "payment" },
     { label: "Change Password", icon: RiLockPasswordFill, key: "changePwd" },
     { label: "Account Details", icon: FaCog, key: "clientAcc" },
     {
