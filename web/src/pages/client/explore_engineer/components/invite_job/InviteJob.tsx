@@ -9,13 +9,14 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import { useClientGetJobs, useClientInviteEngineer, useClientRegionId } from "@/shared/apiServices/client/clientOpenApiService";
+import { useClientGetJobs, useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
 import { absoluteUrls } from "@/config/urls";
 import type { SelectedJobCardId } from "../../types";
 import type { ClientGetJobsResponse } from "@/api";
 import InvitationSentModal from "./InvitationSentModal";
 import JobInviteCard from "./JobInviteCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { useCountries, useStates, useCities } from "@/shared/hooks/useLookup";
 
 /**
  * A component that allows a client to select one or more jobs to invite an engineer to.
@@ -30,11 +31,15 @@ const InviteJob: React.FC = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const regionId = useClientRegionId();
 
   useEffect(() => {
     scrollToTop();
   }, [currentPage]);
+
+  // lookup for location names (single fetch for whole page)
+const { data: countries } = useCountries();
+const { data: states } = useStates();
+const { data: cities } = useCities();
 
   const { data: jobsData } = useClientGetJobs(true) as { data?: ClientGetJobsResponse };
 
@@ -65,13 +70,10 @@ const InviteJob: React.FC = () => {
       return;
     }
     try {
-       const invitations = data.id.map((jobId) => {
-        // explicitly include regionId so backend always receives it
-        const body: any = { jobId, engineerId: engineer };
-        if (regionId !== undefined) body.regionId = regionId;
-        return inviteEngineer({ body });
-      });
-      const results = await Promise.all(invitations);
+       const invitations = data.id.map((jobId) =>
+        inviteEngineer({ body: { jobId, engineerId: engineer } })
+      );
+      await Promise.all(invitations);
       toast.success(`Invitation sent successfully`);
       setIsOpen(true);
     } catch (error: unknown) {
@@ -88,7 +90,7 @@ const InviteJob: React.FC = () => {
   };
 
   const itemsPerPage = 6;
-  // only show jobs that are posted and not already invited to this engineer
+  // only show jobs that are currently in posted status
   const postedJobs = (jobsData || [])
     .filter((j) => j.status?.toLowerCase() === "posted")
   const totalPages = Math.ceil(postedJobs.length / itemsPerPage);
@@ -109,6 +111,21 @@ const InviteJob: React.FC = () => {
     serviceType: `Service Category ${apiJob.serviceCategoryId}`,
     price: apiJob.totalPrice ? `$${apiJob.totalPrice}` : "",
   }));
+
+  const getLocationString = (job: any) => {
+  if (job.location) return job.location;
+
+  const countryName = countries?.find((c) => c.id === job.countryId)?.name;
+  const stateName = states?.find((s) => s.id === job.stateId)?.name;
+  const cityName = cities?.find((c) => c.id === job.cityId)?.name;
+
+  const parts: string[] = [];
+  if (cityName) parts.push(cityName);
+  if (stateName) parts.push(stateName);
+  if (countryName) parts.push(countryName);
+
+  return parts.join(", ");
+};
 
   const handleToggle = (jobId: number) => {
     const currentIds = getValues("id");
@@ -170,6 +187,7 @@ const InviteJob: React.FC = () => {
                                   : false
                               }
                               onToggle={handleToggle}
+                              locationString={getLocationString(job)}
                             />
                           ))
                         ) : (

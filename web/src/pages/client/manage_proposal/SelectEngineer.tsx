@@ -172,7 +172,7 @@ const SelectEngineer = () => {
               ) : (
                 engineers.map((engineer) => (
                   <FreelancerCard
-                    key={engineer.id}
+                    key={engineer.userId}
                     id={engineer.userId}
                     name={engineer.name}
                     rating={engineer.averageRating}

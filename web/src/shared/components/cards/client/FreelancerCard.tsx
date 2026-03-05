@@ -10,7 +10,6 @@ export interface FreelancerCardProps {
   role: string;
   imageUrl?: string;
   onInvite?: () => void;
-assignmentStatus?: string;
   selected: boolean;
   onSelect: (id: number) => void;
 }
@@ -29,7 +28,6 @@ const FreelancerCard: React.FC<FreelancerCardProps> = ({
   role,
   imageUrl,
   onInvite,
-  assignmentStatus,
   selected,
   onSelect,
 }) => {

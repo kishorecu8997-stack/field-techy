@@ -3,6 +3,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import type { EngineerCardProps } from "../types";
+import { assetsConfig } from "@/assets";
 
 /**
  * `EngineerCard` is a component that displays a summary of an engineer's profile.
@@ -22,8 +23,7 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
       onClick={() => navigate(detailsUrl)}
     >
       <img
-        // src={engineer.imageUrl}
-        src={engineer.imageUrl}
+        src={engineer.imageUrl || assetsConfig.images.users.user}
         alt={engineer.name}
         className="w-25 h-full rounded-full object-cover"
       />

@@ -22,6 +22,16 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({ filters, onTotalEng
   useEffect(() => {
     scrollToTop();
   }, [currentPage]);
+  // Reset to first page whenever filters affecting the query change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    filters.location,
+    filters.category,
+    filters.rating,
+    filters.experience,
+    filters.skills,
+  ]);
   const itemsPerPage = 8;
   const { data, isLoading } = useClientExploreEngineers(
     {
@@ -50,7 +60,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({ filters, onTotalEng
   
   // Notify parent of total engineer count
   useEffect(() => {
-    if (onTotalEngineerCountChange && data?.total) {
+    if (onTotalEngineerCountChange && data?.total !=null) {
       onTotalEngineerCountChange(data.total);
     }
   }, [data?.total, onTotalEngineerCountChange]);

@@ -63,7 +63,7 @@ const EngineerProfile: React.FC = () => {
                 Engineer profile not found or unavailable.
               </p>
               <Button
-                onClick={() => navigate(absoluteUrls.client.home.dashboard)}
+                onClick={() => navigate(absoluteUrls.client.home.client_Explore_engineers)}
                 className="px-6 py-2 bg-emerald-800 hover:bg-emerald-700 text-white rounded-lg transition-colors"
               >
                 Back to Explore Engineers
