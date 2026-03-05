@@ -173,7 +173,7 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {cardData.timestamp}
                 </span>
-                {progressStatusNode}
+                {/* {progressStatusNode} */}
               </div>
 
               {/* Show icon to view revisions after approval or rejection */}

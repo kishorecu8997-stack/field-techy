@@ -21,6 +21,9 @@ export interface JobItem {
 
   numberOfVacancy: number;
 
+  // Number of engineers already assigned to this job
+  assignedEngineerCount?: number;
+
   experience: string | null | number;
   salary: string | null;
   budgetType: string | null;

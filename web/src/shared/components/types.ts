@@ -22,6 +22,7 @@ export interface JobOverviewProps {
   weeklyPayNote?: string;
   additionalDetails?: string[];
   attachments?: Array<Attachment | string>;
+  userType?: "engineer" | "client";
 }
 
 /**
