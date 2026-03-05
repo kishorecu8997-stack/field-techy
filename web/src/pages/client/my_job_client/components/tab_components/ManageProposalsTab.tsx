@@ -19,19 +19,19 @@ interface Education {
  
 interface Engineer {
   id: number;
-  name?: string;
-  email?: string;
-  phoneNumber?: string;
+  name?: string | null;
+  email?: string | null;
+  phoneNumber?: string | null;
   profilePicture?: string | null;
   profilePictureId?: number | null;
   profilePictureUrl?: string | null;
-  city?: string;
-  state?: string;
+  city?: string | null;
+  state?: string | null;
   averageRating?: number | string | null;
   reviewCount?: number | string | null;
-  hourlyRate?: number;
+  hourlyRate?: number | null;
   skills?: string[];
-  education?: Education[];
+  education?: Education[] | string[];
   userId?: number;
 }
  
@@ -41,7 +41,7 @@ interface Assignment {
   engineerId: number;
   assignmentStatus: string;
   jobStatus?: string | null;
-  assignmentType?: string;
+  assignmentType?: "invitation" | "application" | null;
   proposalDetail?: string | null;
   proposalAttachmentUrl?: string | null;
   proposalAttachmentId?: number | null;

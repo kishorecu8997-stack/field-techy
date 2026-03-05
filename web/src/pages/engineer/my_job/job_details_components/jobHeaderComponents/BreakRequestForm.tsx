@@ -11,7 +11,7 @@ import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { icons } from "@/config/icons";
+// import { icons } from "@/config/icons";
 import {
   calculateTimeDuration,
   validateStartDate,
