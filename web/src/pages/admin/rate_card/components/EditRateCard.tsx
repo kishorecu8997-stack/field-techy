@@ -50,6 +50,7 @@ const EditRateCard = () => {
       clientName: "client1",
       projectName: "project1",
       country: "country1",
+      serviceCategory: "",
       skills: [
         {
           id: "d22b25f8-c18c-4db9-badb-cdbb64b556e7",
