@@ -98,9 +98,9 @@ const ClientJobDetails = () => {
   if (job?.startDate && job?.endDate) {
     const startDate = new Date(job.startDate);
     const endDate = new Date(job.endDate);
-    durationDisplay = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+    durationDisplay = `${startDate.toLocaleDateString("en-GB")} - ${endDate.toLocaleDateString("en-GB")}`;
   } else if (job?.startDate) {
-    durationDisplay = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
+    durationDisplay = `Starts: ${new Date(job.startDate).toLocaleDateString("en-GB")}`;
   }
 
   // Get status or default to Posted
@@ -212,7 +212,7 @@ const ClientJobDetails = () => {
         <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
             title={pageHeading}
-            isReport={false}
+            isShowSort={false}
             isShowBreadcrumb
             customLabels={{
               [params.jobId || ""]:
@@ -250,6 +250,16 @@ const ClientJobDetails = () => {
                 numberOfApprovedProposals={numberOfApprovedProposals}
                 jobId={jobIdParam!}
                 onToggleChat={handleToggleChat}
+                allAssignmentIds={
+                  assignments
+                    .map((a) => a.assignmentId)
+                    .filter(Boolean) as number[]
+                }
+                engineerNames={
+                  assignments
+                    .map((a) => a.engineer?.name)
+                    .filter(Boolean) as string[]
+                }
                 allCardsApproved={job?.status === JOB_STATUSES.closed}
                 activeTab={activeTab}
               />

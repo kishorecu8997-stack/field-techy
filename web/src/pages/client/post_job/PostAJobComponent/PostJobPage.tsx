@@ -208,7 +208,7 @@ const PostJobPage = () => {
       {
         onSuccess: (response) => {
           setRateAndCurrency(
-            `${response.rate}${response.currencySymbol}`,
+            `${response.currencySymbol}${response.rate}`,
             response.currencyId,
           );
           setAmount(String(response.rate));
@@ -289,11 +289,11 @@ const PostJobPage = () => {
       ),
       body,
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        // {
+        //   label: "Cancel",
+        //   value: null,
+        //   variant: "outline",
+        // },
         {
           label: "Edit Details",
           value: "edit",
@@ -461,6 +461,21 @@ const PostJobPage = () => {
         methods={formCtx}
         onSubmit={handleSubmit}
         onError={(errors) => {
+          // Scroll to the first error field
+          const firstErrorField = Object.keys(errors)[0];
+          if (firstErrorField) {
+            const errorElement = document.querySelector(
+              `[name="${firstErrorField}"]`,
+            );
+            if (errorElement) {
+              errorElement.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+              return;
+            }
+          }
+          // Fallback to scroll to top if no error element found
           scrollToTop();
           if (errors.toolEntriesCount) {
             toast.error("Please add a tool details");
@@ -475,7 +490,6 @@ const PostJobPage = () => {
                 ? "Post a Job - On Demand"
                 : "Post a Job"
           }
-          isReport={false}
           isShowSort={false}
           action={
             currentLocation === CurrentLocation.dispatch && (

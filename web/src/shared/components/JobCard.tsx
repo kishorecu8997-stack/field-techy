@@ -7,6 +7,22 @@ import { formatAmount } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
 
+/**
+ * Formats a date string to a readable format (DD/MM/YYYY)
+ */
+const formatDate = (dateStr: string | null | undefined): string => {
+  if (!dateStr) return "N/A";
+  try {
+    const date = new Date(dateStr);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch {
+    return "N/A";
+  }
+};
+
 interface JobCardProps {
   id: number;
   jobTitle: string;
@@ -54,13 +70,14 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     isClientPath && !!props.clientId,
   );
 
-  const getDuration =
-    startDate && endDate
-      ? getDurationString({
-          startDateStr: startDate,
-          endDateStr: endDate,
-        })
-      : "N/A";
+  const getDuration = (): string => {
+    if (!startDate) return "N/A";
+    if (!endDate) return "N/A";
+    return getDurationString({
+      startDateStr: startDate,
+      endDateStr: endDate,
+    });
+  };
 
   const companyName =
     clientDetails?.companyName ||
@@ -106,10 +123,10 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         </p>
         <p>
           <span className="font-medium">Start: </span>
-          {startDate || "N/A"}
+          {formatDate(startDate)}
         </p>
         <p>
-          <span className="font-medium">Duration:</span> {getDuration}
+          <span className="font-medium">Duration:</span> {getDuration()}
         </p>
       </div>
       <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">

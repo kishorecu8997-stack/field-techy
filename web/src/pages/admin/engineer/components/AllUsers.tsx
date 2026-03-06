@@ -58,6 +58,26 @@ export default function AllUsers() {
     );
   }, [engineerData, selectedFile]);
 
+  const filteredEngineers = useMemo(() => {
+    if (!search.trim()) return engineerData;
+
+    const term = search.toLowerCase();
+
+    return engineerData.filter((engineer) =>
+      [
+        engineer.engineerCode,
+        engineer.name,
+        engineer.email,
+        engineer.phoneNumber,
+        engineer.location,
+        engineer.cityName,
+        engineer.countryName,
+      ]
+        .filter(Boolean)
+        .some((value) => value!.toLowerCase().includes(term)),
+    );
+  }, [engineerData, search]);
+
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
   const columns: Column<ManageEngineerProps>[] = [
@@ -188,15 +208,25 @@ export default function AllUsers() {
     <div>
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
-          <SearchInput value={search} onChange={setSearch} />
+          <SearchInput
+            value={search}
+            onChange={(value) => {
+              setSearch(value);
+              setCurrentPage(1);
+            }}
+          />
         </div>
         <div className="h-full flex-1 overflow-y-auto">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={engineerData}
+            data={filteredEngineers}
             initialPageSize={pageSize}
             currentPage={currentPage}
-            totalCount={engineersResponse?.total ?? 0}
+            totalCount={
+              search
+                ? filteredEngineers.length
+                : (engineersResponse?.total ?? 0)
+            }
             loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}

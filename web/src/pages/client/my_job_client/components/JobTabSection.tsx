@@ -33,6 +33,7 @@ const mapClientJobToJobOverview = (
   skillMap: Map<number, string>,
   toolMap: Map<string, string>,
   experienceLevelMap: Map<number, string>,
+  engagementModelMap: Map<number, string>,
 ): JobOverviewProps => {
   // Helper to safely cast job properties
   const getJobValue = <T,>(key: string): T | null | undefined => {
@@ -119,14 +120,27 @@ const mapClientJobToJobOverview = (
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+    duration = `${start.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
   } else if (startDate) {
-    duration = `Starts: ${new Date(startDate).toLocaleDateString()}`;
+    duration = `Starts: ${new Date(startDate).toLocaleDateString("en-GB")}`;
   }
 
-  // Extract work details
-  const engagementModel =
-    getJobValue<string>("jobType") || getJobValue<string>("type") || undefined;
+  // Extract work details - convert engagement model ID to label using engagementModelMap
+  const engagementModelId =
+    getJobValue<number>("engagementModelId") ??
+    (getJobValue<string>("engagementModelId")
+      ? parseInt(getJobValue<string>("engagementModelId")!, 10)
+      : undefined);
+  let engagementModel: string | undefined;
+  if (engagementModelId && engagementModelMap.has(engagementModelId)) {
+    engagementModel = engagementModelMap.get(engagementModelId);
+  } else {
+    // Fallback to direct field if no mapping found
+    engagementModel =
+      getJobValue<string>("jobType") ||
+      getJobValue<string>("type") ||
+      undefined;
+  }
 
   // Extract experience level - try to convert ID to label using experienceLevelMap
   const experienceLevelId =
@@ -158,7 +172,7 @@ const mapClientJobToJobOverview = (
   const currencySymbol = getJobValue<string>("currencySymbol") || "$";
   const weeklyPayRaw = getJobValue<string | number>("weeklyPay");
   const toolAllowanceRaw = getJobValue<string | number>("toolAllowance");
-  const weeklyPayNoteFromApi = getJobValue<string>("weeklyPayNote");
+  // const weeklyPayNoteFromApi = getJobValue<string>("weeklyPayNote");
 
   // Format weekly pay - could be a number or pre-formatted string
   let weeklyPay: string | undefined;
@@ -181,9 +195,9 @@ const mapClientJobToJobOverview = (
   }
 
   // Use provided weeklyPayNote or default to the standard message
-  const weeklyPayNote =
-    weeklyPayNoteFromApi ||
-    "Weekly pay is paid every week. Tool allowance is paid once.";
+  // const weeklyPayNote =
+  //   weeklyPayNoteFromApi ||
+  //   "Weekly pay is paid every week. Tool allowance is paid once.";
 
   // Format total payment
   let totalPayment: string | undefined;
@@ -240,7 +254,7 @@ const mapClientJobToJobOverview = (
     weeklyPay,
     toolAllowance,
     totalPayment,
-    weeklyPayNote,
+    // weeklyPayNote,
     additionalDetails,
     attachments,
   };
@@ -283,10 +297,11 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     }
   }, [selectedTab, activeTab]);
 
-  // Fetch skills, tools and experience levels from the lookup API
+  // Fetch skills, tools, experience levels and engagement models from the lookup API
   const { data: skillsResponse } = useLookupData("skills");
   const { data: toolsResponse } = useLookupData("tools");
   const { data: experienceLevelsResponse } = useLookupData("experienceLevels");
+  const { data: engagementModelsResponse } = useLookupData("engagementModels");
 
   // Create skill lookup map for fast ID to label conversion from API data
   const skillMap = useMemo(() => {
@@ -315,14 +330,30 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     return map;
   }, [experienceLevelsResponse]);
 
+  // Create engagement model lookup map for fast ID to label conversion
+  const engagementModelMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (engagementModelsResponse || []).forEach((model) => {
+      map.set(model.id, model.name);
+    });
+    return map;
+  }, [engagementModelsResponse]);
+
   // Prepare job info for JobInfoSection using real API data
   // const jobInfo = mapClientJobToJobInfo(job);
   // const payInfo = mapClientJobToPayInfo(job);
 
   // Prepare job overview for JobOverviewSection using real API data
   const jobOverview = useMemo(
-    () => mapClientJobToJobOverview(job, skillMap, toolMap, experienceLevelMap),
-    [job, skillMap, toolMap, experienceLevelMap],
+    () =>
+      mapClientJobToJobOverview(
+        job,
+        skillMap,
+        toolMap,
+        experienceLevelMap,
+        engagementModelMap,
+      ),
+    [job, skillMap, toolMap, experienceLevelMap, engagementModelMap],
   );
 
   // Calculate unprocessed proposals count for badge notification
@@ -335,6 +366,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     "submit_pending_approval",
     "submitted",
     "rejected",
+    "invited",
   ];
   const unprocessedProposalsCount =
     assignmentsData?.filter(
@@ -440,7 +472,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     },
     {
       label: JOB_TAB_LABELS.jobOverview,
-      content: <JobOverviewSection {...jobOverview} />,
+      content: <JobOverviewSection {...jobOverview} userType="client" />,
     },
     {
       label: JOB_TAB_LABELS.workLocation,

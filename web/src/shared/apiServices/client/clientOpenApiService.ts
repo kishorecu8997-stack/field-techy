@@ -2,8 +2,8 @@ import {
   clientActionOnAssignment,
   clientActionOnBreak,
   clientActionOnWorkLog,
-  clientCancelJob,
   clientCalculateJobPrice,
+  clientCancelJob,
   clientGetCompanyInfo,
   clientGetRateCard,
   clientInviteEngineer,
@@ -17,6 +17,8 @@ import {
   type AppRegisterClientResponse,
   type AppUploadProfileFileResponse,
   type ClientCalculateJobPriceData,
+  type ClientCalculateJobPriceResponse,
+  type ClientExploreEngineersData,
   type ClientGetAssignmentDetailsData,
   type ClientGetCompanyInfoResponse,
   type ClientGetJobsData,
@@ -26,7 +28,6 @@ import {
   type ClientMarksJobFileUploadedResponses,
   type ClientPostJobData,
   type ClientPostJobResponse,
-  type ClientCalculateJobPriceResponse,
   type ClientUpdateCompanyInfoResponse,
   type CreatePaymentIntentError,
   type CreatePaymentIntentResponse,
@@ -47,8 +48,8 @@ import {
   clientActionOnAssignmentMutation,
   clientActionOnBreakMutation,
   clientActionOnWorkLogMutation,
-  clientCalculateJobPriceOptions,
   clientCancelJobMutation,
+  clientExploreEngineersOptions,
   clientGetAssignmentDetailsOptions,
   clientGetCompanyInfoOptions,
   clientGetCompanyInfoQueryKey,
@@ -56,6 +57,7 @@ import {
   clientGetJobsOptions,
   clientGetJobsQueryKey,
   clientGetMyDocumentsOptions,
+  clientGetPublicEngineerProfileOptions,
   clientInviteEngineerMutation,
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
@@ -64,14 +66,14 @@ import {
   getClientBalanceQueryKey,
   getJobLogsOptions,
   getUserReportsOptions,
-  submitReportMutation,
+  submitReportMutation
 } from "@/api/@tanstack/react-query.gen";
-import { queryKeys } from "../queryKeys";
-import { apiClient } from "../apiClient";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { apiClient } from "../apiClient";
+import { queryKeys } from "../queryKeys";
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
@@ -685,5 +687,41 @@ export function useClientJobOverviewDashboard(enabled: boolean = true) {
       client: apiClient,
     }),
     enabled: enabled,
+  });
+}
+
+export function useClientExploreEngineers(
+  query: ClientExploreEngineersData["query"] = {},
+  enabled: boolean = true,
+) {
+  // Forward the provided query object (including optional jobId) to the API hook.
+  return useQuery({
+    ...clientExploreEngineersOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+    staleTime: 0,
+  });
+}
+
+/**
+ * Hook for fetching a single engineer's public profile.
+ * Wraps the `/jobs/explore/engineers/{id}` endpoint.
+ *
+ * @param id - engineer ID from the route or other context
+ * @param enabled - whether the query should be active
+ */
+export function useClientGetPublicEngineerProfile(
+  id: number,
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...clientGetPublicEngineerProfileOptions({
+      client: apiClient,
+      path: { id },
+    }),
+    enabled: enabled && !!id,
+    staleTime: 0,
   });
 }
