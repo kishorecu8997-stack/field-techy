@@ -234,7 +234,7 @@ export function useAdminCreateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "adminGetServiceCategories",
+          "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -259,7 +259,7 @@ export function useAdminUpdateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "adminGetServiceCategories",
+          "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -284,7 +284,7 @@ export function useAdminDeleteServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "adminGetServiceCategories",
+          "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -680,18 +680,10 @@ export function useGetCmsContent(
     enabled: options?.enabled ?? true,
 
     staleTime: 0,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchIntervalInBackground: false,
 
-    refetchInterval:
-      options?.enabled === false
-        ? false
-        : (options?.refetchInterval ??
-          (() =>
-            typeof document !== "undefined" &&
-            document.visibilityState === "visible"
-              ? 15000
-              : false)),
+
   });
 }
 export function useCreateFaq(options?: {
@@ -791,11 +783,11 @@ export function useAdminGetJobDetails(
 
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
     ? {
-        ...query,
-        regionId:
-          query?.regionId ??
-          (selectedRegionId ? Number(selectedRegionId) : undefined),
-      }
+      ...query,
+      regionId:
+        query?.regionId ??
+        (selectedRegionId ? Number(selectedRegionId) : undefined),
+    }
     : { jobId: 0 };
 
   return useQuery({
@@ -1010,11 +1002,11 @@ export function useAdminGetJobLogs(
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
-        ...query,
-        regionId:
-          query?.regionId ??
-          (selectedRegionId ? Number(selectedRegionId) : undefined),
-      }
+      ...query,
+      regionId:
+        query?.regionId ??
+        (selectedRegionId ? Number(selectedRegionId) : undefined),
+    }
     : { jobId: 0 };
 
   return useQuery({

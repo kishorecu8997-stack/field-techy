@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useNavigate } from "react-router-dom";
-import { JobSearchBar } from "./JobSearchBar";
+import { JobSearchBar } from "./JobSearchBar/index";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
@@ -107,7 +107,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
       </div>
 
       {/* Middle Section: Search Bar - Flexible but not greedy */}
-      <div className="flex-1 mx-4 max-w-[500px]">
+      <div className="flex-1 mx-4 w-full">
         {/* <Link to={absoluteUrls.engineer.home.search_result}> */}
         <JobSearchBar />
         {/* </Link> */}
