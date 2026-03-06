@@ -89,8 +89,6 @@ export function GenericPopup(props: GenericPopupProps) {
       <div className="p-4 bg-white dark:bg-neutral-800 flex gap-2 justify-end">
         {props.actionButtons?.map((button, idx) => {
           const isLoading = loadingIndex === idx;
-
-          // A button should be disabled if it's loading OR if its disabled property is true
           const isButtonDisabled = isLoading || button.disabled;
 
           return (

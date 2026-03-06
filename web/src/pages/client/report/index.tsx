@@ -99,8 +99,7 @@ const ReportPage = ({
                   reset();
                   onClose();
                   close(true);
-                } catch (error) {
-                  console.error("Upload Error:", error);
+                } catch {
                   toast.error("Report saved, but file upload failed.");
                 }
               },
