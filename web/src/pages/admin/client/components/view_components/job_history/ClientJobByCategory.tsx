@@ -15,6 +15,7 @@ import { useSearchParams } from "react-router-dom";
 import { formatDate } from "@/utils/formatDate";
 import type { AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
 import { days } from "@/pages/admin/dashboard/types";
+import { statusLabels } from "../../../types";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];
@@ -110,13 +111,18 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
 
   const chartData = useMemo(() => {
     if (graphResponse?.data) {
-      return graphResponse.data.map((item) => ({
-        name: dayjs(item.label).format("DD/MM/YYYY"),
-        jobs: item.completed || 0,
-      }));
+      return graphResponse.data.map((item) => {
+        const countKey = status || "completed";
+        // Access the count using the status key, following the pattern of the API response
+        const count = (item as Record<string, unknown>)[countKey];
+        return {
+          name: dayjs(item.label).format("DD/MM/YYYY"),
+          jobs: typeof count === "number" ? count : 0,
+        };
+      });
     }
     return [];
-  }, [graphResponse]);
+  }, [graphResponse, status]);
 
   const columns: Column<JobItem>[] = useMemo(
     () => [
@@ -204,7 +210,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-                Total Jobs Completed
+                Total Jobs {statusLabels[status || "completed"] || "Completed"}
               </h3>
               <SelectMenu
                 placeholder="Select Filter"
