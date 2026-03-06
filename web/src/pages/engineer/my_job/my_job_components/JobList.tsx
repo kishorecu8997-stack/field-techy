@@ -91,7 +91,8 @@ const JobList = ({ jobs, isLoading, isError, refetch }: JobListProps) => {
             const city = cityMap.get(job.cityId);
             const country = countryMap.get(job.countryId);
             const fallback =
-              [city, country].filter((v): v is string => !!v).join(", ") || null;
+              [city, country].filter((v): v is string => !!v).join(", ") ||
+              null;
 
             return (
               <JobCard
