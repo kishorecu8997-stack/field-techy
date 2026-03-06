@@ -107,6 +107,12 @@ const TimelineSection: React.FC<{
     useState(false);
   const [showProgressRejectConfirm, setShowProgressRejectConfirm] =
     useState(false);
+  const [showProgressApproveConfirm, setShowProgressApproveConfirm] =
+    useState(false);
+  const [pendingProgressApprove, setPendingProgressApprove] = useState<{
+    logId?: number;
+    keepExpanded: boolean;
+  } | null>(null);
   const [pendingProgressReject, setPendingProgressReject] = useState<{
     logId?: number;
     keepExpanded: boolean;
@@ -114,6 +120,13 @@ const TimelineSection: React.FC<{
   const [showRevisionRejectConfirm, setShowRevisionRejectConfirm] =
     useState(false);
   const [pendingRevisionReject, setPendingRevisionReject] = useState<{
+    revisionId?: number;
+    logId?: number;
+    keepExpanded: boolean;
+  } | null>(null);
+  const [showRevisionApproveConfirm, setShowRevisionApproveConfirm] =
+    useState(false);
+  const [pendingRevisionApprove, setPendingRevisionApprove] = useState<{
     revisionId?: number;
     logId?: number;
     keepExpanded: boolean;
@@ -1088,20 +1101,8 @@ const TimelineSection: React.FC<{
     ) : null;
 
   const handleProgressApprove = (keepExpanded = false, logId?: number) => {
-    const targetLogId = logId ?? apiProgressData?.logId;
-    if (targetLogId && effectiveAssignmentId) {
-      actionOnWorkLog({
-        body: {
-          assignmentId: effectiveAssignmentId,
-          logId: targetLogId,
-          action: "approve",
-        },
-      });
-    }
-    setKeepProgressExpanded(keepExpanded);
-    setProgressStatus(TIMELINE_STATUS.approved);
-    if (!keepExpanded) setIsProgressCollapsed(true);
-    toast.success(TOAST_MESSAGES.progressApproved, { position: "top-right" });
+    setPendingProgressApprove({ logId, keepExpanded });
+    setShowProgressApproveConfirm(true);
   };
 
   const handleProgressReject = (keepExpanded = false, logId?: number) => {
@@ -1270,26 +1271,8 @@ const TimelineSection: React.FC<{
     revisionId?: number,
     logId?: number,
   ) => {
-    const revId = revisionId || apiRevisionUpdateData?.revisionId;
-    const lgId = logId || apiRevisionUpdateData?.logId;
-    if (lgId && revId && effectiveAssignmentId) {
-      actionOnWorkLog({
-        body: {
-          assignmentId: effectiveAssignmentId,
-          logId: lgId,
-          revisionId: revId,
-          action: "approve",
-        },
-      });
-    }
-    setKeepProgressExpanded(keepExpanded);
-    setRevisionUpdateStatus(TIMELINE_STATUS.approved);
-    setProgressStatus(TIMELINE_STATUS.approved);
-    if (!keepExpanded) {
-      // setIsRevisionUpdateCollapsed(true);
-      setIsProgressCollapsed(true);
-    }
-    toast.success(TOAST_MESSAGES.progressApproved, { position: "top-right" });
+    setPendingRevisionApprove({ revisionId, logId, keepExpanded });
+    setShowRevisionApproveConfirm(true);
   };
 
   const handleRevisionUpdateReject = (
@@ -1493,6 +1476,33 @@ const TimelineSection: React.FC<{
     setPendingProgressReject(null);
   };
 
+  const handleProgressApproveConfirm = () => {
+    if (pendingProgressApprove && effectiveAssignmentId) {
+      const { logId, keepExpanded } = pendingProgressApprove;
+      const targetLogId = logId ?? apiProgressData?.logId;
+      if (targetLogId) {
+        actionOnWorkLog({
+          body: {
+            assignmentId: effectiveAssignmentId,
+            logId: targetLogId,
+            action: "approve",
+          },
+        });
+      }
+      setKeepProgressExpanded(keepExpanded);
+      setProgressStatus(TIMELINE_STATUS.approved);
+      if (!keepExpanded) setIsProgressCollapsed(true);
+      toast.success(TOAST_MESSAGES.progressApproved, { position: "top-right" });
+    }
+    setShowProgressApproveConfirm(false);
+    setPendingProgressApprove(null);
+  };
+
+  const handleProgressApproveConfirmCancel = () => {
+    setShowProgressApproveConfirm(false);
+    setPendingProgressApprove(null);
+  };
+
   // Handler to show revision reject confirmation
   const handleRevisionRejectClick = (
     keepExpanded = false,
@@ -1536,6 +1546,40 @@ const TimelineSection: React.FC<{
   const handleRevisionRejectConfirmCancel = () => {
     setShowRevisionRejectConfirm(false);
     setPendingRevisionReject(null);
+  };
+
+  const handleRevisionApproveConfirm = () => {
+    if (pendingRevisionApprove && effectiveAssignmentId) {
+      const { revisionId, logId, keepExpanded } = pendingRevisionApprove;
+      const revId = revisionId || apiRevisionUpdateData?.revisionId;
+      const lgId = logId || apiRevisionUpdateData?.logId;
+      if (lgId && revId) {
+        actionOnWorkLog({
+          body: {
+            assignmentId: effectiveAssignmentId,
+            logId: lgId,
+            revisionId: revId,
+            action: "approve",
+          },
+        });
+      }
+      setKeepProgressExpanded(keepExpanded);
+      setRevisionUpdateStatus(TIMELINE_STATUS.approved);
+      setProgressStatus(TIMELINE_STATUS.approved);
+      if (!keepExpanded) {
+        setIsProgressCollapsed(true);
+      }
+      toast.success(TOAST_MESSAGES.revisionUpdateApproved, {
+        position: "top-right",
+      });
+    }
+    setShowRevisionApproveConfirm(false);
+    setPendingRevisionApprove(null);
+  };
+
+  const handleRevisionApproveConfirmCancel = () => {
+    setShowRevisionApproveConfirm(false);
+    setPendingRevisionApprove(null);
   };
 
   const confirmModals = [
@@ -1585,6 +1629,15 @@ const TimelineSection: React.FC<{
       onCancel: handleFinalStatementRejectConfirmCancel,
     },
     {
+      key: "progress-approve",
+      isOpen: showProgressApproveConfirm,
+      title: MODAL_TITLES.progressApprove,
+      message: MODAL_MESSAGES.progressApproveConfirm,
+      confirmLabel: "Approve",
+      onConfirm: handleProgressApproveConfirm,
+      onCancel: handleProgressApproveConfirmCancel,
+    },
+    {
       key: "progress-reject",
       isOpen: showProgressRejectConfirm,
       title: MODAL_TITLES.progressReject,
@@ -1592,6 +1645,15 @@ const TimelineSection: React.FC<{
       confirmLabel: "Reject",
       onConfirm: handleProgressRejectConfirm,
       onCancel: handleProgressRejectConfirmCancel,
+    },
+    {
+      key: "revision-approve",
+      isOpen: showRevisionApproveConfirm,
+      title: MODAL_TITLES.revisionApprove,
+      message: MODAL_MESSAGES.revisionApproveConfirm,
+      confirmLabel: "Approve",
+      onConfirm: handleRevisionApproveConfirm,
+      onCancel: handleRevisionApproveConfirmCancel,
     },
     {
       key: "revision-reject",

@@ -28,6 +28,32 @@ interface FinalStatementFields {
   signatureFile: FileList | null;
 }
 
+const getApiErrorMessage = (error: unknown): string | null => {
+  if (!error || typeof error !== "object") return null;
+  const err = error as Record<string, unknown>;
+
+  const directMessage =
+    typeof err.error === "string"
+      ? err.error
+      : typeof err.message === "string"
+        ? err.message
+        : null;
+  if (directMessage) return directMessage;
+
+  const nestedError = err.error as Record<string, unknown> | undefined;
+  if (nestedError) {
+    if (typeof nestedError.error === "string") return nestedError.error;
+    if (typeof nestedError.message === "string") return nestedError.message;
+  }
+
+  const response = err.response as Record<string, unknown> | undefined;
+  const responseData = response?.data as Record<string, unknown> | undefined;
+  if (typeof responseData?.error === "string") return responseData.error;
+  if (typeof responseData?.message === "string") return responseData.message;
+
+  return null;
+};
+
 const FinalStatementForm = ({
   onClose,
   assignmentId,
@@ -102,7 +128,16 @@ const FinalStatementForm = ({
     assignmentId,
     onError: (error) => {
       console.error("Failed to submit final statement:", error);
-      toast.error("Failed to submit final statement. Please try again.");
+      const apiMessage = getApiErrorMessage(error);
+      if (
+        apiMessage?.includes(
+          "Cannot submit work while there are pending logs",
+        )
+      ) {
+        toast.error(apiMessage);
+      } else {
+        toast.error("Failed to submit final statement. Please try again.");
+      }
     },
   });
   const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
@@ -226,9 +261,18 @@ const FinalStatementForm = ({
               close(true);
             } catch (error) {
               console.error("Failed to submit final statement:", error);
-              toast.error(
-                "Failed to submit final statement. Please try again.",
-              );
+              const apiMessage = getApiErrorMessage(error);
+              if (
+                apiMessage?.includes(
+                  "Cannot submit work while there are pending logs",
+                )
+              ) {
+                toast.error(apiMessage);
+              } else {
+                toast.error(
+                  "Failed to submit final statement. Please try again.",
+                );
+              }
               close(true);
             }
           },
