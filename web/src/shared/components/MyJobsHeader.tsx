@@ -1,11 +1,10 @@
 import type { MyJobsHeaderProps } from "@/pages/engineer/my_job/types";
-import ReportPage from "@/pages/engineer/report";
 import Breadcrumb from "@/shared/components/Breadcrumb";
 import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";
+import { IoChevronBack } from "react-icons/io5";
 import { useLocation } from "react-router-dom";
 import { Button } from "./commonUI/Buttons";
-import { IoChevronBack } from "react-icons/io5";
 
 /**
  * MyJobsHeader Component
@@ -20,7 +19,6 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   isShowBreadcrumb = true,
   description,
   isShowSort = true,
-  isReport = true,
   action,
   isShowButton = false,
   buttonText,
@@ -30,7 +28,6 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   isChatVisible,
   handleCloseChat,
 }) => {
-  const [isShowReport, setIsShowReport] = React.useState(false);
   const location = useLocation();
 
   const isAuthRoute = location.pathname.includes("/auth/");
@@ -107,14 +104,6 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
             {!isChatVisible && (
               <div className="flex flex-row flex-shrink-0 justify-end items-center gap-4">
                 {action}
-                {isReport && (
-                  <div
-                    className="underline cursor-pointer hover:text-teal-900"
-                    onClick={() => setIsShowReport(true)}
-                  >
-                    Report
-                  </div>
-                )}
                 {isShowSort && (
                   <SortDropdown
                     currentSort={currentSort}
@@ -135,10 +124,6 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
             )}
           </div>
         </header>
-        <ReportPage
-          open={isShowReport}
-          onClose={() => setIsShowReport(false)}
-        />
       </div>
     </div>
   );

@@ -109,8 +109,7 @@ const ExploreJobs: React.FC = () => {
             apiJobs.length !== 1 ? "s" : ""
           } found`}
           isShowBreadcrumb={false}
-          isShowSort={true}
-          isReport={true}
+          isShowSort={false}
           currentSort={sortBy}
           onSortChange={handleSortChange}
         />

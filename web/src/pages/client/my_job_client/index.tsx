@@ -60,9 +60,9 @@ const MyJobsClient: React.FC = () => {
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
-      return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+      return `${start.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
     } else if (startDate) {
-      return `Starts: ${new Date(startDate).toLocaleDateString()}`;
+      return `Starts: ${new Date(startDate).toLocaleDateString("en-GB")}`;
     }
     return "Not specified";
   };
@@ -137,6 +137,7 @@ const MyJobsClient: React.FC = () => {
       <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
         <MyJobsHeader
           title="My Jobs"
+          isShowSort={false}
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb
         />

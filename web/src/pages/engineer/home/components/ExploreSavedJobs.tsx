@@ -180,6 +180,7 @@ const ExploreSavedJobs = () => {
         <MyJobsHeader
           title="Saved Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
+          isShowSort={false}
           isShowBreadcrumb={false}
           description={`${data?.summary?.savedJobsCount} saved job${
             data?.summary?.savedJobsCount !== 1 ? "s" : ""
