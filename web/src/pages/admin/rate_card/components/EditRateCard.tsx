@@ -103,6 +103,8 @@ const EditRateCard = () => {
         (item) => item.serviceCategoryId === serviceCategoryId
       );
       
+      console.log("Filtered rate cards:", filteredData);
+      
       if (filteredData.length > 0) {
         // Get the first item to get country info
         const firstItem = filteredData[0];
@@ -110,12 +112,19 @@ const EditRateCard = () => {
         // Store countryId for use in mutation
         countryIdRef.current = firstItem.countryId || 1;
         
+        // Map country name to country value (e.g., "India" -> "country1")
+        const countryValueMap: Record<string, string> = {
+          "India": "country1",
+          "United Kingdom": "country2",
+        };
+        const countryValue = countryValueMap[firstItem.country] || firstItem.country;
+        
         // Transform API data to form format
         const tiers = filteredData.map((item) => {
           const level = item.experienceLevels?.[0] || "L1";
           return {
             level: level,
-            description: level === "L1" ? "Junior (1–3 yrs)" : level === "L2" ? "Mid (3–5 yrs)" : "Senior (5+ yrs)",
+            description: level === "L1" ? "Junior (1–3 yrs)" : level === "L2" ? "Mid (3–3 yrs)" : "Senior (5+ yrs)",
             hourly: parseFloat(item.hourly) || 0,
             halfDay: item.halfDay === "-" ? 0 : parseFloat(item.halfDay) || 0,
             fullDay: item.fullDay === "-" ? 0 : parseFloat(item.fullDay) || 0,
@@ -128,7 +137,8 @@ const EditRateCard = () => {
           rateType: "masterRateCard",
           clientName: "client1",
           projectName: "project1",
-          country: firstItem.country || "",
+          country: countryValue,
+          serviceCategory: `serviceCategory${serviceCategoryId}`,
           skills: [
             {
               id: "d22b25f8-c18c-4db9-badb-cdbb64b556e7",
