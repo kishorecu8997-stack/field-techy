@@ -60,9 +60,9 @@ const MyJobsClient: React.FC = () => {
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
-      return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+      return `${start.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
     } else if (startDate) {
-      return `Starts: ${new Date(startDate).toLocaleDateString()}`;
+      return `Starts: ${new Date(startDate).toLocaleDateString("en-GB")}`;
     }
     return "Not specified";
   };

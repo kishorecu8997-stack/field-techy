@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "leaflet/dist/leaflet.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapContainer,
   Marker,
@@ -9,21 +9,34 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-
+ 
 import type { MapComponentProps } from "./type";
-
+ 
 import { fixLeafletIcon } from "@/utils/leafletSetup";
-
+ 
 // Fix default icon issue
 fixLeafletIcon();
-
+ 
+const MapViewUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({
+  center,
+  zoom,
+}) => {
+  const map = useMap();
+ 
+  useEffect(() => {
+    map.setView(center, zoom, { animate: true });
+  }, [map, center[0], center[1], zoom]);
+ 
+  return null;
+};
+ 
 // Handle map clicks and update map view
 const MapEventHandler: React.FC<{
   onMapClick: (latlng: { lat: number; lng: number }, name: string) => void;
   setPosition: React.Dispatch<React.SetStateAction<[number, number]>>;
 }> = ({ onMapClick, setPosition }) => {
   const map = useMap();
-
+ 
   useMapEvents({
     click(e) {
       const { lat, lng } = e.latlng;
@@ -33,10 +46,10 @@ const MapEventHandler: React.FC<{
       map.flyTo([lat, lng], map.getZoom());
     },
   });
-
+ 
   return null;
 };
-
+ 
 /**
  * MapComponent
  * Renders an interactive map using React Leaflet, displaying markers and handling map click events.
@@ -50,7 +63,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
   onMapClick = () => {},
 }) => {
   const [position, setPosition] = useState<[number, number]>(initialPosition);
-
+ 
+  useEffect(() => {
+    setPosition(initialPosition);
+  }, [initialPosition[0], initialPosition[1]]);
+ 
   return (
     <MapContainer
       center={initialPosition}
@@ -68,7 +85,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-
+ 
+      <MapViewUpdater center={initialPosition} zoom={initialZoom} />
+ 
       {/* Render provided markers */}
       {markers.map((marker, index) => (
         <Marker key={marker.id ?? index} position={marker.position}>
@@ -81,16 +100,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
           </Popup>
         </Marker>
       ))}
-
+ 
       {/* Marker at last clicked position */}
       <Marker position={position}>
         <Popup>You clicked here!</Popup>
       </Marker>
-
+ 
       {/* Event handler that also controls map movement */}
       <MapEventHandler onMapClick={onMapClick} setPosition={setPosition} />
     </MapContainer>
   );
 };
-
+ 
 export default MapComponent;
+ 

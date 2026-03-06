@@ -98,9 +98,9 @@ const ClientJobDetails = () => {
   if (job?.startDate && job?.endDate) {
     const startDate = new Date(job.startDate);
     const endDate = new Date(job.endDate);
-    durationDisplay = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+    durationDisplay = `${startDate.toLocaleDateString("en-GB")} - ${endDate.toLocaleDateString("en-GB")}`;
   } else if (job?.startDate) {
-    durationDisplay = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
+    durationDisplay = `Starts: ${new Date(job.startDate).toLocaleDateString("en-GB")}`;
   }
 
   // Get status or default to Posted

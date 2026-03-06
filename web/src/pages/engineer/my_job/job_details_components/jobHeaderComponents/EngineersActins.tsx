@@ -389,6 +389,7 @@ const EngineersActions = ({
   const isNew = status === JOB_STATUSES.new || status === "new";
   const isOffer = status === JOB_STATUSES.offer || status === "offer";
   const isPosted = status === JOB_STATUSES.posted;
+  const isInProgress = status === JOB_STATUSES.inProgress || status === "In Progress";
   const isCancelled = status === JOB_STATUSES.cancelled;
   const isClosed = status === JOB_STATUSES.closed;
 
@@ -669,9 +670,14 @@ const EngineersActions = ({
               </>
             )}
           </div>
-        ) : /* New/Posted/Offer/Accepted/Assigned Status */
-        (isNew || isPosted || isOffer || isProposalAccepted || hasAssignment) &&
-          !hasStartPending ? (
+        ) : /* New/Posted/Offer/Accepted/Assigned/In Progress Status */
+        ((isNew || isPosted || isOffer || isProposalAccepted || hasAssignment || isInProgress) &&
+          !hasStartPending) ||
+        // Show action buttons if there are still available vacancies even if job is in progress
+        (numberOfVacancy !== undefined &&
+          numberOfApprovedProposals !== undefined &&
+          numberOfApprovedProposals < numberOfVacancy &&
+          !hasStartPending) ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             {renderJobActionButtons()}
           </div>

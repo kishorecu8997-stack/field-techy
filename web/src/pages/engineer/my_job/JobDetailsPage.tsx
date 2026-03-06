@@ -102,6 +102,7 @@ const mapJobToJobOverview = (
   skillMap: Map<number, string>,
   toolMap: Map<string, string>,
   experienceLevelMap: Map<number, string>,
+  engagementModelMap: Map<number, string>,
 ): JobOverviewProps => {
   // Extract basic job info
   const jobTitle = job?.jobTitle || "";
@@ -135,13 +136,19 @@ const mapJobToJobOverview = (
   if (job.startDate && job.endDate) {
     const start = new Date(job.startDate);
     const end = new Date(job.endDate);
-    duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+    duration = `${start.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
   } else if (job.startDate) {
-    duration = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
+    duration = `Starts: ${new Date(job.startDate).toLocaleDateString("en-GB")}`;
   }
 
-  // Extract work details
-  const engagementModel = job.jobType || undefined;
+  // Extract work details - convert engagement model ID to label using engagementModelMap
+  let engagementModel: string | undefined;
+  if (job.engagementModelId && engagementModelMap.has(job.engagementModelId)) {
+    engagementModel = engagementModelMap.get(job.engagementModelId);
+  } else {
+    // Fallback to jobType if no mapping found
+    engagementModel = job.jobType || undefined;
+  }
 
   // Extract experience level - convert ID to label using experienceLevelMap
   let experienceLevel: string | undefined;
@@ -216,10 +223,11 @@ const JobDetailsPage = () => {
 
   const job = jobList?.[0];
 
-  // Fetch skills, tools and experience levels from the lookup API
+  // Fetch skills, tools, experience levels and engagement models from the lookup API
   const { data: skillsResponse } = useLookupData("skills");
   const { data: toolsResponse } = useLookupData("tools");
   const { data: experienceLevelsResponse } = useLookupData("experienceLevels");
+  const { data: engagementModelsResponse } = useLookupData("engagementModels");
 
   // Create skill lookup map for fast ID to label conversion from API data
   const skillMap = useMemo(() => {
@@ -248,11 +256,20 @@ const JobDetailsPage = () => {
     return map;
   }, [experienceLevelsResponse]);
 
+  // Create engagement model lookup map for fast ID to label conversion
+  const engagementModelMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (engagementModelsResponse || []).forEach((model) => {
+      map.set(model.id, model.name);
+    });
+    return map;
+  }, [engagementModelsResponse]);
+
   // Map job to JobOverviewProps using the lookup maps
   const jobOverview = useMemo(() => {
     if (!job) return undefined;
-    return mapJobToJobOverview(job, skillMap, toolMap, experienceLevelMap);
-  }, [job, skillMap, toolMap, experienceLevelMap]);
+    return mapJobToJobOverview(job, skillMap, toolMap, experienceLevelMap, engagementModelMap);
+  }, [job, skillMap, toolMap, experienceLevelMap, engagementModelMap]);
   const assignmentId = job?.assignmentId ?? undefined;
 
   // Fetch job logs to get revision requests from client
@@ -620,6 +637,9 @@ const JobDetailsPage = () => {
                 jobLocation={jobLocation}
                 numberOfVacancy={job?.vacancies ?? undefined}
                 numberOfApplicants={job?.assignmentId ? 1 : undefined}
+                numberOfApprovedProposals={
+                  (job as unknown as { assignedEngineerCount?: number })?.assignedEngineerCount ?? 0
+                }
                 activeTab={activeTab}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 onOpenFinalStatement={handleOpenFinalStatement}
@@ -651,6 +671,9 @@ const JobDetailsPage = () => {
                 onAddProgressUpdate={handleAddProgressUpdate}
                 assignmentId={assignmentId}
                 jobId={Number(params.jobId)}
+                workLocationLat={job?.workLocationLat ?? null}
+                workLocationLng={job?.workLocationLng ?? null}
+                workLocationName={job?.workLocationName ?? null}
                 jobInfo={
                   job
                     ? mapJobToJobInfo(job)
