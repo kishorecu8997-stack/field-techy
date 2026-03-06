@@ -122,13 +122,25 @@ const GeneralChart = <T extends Record<string, unknown>>({
 
         <XAxis dataKey={xAxisDataKey as string} tick={{ fontSize: 12 }} />
 
-        <YAxis domain={yAxisDomain} tick={{ fontSize: 12 }} />
+        <YAxis
+          domain={yAxisDomain}
+          tick={{ fontSize: 12 }}
+          allowDecimals={false}
+          tickFormatter={(value) =>
+            typeof value === "number" ? Math.round(value).toString() : value
+          }
+        />
 
         {showTooltip &&
           (CustomTooltip ? (
             <Tooltip cursor={cursor} content={<CustomTooltip />} />
           ) : (
-            <Tooltip cursor={cursor} />
+            <Tooltip
+              cursor={cursor}
+              formatter={(value: number | string | undefined) =>
+                typeof value === "number" ? Math.round(value) : value
+              }
+            />
           ))}
 
         {showLegend && (

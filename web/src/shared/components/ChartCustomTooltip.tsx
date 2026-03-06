@@ -42,7 +42,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
           style={{ backgroundColor: color || "#999" }}
         />
         <span>
-          {name}: {value}
+          {name}: {typeof value === "number" ? Math.round(value) : value}
         </span>
       </div>
     </div>
