@@ -1,7 +1,7 @@
 import { useEngineerGetJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import StatusFilter from "@/shared/components/status_filter_component/StatusFilter";
+// import StatusFilter from "@/shared/components/status_filter_component/StatusFilter";
 import { scrollToTop } from "@/utils";
 import { useEffect, useState } from "react";
 import type { JobFilter } from "../search_result/types";
@@ -56,10 +56,8 @@ const MyJobsPage = () => {
   const jobFilters = [
     JOB_FILTERS.ALL_JOBS,
     JOB_FILTERS.APPLIED,
-    JOB_FILTERS.TODAY,
     JOB_FILTERS.IN_PROGRESS,
     JOB_FILTERS.COMPLETED,
-    JOB_FILTERS.DECLINED,
     JOB_FILTERS.CANCELLED,
     JOB_FILTERS.ON_SITE,
     JOB_FILTERS.REMOTE,
@@ -87,10 +85,11 @@ const MyJobsPage = () => {
           />
         </div>
 
-        <StatusFilter
+        {/* Following codes for StatusFilter were hide for future usage */}
+        {/* <StatusFilter
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter as (filter: string) => void}
-        />
+        /> */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <JobList
             jobs={jobs || []}
