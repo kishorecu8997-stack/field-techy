@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
