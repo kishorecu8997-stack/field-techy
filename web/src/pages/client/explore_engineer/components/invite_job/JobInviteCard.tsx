@@ -13,34 +13,37 @@ interface JobCardProps {
   job: JobInvite;
   isSelected: boolean;
   onToggle: (id: number) => void;
+  locationString?: string;
 }
 
 /**
- * `JobCard` component displays a summary of a single job.
+ * `JobInviteCard` component displays a summary of a single job.
  * It shows details like title, date, location, duration, service type, price, and status.
  * The appearance of the status and work mode indicators is styled based on their values.
- * @param {JobCardProps} props The properties for the component.
- * @param {Job} props.job An object containing the details of the job to display.
  */
 const JobInviteCard: React.FC<JobCardProps> = ({
   job,
   isSelected,
   onToggle,
+  locationString,
 }) => {
+  const location = locationString || job.location || "";
+
   return (
     <div
-      className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer `}
+      className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer`}
       onClick={() => onToggle(job.id)}
     >
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           {job.title}
         </h3>
+
         <div
-          className={`relative w-5 h-5  cursor-pointer  transition-colors duration-200 ${
+          className={`relative w-5 h-5 cursor-pointer transition-colors duration-200 ${
             isSelected
-              ? " border-teal-900"
-              : " border-gray-400 dark:bg-gray-700 dark:border-gray-600"
+              ? "border-teal-900"
+              : "border-gray-400 dark:bg-gray-700 dark:border-gray-600"
           }`}
           onClick={(e) => {
             e.stopPropagation();
@@ -61,6 +64,7 @@ const JobInviteCard: React.FC<JobCardProps> = ({
             <FaRegCircle className="w-full h-full text-gray-400 dark:text-gray-500" />
           )}
         </div>
+
         <input
           type="checkbox"
           checked={isSelected}
@@ -79,7 +83,7 @@ const JobInviteCard: React.FC<JobCardProps> = ({
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
           <IoLocationOutline className="w-4 h-4 mr-2" />
-          {job.location}
+          {location}
         </div>
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
