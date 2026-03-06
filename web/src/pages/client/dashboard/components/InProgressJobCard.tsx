@@ -8,6 +8,7 @@ import {
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import type { Job } from "../../search_result/types";
+import LocationDisplay from "../../my_job_client/components/LocationDisplay";
 
 /**
  * `InProgressJobCard` is a component that displays a summary of an in-progress job.
@@ -50,7 +51,13 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
 
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
             <IoLocationOutline className="w-4 h-4 mr-2 flex-shrink-0" />
-            {job.location}
+            <LocationDisplay
+              countryId={job.countryId}
+              stateId={job.stateId}
+              cityId={job.cityId}
+              workLocationName={job.workLocationName}
+              fallback={job.location}
+            />
           </div>
 
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
@@ -70,22 +77,35 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
         </div>
 
         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center">
-          <div className="flex -space-x-2">
-            {job.engineerAvatars?.map((avatar, index) => (
-              <img
-                key={index}
-                src={avatar}
-                alt={`Engineer ${index + 1}`}
-                className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-800"
-              />
-            ))}
-            <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-medium">
-              +{job.engineers}
-            </div>
-          </div>
-          <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
-            Engineers
-          </span>
+          {job.engineerAvatars && job.engineerAvatars.length > 0 ? (
+            <>
+              <div className="flex -space-x-2">
+                {job.engineerAvatars.map((avatar, index) => (
+                  <img
+                    key={index}
+                    src={avatar}
+                    alt={`Engineer ${index + 1}`}
+                    className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-800"
+                  />
+                ))}
+                {job.engineers &&
+                  Number(job.engineers) > job.engineerAvatars.length && (
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-medium">
+                      +{Number(job.engineers) - job.engineerAvatars.length}
+                    </div>
+                  )}
+              </div>
+              <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
+                {Number(job.engineers) > 0
+                  ? `${job.engineers} Engineer${Number(job.engineers) > 1 ? "s" : ""}`
+                  : "No Engineers"}
+              </span>
+            </>
+          ) : (
+            <span className="text-sm text-gray-600 dark:text-gray-300">
+              No Engineers Assigned
+            </span>
+          )}
         </div>
       </div>
     </Link>
