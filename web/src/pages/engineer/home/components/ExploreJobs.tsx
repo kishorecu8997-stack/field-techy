@@ -304,7 +304,7 @@ const ExploreJobs: React.FC = () => {
             sortedJobs.length !== 1 ? "s" : ""
           } found`}
           isShowBreadcrumb={false}
-         isShowSort={false}
+          isShowSort={false}
           currentSort={sortBy}
           onSortChange={handleSortChange}
         />
