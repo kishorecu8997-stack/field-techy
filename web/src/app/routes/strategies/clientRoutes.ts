@@ -77,7 +77,7 @@ export class ClientRouteStrategy implements RouteStrategy {
             React.Fragment,
             null,
             withSuspense(Components.ClientLayout),
-            withSuspense(Components.LiveChatWidget),
+            // withSuspense(Components.LiveChatWidget),
           ),
         }),
         children: [

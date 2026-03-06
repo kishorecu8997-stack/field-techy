@@ -203,14 +203,14 @@ const Footer = () => {
               SUPPORT
             </h3>
             <ul className="space-y-4">
-              <li>
+              {/* <li>
                 <div
                   onClick={() => setOpen(true)}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors cursor-pointer"
                 >
                   Report A Problem
                 </div>
-              </li>
+              </li> */}
               <li>
                 <div
                   onClick={() => {
@@ -261,7 +261,7 @@ const Footer = () => {
                   Privacy Policy
                 </NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink
                   to="#"
                   onClick={(e) => e.preventDefault()}
@@ -271,7 +271,7 @@ const Footer = () => {
                 >
                   Video Tutorials
                 </NavLink>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
