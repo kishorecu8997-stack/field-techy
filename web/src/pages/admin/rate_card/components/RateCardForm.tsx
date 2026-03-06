@@ -14,9 +14,10 @@ import { useGetServiceCategories } from "@/shared/apiServices/admin/adminService
  * Displays a form with fields for rate card type, service category, and country.
  * Renders a SelectField component for each field.
  *
+ * @param {boolean} readOnly - If true, renders fields in read-only mode (disabled)
  * @returns {JSX.Element} The rendered rate card form.
  */
-const RateCardForm = () => {
+const RateCardForm: React.FC<{ readOnly?: boolean }> = ({ readOnly = false }) => {
   const ctx = useFormContext();
 
   // Fetch service categories from API
@@ -41,18 +42,20 @@ const RateCardForm = () => {
           label="Rate Card Type"
           required
           options={rateCardTypes}
+          disabled={readOnly}
         />
         <SelectField
           name="country"
           required
           label="Country"
           options={countryList}
+          disabled={readOnly}
         />
         <SelectField
           name="serviceCategory"
           label="Service Category"
           options={serviceCategoryOptions}
-          disabled={isLoading}
+          disabled={isLoading || readOnly}
         />
       </div>
     </div>

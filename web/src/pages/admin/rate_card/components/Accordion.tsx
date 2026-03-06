@@ -9,7 +9,8 @@ export const Accordion: React.FC<{
   children: React.ReactNode;
   remove?: () => void;
   defaultOpen?: boolean;
-}> = ({ title, children, remove, defaultOpen = true }) => {
+  showRemove?: boolean;
+}> = ({ title, children, remove, defaultOpen = true, showRemove = true }) => {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
@@ -20,14 +21,16 @@ export const Accordion: React.FC<{
       >
         {title}
         <div className="flex items-center space-x-2">
-          <RiDeleteBin6Fill
-            className=" text-red-400 cursor-pointer hover:text-red-500 "
-            size={20}
-            onClick={(e) => {
-              remove?.();
-              e.stopPropagation();
-            }}
-          />
+          {showRemove && (
+            <RiDeleteBin6Fill
+              className=" text-red-400 cursor-pointer hover:text-red-500 "
+              size={20}
+              onClick={(e) => {
+                remove?.();
+                e.stopPropagation();
+              }}
+            />
+          )}
           <span className="cursor-pointer">{open ? "▾" : "▸"}</span>
         </div>
       </div>

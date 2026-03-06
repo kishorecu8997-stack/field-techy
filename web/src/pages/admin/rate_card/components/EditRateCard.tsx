@@ -258,7 +258,7 @@ const EditRateCard = () => {
         onSubmit={onSubmit}
         className="w-full h-full flex-1 overflow-y-auto"
       >
-        {isEdit ? <RateCardForm /> : <RateCardDetails />}
+        {isEdit || isView ? <RateCardForm readOnly={isView} /> : <RateCardDetails />}
         <PricingModel />
 
         {isEdit && (
