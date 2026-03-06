@@ -110,11 +110,10 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
   );
 
   const chartData = useMemo(() => {
-    if (graphResponse?.data) {
+    if (graphResponse?.data && status) {
       return graphResponse.data.map((item) => {
-        const countKey = status || "completed";
-        // Access the count using the status key, following the pattern of the API response
-        const count = (item as Record<string, unknown>)[countKey];
+        // Access the count using the status key provided from props
+        const count = (item as Record<string, unknown>)[status];
         return {
           name: dayjs(item.label).format("DD/MM/YYYY"),
           jobs: typeof count === "number" ? count : 0,
@@ -210,7 +209,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-                Total Jobs {statusLabels[status || "completed"] || "Completed"}
+                Total Jobs {status ? statusLabels[status] : ""}
               </h3>
               <SelectMenu
                 placeholder="Select Filter"
