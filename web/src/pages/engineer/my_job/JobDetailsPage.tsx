@@ -409,9 +409,9 @@ const JobDetailsPage = () => {
         <ViewClientFeedbackModal
           onClose={closePopup}
           clientName={reviewsData?.[0]?.reviewerName || clientName || "Client"}
-          clientImage={reviewsData?.[0]?.reviewerProfilePictureUrl ?? undefined}
-          rating={reviewsData?.[0]?.rating ?? undefined}
-          review={reviewsData?.[0]?.review ?? undefined}
+          clientImage={reviewsData?.[0]?.reviewerProfilePictureUrl || undefined}
+          rating={reviewsData?.[0]?.rating || undefined}
+          review={reviewsData?.[0]?.review || undefined}
         />
       ),
     });
