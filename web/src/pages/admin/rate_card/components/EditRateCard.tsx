@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import RateCardForm from "./RateCardForm";
@@ -10,6 +11,7 @@ import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useAdminUpdateRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
 
 /**
  * EditRateCard Component
@@ -36,6 +38,7 @@ const EditRateCard = () => {
   
   // Parse serviceCategoryId from URL param
   const serviceCategoryId = id ? parseInt(id, 10) : 0;
+  const [countryId, setCountryId] = useState<number>(1);
   
   console.log("Service Category ID:", serviceCategoryId, "from param:", id);
 
@@ -83,6 +86,59 @@ const EditRateCard = () => {
       ],
     },
   });
+
+  // Fetch rate cards using the same API as index table
+  const { data: rateCardsResponse, isLoading: isLoadingRateCards } = useGetRateCards(
+    { page: 1, limit: 100 },
+    { enabled: !!serviceCategoryId && serviceCategoryId > 0 }
+  );
+
+  // Filter rate cards by serviceCategoryId and populate form
+  useEffect(() => {
+    if (rateCardsResponse?.data) {
+      // Filter by serviceCategoryId
+      const filteredData = rateCardsResponse.data.filter(
+        (item) => item.serviceCategoryId === serviceCategoryId
+      );
+      
+      if (filteredData.length > 0) {
+        // Get the first item to get country info
+        const firstItem = filteredData[0];
+        
+        // Set countryId from API response
+        setCountryId(firstItem.countryId || 1);
+        
+        // Transform API data to form format
+        const tiers = filteredData.map((item) => {
+          const level = item.experienceLevels?.[0] || "L1";
+          return {
+            level: level,
+            description: level === "L1" ? "Junior (1–3 yrs)" : level === "L2" ? "Mid (3–5 yrs)" : "Senior (5+ yrs)",
+            hourly: parseFloat(item.hourly) || 0,
+            halfDay: item.halfDay === "-" ? 0 : parseFloat(item.halfDay) || 0,
+            fullDay: item.fullDay === "-" ? 0 : parseFloat(item.fullDay) || 0,
+            weekly: item.weekly === "-" ? 0 : parseFloat(item.weekly) || 0,
+            monthly: item.monthly === "-" ? 0 : parseFloat(item.monthly) || 0,
+          };
+        });
+
+        methods.reset({
+          rateType: "masterRateCard",
+          clientName: "client1",
+          projectName: "project1",
+          country: firstItem.country || "",
+          skills: [
+            {
+              id: "d22b25f8-c18c-4db9-badb-cdbb64b556e7",
+              name: firstItem.serviceCategory || "Skill 1",
+              isEditing: false,
+              tiers: tiers,
+            },
+          ],
+        });
+      }
+    }
+  }, [rateCardsResponse, serviceCategoryId, methods, setCountryId]);
 
   const updateRateCardMutation = useAdminUpdateRateCard({
     onSuccess: () => {
