@@ -18,6 +18,14 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
         placeholder="Enter Job Title"
         required
         disabled={isDisable}
+        maxLength={50}
+        rules={{
+          required: "Job Title is required",
+          maxLength: {
+            value: 100,
+            message: "Maximum length is 100 characters",
+          },
+        }}
       />
       <TextareaInput
         name="description"

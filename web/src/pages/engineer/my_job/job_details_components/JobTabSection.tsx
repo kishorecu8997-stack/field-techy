@@ -147,6 +147,9 @@ const JobTabSection = ({
   jobOverview,
   assignmentId,
   jobId,
+  workLocationLat,
+  workLocationLng,
+  workLocationName,
 }: {
   status: JobStatus;
   isWorkSubmitted?: boolean;
@@ -162,6 +165,9 @@ const JobTabSection = ({
   jobOverview?: JobOverviewProps;
   assignmentId?: number;
   jobId?: number;
+  workLocationLat?: string | number | null;
+  workLocationLng?: string | number | null;
+  workLocationName?: string | null;
 }) => {
   // isWorkSubmitted is used for prop interface compatibility with other components
   // Currently kept for future implementation of work submission tracking
@@ -382,7 +388,7 @@ const JobTabSection = ({
     {
       label: JOB_TAB_LABELS.jobOverview,
       content: jobOverview ? (
-        <JobOverviewSection {...jobOverview} />
+        <JobOverviewSection {...jobOverview} userType="engineer" />
       ) : (
         <JobInfoSection
           jobInfo={jobInfo || { jobTitle: "", terms: { items: [] }, files: [] }}
@@ -391,7 +397,13 @@ const JobTabSection = ({
     },
     {
       label: JOB_TAB_LABELS.workLocation,
-      content: <LocationMap />,
+      content: (
+        <LocationMap
+          workLocationLat={workLocationLat}
+          workLocationLng={workLocationLng}
+          workLocationName={workLocationName}
+        />
+      ),
     },
     // Show Proposal Info tab after proposal is submitted (from API or local state)
     ...(hasAppliedFromApi || hasApplied || submittedProposal

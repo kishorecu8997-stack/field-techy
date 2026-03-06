@@ -5,6 +5,7 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import jobFilters, {
   SORT_OPTIONS,
   type Job,
@@ -35,7 +36,28 @@ const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
  * @returns {React.ReactElement} The rendered "My Jobs" page for the client.
  */
 const MyJobsClient: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterParam = searchParams.get("filter");
+
+  // Initialize activeFilter from URL query param if valid
+  const [activeFilter, setActiveFilter] = useState<string>(() => {
+    if (filterParam && jobFilters.includes(filterParam)) {
+      return filterParam;
+    }
+    return jobFilters[0];
+  });
+
+  // Sync activeFilter with URL filter param when it changes (e.g., navigation from Dashboard)
+  useEffect(() => {
+    if (
+      filterParam &&
+      jobFilters.includes(filterParam) &&
+      filterParam !== activeFilter
+    ) {
+      setActiveFilter(filterParam);
+      setCurrentPage(1); // Reset pagination when filter changes via URL
+    }
+  }, [filterParam]);
 
   const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
   const { data: jobsData, isLoading } = useClientGetJobs(apiJobStatus);
@@ -60,9 +82,9 @@ const MyJobsClient: React.FC = () => {
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
-      return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+      return `${start.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
     } else if (startDate) {
-      return `Starts: ${new Date(startDate).toLocaleDateString()}`;
+      return `Starts: ${new Date(startDate).toLocaleDateString("en-GB")}`;
     }
     return "Not specified";
   };
@@ -124,6 +146,7 @@ const MyJobsClient: React.FC = () => {
 
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
+    setSearchParams({ filter });
     setCurrentPage(1);
     scrollToTop();
   };
@@ -137,6 +160,7 @@ const MyJobsClient: React.FC = () => {
       <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
         <MyJobsHeader
           title="My Jobs"
+          isShowSort={false}
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb
         />

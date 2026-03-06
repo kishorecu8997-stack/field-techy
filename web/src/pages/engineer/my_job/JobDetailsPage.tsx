@@ -102,6 +102,7 @@ const mapJobToJobOverview = (
   skillMap: Map<number, string>,
   toolMap: Map<string, string>,
   experienceLevelMap: Map<number, string>,
+  engagementModelMap: Map<number, string>,
 ): JobOverviewProps => {
   // Extract basic job info
   const jobTitle = job?.jobTitle || "";
@@ -135,13 +136,19 @@ const mapJobToJobOverview = (
   if (job.startDate && job.endDate) {
     const start = new Date(job.startDate);
     const end = new Date(job.endDate);
-    duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+    duration = `${start.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
   } else if (job.startDate) {
-    duration = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
+    duration = `Starts: ${new Date(job.startDate).toLocaleDateString("en-GB")}`;
   }
 
-  // Extract work details
-  const engagementModel = job.jobType || undefined;
+  // Extract work details - convert engagement model ID to label using engagementModelMap
+  let engagementModel: string | undefined;
+  if (job.engagementModelId && engagementModelMap.has(job.engagementModelId)) {
+    engagementModel = engagementModelMap.get(job.engagementModelId);
+  } else {
+    // Fallback to jobType if no mapping found
+    engagementModel = job.jobType || undefined;
+  }
 
   // Extract experience level - convert ID to label using experienceLevelMap
   let experienceLevel: string | undefined;
@@ -216,10 +223,11 @@ const JobDetailsPage = () => {
 
   const job = jobList?.[0];
 
-  // Fetch skills, tools and experience levels from the lookup API
+  // Fetch skills, tools, experience levels and engagement models from the lookup API
   const { data: skillsResponse } = useLookupData("skills");
   const { data: toolsResponse } = useLookupData("tools");
   const { data: experienceLevelsResponse } = useLookupData("experienceLevels");
+  const { data: engagementModelsResponse } = useLookupData("engagementModels");
 
   // Create skill lookup map for fast ID to label conversion from API data
   const skillMap = useMemo(() => {
@@ -248,11 +256,26 @@ const JobDetailsPage = () => {
     return map;
   }, [experienceLevelsResponse]);
 
+  // Create engagement model lookup map for fast ID to label conversion
+  const engagementModelMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (engagementModelsResponse || []).forEach((model) => {
+      map.set(model.id, model.name);
+    });
+    return map;
+  }, [engagementModelsResponse]);
+
   // Map job to JobOverviewProps using the lookup maps
   const jobOverview = useMemo(() => {
     if (!job) return undefined;
-    return mapJobToJobOverview(job, skillMap, toolMap, experienceLevelMap);
-  }, [job, skillMap, toolMap, experienceLevelMap]);
+    return mapJobToJobOverview(
+      job,
+      skillMap,
+      toolMap,
+      experienceLevelMap,
+      engagementModelMap,
+    );
+  }, [job, skillMap, toolMap, experienceLevelMap, engagementModelMap]);
   const assignmentId = job?.assignmentId ?? undefined;
 
   // Fetch job logs to get revision requests from client
@@ -365,6 +388,15 @@ const JobDetailsPage = () => {
     return signOff.status === "approved";
   }, [jobLogs]);
 
+  // Check if final statement has been rejected by client
+  const isFinalStatementRejected = useMemo(() => {
+    if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
+      return false;
+    }
+    const signOff = jobLogs.signOffSheets[0];
+    return signOff.status === "rejected";
+  }, [jobLogs]);
+
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
   };
@@ -440,8 +472,8 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             onSortChange={() => {}}
-            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -465,8 +497,8 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             onSortChange={() => {}}
-            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <LoaderComponent />
@@ -484,8 +516,8 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             onSortChange={() => {}}
-            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -508,10 +540,38 @@ const JobDetailsPage = () => {
     job?.clientDetails?.personName ||
     `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
-  const duration = getDurationString({
-    startDateStr: job?.startDate || "",
-    endDateStr: job?.endDate || "",
-  });
+
+  // Format exact date range for display
+  const formatDateRange = () => {
+    if (!job?.startDate) return "";
+    const startDate = new Date(job.startDate);
+    const endDate = job.endDate ? new Date(job.endDate) : null;
+
+    const formatDate = (date: Date) => {
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    };
+
+    if (endDate) {
+      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+    }
+    return formatDate(startDate);
+  };
+
+  const exactTimeline = formatDateRange();
+
+  // Keep duration for other uses, but use exactTimeline for display
+  // Only call getDurationString if both dates are available
+  const getJobDuration = (): string => {
+    if (!job?.startDate) return "N/A";
+    if (!job?.endDate) return "N/A";
+    return getDurationString({
+      startDateStr: job.startDate,
+      endDateStr: job.endDate,
+    });
+  };
 
   const engagementTypeMapping: Record<string, string> = {
     "On site": "ON_SITE",
@@ -539,6 +599,10 @@ const JobDetailsPage = () => {
   // Get assignment status from API data (maps to OfferedJobStatusType via EngineersActions)
   const assignmentStatus = job?.assignmentStatus as AssignmentStatus;
 
+  // Determine if proposal is approved (hide buttons when not approved)
+  // Show buttons only after the job has started
+  const isProposalApproved = assignmentStatus === "started";
+
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -546,7 +610,7 @@ const JobDetailsPage = () => {
           title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport={false}
+          isShowSort={false}
           isShowBreadcrumb
           customLabels={
             isDummyJob
@@ -567,7 +631,7 @@ const JobDetailsPage = () => {
               <JobHeaderCard
                 title={jobTitle}
                 client={clientName}
-                duration={duration as string}
+                duration={exactTimeline || getJobDuration()}
                 type={engagementType}
                 status={jobStatus}
                 setIsWorkSubmitted={setIsWorkSubmitted}
@@ -579,15 +643,22 @@ const JobDetailsPage = () => {
                 jobLocation={jobLocation}
                 numberOfVacancy={job?.vacancies ?? undefined}
                 numberOfApplicants={job?.assignmentId ? 1 : undefined}
+                numberOfApprovedProposals={
+                  (job as unknown as { assignedEngineerCount?: number })
+                    ?.assignedEngineerCount ?? 0
+                }
                 activeTab={activeTab}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 onOpenFinalStatement={handleOpenFinalStatement}
                 isFinalStatementSubmitted={isFinalStatementSubmitted}
                 isFinalStatementApproved={isFinalStatementApproved}
+                isFinalStatementRejected={isFinalStatementRejected}
                 assignmentId={assignmentId}
                 progressUpdates={allProgressUpdates}
                 jobId={params.jobId}
                 onToggleChat={handleToggleChat}
+                hideChats={!isProposalApproved}
+                hideBreakDetails={!isProposalApproved}
                 jobStartDate={job?.startDate || undefined}
                 jobEndDate={job?.endDate || undefined}
                 onOpenGiveClientFeedback={handleOpenGiveClientFeedback}
@@ -607,6 +678,9 @@ const JobDetailsPage = () => {
                 onAddProgressUpdate={handleAddProgressUpdate}
                 assignmentId={assignmentId}
                 jobId={Number(params.jobId)}
+                workLocationLat={job?.workLocationLat ?? null}
+                workLocationLng={job?.workLocationLng ?? null}
+                workLocationName={job?.workLocationName ?? null}
                 jobInfo={
                   job
                     ? mapJobToJobInfo(job)
@@ -631,12 +705,14 @@ const JobDetailsPage = () => {
             <div className="lg:col-span-1">
               <ClientInfoCard
                 name={clientName}
-                memberSince={"-"}
-                location={jobLocation}
-                rating={0}
-                reviews={0}
+                memberSince="-"
+                location={job?.clientDetails?.address ?? jobLocation}
+                rating={job?.clientDetails?.averageRating ?? 0}
+                reviews={job?.clientDetails?.reviewCount ?? 0}
                 verifications={[]}
                 onOpenReview={() => setIsReviewOpen(true)}
+                phoneNumber={job?.clientDetails?.phoneNumber ?? undefined}
+                email={job?.clientDetails?.email ?? undefined}
               />
             </div>
           </div>

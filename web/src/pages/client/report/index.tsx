@@ -1,3 +1,4 @@
+import type { SubmitReportResponses } from "@/api";
 import { useSaveReportClient } from "@/shared/apiServices/client/clientOpenApiService";
 import { useSaveReportEngineer } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -11,6 +12,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
+type SaveReportResponse = SubmitReportResponses["201"];
 type PriorityLevel = "high" | "low" | "medium" | "critical";
 
 type PostReportProps = {
@@ -23,9 +25,11 @@ type PostReportProps = {
 const ReportPage = ({
   open,
   onClose,
+  refetchCount,
 }: {
   open: boolean;
   onClose: () => void;
+  refetchCount: () => void;
 }) => {
   const { showPopup } = usePopupStore();
   const { jobId } = useParams();
@@ -77,23 +81,37 @@ const ReportPage = ({
               attachment: attachmentData,
             };
 
-            try {
-              if (isClient) {
-                saveClientReport({
-                  body: reportPayload,
-                });
-              } else {
-                saveEngineerReport({
-                  body: reportPayload,
-                });
-              }
+            const mutationOptions = {
+              onSuccess: async (response: SaveReportResponse) => {
+                try {
+                  // 1. Handle S3 Upload if URL exists
+                  if (selectedFile && response?.uploadUrl) {
+                    const uploadResult = await fetch(response.uploadUrl, {
+                      method: "PUT",
+                      body: selectedFile,
+                      headers: { "Content-Type": selectedFile.type },
+                    });
 
-              toast.success("Report submitted successfully!");
-              reset();
-              close(true);
-              onClose();
-            } catch {
-              toast.error("Failed to submit report.");
+                    if (!uploadResult.ok) throw new Error("S3 Upload Failed");
+                  }
+                  toast.success("Report submitted successfully!");
+                  refetchCount();
+                  reset();
+                  onClose();
+                  close(true);
+                } catch {
+                  toast.error("Report saved, but file upload failed.");
+                }
+              },
+              onError: () => {
+                toast.error("Failed to submit report.");
+              },
+            };
+
+            if (isClient) {
+              saveClientReport({ body: reportPayload }, mutationOptions);
+            } else {
+              saveEngineerReport({ body: reportPayload }, mutationOptions);
             }
           },
         },

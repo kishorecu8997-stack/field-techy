@@ -1,6 +1,6 @@
 import React from "react";
 import type { ClientInfoCardProps } from "../types";
-import { icons } from "@/config/icons";
+// import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { IoClose } from "react-icons/io5";
 
@@ -17,12 +17,14 @@ import { IoClose } from "react-icons/io5";
 const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
   name,
   memberSince,
-  location,
+  // location,
   rating,
   reviews,
   verifications,
   onOpenReview,
   onClose,
+  // phoneNumber,
+  // email,
 }) => {
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-6">
@@ -46,17 +48,19 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
         </div>
         <div>
           <div className="font-bold text-gray-900 dark:text-white">{name}</div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            Member since {memberSince}
-          </div>
+          {memberSince && memberSince !== "-" && (
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Member since {memberSince}
+            </div>
+          )}
         </div>
       </div>
 
       <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4 space-y-2">
-        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+        {/* <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
           <icons.locationDot className="h-4 w-4" />
           <span>{location}</span>
-        </div>
+        </div> */}
 
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
           <span>⭐</span>
@@ -64,6 +68,20 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
             {rating} • {reviews} Reviews
           </span>
         </div>
+        {/* 
+        {phoneNumber && (
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <icons.phone className="h-4 w-4" />
+            <span>{phoneNumber}</span>
+          </div>
+        )}
+
+        {email && (
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <icons.mail className="h-4 w-4" />
+            <span className="truncate">{email}</span>
+          </div>
+        )} */}
       </div>
       {verifications.length > 0 && (
         <>
