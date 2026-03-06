@@ -1,8 +1,4 @@
-import type {
-  JobOverview,
-  InProgressJob,
-} from "@/pages/client/dashboard/type";
-
+import type { JobOverview, InProgressJob } from "@/pages/client/dashboard/type";
 
 // Dummy data
 
@@ -27,7 +23,6 @@ export const jobOverviewData: JobOverview[] = [
     status: "cancelled",
   },
 ];
-
 
 export const inProgressJobsData: InProgressJob[] = [
   {
