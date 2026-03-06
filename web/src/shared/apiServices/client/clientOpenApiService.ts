@@ -37,6 +37,7 @@ import {
   type GetUserReportsData,
   type GetUserReportsResponses,
   type Options,
+  type MarkWorkLogFileUploadedResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -55,7 +56,6 @@ import {
   clientGetCompanyInfoQueryKey,
   clientGetDashboardOptions,
   clientGetJobsOptions,
-  clientGetJobsQueryKey,
   clientGetMyDocumentsOptions,
   clientGetPublicEngineerProfileOptions,
   clientInviteEngineerMutation,
@@ -66,6 +66,8 @@ import {
   getClientBalanceQueryKey,
   getJobLogsOptions,
   getUserReportsOptions,
+  clientGetJobsQueryKey,
+  markWorkLogFileUploadedMutation,
   submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
@@ -581,6 +583,26 @@ export function useClientActionOnWorkLog(options?: {
   });
 }
 
+/**
+ * Hook to mark worklog related files as uploaded
+ * Used for client_revision attachments when client requests revision
+ */
+export function useMarkWorkLogFileUploaded(options?: {
+  onSuccess?: (data: MarkWorkLogFileUploadedResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...markWorkLogFileUploadedMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
 export function useClientActionOnBreak(options?: {
   onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
@@ -627,7 +649,7 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => {},
+    refetch: () => { },
   };
 }
 

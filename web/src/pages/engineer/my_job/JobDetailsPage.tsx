@@ -175,7 +175,12 @@ const mapJobToJobOverview = (
   // Extract attachments
   const attachments: Array<{ name: string; url: string }> = [];
   if (job.attachmentUrl) {
-    attachments.push({ name: "View Document", url: job.attachmentUrl });
+    attachments.push({
+      name: decodeURIComponent(
+        job.attachmentUrl.split("/").pop()?.split("?")[0] || "Attachment",
+      ),
+      url: job.attachmentUrl,
+    });
   }
 
   return {

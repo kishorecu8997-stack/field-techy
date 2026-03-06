@@ -85,7 +85,7 @@ export const CheckboxInput = ({
               {secondaryLabel && (
                 <label
                   htmlFor={name}
-                  className="text-gray-500 dark:text-gray-400"
+                  className="text-gray-700 dark:text-gray-300"
                 >
                   {secondaryLabel}
                 </label>

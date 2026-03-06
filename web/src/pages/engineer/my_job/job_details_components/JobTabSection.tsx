@@ -24,6 +24,7 @@ import type { JobOverviewProps } from "@/shared/components/types";
 import {
   useEngineerApplyJob,
   useEngineerGetMyJobs,
+  useEngineerMarkProposalFileUploaded,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 // import type { EngineerSearchJobsResponse } from "@/api";
 import { engineerGetMyJobs } from "@/api";
@@ -207,6 +208,9 @@ const JobTabSection = ({
     },
   });
 
+  // Mutation for marking proposal file as uploaded
+  const { mutateAsync: markUploaded } = useEngineerMarkProposalFileUploaded();
+
   // Fetch engineer jobs from API to get proposal details
   const { data: engineerJobs } = useEngineerGetMyJobs(!!jobId);
 
@@ -311,6 +315,11 @@ const JobTabSection = ({
             `File upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`,
           );
         }
+
+        // Mark the file as uploaded so the client can view it
+        await markUploaded({
+          body: { jobId: Number(jobId) },
+        });
       }
 
       // Immediately update UI state before toast

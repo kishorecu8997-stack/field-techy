@@ -287,7 +287,7 @@ const BreakRequestForm = ({
   return (
     <div className="flex flex-col p-6 gap-4 w-full max-w-2xl mx-auto">
       <div className="relative">
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="text-xl font-semibold text-black dark:text-white">
           {BREAK_REQUEST_LABELS.title}
         </h2>
         {/* <Button

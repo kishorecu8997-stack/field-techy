@@ -105,6 +105,13 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
           const revisions = getRevisions(item);
           const hasApproverComment = !!item.approverComment;
           const shouldShowExpandButton = itemHasRevisions || hasApproverComment;
+          const singleAttachmentName =
+            item.attachmentName ||
+            (item.attachmentUrl
+              ? decodeURIComponent(
+                  item.attachmentUrl.split("/").pop()?.split("?")[0] || "",
+                )
+              : "Attachment");
 
           // Engineer timeline style: border-gray-200 bg-gray-50 rounded-lg p-4 shadow-sm
           return (
@@ -160,15 +167,7 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                             d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
                           />
                         </svg>
-                        {/* Show different label based on logType */}
-                        {item.logType === "FINAL_STATEMENT" ||
-                        item.logType === "final_statement"
-                          ? "Signature"
-                          : item.logType === "WORK_SUBMISSION" ||
-                              item.logType === "work_submission" ||
-                              item.logType === "SUBMISSION"
-                            ? "Work Submission"
-                            : "View Document"}
+                        {singleAttachmentName}
                       </a>
                     </div>
                   )}
@@ -360,12 +359,12 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                                         d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
                                       />
                                     </svg>
-                                    {
+                                    {decodeURIComponent(
                                       revision.attachmentUrl
                                         .split("/")
                                         .pop()
-                                        ?.split("?")[0]
-                                    }
+                                        ?.split("?")[0] || "",
+                                    )}
                                   </a>
                                 </div>
                               )}

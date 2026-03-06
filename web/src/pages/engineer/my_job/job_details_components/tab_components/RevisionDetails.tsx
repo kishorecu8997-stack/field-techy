@@ -95,9 +95,10 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                             )
                           : update.timestamp}
                       </span>
-                      {/* Show button only if no engineer response exists (neither from API nor local state) */}
+                      {/* Show button only if no engineer response exists (neither content nor attachment) */}
                       {!revisionUpdateEntry &&
                         !revision.content &&
+                        !revision.attachmentUrl &&
                         index === 0 && (
                           <Button
                             type="button"
@@ -111,8 +112,8 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                   </div>
                 </div>
 
-                {/* Engineer Revision Update - if exists */}
-                {revision.content && (
+                {/* Engineer Revision Update - if exists (content and/or attachment) */}
+                {(revision.content || revision.attachmentUrl) && (
                   <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50/70 p-3 w-full">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
