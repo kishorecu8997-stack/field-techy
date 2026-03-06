@@ -3,11 +3,8 @@ import type {
   BudgetValue,
   RatingValue,
 } from "@/shared/libs/constants/filterOptions";
-import {
-  BUDGET_OPTIONS,
-  RATING_OPTIONS,
-} from "@/shared/libs/constants/filterOptions";
-import React, { useState, useMemo } from "react";
+import { RATING_OPTIONS } from "@/shared/libs/constants/filterOptions";
+import React, { useMemo } from "react";
 import { usePopupStore } from "../store/popupStore";
 import { Button } from "./commonUI/Buttons";
 
@@ -15,6 +12,22 @@ interface SkillItem {
   id: number;
   name: string;
   selected: boolean;
+}
+
+interface FiltersProps {
+  selectedLocation?: number | null;
+  onLocationChange?: (locationId: number | null) => void;
+  selectedCategory?: number | null;
+  onCategoryChange?: (categoryId: number | null) => void;
+  budget?: BudgetValue | null;
+  onBudgetChange?: (budget: BudgetValue | null) => void;
+  rating?: RatingValue | null;
+  onRatingChange?: (rating: RatingValue | null) => void;
+  experience?: number;
+  onExperienceChange?: (experience: number) => void;
+  selectedSkills?: Set<number>;
+  onSkillToggle?: (skillId: number) => void;
+  onClearAll?: () => void;
 }
 
 /*
@@ -27,7 +40,19 @@ interface SkillItem {
  * @returns {JSX.Element} The rendered filter panel component.
  * @constructor
  */
-const Filters: React.FC = () => {
+const Filters: React.FC<FiltersProps> = ({
+  selectedLocation = null,
+  onLocationChange = () => {},
+  selectedCategory = null,
+  onCategoryChange = () => {},
+  rating = null,
+  onRatingChange = () => {},
+  experience = 0,
+  onExperienceChange = () => {},
+  selectedSkills = new Set(),
+  onSkillToggle = () => {},
+  onClearAll = () => {},
+}) => {
   // Fetch lookup data
   const { data: workLocations, isLoading: isLoadingLocations } =
     useLookupData("workLocations");
@@ -35,15 +60,6 @@ const Filters: React.FC = () => {
     useLookupData("serviceCategories");
   const { data: skillsData, isLoading: isLoadingSkills } =
     useLookupData("skills");
-
-  // State management
-  const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [budget, setBudget] = useState<BudgetValue>("hourly");
-  const [rating, setRating] = useState<RatingValue>("1");
-  const [experience, setExperience] = useState<number>(5);
-  const [selectedSkills, setSelectedSkills] = useState<Set<number>>(new Set());
-  const [showAllSkills, setShowAllSkills] = useState<boolean>(false);
 
   // Transform skills data to include selection state
   const skills = useMemo<SkillItem[]>(() => {
@@ -54,28 +70,7 @@ const Filters: React.FC = () => {
       selected: selectedSkills.has(skill.id),
     }));
   }, [skillsData, selectedSkills]);
-
-  const toggleSkill = (skillId: number) => {
-    setSelectedSkills((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(skillId)) {
-        newSet.delete(skillId);
-      } else {
-        newSet.add(skillId);
-      }
-      return newSet;
-    });
-  };
-
-  const clearAllFilters = () => {
-    setSelectedLocation(null);
-    setSelectedCategory(null);
-    setBudget("hourly");
-    setRating("1");
-    setExperience(5);
-    setSelectedSkills(new Set());
-  };
-
+  const [showAllSkills, setShowAllSkills] = React.useState<boolean>(false);
   const visibleSkills = showAllSkills ? skills : skills.slice(0, 6);
 
   const { showPopup } = usePopupStore();
@@ -95,7 +90,7 @@ const Filters: React.FC = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            clearAllFilters();
+            onClearAll();
             close(true);
           },
         },
@@ -137,7 +132,7 @@ const Filters: React.FC = () => {
         <h3 className="font-medium mb-3">Job Type</h3>
         <div className="flex flex-wrap gap-2">
           <Button
-            onClick={() => setSelectedLocation(null)}
+            onClick={() => onLocationChange(null)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedLocation === null
                 ? "bg-teal-800 dark:bg-teal text-white"
@@ -149,7 +144,7 @@ const Filters: React.FC = () => {
           {workLocations?.map((location) => (
             <Button
               key={location.id}
-              onClick={() => setSelectedLocation(location.id)}
+              onClick={() => onLocationChange(location.id)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 selectedLocation === location.id
                   ? "bg-teal-800 dark:bg-teal text-white"
@@ -167,7 +162,7 @@ const Filters: React.FC = () => {
         <h3 className="font-medium mb-3">Category</h3>
         <div className="flex flex-wrap gap-2">
           <Button
-            onClick={() => setSelectedCategory(null)}
+            onClick={() => onCategoryChange(null)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               selectedCategory === null
                 ? "bg-teal-800 dark:bg-teal text-white"
@@ -179,7 +174,7 @@ const Filters: React.FC = () => {
           {serviceCategories?.map((category) => (
             <Button
               key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
+              onClick={() => onCategoryChange(category.id)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 selectedCategory === category.id
                   ? "bg-teal-800 dark:bg-teal text-white"
@@ -192,26 +187,6 @@ const Filters: React.FC = () => {
         </div>
       </div>
 
-      {/* Budget */}
-      <div className="mb-6">
-        <h3 className="font-medium mb-3">Budget</h3>
-        <div className="flex flex-wrap gap-2">
-          {BUDGET_OPTIONS.map((option) => (
-            <Button
-              key={option.value}
-              onClick={() => setBudget(option.value)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                budget === option.value
-                  ? "bg-teal-800 dark:bg-teal text-white"
-                  : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
-              }`}
-            >
-              {option.label}
-            </Button>
-          ))}
-        </div>
-      </div>
-
       {/* Rating */}
       <div className="mb-6">
         <h3 className="font-medium mb-3">Rating</h3>
@@ -219,7 +194,7 @@ const Filters: React.FC = () => {
           {RATING_OPTIONS.map((option) => (
             <Button
               key={option.value}
-              onClick={() => setRating(option.value)}
+              onClick={() => onRatingChange(option.value)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 rating === option.value
                   ? "bg-teal-800 dark:bg-teal text-white"
@@ -241,7 +216,7 @@ const Filters: React.FC = () => {
             min="0"
             max="10"
             value={experience}
-            onChange={(e) => setExperience(parseInt(e.target.value) || 0)}
+            onChange={(e) => onExperienceChange(parseInt(e.target.value) || 0)}
             className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-300 dark:bg-gray-600"
             style={{
               background: `linear-gradient(to right, #059669 0%, #059669 ${
@@ -270,7 +245,7 @@ const Filters: React.FC = () => {
           {visibleSkills.map((skill) => (
             <Button
               key={skill.id}
-              onClick={() => toggleSkill(skill.id)}
+              onClick={() => onSkillToggle(skill.id)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 skill.selected
                   ? "bg-teal-800 dark:bg-teal text-white"

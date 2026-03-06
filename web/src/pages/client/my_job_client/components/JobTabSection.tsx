@@ -158,7 +158,7 @@ const mapClientJobToJobOverview = (
   const currencySymbol = getJobValue<string>("currencySymbol") || "$";
   const weeklyPayRaw = getJobValue<string | number>("weeklyPay");
   const toolAllowanceRaw = getJobValue<string | number>("toolAllowance");
-  const weeklyPayNoteFromApi = getJobValue<string>("weeklyPayNote");
+  // const weeklyPayNoteFromApi = getJobValue<string>("weeklyPayNote");
 
   // Format weekly pay - could be a number or pre-formatted string
   let weeklyPay: string | undefined;
@@ -181,9 +181,9 @@ const mapClientJobToJobOverview = (
   }
 
   // Use provided weeklyPayNote or default to the standard message
-  const weeklyPayNote =
-    weeklyPayNoteFromApi ||
-    "Weekly pay is paid every week. Tool allowance is paid once.";
+  // const weeklyPayNote =
+  //   weeklyPayNoteFromApi ||
+  //   "Weekly pay is paid every week. Tool allowance is paid once.";
 
   // Format total payment
   let totalPayment: string | undefined;
@@ -240,7 +240,7 @@ const mapClientJobToJobOverview = (
     weeklyPay,
     toolAllowance,
     totalPayment,
-    weeklyPayNote,
+    // weeklyPayNote,
     additionalDetails,
     attachments,
   };
@@ -440,7 +440,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     },
     {
       label: JOB_TAB_LABELS.jobOverview,
-      content: <JobOverviewSection {...jobOverview} />,
+      content: <JobOverviewSection {...jobOverview} userType="client" />,
     },
     {
       label: JOB_TAB_LABELS.workLocation,

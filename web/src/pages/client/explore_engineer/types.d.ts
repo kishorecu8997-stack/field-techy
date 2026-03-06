@@ -1,5 +1,6 @@
 interface EngineerCardProps {
   engineer: {
+    id: string; // unique identifier used for navigation
     name: string;
     rating: number;
     reviewCount: number;
@@ -26,8 +27,13 @@ export interface JobInvite {
   id: number;
   title: string;
   date: string;
-  location: string;
+  location: string; // may contain workLocationName or empty; detailed breakdown provided by ids
+  countryId?: number;
+  stateId?: number;
+  cityId?: number;
   duration: string;
+  jobType?: string;
+  status?: string | null;
   serviceType: string;
   price: string;
 }

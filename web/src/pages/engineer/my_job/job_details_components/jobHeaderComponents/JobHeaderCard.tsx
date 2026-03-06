@@ -36,6 +36,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   setActiveTab,
   OfferJobStatus,
   hideBreakDetails = false,
+  hideChats = false,
   jobLocation,
   numberOfVacancy,
   numberOfApplicants,
@@ -47,11 +48,14 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onOpenFinalStatement,
   isFinalStatementSubmitted,
   isFinalStatementApproved,
+  isFinalStatementRejected,
   onOpenGiveClientFeedback,
   onOpenViewClientFeedback,
   allCardsApproved,
   setOfferJobStatus,
   assignmentId,
+  allAssignmentIds,
+  engineerNames,
   progressUpdates,
   jobId,
   jobStartDate,
@@ -101,11 +105,21 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     if (isClient) {
       await showPopup({
         title: "",
-        body: <BreakRequestDetails onClose={closePopup} />,
+        body: (
+          <BreakRequestDetails
+            onClose={closePopup}
+            assignmentIds={allAssignmentIds}
+            engineerNames={engineerNames}
+            isClientView={true}
+          />
+        ),
         actionButtons: [],
       });
     } else {
-      navigate(`/engineer/my-jobs/${params.jobId}/break-details`);
+      // Navigate to break-details with assignmentId
+      navigate(
+        `/engineer/my-jobs/${params.jobId}/break-details?assignmentId=${assignmentId}`,
+      );
     }
   };
 
@@ -173,8 +187,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               </div>
             </div>
 
-            {/* Break Details button - visible unless hideBreakDetails is true */}
-            {onToggleChat && jobId && (
+            {/* Chats button - visible unless hideChats is true */}
+            {onToggleChat && jobId && !hideChats && (
               <Button
                 variant="chats"
                 size="chip"
@@ -191,10 +205,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 onClick={handleBreakDetails}
               >
                 <span>{JOB_HEADER_COPY.breakDetails}</span>
-                <div className="relative">
-                  <FaBell size={20} />
-                  <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
-                </div>
+                <FaBell size={20} />
               </div>
             )}
             {/* On Site badge */}
@@ -220,7 +231,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                       {[
                         "Hold the job",
                         "Cancel the job",
-                        "Clone the job",
+                        // "Clone the job",
                         "Report Issue",
                       ].map((item) => (
                         <li key={item}>
@@ -260,6 +271,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           <ClientActions
             activeTab={activeTab}
             allCardsApproved={allCardsApproved}
+            jobStatus={status}
           />
         ) : (
           <EngineersActions
@@ -277,6 +289,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             onOpenFinalStatement={onOpenFinalStatement}
             isFinalStatementSubmitted={isFinalStatementSubmitted}
             isFinalStatementApproved={isFinalStatementApproved}
+            isFinalStatementRejected={isFinalStatementRejected}
             onOpenGiveClientFeedback={onOpenGiveClientFeedback}
             onOpenViewClientFeedback={onOpenViewClientFeedback}
             assignmentId={assignmentId}
