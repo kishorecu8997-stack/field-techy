@@ -7,7 +7,6 @@ import { FaUserCircle } from "react-icons/fa";
 import { useAdminGetPendingPayments } from "@/shared/apiServices/admin/adminOpenApiService";
 import { formatAmount } from "@/utils/currency";
 
-
 type TransactionRequest = {
   assignmentId: number;
   jobId: number;
@@ -90,7 +89,11 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
         <div className="flex items-center gap-2">
           <div>
             {row.engineerProfileUrl ? (
-              <img src={row.engineerProfileUrl} alt="profile" className="h-6 w-6 rounded-full object-cover" />
+              <img
+                src={row.engineerProfileUrl}
+                alt="profile"
+                className="h-6 w-6 rounded-full object-cover"
+              />
             ) : (
               <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
             )}
@@ -131,9 +134,7 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
       key: "status",
       label: "Status",
       renderCell: () => (
-        <span className="text-green-600 font-medium capitalize">
-          Approved
-        </span>
+        <span className="text-green-600 font-medium capitalize">Approved</span>
       ),
     },
 

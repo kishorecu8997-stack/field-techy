@@ -128,7 +128,9 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
           if (!old) return old;
           const updatedData = {
             ...old,
-            data: old.data.filter((item) => item.assignmentId !== row.assignmentId),
+            data: old.data.filter(
+              (item) => item.assignmentId !== row.assignmentId,
+            ),
             total: Math.max(0, old.total - 1),
           };
           return updatedData;
@@ -170,7 +172,15 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         ],
       });
     },
-    [queryClient, showPopup, updateStatusMutation, page, limit, refetch, selectedRegionId],
+    [
+      queryClient,
+      showPopup,
+      updateStatusMutation,
+      page,
+      limit,
+      refetch,
+      selectedRegionId,
+    ],
   );
 
   const columns: Column<TransactionRequest>[] = [
@@ -188,7 +198,11 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         <div className="flex items-center gap-2">
           <div>
             {row.engineerProfileUrl ? (
-              <img src={row.engineerProfileUrl} alt="profile" className="h-6 w-6 rounded-full object-cover" />
+              <img
+                src={row.engineerProfileUrl}
+                alt="profile"
+                className="h-6 w-6 rounded-full object-cover"
+              />
             ) : (
               <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
             )}
@@ -251,7 +265,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
             }}
             options={[
               { label: "Approve", value: "approve" },
-              { label: "Reject", value: "reject" }
+              { label: "Reject", value: "reject" },
             ]}
             badge
             disabled={updateStatusMutation.isPending}

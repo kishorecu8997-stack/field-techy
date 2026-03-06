@@ -47,11 +47,11 @@ export const WalletCard: React.FC = () => {
             {showBalance
               ? balance?.balance != null
                 ? Number(balance.balance).toLocaleString("en-US", {
-                  style: "currency",
-                  currency: balance.currencyCode ?? "INR",
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })
+                    style: "currency",
+                    currency: balance.currencyCode ?? "INR",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
                 : "--"
               : "******"}
           </p>

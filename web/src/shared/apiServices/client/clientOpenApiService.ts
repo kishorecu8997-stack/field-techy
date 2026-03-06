@@ -66,7 +66,7 @@ import {
   getClientBalanceQueryKey,
   getJobLogsOptions,
   getUserReportsOptions,
-  submitReportMutation
+  submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
@@ -190,7 +190,10 @@ export function useCreatePaymentIntent(options?: {
     ...createPaymentIntentMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
-      void queryClient.invalidateQueries({ queryKey: queryKeys.client.balance, refetchType: "active" });
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.client.balance,
+        refetchType: "active",
+      });
       useClientWalletStore.getState().fetchBalance();
       options?.onSuccess?.(data);
     },
@@ -497,7 +500,9 @@ export function useClientCalculateJobPrice(options?: {
     unknown,
     Omit<Options<ClientCalculateJobPriceData>, "url">
   >({
-    mutationFn: async (args: Omit<Options<ClientCalculateJobPriceData>, "url">) => {
+    mutationFn: async (
+      args: Omit<Options<ClientCalculateJobPriceData>, "url">,
+    ) => {
       const { data } = await clientCalculateJobPrice({
         client: apiClient,
         ...args,
@@ -622,7 +627,7 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => { },
+    refetch: () => {},
   };
 }
 

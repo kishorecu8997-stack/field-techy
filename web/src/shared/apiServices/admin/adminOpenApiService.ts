@@ -242,7 +242,7 @@ export function useAdminCreateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -267,7 +267,7 @@ export function useAdminUpdateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -292,7 +292,7 @@ export function useAdminDeleteServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -791,11 +791,11 @@ export function useAdminGetJobDetails(
 
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
     ? {
-      ...query,
-      regionId:
-        query?.regionId ??
-        (selectedRegionId ? Number(selectedRegionId) : undefined),
-    }
+        ...query,
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
+      }
     : { jobId: 0 };
 
   return useQuery({
@@ -1010,11 +1010,11 @@ export function useAdminGetJobLogs(
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
-      ...query,
-      regionId:
-        query?.regionId ??
-        (selectedRegionId ? Number(selectedRegionId) : undefined),
-    }
+        ...query,
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
+      }
     : { jobId: 0 };
 
   return useQuery({
@@ -1558,7 +1558,10 @@ export function useAdminGetPendingPayments(
 
   return useQuery({
     // @ts-ignore - regionId may not be in types yet
-    ...adminGetPendingPaymentsOptions({ client: apiClient, query: mergedQuery }),
+    ...adminGetPendingPaymentsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
     ...options,
   });
 }

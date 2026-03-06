@@ -35,10 +35,10 @@ const MyEarning = () => {
 
   const formattedBalance = showBalance
     ? (() => {
-      const amount = Number(balance?.balance);
-      const currency = balance?.currencyCode ?? "USD";
-      return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
-    })()
+        const amount = Number(balance?.balance);
+        const currency = balance?.currencyCode ?? "USD";
+        return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+      })()
     : "******";
 
   const [hasError, setHasError] = useState(false);
@@ -86,7 +86,7 @@ const MyEarning = () => {
       });
       //TODO: console logs for debugging purposes, it will be removed in production
       console.log("onboardingResp", onboardingResp);
-      
+
       const possibleUrl =
         typeof onboardingResp?.url === "string" && onboardingResp.url.trim()
           ? onboardingResp.url

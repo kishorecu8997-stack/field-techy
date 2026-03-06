@@ -1,4 +1,3 @@
-
 import {
   useClientBalance,
   useCreatePaymentIntent,
@@ -26,12 +25,12 @@ interface AddFundFormProps {
 }
 
 /*
-* TODO: implement add fund form
-* Add fund form will be used to add funds to the client's wallet
-* this form will call the create payment intent api to create a payment intent
-* 
-* @param onClose - callback function to close the modal
-*/
+ * TODO: implement add fund form
+ * Add fund form will be used to add funds to the client's wallet
+ * this form will call the create payment intent api to create a payment intent
+ *
+ * @param onClose - callback function to close the modal
+ */
 const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   const formCtx = useForm({
     mode: "onSubmit",
@@ -53,7 +52,11 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
 
   const queryClient = useQueryClient();
   const { mutateAsync, isPending: isCreatingIntent } = useCreatePaymentIntent();
-  const { data: balanceArr, isLoading: isBalanceLoading, refetch: refetchBalance } = useClientBalance();
+  const {
+    data: balanceArr,
+    isLoading: isBalanceLoading,
+    refetch: refetchBalance,
+  } = useClientBalance();
   const balance = Array.isArray(balanceArr) ? balanceArr[0] : balanceArr;
   const currencyCode = balance?.currencyCode?.toLowerCase() || "gbp";
   const isLoading = isCreatingIntent || isProcessingPayment || isBalanceLoading;
@@ -128,7 +131,9 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
         }
 
         // Ensure queries are invalidated so active consumers refetch
-        void queryClient.invalidateQueries({ queryKey: queryKeys.client.balance });
+        void queryClient.invalidateQueries({
+          queryKey: queryKeys.client.balance,
+        });
 
         if (updated) {
           success("Payment successful");
@@ -142,12 +147,12 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
         onClose();
       } else if (status === "requires_capture") {
         success(
-          "Payment has been authorized and is awaiting capture. Your balance will be updated once the payment is finalized."
+          "Payment has been authorized and is awaiting capture. Your balance will be updated once the payment is finalized.",
         );
         onClose();
       } else {
         throw new Error(
-          `Payment could not be completed. Status: ${status ?? "unknown"}`
+          `Payment could not be completed. Status: ${status ?? "unknown"}`,
         );
       }
     } catch (err: unknown) {
@@ -161,7 +166,11 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   };
 
   return (
-    <FormContainer methods={formCtx} onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
+    <FormContainer
+      methods={formCtx}
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-4 p-4"
+    >
       <h2 className="text-xl font-semibold">Add Funds</h2>
       <InputField
         name="amount"
@@ -227,7 +236,9 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
       <Button
         type="submit"
         loading={isLoading}
-        disabled={amount <= 0 || !stripe || !elements || !currencyCode || isLoading}
+        disabled={
+          amount <= 0 || !stripe || !elements || !currencyCode || isLoading
+        }
         className="w-full"
       >
         {amount > 0 ? "Pay Now" : "Enter amount"}
@@ -237,4 +248,3 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
 };
 
 export default AddFundForm;
-

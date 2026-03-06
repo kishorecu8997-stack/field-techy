@@ -55,9 +55,9 @@ const mapJobToJobInfo = (
     },
     // Add total price if available
     job.totalPrice &&
-    job.currencySymbol && {
-      text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
-    },
+      job.currencySymbol && {
+        text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
+      },
     // Add work location
     job.workLocationName && { text: `Location: ${job.workLocationName}` },
   ].filter(Boolean) as Array<{ text: string }>;
@@ -111,24 +111,24 @@ const mapJobToJobOverview = (
   // Extract skills - convert IDs to labels using skillMap
   const skills = Array.isArray(job.skills)
     ? job.skills.map((skill) => {
-      const skillId =
-        typeof skill === "number" ? skill : parseInt(String(skill), 10);
-      const skillLabel = skillMap.get(skillId);
-      return skillLabel || String(skill);
-    })
+        const skillId =
+          typeof skill === "number" ? skill : parseInt(String(skill), 10);
+        const skillLabel = skillMap.get(skillId);
+        return skillLabel || String(skill);
+      })
     : [];
 
   // Extract tools - convert IDs to labels using toolMap
   const tools = Array.isArray(job.tools)
     ? job.tools.map((tool) => {
-      const toolId = String(tool);
-      const toolLabel = toolMap.get(toolId);
-      return {
-        name: toolLabel || String(tool),
-        price: "",
-        image: undefined,
-      };
-    })
+        const toolId = String(tool);
+        const toolLabel = toolMap.get(toolId);
+        return {
+          name: toolLabel || String(tool),
+          price: "",
+          image: undefined,
+        };
+      })
     : [];
 
   // Extract duration from startDate and endDate
@@ -296,8 +296,8 @@ const JobDetailsPage = () => {
           log.details || "Engineer submitted a progress update";
         const originalAttachment = log.attachmentUrl
           ? decodeURIComponent(
-            log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
-          )
+              log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
+            )
           : undefined;
         const originalAttachmentUrl = log.attachmentUrl;
 
@@ -324,13 +324,13 @@ const JobDetailsPage = () => {
           attachmentUrl: originalAttachmentUrl,
           timestamp: log.timestamp
             ? new Date(log.timestamp).toLocaleString("en-US", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })
             : "",
           statusText,
           statusColor:
@@ -426,7 +426,11 @@ const JobDetailsPage = () => {
     showPopup({
       body: (
         <GiveFeedbackModal
-          targetName={job?.clientDetails?.companyName || job?.clientDetails?.personName || "Test Client"}
+          targetName={
+            job?.clientDetails?.companyName ||
+            job?.clientDetails?.personName ||
+            "Test Client"
+          }
           targetRole={job?.clientDetails?.clientType || "client"}
           placeholder="Share your feedback about your experience with the client..."
           assignmentId={job?.assignmentId || undefined}
@@ -685,10 +689,10 @@ const JobDetailsPage = () => {
                   job
                     ? mapJobToJobInfo(job)
                     : {
-                      jobTitle: "",
-                      terms: { title: "Job Details", items: [] },
-                      files: [],
-                    }
+                        jobTitle: "",
+                        terms: { title: "Job Details", items: [] },
+                        files: [],
+                      }
                 }
                 jobOverview={job ? jobOverview : undefined}
               />
@@ -724,7 +728,7 @@ const JobDetailsPage = () => {
           isOpen={isReviewOpen}
           onClose={() => setIsReviewOpen(false)}
           clientName={clientName}
-        // onSubmit={handleSubmitReview}
+          // onSubmit={handleSubmitReview}
         />
       )}
     </div>

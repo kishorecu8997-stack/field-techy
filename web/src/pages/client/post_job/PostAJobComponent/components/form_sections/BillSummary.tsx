@@ -162,9 +162,7 @@ export const BillSummary = ({
           {isCalculating ? (
             <Loader2 className="h-5 w-5 animate-spin p-0" />
           ) : (
-            <>
-              {formatAmount(totalBill, currencySymbol)}
-            </>
+            <>{formatAmount(totalBill, currencySymbol)}</>
           )}
         </span>
       </div>

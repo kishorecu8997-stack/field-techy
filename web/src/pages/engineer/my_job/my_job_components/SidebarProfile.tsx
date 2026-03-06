@@ -123,10 +123,10 @@ const EarningsCard = () => {
   const balance = balanceArr?.[0];
   const formattedBalance = showBalance
     ? (() => {
-      const amount = Number(balance?.balance);
-      const currency = balance?.currencyCode ?? "USD";
-      return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
-    })()
+        const amount = Number(balance?.balance);
+        const currency = balance?.currencyCode ?? "USD";
+        return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+      })()
     : "******";
 
   return (

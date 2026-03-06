@@ -18,11 +18,14 @@ export default function WalletTransactionRequests() {
 
   const handleTabChange = (newTab: string) => {
     setActiveTab(newTab);
-    setSearchParams((prev) => {
-      const next = new URLSearchParams(prev);
-      next.set("page", "1");
-      return next;
-    }, { replace: true });
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("page", "1");
+        return next;
+      },
+      { replace: true },
+    );
   };
 
   const tabs = [

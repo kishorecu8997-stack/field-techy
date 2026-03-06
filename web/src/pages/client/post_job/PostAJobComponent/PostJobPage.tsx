@@ -120,10 +120,14 @@ const PostJobPage = () => {
     engagementModel &&
     selectedCountry &&
     isSafeDate(startDate) &&
-    isSafeDate(endDate)
+    isSafeDate(endDate),
   );
 
-  const { mutate: getJobPrice, data: priceData, isPending: isCalculating } = useClientCalculateJobPrice();
+  const {
+    mutate: getJobPrice,
+    data: priceData,
+    isPending: isCalculating,
+  } = useClientCalculateJobPrice();
 
   useEffect(() => {
     if (!queryEnabled) {
@@ -134,8 +138,8 @@ const PostJobPage = () => {
       ?.map((t) => ({ budget: Number(t.budget) || 0 }))
       .filter((t) => t.budget > 0).length
       ? toolsData
-        ?.map((t) => ({ budget: Number(t.budget) || 0 }))
-        .filter((t) => t.budget > 0)
+          ?.map((t) => ({ budget: Number(t.budget) || 0 }))
+          .filter((t) => t.budget > 0)
       : undefined;
 
     getJobPrice({
@@ -144,10 +148,14 @@ const PostJobPage = () => {
         experienceLevelId: Number(experienceLevel),
         engagementModelId: Number(engagementModel),
         countryId: Number(selectedCountry),
-        startDate: isSafeDate(startDate) ? new Date(startDate!).toISOString() : undefined,
-        endDate: isSafeDate(endDate) ? new Date(endDate!).toISOString() : undefined,
+        startDate: isSafeDate(startDate)
+          ? new Date(startDate!).toISOString()
+          : undefined,
+        endDate: isSafeDate(endDate)
+          ? new Date(endDate!).toISOString()
+          : undefined,
         vacancies: Number(numberOfVacancy || 1),
-        tools: tools
+        tools: tools,
       },
       querySerializer: (query) => {
         const params = new URLSearchParams();
@@ -155,8 +163,8 @@ const PostJobPage = () => {
           if (value === undefined || value === null) continue;
 
           if (key === "tools" && Array.isArray(value)) {
-            // Backend expects an array. Since it is in the query string, 
-            // the standard way to send an array of objects so it is natively 
+            // Backend expects an array. Since it is in the query string,
+            // the standard way to send an array of objects so it is natively
             // parsed as an array is using indexed bracket notation.
             value.forEach((tool, index) => {
               if (tool && tool.budget !== undefined) {
@@ -168,7 +176,7 @@ const PostJobPage = () => {
           }
         }
         return params.toString();
-      }
+      },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -180,7 +188,7 @@ const PostJobPage = () => {
     startDate,
     endDate,
     numberOfVacancy,
-    toolsData
+    toolsData,
   ]);
 
   const { mutate: getRateCard } = useClientGetRateCard();
