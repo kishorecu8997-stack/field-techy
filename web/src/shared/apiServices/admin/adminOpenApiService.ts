@@ -680,19 +680,10 @@ export function useGetCmsContent(
 
     enabled: options?.enabled ?? true,
 
-    staleTime: 0,
-    refetchOnWindowFocus: true,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
     refetchIntervalInBackground: false,
-
-    refetchInterval:
-      options?.enabled === false
-        ? false
-        : (options?.refetchInterval ??
-          (() =>
-            typeof document !== "undefined" &&
-              document.visibilityState === "visible"
-              ? 15000
-              : false)),
+    refetchInterval: false,
   });
 }
 export function useCreateFaq(options?: {
