@@ -2,6 +2,7 @@ import { bankList } from "@/dummy_data/bankDetails";
 import xss from "xss";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 /**
  * Utility function to join multiple class names into a single string,
@@ -438,18 +439,5 @@ export const extractErrorMessage = (
   error: unknown,
   fallback = "Something went wrong",
 ): string => {
-  const apiError = error as {
-    body?: { error?: string; message?: string };
-    response?: { data?: { error?: string } };
-    message?: string;
-    error?: string;
-  };
-  return (
-    apiError.body?.error ||
-    apiError.body?.message ||
-    apiError.response?.data?.error ||
-    apiError.error ||
-    apiError.message ||
-    fallback
-  );
+  return GlobalApiErrorHandler.handle(error, fallback).message;
 };

@@ -88,7 +88,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               OUR ADDRESS
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <div className="text-gray-600 dark:text-gray-400 mb-4">
               {contactLoading ? (
                 <span className="animate-pulse">
                   <LoaderComponent />
@@ -101,7 +101,7 @@ const Footer = () => {
               ) : (
                 address
               )}
-            </p>
+            </div>
             <div className="space-y-3">
               <div className="flex items-center text-gray-600 dark:text-gray-400">
                 <IoMdMail className="w-5 h-5 mr-3 text-green-800 dark:text-green-500" />
@@ -277,7 +277,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-600 dark:text-gray-500 mb-4 md:mb-0">
+          <div className="text-sm text-gray-600 dark:text-gray-500 mb-4 md:mb-0">
             {contactLoading ? (
               <span className="animate-pulse">
                 <LoaderComponent />
@@ -287,7 +287,7 @@ const Footer = () => {
             ) : (
               copyright
             )}
-          </p>
+          </div>
 
           <div className="flex space-x-4">
             {[

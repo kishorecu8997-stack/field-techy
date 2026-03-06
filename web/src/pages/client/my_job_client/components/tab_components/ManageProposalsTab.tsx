@@ -9,25 +9,49 @@ import { toast } from "react-toastify";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import Popup from "@/shared/components/Popup";
 import { IoCloseSharp } from "react-icons/io5";
+import { IoStar } from "react-icons/io5";
+
+interface Education {
+  institute: string;
+  degree: string;
+  year?: number;
+}
+
+interface Engineer {
+  id: number;
+  name?: string | null;
+  email?: string | null;
+  phoneNumber?: string | null;
+  profilePicture?: string | null;
+  profilePictureId?: number | null;
+  profilePictureUrl?: string | null;
+  city?: string | null;
+  state?: string | null;
+  averageRating?: number | string | null;
+  reviewCount?: number | string | null;
+  hourlyRate?: number | null;
+  skills?: string[];
+  education?: Education[] | string[];
+  userId?: number;
+}
+
+interface Assignment {
+  assignmentId: number;
+  jobId: number;
+  engineerId: number;
+  assignmentStatus: string;
+  jobStatus?: string | null;
+  assignmentType?: "invitation" | "application" | null;
+  proposalDetail?: string | null;
+  proposalAttachmentUrl?: string | null;
+  proposalAttachmentId?: number | null;
+  appliedAt?: string | null;
+  invitedAt?: string | null;
+  engineer?: Engineer;
+}
 
 interface ManageProposalsTabProps {
-  assignments?: Array<{
-    assignmentId: number;
-    jobId: number;
-    engineerId: number;
-    assignmentStatus: string;
-    proposalDetail?: string | null;
-    proposalAttachmentUrl?: string | null;
-    proposalAttachmentId?: number | null;
-    appliedAt?: string | null;
-    invitedAt?: string | null;
-    engineer?: {
-      id: number;
-      name?: string;
-      email?: string;
-      profileImageUrl?: string;
-    };
-  }>;
+  assignments?: Assignment[];
   isLoading?: boolean;
   jobId?: number;
   numberOfVacancy?: number;
@@ -223,14 +247,43 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
         >
           <div className="flex justify-between items-start mb-4">
             <div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{`${DUMMY_TABS_LABELS.proposalPrefix} ${idx + 1}`}</p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                {`${DUMMY_TABS_LABELS.proposalPrefix} ${idx + 1}`}
+              </p>
+
               <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {proposal.engineer?.name || `Engineer #${proposal.engineerId}`}
               </h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+
+              {/* ⭐ Average Rating */}
+              {proposal.engineer?.averageRating && (
+                <div className="flex items-center gap-1 mt-1">
+                  <IoStar className="w-4 h-4 text-yellow-400" />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    {Number(proposal.engineer.averageRating).toFixed(2)}
+                  </span>
+                </div>
+              )}
+
+              {/* 🏷 Skills */}
+              {proposal.engineer?.skills?.length ? (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {proposal.engineer!.skills!.map((skill) => (
+                    <span
+                      key={skill}
+                      className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300 rounded-full"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                 Status: {proposal.assignmentStatus}
               </p>
             </div>
+
             <span className="text-xs text-gray-500 dark:text-gray-400">
               {proposal.appliedAt || proposal.invitedAt
                 ? `${DUMMY_TABS_LABELS.receivedOn} ${new Date(
@@ -239,9 +292,11 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                 : ""}
             </span>
           </div>
+
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap break-words">
             {proposal.proposalDetail || "No proposal details provided"}
           </p>
+
           {(proposal.proposalAttachmentUrl ||
             proposal.proposalAttachmentId) && (
             <div className="mb-4">
@@ -251,10 +306,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all hover:bg-gray-200 dark:hover:bg-gray-600 transition"
               >
-                <IoAttach
-                  className="w-4 h-4 flex-shrink-0"
-                  aria-hidden="true"
-                />
+                <IoAttach className="w-4 h-4 flex-shrink-0" />
                 View Attachment
               </a>
             </div>
@@ -270,12 +322,12 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             >
               {DUMMY_TABS_LABELS.reject}
             </Button>
-            <Button
+            {/* <Button
               variant="no_style"
               className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               {DUMMY_TABS_LABELS.viewProfile}
-            </Button>
+            </Button> */}
             <Button
               variant="no_style"
               onClick={() => handleAcceptProposal(proposal.assignmentId)}

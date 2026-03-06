@@ -10,9 +10,10 @@ import React, { useState, useMemo } from "react";
 import { useAdminGetWalletOverview } from "@/shared/apiServices/admin/adminOpenApiService";
 
 interface WalletTransaction {
-  profileImageUrl: string | null;
-  mobileNo: string | null;
-  clientName: string | null;
+  // These are optional in the generated API types, so they can be `undefined`.
+  profileImageUrl?: string | null;
+  mobileNo?: string | null;
+  clientName?: string | null;
   transactionId: string;
   transactionType: "credit" | "debit";
   amount: string;

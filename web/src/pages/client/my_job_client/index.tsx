@@ -9,14 +9,24 @@ import jobFilters, {
   SORT_OPTIONS,
   type Job,
   type JobStatus,
-  JOB_STATUSES,
   WORKING_TYPES,
 } from "../search_result/types";
+import { JOB_STATUSES as API_JOB_STATUSES } from "@/pages/engineer/search_result/types";
 import JobCard from "./components/JobCard";
 import { scrollToTop } from "@/utils";
 import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 import type { ClientGetJobsResponse } from "@/api";
 import { useServiceCategories } from "@/shared/hooks/useLookup";
+
+// Map the UI filter label → API jobStatus query param
+type ApiJobStatus = NonNullable<Parameters<typeof useClientGetJobs>[0]>;
+const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
+  [jobFilters[0]]: undefined, // "All Jobs"    → no filter
+  [jobFilters[1]]: API_JOB_STATUSES.inProgress, // "In-Progress" → "In Progress"
+  [jobFilters[2]]: API_JOB_STATUSES.closed, // "Completed"   → "Closed"
+  [jobFilters[3]]: API_JOB_STATUSES.posted, // "Posted"      → "Posted"
+  [jobFilters[4]]: API_JOB_STATUSES.hold, // "Hold"        → "Hold"
+};
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -26,7 +36,9 @@ import { useServiceCategories } from "@/shared/hooks/useLookup";
  */
 const MyJobsClient: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
-  const { data: jobsData, isLoading } = useClientGetJobs();
+
+  const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
+  const { data: jobsData, isLoading } = useClientGetJobs(apiJobStatus);
   const { data: serviceCategories } = useServiceCategories();
 
   // Create a memoized map of service category ID to name
@@ -73,7 +85,7 @@ const MyJobsClient: React.FC = () => {
           ? WORKING_TYPES.remote
           : apiJob.jobType === "Hybrid"
             ? WORKING_TYPES.hybrid
-            : apiJob.jobType || "Remote",
+            : ((apiJob.jobType as Job["type"]) ?? WORKING_TYPES.remote),
     startDate: apiJob.startDate
       ? new Date(apiJob.startDate).toDateString()
       : "N/A",
@@ -88,35 +100,17 @@ const MyJobsClient: React.FC = () => {
       apiJob.totalPrice != null && apiJob.totalPrice !== ""
         ? `${apiJob.totalPrice}`
         : "N/A",
-    status: (apiJob.status?.toLowerCase() as JobStatus) || JOB_STATUSES.posted,
+    status: (apiJob.status?.toLowerCase() as JobStatus) || "posted",
     serviceType: getServiceCategoryName(apiJob.serviceCategoryId),
     description: apiJob.jobDescription || undefined,
     postedTime: apiJob.createdAt || undefined,
     currencySymbol: apiJob.currencySymbol || "$",
   });
 
+  // allJobs is already filtered by the API — no client-side filtering needed
   const allJobs: Job[] = useMemo(() => {
     return (jobsData || []).map(mapApiJobToUiJob);
   }, [jobsData, serviceCategoryMap]);
-
-  const filteredJobs = useMemo(() => {
-    if (activeFilter === jobFilters[0]) {
-      return allJobs;
-    }
-    if (activeFilter === jobFilters[1]) {
-      return allJobs.filter((job) => job.status === JOB_STATUSES.inprogress);
-    }
-    if (activeFilter === jobFilters[2]) {
-      return allJobs.filter((job) => job.status === JOB_STATUSES.completed);
-    }
-    if (activeFilter === jobFilters[3]) {
-      return allJobs.filter((job) => job.status === JOB_STATUSES.posted);
-    }
-    if (activeFilter === jobFilters[4]) {
-      return allJobs.filter((job) => job.status === JOB_STATUSES.hold);
-    }
-    return allJobs.filter((job) => job.status === activeFilter);
-  }, [activeFilter, allJobs]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   useEffect(() => {
@@ -134,9 +128,9 @@ const MyJobsClient: React.FC = () => {
     scrollToTop();
   };
 
-  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
+  const totalPages = Math.ceil(allJobs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentJobs = filteredJobs.slice(startIndex, startIndex + itemsPerPage);
+  const currentJobs = allJobs.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">

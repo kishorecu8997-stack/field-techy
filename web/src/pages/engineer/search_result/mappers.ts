@@ -21,6 +21,9 @@ export const mapApiJobToJobItem = (
     location: job.workLocationName,
     startDate: job.startDate || "",
     numberOfVacancy: job.vacancies || 1,
+    assignedEngineerCount:
+      (job as unknown as { assignedEngineerCount?: number })
+        .assignedEngineerCount || 0,
     experience: job.experienceLevelId,
     salary: job.totalPrice,
     budgetType: null,

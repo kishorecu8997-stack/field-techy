@@ -95,6 +95,9 @@ const PostJobPage = () => {
       JobOccurrenceEndDate: null,
       estimatedDuration: "",
       saveAsTemplate: false,
+      workLocationLat: null,
+      workLocationLng: null,
+      workLocationName: "",
     },
     mode: "onSubmit",
   });
@@ -127,7 +130,7 @@ const PostJobPage = () => {
       {
         onSuccess: (response) => {
           setRateAndCurrency(
-            `${response.rate}${response.currencySymbol}`,
+            `${response.currencySymbol}${response.rate}`,
             response.currencyId,
           );
           setAmount(String(response.rate));
@@ -205,11 +208,11 @@ const PostJobPage = () => {
       ),
       body,
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        // {
+        //   label: "Cancel",
+        //   value: null,
+        //   variant: "outline",
+        // },
         {
           label: "Edit Details",
           value: "edit",
@@ -300,6 +303,9 @@ const PostJobPage = () => {
       countryId: getRequiredNumber(data.country, "Country"),
       stateId: getRequiredNumber(data.state, "State"),
       cityId: getRequiredNumber(data.city, "City"),
+      workLocationLat: data.workLocationLat ?? undefined,
+      workLocationLng: data.workLocationLng ?? undefined,
+      workLocationName: data.workLocationName || undefined,
       startDate: data.startDate ? data.startDate.toISOString() : undefined,
       endDate: data.endDate ? data.endDate.toISOString() : undefined,
       vacancies: Number(data.numberOfVacancy) || 1,

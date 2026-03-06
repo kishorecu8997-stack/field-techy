@@ -13,7 +13,6 @@ export interface ServiceCategory {
   id: number;
   name: string;
   engineers: string;
-  image: string;
 }
 
 export interface InProgressJob {

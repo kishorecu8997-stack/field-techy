@@ -200,16 +200,53 @@ const MapSearchBar: React.FC<{
    =========================================================== */
 const MapEventHandler: React.FC<{
   disabled: boolean;
-  onMapClick: (latlng: { lat: number; lng: number }) => void;
+  onMapClick: (latlng: { lat: number; lng: number }, name: string) => void;
   setPosition: React.Dispatch<React.SetStateAction<[number, number]>>;
 }> = ({ disabled, onMapClick, setPosition }) => {
+  // Tracks the sequence id of the latest click so stale responses are dropped.
+  const clickSeqRef = useRef(0);
+  // Holds the AbortController for the currently in-flight request.
+  const abortCtrlRef = useRef<AbortController | null>(null);
+
   useMapEvents({
-    click(e) {
+    async click(e) {
       if (disabled) return;
+
+      // Cancel any previous in-flight reverse-geocode request.
+      abortCtrlRef.current?.abort();
+      const ctrl = new AbortController();
+      abortCtrlRef.current = ctrl;
+
+      // Stamp this click so we can detect if a newer one fires before we resolve.
+      const seq = ++clickSeqRef.current;
 
       const { lat, lng } = e.latlng;
       setPosition([lat, lng]);
-      onMapClick(e.latlng);
+
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+          { signal: ctrl.signal },
+        );
+
+        // Discard if a newer click has already fired.
+        if (seq !== clickSeqRef.current) return;
+
+        // Guard against non-2xx responses before parsing JSON.
+        if (!res.ok) {
+          onMapClick(e.latlng, "Selected Location");
+          return;
+        }
+
+        const data = await res.json();
+        const addressName = data.display_name || "Selected Location";
+        onMapClick(e.latlng, addressName);
+      } catch (error) {
+        // Ignore errors caused by deliberately aborting the request.
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
+        onMapClick(e.latlng, "Selected Location");
+      }
     },
   });
 
@@ -246,6 +283,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   onMapClick = () => {},
   viewOnly = false,
   onPositionChange,
+  onSearchSelect,
   className,
 }) => {
   const [position, setPosition] = useState<[number, number]>(initialPosition);
@@ -258,18 +296,22 @@ const MapSearch: React.FC<MapComponentProps> = ({
   }, [position, onPositionChange]);
 
   // Handle search selection
-  const handleSearchSelect = (latlng: L.LatLng) => {
+  const handleSearchSelect = (latlng: L.LatLng, name: string) => {
     const newPos: [number, number] = [latlng.lat, latlng.lng];
     setPosition(newPos);
     setSearchLocation(latlng);
+    onSearchSelect?.({ lat: latlng.lat, lng: latlng.lng }, name);
   };
 
   // Handle map click
-  const handleMapClick = (latlng: { lat: number; lng: number }) => {
+  const handleMapClick = (
+    latlng: { lat: number; lng: number },
+    name: string,
+  ) => {
     // console.log("latlng :", latlng);
     const newPos: [number, number] = [latlng.lat, latlng.lng];
     setPosition(newPos);
-    onMapClick(latlng);
+    onMapClick(latlng, name);
   };
 
   return (
@@ -315,8 +357,8 @@ const MapSearch: React.FC<MapComponentProps> = ({
 
         <MapEventHandler
           disabled={viewOnly}
-          onMapClick={(data: { lat: number; lng: number }) => {
-            handleMapClick({ lat: data.lat, lng: data.lng });
+          onMapClick={(data: { lat: number; lng: number }, name: string) => {
+            handleMapClick({ lat: data.lat, lng: data.lng }, name);
           }}
           setPosition={setPosition}
         />

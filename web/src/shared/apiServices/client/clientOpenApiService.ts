@@ -19,6 +19,7 @@ import {
   type ClientCalculateJobPriceData,
   type ClientGetAssignmentDetailsData,
   type ClientGetCompanyInfoResponse,
+  type ClientGetJobsData,
   type ClientGetRateCardData,
   type ClientGetRateCardResponse,
   type ClientInviteEngineerResponse,
@@ -30,6 +31,7 @@ import {
   type GetClientBalanceResponse,
   type GetClientTransactionsData,
   type GetClientTransactionsError,
+  type ClientExploreEngineersData,
   type GetUserReportsData,
   type GetClientTransactionsResponse,
   type GetUserReportsResponses,
@@ -56,6 +58,8 @@ import {
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
   getJobLogsOptions,
+  clientExploreEngineersOptions,
+  clientGetPublicEngineerProfileOptions,
   submitReportMutation,
   getUserReportsOptions,
   clientGetJobsQueryKey,
@@ -243,10 +247,14 @@ export function useClientPostJob(options?: {
   });
 }
 
-export function useClientGetJobs(enabled: boolean = true) {
+export function useClientGetJobs(
+  jobStatus?: NonNullable<ClientGetJobsData["query"]>["jobStatus"],
+  enabled: boolean = true,
+) {
   return useQuery({
     ...clientGetJobsOptions({
       client: apiClient,
+      query: jobStatus ? { jobStatus } : undefined,
     }),
     enabled: enabled,
     staleTime: 0,
@@ -638,5 +646,41 @@ export function useClientJobOverviewDashboard(enabled: boolean = true) {
       client: apiClient,
     }),
     enabled: enabled,
+  });
+}
+
+export function useClientExploreEngineers(
+  query: ClientExploreEngineersData["query"] = {},
+  enabled: boolean = true,
+) {
+  // Forward the provided query object (including optional jobId) to the API hook.
+  return useQuery({
+    ...clientExploreEngineersOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+    staleTime: 0,
+  });
+}
+
+/**
+ * Hook for fetching a single engineer's public profile.
+ * Wraps the `/jobs/explore/engineers/{id}` endpoint.
+ *
+ * @param id - engineer ID from the route or other context
+ * @param enabled - whether the query should be active
+ */
+export function useClientGetPublicEngineerProfile(
+  id: number,
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...clientGetPublicEngineerProfileOptions({
+      client: apiClient,
+      path: { id },
+    }),
+    enabled: enabled && !!id,
+    staleTime: 0,
   });
 }
