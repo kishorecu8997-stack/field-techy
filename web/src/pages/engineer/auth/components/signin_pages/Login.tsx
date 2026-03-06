@@ -1,20 +1,11 @@
-import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import {
-  CheckboxInput,
-  InputField,
-  PasswordInput,
-} from "@/shared/components/commonUI/inputs";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
 import { validatePassword } from "@/shared/libs/utils";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useEngineerLogin } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import IconWithTheme from "@/shared/components/IconWithTheme";
 import TwoFASetup from "@/shared/components/TwoFASetup";
 import { UserRole } from "@/shared/enums/users";
 import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
@@ -24,10 +15,9 @@ import {
 } from "@/shared/store/useUserSessionStore";
 import { getTwoFaStorage } from "@/utils/TwoFAStorage";
 import { AxiosError } from "axios";
-import { CiMail } from "react-icons/ci";
 import { toast } from "react-toastify";
-import { type LoginEmailFormData } from "../../validations/LoginEmail";
-import type { LoginFormData } from "../types";
+import type { LoginEmailFormData } from "../../validations/LoginEmail";
+import { AuthLogin } from "@/shared/components/auth/AuthLogin";
 
 /**
  * Login component
@@ -48,6 +38,7 @@ const Login = ({
   const navigate = useNavigate();
 
   const setUserSession = useUserSessionStore((s) => s.setSession);
+  let currentEmail = ""; // Needed for useTwoFactorAuth
 
   const { mutateAsync: loginMutation, isPending: isLoggingIn } =
     useEngineerLogin({
@@ -74,7 +65,6 @@ const Login = ({
       },
       onError: (error) => {
         console.error(error);
-        // Skip showing toast for 401 errors as axios interceptor already handles it
         if (error instanceof AxiosError && error.response?.status === 401) {
           return;
         }
@@ -84,27 +74,18 @@ const Login = ({
       },
     });
 
-  const methods = useForm<LoginFormData>({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-  const email = methods.watch("email");
   const {
     isTwoFaOpen,
     setIsTwoFaOpen,
     otpauthUrl,
     handleSubmit: triggerTwoFA,
     verify,
-  } = useTwoFactorAuth(email, setUserSession, () => {
+  } = useTwoFactorAuth(currentEmail, setUserSession, () => {
     navigate(absoluteUrls.engineer.home.dashboard);
   });
 
-  /**
-   * handleSubmit
-   */
-  const handleSubmit = async (data: LoginEmailFormData) => {
+  const handleSubmit = async (data: any) => {
+    currentEmail = data.email;
     await loginMutation({
       body: {
         email: data.email,
@@ -115,77 +96,23 @@ const Login = ({
   };
 
   return (
-    <div className="flex items-center justify-center w-full">
-      <div className="p-10 w-full max-w-lg">
-        <div className="text-center mb-6">
-          <div className="flex justify-center mb-8">
-            <IconWithTheme
-              lightLogo={assetsConfig.logos.ftLogo}
-              darkLogo={assetsConfig.logos.ftLogoWhite}
-              className="h-15 w-20"
-            />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Sign In
-          </h2>
-          <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
-            Don't have an account?{" "}
-            <NavLink
-              to={absoluteUrls.engineer.auth.signup}
-              className="text-teal-900 dark:text-teal-300 underline font-semibold "
-            >
-              Sign Up
-            </NavLink>
-          </h2>
-        </div>
-        <FormContainer
-          methods={methods}
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-3 p-2 w-full"
-        >
-          <InputField name="email" label="Email ID" type="text" required />
-          <PasswordInput
-            name="password"
-            label="Password"
-            required
-            rules={{
-              required: "Password is required",
-              validate: (v) => validatePassword(v),
-            }}
-          />
-          <div className="flex items-center justify-between flex-wrap">
-            <CheckboxInput name="rememberMe" secondaryLabel="Remember me" />
-            <NavLink
-              className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
-              to={absoluteUrls.engineer.auth.forget_password}
-            >
-              Forgot Password?
-            </NavLink>
-          </div>
-          <Button
-            type="submit"
-            loading={isLoggingIn}
-            className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-          >
-            Submit
-          </Button>
-        </FormContainer>
-        <div
-          className="text-gray-900 dark:text-gray-300 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
-          onClick={() => setIsNumberLogin(true)}
-        >
-          <CiMail className="dark:text-gray-300 text-lg" />
-          Sign In with OTP
-        </div>
-        <Popup open={isTwoFaOpen} onClose={() => setIsTwoFaOpen(false)}>
-          <TwoFASetup
-            otpauthUrl={otpauthUrl}
-            onVerify={verify}
-            onClose={() => setIsTwoFaOpen(false)}
-          />
-        </Popup>
-      </div>
-    </div>
+    <>
+      <AuthLogin
+        isLoggingIn={isLoggingIn}
+        onEmailLoginSubmit={handleSubmit}
+        onOtpLoginClick={() => setIsNumberLogin(true)}
+        signUpUrl={absoluteUrls.engineer.auth.signup}
+        forgetPasswordUrl={absoluteUrls.engineer.auth.forget_password}
+        validatePasswordRule={true}
+      />
+      <Popup open={isTwoFaOpen} onClose={() => setIsTwoFaOpen(false)}>
+        <TwoFASetup
+          otpauthUrl={otpauthUrl}
+          onVerify={verify}
+          onClose={() => setIsTwoFaOpen(false)}
+        />
+      </Popup>
+    </>
   );
 };
 
