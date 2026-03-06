@@ -76,6 +76,12 @@ export interface TimelineItem {
     updatedAt?: string;
     status: string;
   }>;
+  // Break request specific fields
+  startDate?: string; // Formatted time range for short breaks or date range for long breaks
+  endDate?: string;
+  breakType?: "short_term" | "long_term";
+  duration?: string; // Calculated duration of the break
+  detailsLabel?: string; // Label for the details button (e.g., "Break Details")
 }
 
 /**
@@ -253,30 +259,130 @@ export const transformLogsToTimelineItems = (
 };
 
 /**
+ * Format time only from a date string (for short term breaks)
+ */
+export const formatTimeOnly = (dateStr: string | null | undefined): string => {
+  if (!dateStr) return "--:--";
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } catch {
+    return "--:--";
+  }
+};
+
+/**
+ * Format date only from a date string (for long term breaks)
+ */
+export const formatDateOnly = (dateStr: string | null | undefined): string => {
+  if (!dateStr) return "--/--/----";
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  } catch {
+    return "--/--/----";
+  }
+};
+
+/**
+ * Calculate duration between two ISO date strings
+ * For short term breaks: returns time duration (e.g., "2 hours 30 minutes")
+ * For long term breaks: returns date duration (e.g., "3 days")
+ */
+export const calculateBreakDuration = (
+  startDateStr: string | null | undefined,
+  endDateStr: string | null | undefined,
+  breakType: "short_term" | "long_term" | undefined,
+): string => {
+  if (!startDateStr || !endDateStr) return "";
+
+  try {
+    const start = new Date(startDateStr);
+    const end = new Date(endDateStr);
+    const diffMs = end.getTime() - start.getTime();
+
+    if (breakType === "short_term") {
+      // Calculate time duration
+      const diffMinutes = Math.floor(diffMs / (1000 * 60));
+      const hours = Math.floor(diffMinutes / 60);
+      const minutes = diffMinutes % 60;
+
+      let durationText = "";
+      if (hours > 0) durationText += `${hours} hour${hours > 1 ? "s" : ""}`;
+      if (minutes > 0) {
+        if (durationText) durationText += " ";
+        durationText += `${minutes} minute${minutes > 1 ? "s" : ""}`;
+      }
+      return durationText || "0 minutes";
+    } else {
+      // Calculate date duration (long term breaks)
+      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+      return `${diffDays} day${diffDays > 1 ? "s" : ""}`;
+    }
+  } catch {
+    return "";
+  }
+};
+
+/**
  * Transform break requests to timeline items
  * Uses createdAt as effectiveTimestamp for proper sorting
+ * Shows time for short_term breaks and date for long_term breaks
  */
 export const transformBreakRequestsToItems = (
   breakRequests: GetJobLogsResponse["breakRequests"],
 ): TimelineItem[] => {
   if (!breakRequests) return [];
-  return breakRequests.map((br) => ({
-    title: `${br.type === "short_term" ? "Short Term" : "Long Term"} Break`,
-    timestamp: formatApiDate(br.createdAt),
-    effectiveTimestamp: br.createdAt || undefined,
-    statusText: br.status.charAt(0).toUpperCase() + br.status.slice(1),
-    statusColor:
-      br.status === "approved"
-        ? "#22c55e"
-        : br.status === "rejected"
-          ? "#ef4444"
-          : "#f59e0b",
-    accentColor: "#8b5cf6",
-    details: br.reason,
-    startDate: br.startAt,
-    endDate: br.endAt,
-    approverComment: br.approverComment || undefined,
-  }));
+  return breakRequests.map((br) => {
+    // Format start and end based on break type - show both time and date
+    const formatStartEnd = () => {
+      const startTime = formatTimeOnly(br.startAt);
+      const endTime = formatTimeOnly(br.endAt);
+      const startDate = formatDateOnly(br.startAt);
+      const endDate = formatDateOnly(br.endAt);
+
+      if (br.type === "short_term") {
+        // Short term: show time and date
+        return `${startTime} - ${endTime} (${startDate})`;
+      } else {
+        // Long term: show date and time
+        return `${startDate} - ${endDate} (${startTime} - ${endTime})`;
+      }
+    };
+
+    // Calculate duration
+    const duration = calculateBreakDuration(br.startAt, br.endAt, br.type);
+
+    return {
+      title: `${br.type === "short_term" ? "Short Term" : "Long Term"} Break`,
+      timestamp: formatApiDate(br.createdAt),
+      effectiveTimestamp: br.createdAt || undefined,
+      statusText: br.status.charAt(0).toUpperCase() + br.status.slice(1),
+      statusColor:
+        br.status === "approved"
+          ? "#22c55e"
+          : br.status === "rejected"
+            ? "#ef4444"
+            : "#f59e0b",
+      accentColor: "#8b5cf6",
+      details: br.reason,
+      detailsType: "break", // Mark this as a break item for ProgressUpdateItem to recognize
+      startDate: formatStartEnd(), // Use formatted display string with time and date
+      endDate: br.endAt,
+      approverComment: br.approverComment || undefined,
+      breakType: br.type,
+      duration: duration,
+      detailsLabel: "Break Details", // Label for the details button
+    };
+  });
 };
 
 /**

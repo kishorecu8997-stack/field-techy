@@ -49,7 +49,10 @@ export default function DisputeManagement({
 
   const displayDisputes = [
     { title: "Active Disputes", value: disputeData.active.toLocaleString() },
-    { title: "Resolved Disputes", value: disputeData.resolved.toLocaleString() },
+    {
+      title: "Resolved Disputes",
+      value: disputeData.resolved.toLocaleString(),
+    },
     { title: "Pending Disputes", value: disputeData.pending.toLocaleString() },
   ];
 

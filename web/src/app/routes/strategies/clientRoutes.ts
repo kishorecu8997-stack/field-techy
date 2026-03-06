@@ -143,7 +143,7 @@ export class ClientRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.PostAJobPage),
           },
           {
-            path: urls.client.home.client_Explore_engineers_details,
+            path: `${urls.client.home.client_Explore_engineers_details}/:id`,
             element: withSuspense(Components.ClientExploreEngDetails),
           },
           {
@@ -155,7 +155,7 @@ export class ClientRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.ClientInviteEngineers),
           },
           {
-            path: urls.client.home.ClientJobInvite,
+            path: `${urls.client.home.ClientJobInvite}/:engineerId`,
             element: withSuspense(Components.ClientJobInvite),
           },
           {

@@ -382,7 +382,7 @@ const JobTabSection = ({
     {
       label: JOB_TAB_LABELS.jobOverview,
       content: jobOverview ? (
-        <JobOverviewSection {...jobOverview} />
+        <JobOverviewSection {...jobOverview} userType="engineer" />
       ) : (
         <JobInfoSection
           jobInfo={jobInfo || { jobTitle: "", terms: { items: [] }, files: [] }}
