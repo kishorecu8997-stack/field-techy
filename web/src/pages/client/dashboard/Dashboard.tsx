@@ -24,38 +24,6 @@ import ServiceCategoryCard from "./components/ServiceCategoryCard";
 import { scrollToTop } from "@/utils";
 import type { JobOverview } from "./type";
 
-// Local image assets from src/assets/category
-import categoryCloud from "@/assets/category/category_cloud.jpg";
-import categoryNetworks from "@/assets/category/category_networks.jpg";
-import categorySoftware from "@/assets/category/category_software.jpg";
-import categoryEnd from "@/assets/category/category_end.jpg";
-import categoryCyber from "@/assets/category/category_cyber.jpg";
-
-// Array of images to cycle through for different categories
-const categoryImages = [
-  categoryNetworks,
-  categoryCyber,
-  categoryCloud,
-  categorySoftware,
-  categoryEnd,
-];
-
-// Get image for a category - uses partial matching and cycles through images for others
-const getCategoryImage = (name: string, id: number): string => {
-  const lowerName = name.toLowerCase();
-
-  // Check for partial matches first
-  if (lowerName.includes("network")) return categoryNetworks;
-  if (lowerName.includes("cyber")) return categoryCyber;
-  if (lowerName.includes("cloud")) return categoryCloud;
-  if (lowerName.includes("software")) return categorySoftware;
-  if (lowerName.includes("end")) return categoryEnd;
-
-  // For other categories, cycle through images based on category ID
-  const fallbackIndex = (id - 1) % categoryImages.length;
-  return categoryImages[fallbackIndex];
-};
-
 // Custom hook to fetch engineer count for a specific category
 const useEngineerCountByCategory = (categoryId: number) => {
   const { data, isLoading } = useClientExploreEngineers(
@@ -76,7 +44,6 @@ const CategoryWithCount: React.FC<CategoryWithCountProps> = ({
   categoryName,
 }) => {
   const { count, isLoading } = useEngineerCountByCategory(categoryId);
-  const image = getCategoryImage(categoryName, categoryId);
 
   return (
     <ServiceCategoryCard
@@ -89,7 +56,6 @@ const CategoryWithCount: React.FC<CategoryWithCountProps> = ({
             ? `${count} Engineers`
             : "No engineers"
       }
-      image={image}
       categoryId={categoryId}
     />
   );
