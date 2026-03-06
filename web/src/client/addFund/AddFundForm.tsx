@@ -3,6 +3,8 @@ import {
   useClientBalance,
   useCreatePaymentIntent,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -49,8 +51,9 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
   const [formError, setFormError] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
+  const queryClient = useQueryClient();
   const { mutateAsync, isPending: isCreatingIntent } = useCreatePaymentIntent();
-  const { data: balanceArr, isLoading: isBalanceLoading } = useClientBalance();
+  const { data: balanceArr, isLoading: isBalanceLoading, refetch: refetchBalance } = useClientBalance();
   const balance = Array.isArray(balanceArr) ? balanceArr[0] : balanceArr;
   const currencyCode = balance?.currencyCode?.toLowerCase() || "gbp";
   const isLoading = isCreatingIntent || isProcessingPayment || isBalanceLoading;
@@ -96,7 +99,43 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
       }
       const status = result.paymentIntent?.status;
       if (status === "succeeded") {
-        success("Payment successful");
+        const previousBalance = Number(balance?.balance) || 0;
+        const maxAttempts = 10;
+        const delayMs = 1000;
+        let updated = false;
+
+        // Try refetching the balance a few times to wait for webhook/server-side update
+        for (let i = 0; i < maxAttempts; i++) {
+          try {
+            const res = await refetchBalance();
+            const arr = res.data as unknown;
+            let fetched: { balance?: string | number } | undefined;
+            if (Array.isArray(arr)) {
+              fetched = arr[0] as { balance?: string | number } | undefined;
+            } else {
+              fetched = arr as { balance?: string | number } | undefined;
+            }
+            const newBalance = Number(fetched?.balance) || 0;
+            if (newBalance !== previousBalance) {
+              updated = true;
+              break;
+            }
+          } catch (e) {
+            console.error("Error fetching balance, will retry", e);
+            // ignore and retry
+          }
+          await new Promise((r) => setTimeout(r, delayMs));
+        }
+
+        // Ensure queries are invalidated so active consumers refetch
+        void queryClient.invalidateQueries({ queryKey: queryKeys.client.balance });
+
+        if (updated) {
+          success("Payment successful");
+        } else {
+          success("Payment successful. Balance will update shortly.");
+        }
+
         onClose();
       } else if (status === "processing") {
         success("Payment is processing. Your balance will be updated shortly.");

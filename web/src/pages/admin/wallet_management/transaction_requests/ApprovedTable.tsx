@@ -5,6 +5,8 @@ import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { useAdminGetPendingPayments } from "@/shared/apiServices/admin/adminOpenApiService";
+import { formatAmount } from "@/utils/currency";
+
 
 type TransactionRequest = {
   assignmentId: number;
@@ -16,7 +18,7 @@ type TransactionRequest = {
   engineerName: string;
   engineerProfileUrl?: string | null;
   submittedAt?: string | null;
-  status?: "pending" | "approved" | "rejected";
+  currencySymbol: string;
 };
 
 /**
@@ -66,7 +68,8 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
         row.amount?.toLowerCase().includes(term) ||
         row.jobId.toString().includes(term) ||
         row.assignmentId.toString().includes(term) ||
-        row.submittedAt?.toLowerCase().includes(term)
+        row.submittedAt?.toLowerCase().includes(term) ||
+        row.currencySymbol?.toLowerCase().includes(term)
       );
     });
   }, [apiItems, search]);
@@ -118,8 +121,7 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
 
         return (
           <span className="font-medium">
-            £{""}
-            {amountNum.toLocaleString("en-IN")}
+            {formatAmount(amountNum, row.currencySymbol)}
           </span>
         );
       },
@@ -141,7 +143,7 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
       renderCell: (row: TransactionRequest) => {
         if (!row.submittedAt) return "—";
 
-        return new Date(row.submittedAt).toLocaleString("en-GB", {
+        return new Date(row.submittedAt).toLocaleString("en-IN", {
           day: "2-digit",
           month: "short",
           year: "numeric",

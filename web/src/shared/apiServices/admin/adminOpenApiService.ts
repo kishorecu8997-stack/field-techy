@@ -138,8 +138,11 @@ import {
   adminDownloadInvoiceOptions,
   adminUpdateTransactionRequestStatusMutation,
   adminGetPendingPaymentsOptions,
+  adminGetPendingPaymentsQueryKey,
   adminApprovePaymentMutation,
 } from "@/api/@tanstack/react-query.gen";
+
+export { adminGetPendingPaymentsQueryKey };
 import {
   useMutation,
   useQuery,

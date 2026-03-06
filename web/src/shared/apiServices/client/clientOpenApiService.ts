@@ -57,15 +57,17 @@ import {
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
   createPaymentIntentMutation,
+  getClientBalanceOptions,
   getJobLogsOptions,
   getUserReportsOptions,
   submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useClientBalanceStoreSync, useClientWalletStore } from "@/shared/store/useClientWalletStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
+import { apiClient } from "../apiClient";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
@@ -148,7 +150,28 @@ export function useClientUpdateCompanyInfo(options?: {
 }
 
 export function useClientBalance(enabled: boolean = true) {
-  return useClientBalanceStoreSync(enabled);
+  const session = useUserSessionStore((state) => state.session);
+  const role = session?.role;
+  const isClient = role === "CLIENT" || role === "client";
+
+  const query = useQuery({
+    ...getClientBalanceOptions({ client: apiClient }),
+    enabled: enabled && isClient,
+    queryKey: queryKeys.client.balance,
+    staleTime: 0, // Ensure we always get fresh balance when requested
+  });
+
+  // Sync with Zustand store for any legacy components
+  useEffect(() => {
+    if (query.data) {
+      useClientWalletStore.setState({
+        balanceArr: query.data,
+        fetched: true,
+      });
+    }
+  }, [query.data]);
+
+  return query;
 }
 
 // create-payment-intent for wallet top-up stripe integration
@@ -161,6 +184,8 @@ export function useCreatePaymentIntent(options?: {
     ...createPaymentIntentMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      // Ensure the balance query is invalidated so consumers read fresh data
+      void queryClient.invalidateQueries({ queryKey: queryKeys.client.balance }, { refetchType: "active" });
       useClientWalletStore.getState().fetchBalance();
       options?.onSuccess?.(data);
     },

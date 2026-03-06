@@ -1,8 +1,6 @@
 import { create } from "zustand";
-import { useEffect } from "react";
 import { getClientBalance } from "@/api";
 import { apiClient } from "@/shared/apiServices/apiClient";
-import { useUserSessionStore } from "./useUserSessionStore";
 import type { GetClientBalanceResponse } from "@/api";
 
 interface ClientWalletStore {
@@ -34,32 +32,3 @@ export const useClientWalletStore = create<ClientWalletStore>((set, get) => ({
     },
     clearBalance: () => set({ balanceArr: null, fetched: false }),
 }));
-
-/**
- * Custom hook to get the client balance.
- * Automatically triggers a fetch from the API if the balance is missing
- * but we have a valid session ID.
- */
-export const useClientBalanceStoreSync = (enabled: boolean = true) => {
-    const session = useUserSessionStore((state) => state.session);
-    const balanceArr = useClientWalletStore((state) => state.balanceArr);
-    const fetched = useClientWalletStore((state) => state.fetched);
-    const loading = useClientWalletStore((state) => state.loading);
-    const fetchBalance = useClientWalletStore((state) => state.fetchBalance);
-
-    useEffect(() => {
-        const role = session?.role;
-        if (enabled && (role === "CLIENT" || role === "client")) {
-            if (!fetched && !loading) {
-                fetchBalance();
-            }
-        }
-    }, [session?.role, fetched, loading, fetchBalance, enabled]);
-
-    // Support typical react query destructuring `{ data, isLoading, refetch }`
-    return {
-        data: balanceArr,
-        isLoading: loading,
-        refetch: fetchBalance,
-    };
-};

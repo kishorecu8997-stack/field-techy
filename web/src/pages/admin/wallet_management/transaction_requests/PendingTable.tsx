@@ -9,10 +9,13 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import {
   useAdminGetPendingPayments,
   useAdminApprovePayment,
+  adminGetPendingPaymentsQueryKey,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { toast } from "react-toastify";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
+import { apiClient } from "@/shared/apiServices/apiClient";
 import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
+import { formatAmount } from "@/utils/currency";
 
 /**
  * PendingTable Component
@@ -31,6 +34,7 @@ type TransactionRequest = {
   engineerName: string;
   engineerProfileUrl?: string | null;
   submittedAt?: string | null;
+  currencySymbol: string;
 };
 
 interface TransactionRequestsQueryData {
@@ -93,7 +97,8 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         row.amount?.toLowerCase().includes(term) ||
         row.jobId.toString().includes(term) ||
         row.assignmentId.toString().includes(term) ||
-        row.submittedAt?.toLowerCase().includes(term)
+        row.submittedAt?.toLowerCase().includes(term) ||
+        row.currencySymbol?.toLowerCase().includes(term)
       );
     });
   }, [apiItems, search]);
@@ -104,15 +109,15 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
     async (row: TransactionRequest, newStatus: "approve" | "reject") => {
       if (!newStatus) return;
 
-      const queryKey: QueryKey = [
-        "adminGetPendingPayments",
-        {
+      const queryKey = adminGetPendingPaymentsQueryKey({
+        client: apiClient,
+        query: {
           limit,
           page,
           status: "pending",
           regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
         },
-      ];
+      }) as unknown as QueryKey;
 
       const previousData =
         queryClient.getQueryData<TransactionRequestsQueryData>(queryKey);
@@ -214,8 +219,8 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
 
         return (
           <span className="font-medium">
-            £{""}
-            {amountNum.toLocaleString("en-IN")}
+            {/* {amountNum.toLocaleString("en-IN")} */}
+            {formatAmount(amountNum, row.currencySymbol)}
           </span>
         );
       },
