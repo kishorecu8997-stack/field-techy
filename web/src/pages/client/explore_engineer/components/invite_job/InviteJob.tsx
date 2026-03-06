@@ -1,7 +1,10 @@
 import { absoluteUrls } from "@/config/urls";
 import { earningsData } from "@/dummy_data/jobDetails";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
-import { useClientGetJobs, useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useClientGetJobs,
+  useClientInviteEngineer,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -36,14 +39,13 @@ const InviteJob: React.FC = () => {
   }, [currentPage]);
 
   // lookup for location names (single fetch for whole page)
-const { data: countries } = useCountries();
-const { data: states } = useStates();
-const { data: cities } = useCities();
+  const { data: countries } = useCountries();
+  const { data: states } = useStates();
+  const { data: cities } = useCities();
 
   const { data: jobsData } = useClientGetJobs("Posted");
 
-  const { mutateAsync: inviteEngineer } = useClientInviteEngineer({ 
-    });
+  const { mutateAsync: inviteEngineer } = useClientInviteEngineer({});
 
   const methods = useForm<SelectedJobCardId>({
     defaultValues: {
@@ -69,8 +71,8 @@ const { data: cities } = useCities();
       return;
     }
     try {
-       const invitations = data.id.map((jobId) =>
-        inviteEngineer({ body: { jobId, engineerId: engineer } })
+      const invitations = data.id.map((jobId) =>
+        inviteEngineer({ body: { jobId, engineerId: engineer } }),
       );
       await Promise.all(invitations);
       toast.success(`Invitation sent successfully`);
@@ -90,8 +92,9 @@ const { data: cities } = useCities();
 
   const itemsPerPage = 6;
   // only show jobs that are currently in posted status
-  const postedJobs = (jobsData || [])
-    .filter((j) => j.status?.toLowerCase() === "posted")
+  const postedJobs = (jobsData || []).filter(
+    (j) => j.status?.toLowerCase() === "posted",
+  );
   const totalPages = Math.ceil(postedJobs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedJobs = postedJobs.slice(startIndex, startIndex + itemsPerPage);
@@ -112,19 +115,19 @@ const { data: cities } = useCities();
   }));
 
   const getLocationString = (job: any) => {
-  if (job.location) return job.location;
+    if (job.location) return job.location;
 
-  const countryName = countries?.find((c) => c.id === job.countryId)?.name;
-  const stateName = states?.find((s) => s.id === job.stateId)?.name;
-  const cityName = cities?.find((c) => c.id === job.cityId)?.name;
+    const countryName = countries?.find((c) => c.id === job.countryId)?.name;
+    const stateName = states?.find((s) => s.id === job.stateId)?.name;
+    const cityName = cities?.find((c) => c.id === job.cityId)?.name;
 
-  const parts: string[] = [];
-  if (cityName) parts.push(cityName);
-  if (stateName) parts.push(stateName);
-  if (countryName) parts.push(countryName);
+    const parts: string[] = [];
+    if (cityName) parts.push(cityName);
+    if (stateName) parts.push(stateName);
+    if (countryName) parts.push(countryName);
 
-  return parts.join(", ");
-};
+    return parts.join(", ");
+  };
 
   const handleToggle = (jobId: number) => {
     const currentIds = getValues("id");

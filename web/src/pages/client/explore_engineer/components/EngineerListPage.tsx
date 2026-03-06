@@ -17,7 +17,10 @@ interface EngineerListPageProps {
  * The component manages its own state for theme, category selection, and pagination.
  * @returns {React.ReactElement} The rendered engineer list page.
  */
-const EngineerListPage: React.FC<EngineerListPageProps> = ({ filters, onTotalEngineerCountChange }) => {
+const EngineerListPage: React.FC<EngineerListPageProps> = ({
+  filters,
+  onTotalEngineerCountChange,
+}) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   useEffect(() => {
     scrollToTop();
@@ -57,10 +60,10 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({ filters, onTotalEng
   );
   const engineers = data?.data ?? [];
   const totalPages = Math.ceil((data?.total ?? 0) / itemsPerPage);
-  
+
   // Notify parent of total engineer count
   useEffect(() => {
-    if (onTotalEngineerCountChange && data?.total !=null) {
+    if (onTotalEngineerCountChange && data?.total != null) {
       onTotalEngineerCountChange(data.total);
     }
   }, [data?.total, onTotalEngineerCountChange]);
@@ -79,7 +82,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({ filters, onTotalEng
   if (isLoading) {
     return <div className="text-center py-10">Loading engineers...</div>;
   }
-  
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
