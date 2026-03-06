@@ -35,6 +35,7 @@ const ManageJobDetails = () => {
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
           title="Job Details"
+          isShowSort={false}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
         />

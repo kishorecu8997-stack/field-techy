@@ -57,7 +57,6 @@ const ChatLayout: React.FC = () => {
       <MyJobsHeader
         title="Chat"
         isShowSort={false}
-        isReport={false}
         action={
           <div>
             <ChatModeToggle mode={mode} onChange={setMode} />

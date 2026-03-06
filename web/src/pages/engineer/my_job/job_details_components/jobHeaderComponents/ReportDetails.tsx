@@ -246,7 +246,6 @@ const ReportDetails: React.FC = () => {
       <div className="sticky top-20 z-20">
         <MyJobsHeader
           title="Engineer Report Updates"
-          isReport={false}
           isShowSort={false}
           isShowBreadcrumb
         />
