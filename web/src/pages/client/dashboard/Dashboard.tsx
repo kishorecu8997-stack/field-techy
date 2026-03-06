@@ -1,11 +1,13 @@
 import { absoluteUrls } from "@/config/urls";
-import { jobOverviewData, serviceCategoriesData } from "@/dummy_data/dashboard";
+import { jobOverviewData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
 import {
   useClientGetCompanyInfo,
   useClientJobOverviewDashboard,
+  useClientExploreEngineers,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useFCM } from "@/shared/hooks/useFCM";
@@ -22,6 +24,43 @@ import ServiceCategoryCard from "./components/ServiceCategoryCard";
 import { scrollToTop } from "@/utils";
 import type { JobOverview } from "./type";
 
+// Custom hook to fetch engineer count for a specific category
+const useEngineerCountByCategory = (categoryId: number) => {
+  const { data, isLoading } = useClientExploreEngineers(
+    { page: 1, limit: 1, serviceCategoryId: categoryId },
+    true,
+  );
+  return { count: data?.total ?? 0, isLoading };
+};
+
+// Component to display category with engineer count
+interface CategoryWithCountProps {
+  categoryId: number;
+  categoryName: string;
+}
+
+const CategoryWithCount: React.FC<CategoryWithCountProps> = ({
+  categoryId,
+  categoryName,
+}) => {
+  const { count, isLoading } = useEngineerCountByCategory(categoryId);
+
+  return (
+    <ServiceCategoryCard
+      id={categoryId}
+      name={categoryName}
+      engineers={
+        isLoading
+          ? "Loading..."
+          : count > 0
+            ? `${count} Engineers`
+            : "No engineers"
+      }
+      categoryId={categoryId}
+    />
+  );
+};
+
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
  * It displays an overview of jobs, service categories, and in-progress jobs.
@@ -34,6 +73,11 @@ const Dashboard: React.FC = () => {
   const { checkPermission: checkNotificationPermission } = useFCM();
   const { setCompanyInfo } = useClientCompanyInfoStore();
   const { data: clientInfo } = useClientGetCompanyInfo();
+
+  // Fetch service categories from API
+  const { data: serviceCategoriesData, isLoading: isLoadingCategories } =
+    useLookupData("serviceCategories");
+
   useEffect(() => {
     if (clientInfo) {
       setCompanyInfo(clientInfo);
@@ -108,14 +152,33 @@ const Dashboard: React.FC = () => {
                 </nav>
               </div>
 
-              <NavLink
-                to={absoluteUrls.client.home.client_Explore_engineers}
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 cursor-pointer hover:text-teal-800 text-[1rem] whitespace-nowrap"
-              >
-                {serviceCategoriesData.map((category) => (
-                  <ServiceCategoryCard key={category.id} {...category} />
-                ))}
-              </NavLink>
+              {isLoadingCategories ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div
+                      key={i}
+                      className="rounded-xl overflow-hidden shadow-md animate-pulse"
+                    >
+                      <div className="w-full h-48 bg-gray-300 dark:bg-gray-700" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                  {serviceCategoriesData?.slice(0, 5).map((category) => (
+                    <NavLink
+                      key={category.id}
+                      to={`${absoluteUrls.client.home.client_Explore_engineers}?category=${category.id}`}
+                      onClick={() => scrollToTop()}
+                    >
+                      <CategoryWithCount
+                        categoryId={category.id}
+                        categoryName={category.name}
+                      />
+                    </NavLink>
+                  ))}
+                </div>
+              )}
             </div>
             <div>
               <div className="flex justify-between items-center mb-4">
