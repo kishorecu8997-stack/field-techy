@@ -39,7 +39,7 @@ interface JobCardProps {
     personName?: string | null;
     name?: string | null; // fallbacks
   } | null;
-  allocationType?: "Automatic" | "Manual";
+  // allocationType?: "Automatic" | "Manual";
   [key: string]: unknown;
 }
 
@@ -49,7 +49,7 @@ interface JobCardProps {
  */
 const JobCard: React.FC<JobCardProps> = (props) => {
   const {
-    allocationType = "Automatic",
+    // allocationType = "Automatic",
     id,
     jobTitle,
     status,
@@ -132,7 +132,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
           <MdLocationPin className="h-4 w-4 flex-shrink-0" />
-          <span className="truncate">{workLocationName || "N/A"}</span>
+          <span className="truncate">{workLocationName ?? "N/A"}</span>
         </div>
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
@@ -143,7 +143,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       <div className="mt-3">
         <JobStatusBadge status={status as any} />
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
-          <span className="font-medium">Allocation:</span> {allocationType}
+          {/* <span className="font-medium">Allocation:</span> {allocationType} */}
         </div>
       </div>
     </Link>
