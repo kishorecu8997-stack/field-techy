@@ -279,6 +279,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             activeTab={activeTab}
             allCardsApproved={allCardsApproved}
             jobStatus={status}
+            numberOfVacancy={numberOfVacancy}
+            numberOfApprovedProposals={numberOfApprovedProposals}
           />
         ) : (
           <EngineersActions
