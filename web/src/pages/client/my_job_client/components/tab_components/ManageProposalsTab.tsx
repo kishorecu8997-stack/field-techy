@@ -191,6 +191,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
     "submit_pending_approval",
     "submitted",
     "rejected",
+    "invited",
   ];
   const remainingProposals = sortedAssignments.filter(
     (proposal) =>

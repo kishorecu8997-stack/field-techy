@@ -60,7 +60,7 @@ export const CheckboxInput = ({
                 id={name}
                 checked={field.value || false}
                 aria-controls="endDateSection"
-                className="mt-[2px] accent-primary dark:accent-gray-400"
+                className="mt-[2px] [&:not(:checked)]:accent-gray-400 [&:checked]:accent-gray-500 dark:[&:not(:checked)]:accent-gray-900 dark:[&:checked]:accent-gray-200 cursor-pointer"
                 disabled={disabled}
                 onBlur={(e) => {
                   field.onBlur();

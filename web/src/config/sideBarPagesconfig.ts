@@ -195,24 +195,24 @@ const FeedbackFromEngineer = React.lazy(
 );
 
 /**
- * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
- * Used for dynamically rendering account settings and profile-related UI sections.
+ * Configuration object for all section routes used in account, profile,
+ * wallet, and settings pages.
  *
- * Structure:
- * - `key`: Unique identifier for the section/route.
- * - `component`: React component (or placeholder string during development) to render.
- * - `title`: Display name for the section in UI (e.g., navigation, breadcrumbs).
- * - `parent` (optional): Key of the parent section for hierarchical organization.
+ * Each key represents a unique section in the application UI.
+ * The configuration defines:
+ * - component: React component that should be rendered for the section
+ * - title: Display title used in headers or navigation
+ * - parent (optional): Parent section key used to build nested navigation
+ * - actions (optional): Additional action component rendered in the section header
  *
- * @type {Record<string, { component: React.ComponentType<any> | string; title: string; parent?: string; }>}
- *
- * Sorted alphabetically by key:
+ * This configuration allows dynamic rendering of sections without
+ * hardcoding components in the layout.
  */
 export const sectionConfig: Record<
   string,
   {
     component: React.ComponentType<any> | string;
-    title: string;
+    title: string | ((clientType?: string) => string);
     parent?: string;
     actions?: React.ReactNode | React.ComponentType;
   }
@@ -367,7 +367,10 @@ export const sectionConfig: Record<
   clientAccount: { component: ClientAccountDrawerMenu, title: "My Profile" },
   company: {
     component: ClientPersonalInformation,
-    title: "Company Information",
+    title: (clientType) =>
+      clientType === "corporate" || clientType === "CORPORATE"
+        ? "Company Information"
+        : "Personal Information",
     parent: "clientAccount",
   },
 
