@@ -86,11 +86,11 @@ const EngineerProfile: React.FC = () => {
       <div className="container mx-auto px-4 ">
         <div className="w-full sticky top-16 z-10 ">
           <MyJobsHeader
-            title="Explore Engineers"
+            title="Engineer Profile"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowSort={false}
             isShowBreadcrumb={false}
-            description={`${profile.name} - ${profile.jobTitle}`}
+            description={`${profile.name}`}
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
