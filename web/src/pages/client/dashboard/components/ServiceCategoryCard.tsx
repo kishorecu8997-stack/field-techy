@@ -15,16 +15,14 @@ interface ServiceCategoryCardProps extends ServiceCategory {
  */
 const ServiceCategoryCard: React.FC<ServiceCategoryCardProps> = ({
   name,
-  engineers
+  engineers,
 }) => {
-    return (
-      <div className="relative rounded-xl overflow-hidden shadow-md transition-transform duration-300 hover:scale-105 bg-emerald-900 from-teal-600 to-teal-800 h-48 flex flex-col justify-center items-center p-4">
-        <h3 className="text-white font-bold text-lg text-center">{name}</h3>
-        {engineers && (
-          <p className="text-green-300 text-sm mt-1">{engineers}</p>
-        )}
-      </div>
-    );
-  };
+  return (
+    <div className="relative rounded-xl overflow-hidden shadow-md transition-transform duration-300 hover:scale-105 bg-emerald-900 from-teal-600 to-teal-800 h-48 flex flex-col justify-center items-center p-4">
+      <h3 className="text-white font-bold text-lg text-center">{name}</h3>
+      {engineers && <p className="text-green-300 text-sm mt-1">{engineers}</p>}
+    </div>
+  );
+};
 
 export default ServiceCategoryCard;
