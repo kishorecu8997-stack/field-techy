@@ -58,6 +58,7 @@ import {
   clientUpdateCompanyInfoMutation,
   createPaymentIntentMutation,
   getClientBalanceOptions,
+  getClientBalanceQueryKey,
   getJobLogsOptions,
   getUserReportsOptions,
   submitReportMutation,
@@ -157,7 +158,7 @@ export function useClientBalance(enabled: boolean = true) {
   const query = useQuery({
     ...getClientBalanceOptions({ client: apiClient }),
     enabled: enabled && isClient,
-    queryKey: queryKeys.client.balance,
+    queryKey: getClientBalanceQueryKey({ client: apiClient }),
     staleTime: 0, // Ensure we always get fresh balance when requested
   });
 
@@ -184,8 +185,7 @@ export function useCreatePaymentIntent(options?: {
     ...createPaymentIntentMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
-      // Ensure the balance query is invalidated so consumers read fresh data
-      void queryClient.invalidateQueries({ queryKey: queryKeys.client.balance }, { refetchType: "active" });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.client.balance, refetchType: "active" });
       useClientWalletStore.getState().fetchBalance();
       options?.onSuccess?.(data);
     },
