@@ -80,23 +80,23 @@ export default function InactiveUser() {
     );
   }, [engineerData, selectedFile]);
 
-    const filteredEngineers = useMemo(() => {
-      if (!search.trim()) return engineerData;
+  const filteredEngineers = useMemo(() => {
+    if (!search.trim()) return engineerData;
 
-      const term = search.toLowerCase();
+    const term = search.toLowerCase();
 
-      return engineerData.filter((engineer) =>
-        [
-          engineer.engineerCode,
-          engineer.name,
-          engineer.email,
-          engineer.phoneNumber,
-          engineer.location,
-        ]
-          .filter(Boolean)
-          .some((value) => value!.toLowerCase().includes(term)),
-      );
-    }, [engineerData, search]);
+    return engineerData.filter((engineer) =>
+      [
+        engineer.engineerCode,
+        engineer.name,
+        engineer.email,
+        engineer.phoneNumber,
+        engineer.location,
+      ]
+        .filter(Boolean)
+        .some((value) => value!.toLowerCase().includes(term)),
+    );
+  }, [engineerData, search]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 

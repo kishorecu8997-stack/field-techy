@@ -71,7 +71,8 @@ const InvitedJob: React.FC = () => {
     },
     { enabled: hasValidUserId },
   );
-  const chartJobs = (engineerHistoryForChart?.data ?? []) as EngineerAssignment[];
+  const chartJobs = (engineerHistoryForChart?.data ??
+    []) as EngineerAssignment[];
 
   const jobs: EngineerAssignment[] = useMemo(
     () => (engineerHistory?.data ?? []) as EngineerAssignment[],

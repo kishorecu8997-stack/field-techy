@@ -66,24 +66,24 @@ export default function SuspendedUser() {
   }, [engineerData, selectedFile]);
 
   const filteredEngineers = useMemo(() => {
-  if (!search.trim()) return engineerData;
+    if (!search.trim()) return engineerData;
 
-  const term = search.toLowerCase();
+    const term = search.toLowerCase();
 
-  return engineerData.filter((engineer) =>
-    [
-      engineer.engineerCode,
-      engineer.name,
-      engineer.email,
-      engineer.phoneNumber,
-      engineer.location,
-      engineer.cityName,
-      engineer.countryName,
-    ]
-      .filter(Boolean)
-      .some((value) => value!.toLowerCase().includes(term)),
-  );
-}, [engineerData, search]);
+    return engineerData.filter((engineer) =>
+      [
+        engineer.engineerCode,
+        engineer.name,
+        engineer.email,
+        engineer.phoneNumber,
+        engineer.location,
+        engineer.cityName,
+        engineer.countryName,
+      ]
+        .filter(Boolean)
+        .some((value) => value!.toLowerCase().includes(term)),
+    );
+  }, [engineerData, search]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
@@ -298,7 +298,7 @@ export default function SuspendedUser() {
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}
             data={filteredEngineers}
-                        totalCount={
+            totalCount={
               search
                 ? filteredEngineers.length
                 : (engineersResponse?.total ?? 0)

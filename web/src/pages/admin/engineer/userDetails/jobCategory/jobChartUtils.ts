@@ -21,7 +21,9 @@ function isValidDate(date: Date) {
 }
 
 function startOfUtcDay(date: Date) {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
+  );
 }
 
 function startOfUtcWeek(date: Date) {
@@ -47,7 +49,9 @@ function addUtcDays(date: Date, days: number) {
 }
 
 function addUtcMonths(date: Date, months: number) {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1));
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1),
+  );
 }
 
 function addUtcYears(date: Date, years: number) {
@@ -83,7 +87,9 @@ function formatLabel(date: Date, grouping: JobsChartGrouping) {
 export function buildJobsChartData(
   assignments: EngineerAssignment[],
   grouping: JobsChartGrouping,
-  getDateString: (assignment: EngineerAssignment) => string | null | undefined = getDefaultDateString,
+  getDateString: (
+    assignment: EngineerAssignment,
+  ) => string | null | undefined = getDefaultDateString,
 ): JobsChartPoint[] {
   const now = new Date();
 
