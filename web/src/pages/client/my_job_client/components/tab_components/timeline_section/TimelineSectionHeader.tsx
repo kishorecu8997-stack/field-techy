@@ -35,6 +35,13 @@ interface TimelineSectionHeaderProps {
     attachmentUrl?: string | null;
     attachmentName?: string;
     attachments?: Array<{ name: string; url: string }>;
+    // Break request specific fields
+    startDate?: string;
+    endDate?: string;
+    breakType?: "short_term" | "long_term";
+    duration?: string;
+    detailsType?: string;
+    detailsLabel?: string;
   }>;
   apiRevisionUpdateDataList?: RevisionData[];
 }
@@ -118,6 +125,13 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-5">
                     {item.title}
+                    {/* Show break time/date for break items */}
+                    {item.detailsType === "break" && item.startDate && (
+                      <span className="text-xs font-normal text-gray-500 ml-1">
+                        ({item.startDate}
+                        {item.duration ? ` - ${item.duration}` : ""})
+                      </span>
+                    )}
                   </p>
                   {item.details && (
                     <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 break-all">
@@ -263,14 +277,33 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                               </p>
                               {revision.clientAttachmentUrl && (
                                 <div className="mt-2">
-                                  <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    {
+                                  <a
+                                    href={revision.clientAttachmentUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 cursor-pointer"
+                                  >
+                                    <svg
+                                      className="h-4 w-4 text-gray-500"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke="currentColor"
+                                      aria-hidden="true"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                                      />
+                                    </svg>
+                                    {decodeURIComponent(
                                       revision.clientAttachmentUrl
                                         .split("/")
                                         .pop()
-                                        ?.split("?")[0]
-                                    }
-                                  </span>
+                                        ?.split("?")[0] || "",
+                                    )}
+                                  </a>
                                 </div>
                               )}
                             </div>
@@ -308,14 +341,32 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                               </p>
                               {revision.attachmentUrl && (
                                 <div className="mt-2">
-                                  <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                  <a
+                                    href={revision.attachmentUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 cursor-pointer"
+                                  >
+                                    <svg
+                                      className="h-4 w-4 text-gray-500"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke="currentColor"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                                      />
+                                    </svg>
                                     {
                                       revision.attachmentUrl
                                         .split("/")
                                         .pop()
                                         ?.split("?")[0]
                                     }
-                                  </span>
+                                  </a>
                                 </div>
                               )}
                             </div>

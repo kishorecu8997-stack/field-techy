@@ -41,6 +41,12 @@ const ShortBreakCard: React.FC<ShortBreakCardProps> = ({
           <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
             {cardData.title}
           </span>
+          {/* Show break time/date in collapsed view */}
+          {cardData.startDate && (
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              ({cardData.startDate})
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -70,6 +76,29 @@ const ShortBreakCard: React.FC<ShortBreakCardProps> = ({
           <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 break-all">
             {cardData.description}
           </p>
+          {/* Break time/date range and duration */}
+          {cardData.startDate && (
+            <div className="mt-2 flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                  {cardData.breakType === "short_term" ? "Time:" : "Date:"}
+                </span>
+                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  {cardData.startDate}
+                </span>
+              </div>
+              {cardData.duration && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    Duration:
+                  </span>
+                  <span className="text-sm font-semibold text-teal-600 dark:text-teal-400">
+                    {cardData.duration}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
           {cardData.approverComment && (
             <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-700 rounded">
               <p className="text-xs font-medium text-gray-500 dark:text-gray-400">

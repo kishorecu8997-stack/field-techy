@@ -146,7 +146,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
   const handleAddMoreClick = () => {
     onAddMore?.();
   };
-  
+
   const handleDeleteClick = async () => {
     if (!onDelete) return;
 

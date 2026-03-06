@@ -66,10 +66,11 @@ const EngineersActions = ({
   onOpenFinalStatement,
   isFinalStatementSubmitted,
   isFinalStatementApproved,
+  isFinalStatementRejected,
   onOpenGiveClientFeedback,
   onOpenViewClientFeedback,
   assignmentId,
-  // isSendProposal,
+  isSendProposal,
   // progressUpdates,
   numberOfVacancy,
   numberOfApprovedProposals,
@@ -93,6 +94,7 @@ const EngineersActions = ({
   onOpenFinalStatement?: () => void;
   isFinalStatementSubmitted?: boolean;
   isFinalStatementApproved?: boolean;
+  isFinalStatementRejected?: boolean;
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
   assignmentId?: number;
@@ -272,7 +274,74 @@ const EngineersActions = ({
     setActiveTab?.("Job Information");
   };
 
-  const postStartActions = !isFinalStatementSubmitted && (
+  const postStartActions = isFinalStatementApproved ? (
+    <div className="flex flex-wrap gap-4 w-fit">
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
+        onClick={() => onOpenViewClientFeedback?.()}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
+      >
+        <span>View Feedback From Client</span>
+      </Button>
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
+        onClick={() => onOpenGiveClientFeedback?.()}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
+      >
+        <span>Give Feedback On Client</span>
+      </Button>
+    </div>
+  ) : isFinalStatementRejected ? (
+    <div className="flex flex-wrap gap-2 w-fit">
+      <Button
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        onClick={handleFinalStatement}
+      >
+        Final Statement
+      </Button>
+      <Button
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        onClick={handlebreakRequest}
+      >
+        Break Request
+      </Button>
+      <Button
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        onClick={() => setOpen?.(true)}
+      >
+        Create Log
+      </Button>
+    </div>
+  ) : isFinalStatementSubmitted ? (
+    <div className="flex flex-wrap gap-4 w-fit">
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
+        onClick={() => onOpenViewClientFeedback?.()}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
+      >
+        <span>View Feedback From Client</span>
+      </Button>
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
+        onClick={() => onOpenGiveClientFeedback?.()}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
+      >
+        <span>Give Feedback On Client</span>
+      </Button>
+    </div>
+  ) : (
     <div className="flex flex-wrap gap-2 w-fit">
       <Button
         className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
@@ -358,6 +427,11 @@ const EngineersActions = ({
 
   // Extracted shared button logic to avoid duplication
   const renderJobActionButtons = () => {
+    // Hide Send Proposal button when engineer is currently filling the proposal form
+    if (isSendProposal) {
+      return null;
+    }
+
     if (hasJobStarted || hasStartPending) return postStartActions;
 
     if (canStartJob) {
@@ -464,26 +538,59 @@ const EngineersActions = ({
       <span className="flex rounded-md text-sm font-medium h-fit justify-end items-end w-fit">
         {/* In Progress Status */}
         {hasJobStarted ? (
-          <div className="flex flex-wrap gap-2 w-fit">
-            <Button
-              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-              onClick={handlebreakRequest}
-            >
-              Break Request
-            </Button>
-            <Button
-              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-              onClick={() => setOpen?.(true)}
-            >
-              Create Log
-            </Button>
-            <Button
-              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-              onClick={handleSubmitWork}
-            >
-              Final Statement
-            </Button>
-          </div>
+          isFinalStatementRejected ? (
+            <div className="flex flex-wrap gap-2 w-fit">
+              <Button
+                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+                onClick={handlebreakRequest}
+              >
+                Break Request
+              </Button>
+              <Button
+                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+                onClick={() => setOpen?.(true)}
+              >
+                Create Log
+              </Button>
+              <Button
+                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+                onClick={handleSubmitWork}
+              >
+                Final Statement
+              </Button>
+            </div>
+          ) : isFinalStatementApproved ? (
+            <div className="flex flex-wrap gap-2 w-fit items-center">
+              <icons.checkCircle className="text-green-500 w-6 h-6" />
+              <span className="text-lg text-green-500">Job Completed</span>
+            </div>
+          ) : isFinalStatementSubmitted ? (
+            <div className="flex flex-wrap gap-2 w-fit items-center">
+              {/* <icons.checkCircle className="text-blue-500 w-6 h-6" /> */}
+              {/* <span className="text-lg text-blue-500">Final Statement Submitted</span> */}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2 w-fit">
+              <Button
+                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+                onClick={handlebreakRequest}
+              >
+                Break Request
+              </Button>
+              <Button
+                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+                onClick={() => setOpen?.(true)}
+              >
+                Create Log
+              </Button>
+              <Button
+                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+                onClick={handleSubmitWork}
+              >
+                Final Statement
+              </Button>
+            </div>
+          )
         ) : /* Final Statement Approved - Job Completed Status */
         isFinalStatementApproved ? (
           <div className="flex flex-col items-end">
@@ -535,6 +642,25 @@ const EngineersActions = ({
                 <span className="text-lg text-yellow-500">
                   Start Pending Approval
                 </span>
+              </>
+            ) : isFinalStatementRejected ? (
+              <>
+                <icons.pending className="text-orange-500 w-6 h-6" />
+                <span className="text-lg text-orange-500">
+                  Final Statement Rejected
+                </span>
+              </>
+            ) : isFinalStatementSubmitted ? (
+              <>
+                <icons.checkCircle className="text-blue-500 w-6 h-6" />
+                <span className="text-lg text-blue-500">
+                  Final Statement Submitted
+                </span>
+              </>
+            ) : isFinalStatementApproved ? (
+              <>
+                <icons.checkCircle className="text-green-500 w-6 h-6" />
+                <span className="text-lg text-green-500">Job Completed</span>
               </>
             ) : (
               <>

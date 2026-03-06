@@ -365,6 +365,15 @@ const JobDetailsPage = () => {
     return signOff.status === "approved";
   }, [jobLogs]);
 
+  // Check if final statement has been rejected by client
+  const isFinalStatementRejected = useMemo(() => {
+    if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
+      return false;
+    }
+    const signOff = jobLogs.signOffSheets[0];
+    return signOff.status === "rejected";
+  }, [jobLogs]);
+
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
   };
@@ -508,10 +517,38 @@ const JobDetailsPage = () => {
     job?.clientDetails?.personName ||
     `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
-  const duration = getDurationString({
-    startDateStr: job?.startDate || "",
-    endDateStr: job?.endDate || "",
-  });
+
+  // Format exact date range for display
+  const formatDateRange = () => {
+    if (!job?.startDate) return "";
+    const startDate = new Date(job.startDate);
+    const endDate = job.endDate ? new Date(job.endDate) : null;
+
+    const formatDate = (date: Date) => {
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    };
+
+    if (endDate) {
+      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+    }
+    return formatDate(startDate);
+  };
+
+  const exactTimeline = formatDateRange();
+
+  // Keep duration for other uses, but use exactTimeline for display
+  // Only call getDurationString if both dates are available
+  const getJobDuration = (): string => {
+    if (!job?.startDate) return "N/A";
+    if (!job?.endDate) return "N/A";
+    return getDurationString({
+      startDateStr: job.startDate,
+      endDateStr: job.endDate,
+    });
+  };
 
   const engagementTypeMapping: Record<string, string> = {
     "On site": "ON_SITE",
@@ -538,6 +575,10 @@ const JobDetailsPage = () => {
 
   // Get assignment status from API data (maps to OfferedJobStatusType via EngineersActions)
   const assignmentStatus = job?.assignmentStatus as AssignmentStatus;
+
+  // Determine if proposal is approved (hide buttons when not approved)
+  // Show buttons only after the job has started
+  const isProposalApproved = assignmentStatus === "started";
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -567,7 +608,7 @@ const JobDetailsPage = () => {
               <JobHeaderCard
                 title={jobTitle}
                 client={clientName}
-                duration={duration as string}
+                duration={exactTimeline || getJobDuration()}
                 type={engagementType}
                 status={jobStatus}
                 setIsWorkSubmitted={setIsWorkSubmitted}
@@ -584,10 +625,13 @@ const JobDetailsPage = () => {
                 onOpenFinalStatement={handleOpenFinalStatement}
                 isFinalStatementSubmitted={isFinalStatementSubmitted}
                 isFinalStatementApproved={isFinalStatementApproved}
+                isFinalStatementRejected={isFinalStatementRejected}
                 assignmentId={assignmentId}
                 progressUpdates={allProgressUpdates}
                 jobId={params.jobId}
                 onToggleChat={handleToggleChat}
+                hideChats={!isProposalApproved}
+                hideBreakDetails={!isProposalApproved}
                 jobStartDate={job?.startDate || undefined}
                 jobEndDate={job?.endDate || undefined}
                 onOpenGiveClientFeedback={handleOpenGiveClientFeedback}
@@ -631,12 +675,14 @@ const JobDetailsPage = () => {
             <div className="lg:col-span-1">
               <ClientInfoCard
                 name={clientName}
-                memberSince={"-"}
-                location={jobLocation}
-                rating={0}
-                reviews={0}
+                memberSince="-"
+                location={job?.clientDetails?.address ?? jobLocation}
+                rating={job?.clientDetails?.averageRating ?? 0}
+                reviews={job?.clientDetails?.reviewCount ?? 0}
                 verifications={[]}
                 onOpenReview={() => setIsReviewOpen(true)}
+                phoneNumber={job?.clientDetails?.phoneNumber ?? undefined}
+                email={job?.clientDetails?.email ?? undefined}
               />
             </div>
           </div>
