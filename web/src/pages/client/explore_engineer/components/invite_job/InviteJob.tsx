@@ -10,7 +10,12 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import Popup from "@/shared/components/Popup";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import { useCities, useCountries, useServiceCategories, useStates } from "@/shared/hooks/useLookup";
+import {
+  useCities,
+  useCountries,
+  useServiceCategories,
+  useStates,
+} from "@/shared/hooks/useLookup";
 import { scrollToTop } from "@/utils";
 import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -100,23 +105,23 @@ const InviteJob: React.FC = () => {
   const paginatedJobs = postedJobs.slice(startIndex, startIndex + itemsPerPage);
   const { data: serviceCategories } = useServiceCategories();
   // Create a memoized map of service category ID to name
-    const serviceCategoryMap = useMemo(() => {
-      const map = new Map<number, string>();
-      if (serviceCategories) {
-        serviceCategories.forEach((category) => {
-          map.set(Number(category.id), category.name);
-        });
-      }
-      return map;
-    }, [serviceCategories]);
+  const serviceCategoryMap = useMemo(() => {
+    const map = new Map<number, string>();
+    if (serviceCategories) {
+      serviceCategories.forEach((category) => {
+        map.set(Number(category.id), category.name);
+      });
+    }
+    return map;
+  }, [serviceCategories]);
 
-    const getServiceCategoryName = (serviceCategoryId: number): string => {
+  const getServiceCategoryName = (serviceCategoryId: number): string => {
     return (
       serviceCategoryMap.get(serviceCategoryId) ||
       `Service Category ${serviceCategoryId}`
     );
   };
-   // Helper function to calculate duration from start and end dates
+  // Helper function to calculate duration from start and end dates
   const calculateDuration = (
     startDate: string | null,
     endDate: string | null,
@@ -143,7 +148,9 @@ const InviteJob: React.FC = () => {
     jobType: apiJob.jobType,
     status: apiJob.status,
     serviceType: getServiceCategoryName(apiJob.serviceCategoryId),
-    price: apiJob.totalPrice ? `${apiJob.currencySymbol || '$'} ${apiJob.totalPrice}` : "",
+    price: apiJob.totalPrice
+      ? `${apiJob.currencySymbol || "$"} ${apiJob.totalPrice}`
+      : "",
   }));
 
   const getLocationString = (job: any) => {
