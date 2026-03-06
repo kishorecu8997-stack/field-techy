@@ -2,6 +2,11 @@ import JobCard from "@/shared/components/JobCard";
 import type { EngineerGetMyJobsResponse } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import ErrorState from "@/shared/components/commonUI/ErrorState";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
+import { useQueries } from "@tanstack/react-query";
+import { appGetLookupDataOptions } from "@/api/@tanstack/react-query.gen";
+import { apiClient } from "@/shared/apiServices/apiClient";
+import { useMemo } from "react";
 
 interface JobListProps {
   jobs: EngineerGetMyJobsResponse;
@@ -22,6 +27,44 @@ interface JobListProps {
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
 const JobList = ({ jobs, isLoading, isError, refetch }: JobListProps) => {
+  const stateIdsForCityLookup = useMemo(() => {
+    const unique = new Set<number>();
+    for (const job of jobs || []) {
+      if (typeof job.stateId === "number") unique.add(job.stateId);
+    }
+    return Array.from(unique);
+  }, [jobs]);
+
+  const { data: countries } = useLookupData("countries");
+
+  const citiesByState = useQueries({
+    queries: stateIdsForCityLookup.map((stateId) => ({
+      ...appGetLookupDataOptions({
+        client: apiClient,
+        query: { table: "cities", parentId: String(stateId) },
+      }),
+      enabled: stateIdsForCityLookup.length > 0,
+    })),
+  });
+
+  const countryMap = useMemo(() => {
+    const map = new Map<number, string>();
+    for (const row of countries || []) {
+      map.set(row.id, row.name);
+    }
+    return map;
+  }, [countries]);
+
+  const cityMap = useMemo(() => {
+    const map = new Map<number, string>();
+    for (const result of citiesByState) {
+      for (const row of result.data || []) {
+        map.set(row.id, row.name);
+      }
+    }
+    return map;
+  }, [citiesByState]);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
@@ -44,14 +87,23 @@ const JobList = ({ jobs, isLoading, isError, refetch }: JobListProps) => {
     <div className="lg:col-span-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {jobs && jobs.length > 0 ? (
-          jobs.map((job) => (
-            <JobCard
-              key={job.id}
-              {...job}
-              status={job.status ?? undefined}
-              currencySymbol={job.currencySymbol ?? "$"}
-            />
-          ))
+          jobs.map((job) => {
+            const city = cityMap.get(job.cityId);
+            const country = countryMap.get(job.countryId);
+            const fallback =
+              [city, country].filter((v): v is string => !!v).join(", ") ||
+              null;
+
+            return (
+              <JobCard
+                key={job.id}
+                {...job}
+                status={job.status ?? undefined}
+                currencySymbol={job.currencySymbol ?? "$"}
+                workLocationName={fallback}
+              />
+            );
+          })
         ) : (
           <div className="col-span-full text-center py-10 text-gray-500 dark:text-gray-400">
             No jobs found.
