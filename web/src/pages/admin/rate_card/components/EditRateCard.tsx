@@ -34,12 +34,10 @@ const EditRateCard = () => {
   const { showPopup } = usePopupStore();
   const { id } = useParams<{ id: string }>();
   
-  // Parse serviceCategoryId and countryId from URL param (format: "serviceCategoryId-countryId")
-  const [serviceCategoryIdStr, countryIdStr] = id?.split("-") || ["0", "0"];
-  const serviceCategoryId = parseInt(serviceCategoryIdStr, 10) || 0;
-  const countryId = parseInt(countryIdStr, 10) || 0;
+  // Parse serviceCategoryId from URL param
+  const serviceCategoryId = id ? parseInt(id, 10) : 0;
   
-  console.log("Service Category ID:", serviceCategoryId, "Country ID:", countryId, "from param:", id);
+  console.log("Service Category ID:", serviceCategoryId, "from param:", id);
 
   const methods = useForm({
     defaultValues: {
@@ -143,8 +141,8 @@ const EditRateCard = () => {
               };
             });
             
-            // Get countryId from URL parameter
-            const finalCountryId = countryId || 1;
+            // Get countryId from form data
+            const finalCountryId = data.countryId || 1;
             
             updateRateCardMutation.mutate({
               query: { serviceCategoryId },
