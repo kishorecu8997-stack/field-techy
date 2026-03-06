@@ -36,7 +36,7 @@ const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
  * @returns {React.ReactElement} The rendered "My Jobs" page for the client.
  */
 const MyJobsClient: React.FC = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const filterParam = searchParams.get("filter");
 
   // Initialize activeFilter from URL query param if valid
@@ -146,6 +146,7 @@ const MyJobsClient: React.FC = () => {
 
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
+    setSearchParams({ filter });
     setCurrentPage(1);
     scrollToTop();
   };
