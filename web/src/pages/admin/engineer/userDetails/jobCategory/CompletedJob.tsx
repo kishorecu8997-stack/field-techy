@@ -54,11 +54,12 @@ const CompletedJob: React.FC = () => {
    * Separate fetch for chart data so chart is not tied to table pagination.
    * Uses a fixed page and a high limit to approximate full history.
    */
+  const totalCount = engineerHistory?.total ?? 0;
+
   const { data: engineerHistoryForChart } = useAdminGetEngineerHistory(
     hasValidUserId ? userId : 0,
     {
-      page: 1,
-      limit: 1000,
+      limit: totalCount > 0 ? totalCount : 1000,
       type: "jobs",
       statusGroup: "completed",
     },
