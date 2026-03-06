@@ -50,8 +50,8 @@ const Dashboard: React.FC = () => {
     { ...jobOverviewData[2], count: summary?.cancelledJobsCount ?? 0 },
   ];
 
-  // Fetch all jobs from API
-  const { data: clientJobs } = useClientGetJobs();
+  // Fetch in-progress jobs from API with server-side filtering
+  const { data: clientJobs } = useClientGetJobs("In Progress");
   const { data: serviceCategories } = useServiceCategories();
 
   // Get in-progress job IDs for fetching assignments
@@ -69,15 +69,22 @@ const Dashboard: React.FC = () => {
   const assignmentData2 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[1] }, !!inProgressJobIds[1]);
   const assignmentData3 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[2] }, !!inProgressJobIds[2]);
   const assignmentData4 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[3] }, !!inProgressJobIds[3]);
-  const assignmentQueries = [assignmentData1, assignmentData2, assignmentData3, assignmentData4];
 
   // Build a map of jobId to assignment data
+  // Depend on individual data properties instead of the array for effective memoization
   const jobAssignmentsMap = useMemo(() => {
     const map = new Map<number, { avatars: string[]; count: number }>();
-    assignmentQueries.forEach((query, index) => {
-      const jobId = inProgressJobIds[index];
-      if (jobId && query.data) {
-        const assignments = query.data;
+    
+    const queries = [
+      { data: assignmentData1.data, jobId: inProgressJobIds[0] },
+      { data: assignmentData2.data, jobId: inProgressJobIds[1] },
+      { data: assignmentData3.data, jobId: inProgressJobIds[2] },
+      { data: assignmentData4.data, jobId: inProgressJobIds[3] },
+    ];
+    
+    queries.forEach(({ data, jobId }) => {
+      if (jobId && data) {
+        const assignments = data;
         const validAssignments = assignments.filter(
           (a) => a.engineer && a.assignmentStatus !== "rejected",
         );
@@ -91,7 +98,13 @@ const Dashboard: React.FC = () => {
       }
     });
     return map;
-  }, [inProgressJobIds, assignmentQueries]);
+  }, [
+    inProgressJobIds,
+    assignmentData1.data,
+    assignmentData2.data,
+    assignmentData3.data,
+    assignmentData4.data,
+  ]);
 
   // Memoized map of service category ID to name
   const serviceCategoryMap = useMemo(() => {
@@ -112,12 +125,10 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  // Filter in-progress jobs and map to Job type for display
+  // Map in-progress jobs to Job type for display
   const inProgressJobsData = useMemo(() => {
     if (!clientJobs) return [];
-    const inProgress = clientJobs
-      .filter((job) => job.status === "In Progress")
-      .slice(0, 4);
+    const inProgress = clientJobs.slice(0, 4);
     return inProgress.map((job): Job => {
       // Build location string - use workLocationName if available, otherwise try coordinates
       let locationText = job.workLocationName || "Location not specified";
@@ -135,10 +146,12 @@ const Dashboard: React.FC = () => {
         stateId: job.stateId,
         countryId: job.countryId,
         duration: job.endDate
-          ? `${new Date(job.startDate || "").toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
+          ? job.startDate
+            ? `${new Date(job.startDate).toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
+            : `Not scheduled - ${new Date(job.endDate).toLocaleDateString()}`
           : "Duration not specified",
         serviceType: job.serviceCategoryId ? getServiceCategoryName(job.serviceCategoryId) : "Service not specified",
-        pay: job.totalPrice ? `${job.currencySymbol || "$"}${job.totalPrice}` : "Price not set",
+        pay: job.totalPrice != null ? `${job.currencySymbol || "$"}${job.totalPrice}` : "Price not set",
         status: "inprogress",
         engineerAvatars: jobAssignmentsMap.get(job.id)?.avatars || [],
         engineers: String(jobAssignmentsMap.get(job.id)?.count || 0),
