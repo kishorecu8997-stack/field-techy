@@ -47,6 +47,14 @@ const MyJobsClient: React.FC = () => {
     return jobFilters[0];
   });
 
+  // Sync activeFilter with URL filter param when it changes (e.g., navigation from Dashboard)
+  useEffect(() => {
+    if (filterParam && jobFilters.includes(filterParam) && filterParam !== activeFilter) {
+      setActiveFilter(filterParam);
+      setCurrentPage(1); // Reset pagination when filter changes via URL
+    }
+  }, [filterParam]);
+
   const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
   const { data: jobsData, isLoading } = useClientGetJobs(apiJobStatus);
   const { data: serviceCategories } = useServiceCategories();
