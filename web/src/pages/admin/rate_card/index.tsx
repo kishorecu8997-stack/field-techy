@@ -277,7 +277,7 @@ const ManageRateCards: React.FC = () => {
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
-            onClick={() => navigate(absoluteUrls.admin.home.view_rate_card)}
+            onClick={() => navigate(absoluteUrls.admin.home.view_rate_card.replace(":id", String(row.serviceCategoryId)))}
           >
             <FiEye className="text-yellow-600 " />
           </div>

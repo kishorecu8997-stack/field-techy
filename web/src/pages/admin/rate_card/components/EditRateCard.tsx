@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import RateCardForm from "./RateCardForm";
@@ -38,7 +38,9 @@ const EditRateCard = () => {
   
   // Parse serviceCategoryId from URL param
   const serviceCategoryId = id ? parseInt(id, 10) : 0;
-  const [countryId, setCountryId] = useState<number>(1);
+  
+  // Store countryId from API response for use in mutation
+  const countryIdRef = useRef<number>(1);
   
   console.log("Service Category ID:", serviceCategoryId, "from param:", id);
 
@@ -88,7 +90,7 @@ const EditRateCard = () => {
   });
 
   // Fetch rate cards using the same API as index table
-  const { data: rateCardsResponse, isLoading: isLoadingRateCards } = useGetRateCards(
+  const { data: rateCardsResponse } = useGetRateCards(
     { page: 1, limit: 100 },
     { enabled: !!serviceCategoryId && serviceCategoryId > 0 }
   );
@@ -105,8 +107,8 @@ const EditRateCard = () => {
         // Get the first item to get country info
         const firstItem = filteredData[0];
         
-        // Set countryId from API response
-        setCountryId(firstItem.countryId || 1);
+        // Store countryId for use in mutation
+        countryIdRef.current = firstItem.countryId || 1;
         
         // Transform API data to form format
         const tiers = filteredData.map((item) => {
@@ -138,7 +140,7 @@ const EditRateCard = () => {
         });
       }
     }
-  }, [rateCardsResponse, serviceCategoryId, methods, setCountryId]);
+  }, [rateCardsResponse, serviceCategoryId, methods]);
 
   const updateRateCardMutation = useAdminUpdateRateCard({
     onSuccess: () => {
@@ -197,8 +199,8 @@ const EditRateCard = () => {
               };
             });
             
-            // Get countryId from form data
-            const finalCountryId = data.countryId || 1;
+            // Get countryId from API response
+            const finalCountryId = countryIdRef.current;
             
             updateRateCardMutation.mutate({
               query: { serviceCategoryId },
