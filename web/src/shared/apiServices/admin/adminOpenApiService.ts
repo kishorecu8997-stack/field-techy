@@ -26,6 +26,11 @@ import {
   type AdminGetJobDetailsResponse,
   type AdminGetJobGraphData,
   type AdminGetJobGraphResponse,
+  type AdminGetUserGraphData,
+  type AdminGetUserGraphResponse,
+  type AdminGetDashboardJobGraphData,
+  type AdminGetDashboardJobGraphResponse,
+  type GetDashboardStatsResponse,
   type AdminGetSubAdminsData,
   type AdminGetSubAdminsResponse,
   type AdminGetEngineersForManagementData,
@@ -123,6 +128,9 @@ import {
   adminCreateSubAdminMutation,
   adminUpdateSubAdminMutation,
   adminGetJobGraphOptions,
+  adminGetUserGraphOptions,
+  adminGetDashboardJobGraphOptions,
+  getDashboardStatsOptions,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
   adminGetReportsOptions,
@@ -1105,6 +1113,90 @@ export function useAdminGetJobGraph(
 
   return useQuery({
     ...adminGetJobGraphOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+// ─── Dashboard Stats ──────────────────────────────────────────────────────────
+
+export function useAdminGetDashboardStats(options?: {
+  enabled?: boolean;
+  onSuccess?: (data: GetDashboardStatsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useQuery({
+    ...getDashboardStatsOptions({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
+    ...options,
+  });
+}
+
+// ─── Dashboard Job Graph ──────────────────────────────────────────────────────
+
+export type AdminGetDashboardJobGraphQuery = NonNullable<
+  AdminGetDashboardJobGraphData["query"]
+>;
+
+export function useAdminGetDashboardJobGraph(
+  query: AdminGetDashboardJobGraphQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetDashboardJobGraphResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetDashboardJobGraphQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetDashboardJobGraphOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+// ─── User Graph ───────────────────────────────────────────────────────────────
+
+export type AdminGetUserGraphQuery = NonNullable<
+  AdminGetUserGraphData["query"]
+>;
+
+export function useAdminGetUserGraph(
+  query: AdminGetUserGraphQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetUserGraphResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetUserGraphQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetUserGraphOptions({
       client: apiClient,
       query: mergedQuery,
     }),

@@ -7,6 +7,7 @@ import { Button } from "../commonUI/Buttons";
 import { FormContainer } from "../commonUI/inputs/FormContainer";
 import { toast } from "react-toastify";
 import { useCreateRateAndReviewAssignment } from "@/shared/apiServices/commonOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 type GiveFeedbackModalProps = {
   onClose?: (result: unknown) => void;
@@ -43,10 +44,10 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
         onClose?.(true);
       },
       onError: (error: unknown) => {
-        const err = error as { error?: string; message?: string };
-        const errorMessage =
-          err?.error || err?.message || "Failed to submit feedback";
-        toast.error(errorMessage);
+        toast.error(
+          GlobalApiErrorHandler.handle(error, "Failed to submit feedback")
+            .message,
+        );
       },
     });
 

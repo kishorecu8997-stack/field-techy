@@ -1,13 +1,22 @@
+import type { EngineerSearchJobsResponse } from "@/api";
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import {
+  useGetUserRatingAndReviews,
+  useLookupData,
+} from "@/shared/apiServices/commonOpenApiService";
 import {
   useEngineerSearchJobs,
   useGetJobLogs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import type { JobOverviewProps } from "@/shared/components/types";
+import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { getDurationString } from "@/utils";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   JOB_STATUSES,
@@ -15,20 +24,17 @@ import {
   type AssignmentStatus,
   type JobStatus,
 } from "../search_result/types";
-import type {
-  ProgressUpdate,
-  OfferedJobStatusType,
-  JobInfoSectionProps,
-} from "./types.d";
-import type { JobOverviewProps } from "@/shared/components/types";
-import type { EngineerSearchJobsResponse } from "@/api";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
+import ViewClientFeedbackModal from "./job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
 import JobTabSection from "./job_details_components/JobTabSection";
-import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
-import ChatForJobs from "@/shared/components/ChatForJobs";
+import type {
+  JobInfoSectionProps,
+  OfferedJobStatusType,
+  ProgressUpdate,
+} from "./types.d";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -201,6 +207,7 @@ const JobDetailsPage = () => {
   const [openChatJobId, setOpenChatJobId] = useState<string | null>(null);
   const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
   const [pageHeading, setPageHeading] = useState<string>("Job Details");
+  const { showPopup, closePopup } = usePopupStore();
 
   // Fetch job data from real API using search endpoint with jobId filter
   const { data: jobList, isLoading: isJobsLoading } = useEngineerSearchJobs({
@@ -358,6 +365,15 @@ const JobDetailsPage = () => {
     return signOff.status === "approved";
   }, [jobLogs]);
 
+  // Check if final statement has been rejected by client
+  const isFinalStatementRejected = useMemo(() => {
+    if (!jobLogs?.signOffSheets || jobLogs.signOffSheets.length === 0) {
+      return false;
+    }
+    const signOff = jobLogs.signOffSheets[0];
+    return signOff.status === "rejected";
+  }, [jobLogs]);
+
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
   };
@@ -378,6 +394,35 @@ const JobDetailsPage = () => {
         setPageHeading("Job Details");
         return null;
       }
+    });
+  };
+
+  const { data: reviewsData } = useGetUserRatingAndReviews(true, assignmentId);
+
+  const handleOpenGiveClientFeedback = () => {
+    showPopup({
+      body: (
+        <GiveFeedbackModal
+          targetName={job?.clientDetails?.companyName ?? "Test Client"}
+          targetRole={job?.clientDetails?.clientType ?? "client"}
+          placeholder="Share your feedback about your experience with the client..."
+          assignmentId={job?.assignmentId ?? undefined}
+        />
+      ),
+    });
+  };
+
+  const handleOpenViewClientFeedback = () => {
+    showPopup({
+      body: (
+        <ViewClientFeedbackModal
+          onClose={closePopup}
+          clientName={reviewsData?.[0]?.reviewerName || clientName || "Client"}
+          clientImage={reviewsData?.[0]?.reviewerProfilePictureUrl ?? undefined}
+          rating={reviewsData?.[0]?.rating ?? undefined}
+          review={reviewsData?.[0]?.review ?? undefined}
+        />
+      ),
     });
   };
 
@@ -472,10 +517,38 @@ const JobDetailsPage = () => {
     job?.clientDetails?.personName ||
     `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
-  const duration = getDurationString({
-    startDateStr: job?.startDate || "",
-    endDateStr: job?.endDate || "",
-  });
+
+  // Format exact date range for display
+  const formatDateRange = () => {
+    if (!job?.startDate) return "";
+    const startDate = new Date(job.startDate);
+    const endDate = job.endDate ? new Date(job.endDate) : null;
+
+    const formatDate = (date: Date) => {
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    };
+
+    if (endDate) {
+      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+    }
+    return formatDate(startDate);
+  };
+
+  const exactTimeline = formatDateRange();
+
+  // Keep duration for other uses, but use exactTimeline for display
+  // Only call getDurationString if both dates are available
+  const getJobDuration = (): string => {
+    if (!job?.startDate) return "N/A";
+    if (!job?.endDate) return "N/A";
+    return getDurationString({
+      startDateStr: job.startDate,
+      endDateStr: job.endDate,
+    });
+  };
 
   const engagementTypeMapping: Record<string, string> = {
     "On site": "ON_SITE",
@@ -502,6 +575,10 @@ const JobDetailsPage = () => {
 
   // Get assignment status from API data (maps to OfferedJobStatusType via EngineersActions)
   const assignmentStatus = job?.assignmentStatus as AssignmentStatus;
+
+  // Determine if proposal is approved (hide buttons when not approved)
+  // Show buttons only after the job has started
+  const isProposalApproved = assignmentStatus === "started";
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -531,7 +608,7 @@ const JobDetailsPage = () => {
               <JobHeaderCard
                 title={jobTitle}
                 client={clientName}
-                duration={duration as string}
+                duration={exactTimeline || getJobDuration()}
                 type={engagementType}
                 status={jobStatus}
                 setIsWorkSubmitted={setIsWorkSubmitted}
@@ -548,12 +625,17 @@ const JobDetailsPage = () => {
                 onOpenFinalStatement={handleOpenFinalStatement}
                 isFinalStatementSubmitted={isFinalStatementSubmitted}
                 isFinalStatementApproved={isFinalStatementApproved}
+                isFinalStatementRejected={isFinalStatementRejected}
                 assignmentId={assignmentId}
                 progressUpdates={allProgressUpdates}
                 jobId={params.jobId}
                 onToggleChat={handleToggleChat}
+                hideChats={!isProposalApproved}
+                hideBreakDetails={!isProposalApproved}
                 jobStartDate={job?.startDate || undefined}
                 jobEndDate={job?.endDate || undefined}
+                onOpenGiveClientFeedback={handleOpenGiveClientFeedback}
+                onOpenViewClientFeedback={handleOpenViewClientFeedback}
               />
 
               <JobTabSection
@@ -593,12 +675,14 @@ const JobDetailsPage = () => {
             <div className="lg:col-span-1">
               <ClientInfoCard
                 name={clientName}
-                memberSince={"-"}
-                location={jobLocation}
-                rating={0}
-                reviews={0}
+                memberSince="-"
+                location={job?.clientDetails?.address ?? jobLocation}
+                rating={job?.clientDetails?.averageRating ?? 0}
+                reviews={job?.clientDetails?.reviewCount ?? 0}
                 verifications={[]}
                 onOpenReview={() => setIsReviewOpen(true)}
+                phoneNumber={job?.clientDetails?.phoneNumber ?? undefined}
+                email={job?.clientDetails?.email ?? undefined}
               />
             </div>
           </div>

@@ -6,6 +6,7 @@ import { useFormContext, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { BlockClientForm, BlockClientProps } from "../types";
 import { useAdminClientsByUserIdStatus } from "@/shared/apiServices/admin/adminOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 /**
  * BlockClient Component
@@ -29,10 +30,12 @@ export default function BlockClient({
       if (onSuccess) onSuccess();
     },
     onError: (error) => {
-      const errorMessage =
-        (error as { body?: { error?: string } })?.body?.error ||
-        "Failed to block client. Please try again.";
-      toast.error(errorMessage);
+      toast.error(
+        GlobalApiErrorHandler.handle(
+          error,
+          "Failed to block client. Please try again.",
+        ).message,
+      );
     },
   });
 

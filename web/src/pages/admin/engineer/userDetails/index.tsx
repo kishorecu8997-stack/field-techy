@@ -96,7 +96,7 @@ export default function UserDetails() {
     },
     {
       label: "Wallet",
-      content: <Wallet />,
+      content: <Wallet walletBalance={engineerData?.walletBalance} />,
       hide: false,
     },
     {

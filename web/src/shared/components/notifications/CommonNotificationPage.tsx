@@ -34,7 +34,36 @@ const CommonNotificationPage: React.FC<CommonNotificationPageProps> = ({
     );
   }
 
-  const grouped = groupNotificationsByDate(notifications);
+  // Sort notifications newest-first so "last 20" picks the most recent ones
+  const sorted = [...notifications].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+
+  const unread = sorted.filter((n) => !n.read);
+  const hasUnread = unread.length > 0;
+
+  // Always cap the visible list at MAX (20) so the panel never renders
+  // an unbounded number of items. When unread alone exceeds MAX we surface
+  // the overflow count so the panel can show a "View all unread" prompt.
+  const MAX = 20;
+  let visibleNotifications: typeof sorted;
+  let unreadOverflow = 0;
+
+  if (!hasUnread) {
+    // No unread: show up to MAX most-recent notifications.
+    visibleNotifications = sorted.slice(0, MAX);
+  } else if (unread.length >= MAX) {
+    // More unread than MAX: cap at MAX and record the hidden count.
+    visibleNotifications = unread.slice(0, MAX);
+    unreadOverflow = unread.length - MAX;
+  } else {
+    // Some unread: fill remaining slots with the most-recent read notifications.
+    const remaining = MAX - unread.length;
+    const readNotifications = sorted.filter((n) => n.read).slice(0, remaining);
+    visibleNotifications = [...unread, ...readNotifications];
+  }
+
+  const grouped = groupNotificationsByDate(visibleNotifications);
 
   const handleDismiss = async (id: string | number) => {
     // Find the notification title for display in the confirmation popup
@@ -94,6 +123,7 @@ const CommonNotificationPage: React.FC<CommonNotificationPageProps> = ({
         onMarkAsRead={handleMarkAsRead}
         onMarkAllAsRead={handleMarkAllAsRead}
         viewAllLink={viewAllLink}
+        unreadOverflow={unreadOverflow}
       />
     </div>
   );

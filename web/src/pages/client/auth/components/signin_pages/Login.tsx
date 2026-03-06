@@ -23,6 +23,7 @@ import {
   loginSchema,
   type LoginEmailFormData,
 } from "../../validations/LoginEmail";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils";
 
 /**
  * Login component
@@ -78,8 +79,7 @@ const Login = ({
         if (error instanceof AxiosError && error.response?.status === 401) {
           return;
         }
-        const errorMessage =
-          error instanceof Error ? error.message : "Login failed";
+        const errorMessage = GlobalApiErrorHandler.handle(error).message;
         toast.error(errorMessage);
       },
     },

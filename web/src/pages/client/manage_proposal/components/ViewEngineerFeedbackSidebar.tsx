@@ -1,5 +1,6 @@
 import { FaStar } from "react-icons/fa";
 import { useGetUserRatingAndReviews } from "@/shared/apiServices/commonOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * ViewEngineerFeedbackSidebar Component
@@ -17,7 +18,7 @@ const ViewEngineerFeedbackSidebar = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+        <LoaderComponent />
       </div>
     );
   }

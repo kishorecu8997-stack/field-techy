@@ -1,5 +1,5 @@
 // src/dummy_data/personalChatData.ts
-import user from "../assets/user.png";
+import user from "../assets/user-image/placeholdr_user.svg";
 
 export interface PersonalChatUser {
   id: number;

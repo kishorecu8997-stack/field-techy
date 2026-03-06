@@ -203,6 +203,11 @@ export interface TimelineCardData {
   buttons: CardButtonType[];
   revisions?: TimelineRevisionData[];
   approverComment?: string | null;
+  // Break request specific fields
+  startDate?: string; // Formatted time range for short breaks or date range for long breaks
+  endDate?: string;
+  breakType?: "short_term" | "long_term";
+  duration?: string; // Calculated duration of the break
 }
 
 export interface ActivityTimelineItem {
