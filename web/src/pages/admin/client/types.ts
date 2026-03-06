@@ -134,14 +134,14 @@ export const statusGroupToGraphStatus: Record<
 };
 
 export const statusLabels: Record<string, string> = {
-    posted: "Posted",
-    inProgress: "In Progress",
-    completed: "Completed",
-    hold: "On Hold",
-    flagged: "Flagged",
-    declined: "Declined",
-    invited: "Invited",
-};
+  posted: "Posted",
+  inProgress: "In Progress",
+  completed: "Completed",
+  hold: "On Hold",
+  flagged: "Flagged",
+  declined: "Declined",
+  invited: "Invited",
+ };
 
 export type BlockClientForm = {
   reason: string;

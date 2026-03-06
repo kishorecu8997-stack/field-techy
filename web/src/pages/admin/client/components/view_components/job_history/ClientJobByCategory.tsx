@@ -15,7 +15,7 @@ import { useSearchParams } from "react-router-dom";
 import { formatDate } from "@/utils/formatDate";
 import type { AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
 import { days } from "@/pages/admin/dashboard/types";
-import { statusLabels } from "../../../types";
+import { statusLabels } from "@/pages/admin/client/types";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];
