@@ -296,7 +296,7 @@ export function useDeleteRateCard(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) => AdminAdapter.deleteRateCard(id),
+    mutationFn: (serviceCategoryId: number) => AdminAdapter.deleteRateCard(serviceCategoryId),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
       options?.onSuccess?.(data);

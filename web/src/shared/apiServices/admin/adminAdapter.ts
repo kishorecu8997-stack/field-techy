@@ -393,11 +393,12 @@ export class AdminAdapter {
 
   /** Delete Rate Card */
   static async deleteRateCard(
-    id: number,
+    serviceCategoryId: number,
   ): Promise<DeleteRateCardResponse> {
     try {
       const response = await axiosInstance.delete(
-        ADMIN_ROUTER_PATHS.DELETE_RATE_CARD(id),
+        ADMIN_ROUTER_PATHS.DELETE_RATE_CARD,
+        { params: { serviceCategoryId } },
       );
       return response.data;
     } catch (error) {

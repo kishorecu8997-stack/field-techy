@@ -140,7 +140,12 @@ const ManageRateCards: React.FC = () => {
 
   //Delete confirmation
   const handleDeleteJob = async (job: RateCardProps) => {
-    const rateCardId = parseInt(job.id, 10);
+    const rateCardServiceCategoryId = job.serviceCategoryId;
+    
+    if (rateCardServiceCategoryId === undefined) {
+      toast.error("Unable to delete: Service category ID not found.");
+      return;
+    }
     
     await showPopup({
       title: "Rate Card",
@@ -157,7 +162,7 @@ const ManageRateCards: React.FC = () => {
           variant: "danger",
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
-            deleteRateCardMutation.mutate(rateCardId);
+            deleteRateCardMutation.mutate(rateCardServiceCategoryId);
             close(true);
           },
         },
