@@ -380,6 +380,21 @@ const PostJobPage = () => {
         methods={formCtx}
         onSubmit={handleSubmit}
         onError={(errors) => {
+          // Scroll to the first error field
+          const firstErrorField = Object.keys(errors)[0];
+          if (firstErrorField) {
+            const errorElement = document.querySelector(
+              `[name="${firstErrorField}"]`,
+            );
+            if (errorElement) {
+              errorElement.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+              return;
+            }
+          }
+          // Fallback to scroll to top if no error element found
           scrollToTop();
           if (errors.toolEntriesCount) {
             toast.error("Please add a tool details");
@@ -394,7 +409,6 @@ const PostJobPage = () => {
                 ? "Post a Job - On Demand"
                 : "Post a Job"
           }
-          isReport={false}
           isShowSort={false}
           action={
             currentLocation === CurrentLocation.dispatch && (
