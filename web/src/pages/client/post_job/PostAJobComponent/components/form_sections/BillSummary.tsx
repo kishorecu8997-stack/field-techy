@@ -2,9 +2,13 @@ import { useLookupData } from "@/shared/apiServices/client/clientOpenApiService"
 import usePostAJobStore from "@/shared/store/postAJobStore";
 import { useMemo } from "react";
 import { type PostAJobFieldsProps } from "../../../types";
+import { Loader2 } from "lucide-react";
+import { formatAmount } from "@/utils/currency";
 
 interface BillSummaryProps {
   data: PostAJobFieldsProps;
+  totalPrice: number;
+  isCalculating: boolean;
   onConsentChange: (checked: boolean) => void;
   defaultConsent?: boolean;
 }
@@ -17,6 +21,8 @@ interface BillSummaryProps {
  */
 export const BillSummary = ({
   data,
+  totalPrice,
+  isCalculating,
   onConsentChange,
   defaultConsent = false,
 }: BillSummaryProps) => {
@@ -25,7 +31,7 @@ export const BillSummary = ({
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
   const { data: experienceLevelsData } = useLookupData("experienceLevels");
   const { data: engagementModelsData } = useLookupData("engagementModels");
-  const { rate, currencySymbol, amount } = usePostAJobStore();
+  const { currencySymbol, amount } = usePostAJobStore();
 
   const countries = useMemo(
     () =>
@@ -77,7 +83,7 @@ export const BillSummary = ({
     const e = new Date(end).getTime();
     if (Number.isNaN(s) || Number.isNaN(e) || e < s)
       return { days: 0, weeks: 0 };
-    const diffDays = Math.ceil((e - s) / 86400000);
+    const diffDays = Math.ceil((e - s) / 86400000) + 1;
     const days = Math.max(1, diffDays);
     const weeks = Math.ceil(days / 7);
     return { days, weeks };
@@ -85,9 +91,7 @@ export const BillSummary = ({
 
   const duration = getDuration(data.startDate, data.endDate);
   const weeks = duration.weeks;
-  const toolBudget = data.toolBudgetTotal || 0;
-  const totalBill =
-    Number(amount) * weeks * Number(data.numberOfVacancy || 1) + toolBudget;
+  const totalBill = totalPrice || 0;
 
   return (
     <div className="space-y-4">
@@ -119,7 +123,7 @@ export const BillSummary = ({
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
           <span className="font-medium">Rate</span>
           <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-            {rate}
+            {formatAmount(amount, currencySymbol)}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
@@ -141,9 +145,7 @@ export const BillSummary = ({
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
           <span className="font-medium">Tools Cost</span>
           <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-            {data.toolBudgetTotal
-              ? `${data.toolBudgetTotal.toLocaleString("en-IN")}${currencySymbol}`
-              : "-"}
+            {formatAmount(data.toolBudgetTotal, currencySymbol)}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
@@ -157,8 +159,13 @@ export const BillSummary = ({
       <div className="flex items-center justify-between text-lg font-semibold text-gray-900 dark:text-gray-100 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 rounded px-3 py-2">
         <span>Total Bill</span>
         <span>
-          {totalBill.toLocaleString("en-IN")}
-          {currencySymbol}
+          {isCalculating ? (
+            <Loader2 className="h-5 w-5 animate-spin p-0" />
+          ) : (
+            <>
+              {formatAmount(totalBill, currencySymbol)}
+            </>
+          )}
         </span>
       </div>
 

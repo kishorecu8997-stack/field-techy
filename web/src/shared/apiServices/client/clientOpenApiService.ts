@@ -3,6 +3,7 @@ import {
   clientActionOnBreak,
   clientActionOnWorkLog,
   clientCancelJob,
+  clientCalculateJobPrice,
   clientGetCompanyInfo,
   clientGetRateCard,
   clientInviteEngineer,
@@ -25,6 +26,7 @@ import {
   type ClientMarksJobFileUploadedResponses,
   type ClientPostJobData,
   type ClientPostJobResponse,
+  type ClientCalculateJobPriceResponse,
   type ClientUpdateCompanyInfoResponse,
   type CreatePaymentIntentError,
   type CreatePaymentIntentResponse,
@@ -33,6 +35,7 @@ import {
   type GetClientTransactionsResponse,
   type GetUserReportsData,
   type GetUserReportsResponses,
+  type Options,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -483,16 +486,24 @@ export function useClientCancelJob(options?: {
   });
 }
 
-export function useClientCalculateJobPrice(
-  query: ClientCalculateJobPriceData["query"],
-  enabled: boolean = false,
-) {
-  return useQuery({
-    ...clientCalculateJobPriceOptions({
-      client: apiClient,
-      query,
-    }),
-    enabled: enabled,
+export function useClientCalculateJobPrice(options?: {
+  onSuccess?: (data: ClientCalculateJobPriceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation<
+    ClientCalculateJobPriceResponse,
+    unknown,
+    Omit<Options<ClientCalculateJobPriceData>, "url">
+  >({
+    mutationFn: async (args: Omit<Options<ClientCalculateJobPriceData>, "url">) => {
+      const { data } = await clientCalculateJobPrice({
+        client: apiClient,
+        ...args,
+      });
+      return data!;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
   });
 }
 

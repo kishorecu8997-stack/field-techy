@@ -3,6 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import { JOB_TYPES } from "@/constants/jobTypes";
 import { TemplateData } from "@/dummy_data/client";
 import {
+  useClientCalculateJobPrice,
   useClientGetRateCard,
   useClientMarkJobFileUploaded,
   useClientPostJob,
@@ -105,6 +106,83 @@ const PostJobPage = () => {
   const serviceCategory = formCtx.watch("serviceCategory");
   const experienceLevel = formCtx.watch("experienceLevel");
   const engagementModel = formCtx.watch("engagementModel");
+
+  const startDate = formCtx.watch("startDate");
+  const endDate = formCtx.watch("endDate");
+  const numberOfVacancy = formCtx.watch("numberOfVacancy");
+  const toolsData = formCtx.watch("toolsData");
+
+  const isSafeDate = (d: any) => d && !Number.isNaN(new Date(d).getTime());
+
+  const queryEnabled = Boolean(
+    serviceCategory &&
+    experienceLevel &&
+    engagementModel &&
+    selectedCountry &&
+    isSafeDate(startDate) &&
+    isSafeDate(endDate)
+  );
+
+  const { mutate: getJobPrice, data: priceData, isPending: isCalculating } = useClientCalculateJobPrice();
+
+  useEffect(() => {
+    if (!queryEnabled) {
+      return;
+    }
+
+    const tools = toolsData
+      ?.map((t) => ({ budget: Number(t.budget) || 0 }))
+      .filter((t) => t.budget > 0).length
+      ? toolsData
+        ?.map((t) => ({ budget: Number(t.budget) || 0 }))
+        .filter((t) => t.budget > 0)
+      : undefined;
+
+    getJobPrice({
+      query: {
+        serviceCategoryId: Number(serviceCategory),
+        experienceLevelId: Number(experienceLevel),
+        engagementModelId: Number(engagementModel),
+        countryId: Number(selectedCountry),
+        startDate: isSafeDate(startDate) ? new Date(startDate!).toISOString() : undefined,
+        endDate: isSafeDate(endDate) ? new Date(endDate!).toISOString() : undefined,
+        vacancies: Number(numberOfVacancy || 1),
+        tools: tools
+      },
+      querySerializer: (query) => {
+        const params = new URLSearchParams();
+        for (const [key, value] of Object.entries(query)) {
+          if (value === undefined || value === null) continue;
+
+          if (key === "tools" && Array.isArray(value)) {
+            // Backend expects an array. Since it is in the query string, 
+            // the standard way to send an array of objects so it is natively 
+            // parsed as an array is using indexed bracket notation.
+            value.forEach((tool, index) => {
+              if (tool && tool.budget !== undefined) {
+                params.append(`tools[${index}][budget]`, String(tool.budget));
+              }
+            });
+          } else {
+            params.append(key, String(value));
+          }
+        }
+        return params.toString();
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    queryEnabled,
+    serviceCategory,
+    experienceLevel,
+    engagementModel,
+    selectedCountry,
+    startDate,
+    endDate,
+    numberOfVacancy,
+    toolsData
+  ]);
+
   const { mutate: getRateCard } = useClientGetRateCard();
 
   useEffect(() => {
@@ -192,6 +270,7 @@ const PostJobPage = () => {
 
   const handleSubmit = async (data: PostAJobFieldsProps) => {
     billConsentRef.current = false;
+
     const body = (
       <BillSummary
         data={data}
@@ -199,6 +278,8 @@ const PostJobPage = () => {
         onConsentChange={(checked) => {
           billConsentRef.current = checked;
         }}
+        totalPrice={priceData?.totalPrice || 0}
+        isCalculating={isCalculating}
       />
     );
 

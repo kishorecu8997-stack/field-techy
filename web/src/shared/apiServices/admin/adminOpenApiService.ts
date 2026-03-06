@@ -673,8 +673,9 @@ export function useGetCmsContent(
       const response = await getCmsContent({
         client: apiClient,
         query: { key },
+        throwOnError: true,
       });
-      return response.data;
+      return response.data ?? null;
     },
 
     enabled: options?.enabled ?? true,
