@@ -10,19 +10,7 @@ import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
 import { FCMHandler } from "./shared/components/FCMHandler.tsx";
 import GlobalErrorBoundary from "./shared/components/commonUI/GlobalErrorBoundary.tsx";
 
-// Stripe
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-
-// initialize stripe promise directly
-
-const publicKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-if (!publicKey) {
-  throw new Error(
-    "Stripe publishable key is not set. Please configure VITE_STRIPE_PUBLISHABLE_KEY in your environment.",
-  );
-}
-const stripePromise = loadStripe(publicKey);
+// Stripe is initialized lazily in AddFundModal to avoid loading Stripe SDK on every page
 
 /**
  * Creates a configured QueryClient instance with default query behaviors.
@@ -67,9 +55,7 @@ root.render(
           <GlobalPopup />
           <ToastHandler />
           <FCMHandler />
-          <Elements stripe={stripePromise}>
-            <App />
-          </Elements>
+          <App />
         </ToastProvider>
       </QueryClientProvider>
     </GlobalErrorBoundary>

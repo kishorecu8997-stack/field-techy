@@ -3,6 +3,17 @@ import Popup from "@/shared/components/Popup";
 import AddFundForm from "./AddFundForm";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { IoClose } from "react-icons/io5";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const publicKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string;
+if (!publicKey) {
+  throw new Error(
+    "Stripe publishable key is not set. Please configure VITE_STRIPE_PUBLISHABLE_KEY in your environment.",
+  );
+}
+// loadStripe is called here so Stripe SDK only loads when this modal is used
+const stripePromise = loadStripe(publicKey);
 
 interface AddFundModalProps {
   onClose: () => void;
@@ -33,7 +44,9 @@ const AddFundModal: React.FC<AddFundModalProps> = ({ onClose, isOpen }) => {
       >
         <IoClose size={24} />
       </Button>
-      <AddFundForm onClose={onClose} />
+      <Elements stripe={stripePromise}>
+        <AddFundForm onClose={onClose} />
+      </Elements>
     </Popup>
   );
 };
