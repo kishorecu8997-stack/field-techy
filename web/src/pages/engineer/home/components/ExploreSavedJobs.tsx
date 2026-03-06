@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { JobItem } from "../types";
 import type { JobType } from "@/constants/jobTypes";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * explore jobs page component
@@ -210,9 +211,16 @@ const ExploreSavedJobs = () => {
                 <p className="text-xl text-gray-600 dark:text-gray-400">
                   No jobs found.
                 </p>
-                <p className="mt-4 text-gray-500 dark:text-gray-300">
+                <p className="mt-4 mb-2 text-gray-500 dark:text-gray-300">
                   Browse jobs and click the bookmark icon to save them here!
                 </p>
+                <Button
+                  onClick={handleClearAllFilters}
+                  variant="primary"
+                  size="lg"
+                >
+                  Clear all filters
+                </Button>
               </div>
             )}
 

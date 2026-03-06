@@ -138,9 +138,12 @@ const ExploreJobs: React.FC = () => {
                 ))
               ) : (
                 /* Empty state centered */
-                <div className="w-full max-w-2xl rounded-lg bg-white p-12 text-center shadow dark:bg-gray-800">
-                  <p className="text-xl text-gray-600 dark:text-gray-300 mb-2">
-                    No jobs match your current filters.
+                <div className="text-center py-12">
+                  <p className="text-xl text-gray-600 dark:text-gray-400">
+                    No jobs found.
+                  </p>
+                  <p className="mt-4 mb-2 text-gray-500 dark:text-gray-300">
+                    Browse jobs and click the bookmark icon to save them here!
                   </p>
                   <Button
                     onClick={handleClearAllFilters}
