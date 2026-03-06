@@ -268,7 +268,13 @@ const JobDetailsPage = () => {
   // Map job to JobOverviewProps using the lookup maps
   const jobOverview = useMemo(() => {
     if (!job) return undefined;
-    return mapJobToJobOverview(job, skillMap, toolMap, experienceLevelMap, engagementModelMap);
+    return mapJobToJobOverview(
+      job,
+      skillMap,
+      toolMap,
+      experienceLevelMap,
+      engagementModelMap,
+    );
   }, [job, skillMap, toolMap, experienceLevelMap, engagementModelMap]);
   const assignmentId = job?.assignmentId ?? undefined;
 
@@ -638,7 +644,8 @@ const JobDetailsPage = () => {
                 numberOfVacancy={job?.vacancies ?? undefined}
                 numberOfApplicants={job?.assignmentId ? 1 : undefined}
                 numberOfApprovedProposals={
-                  (job as unknown as { assignedEngineerCount?: number })?.assignedEngineerCount ?? 0
+                  (job as unknown as { assignedEngineerCount?: number })
+                    ?.assignedEngineerCount ?? 0
                 }
                 activeTab={activeTab}
                 onAddProgressUpdate={handleAddProgressUpdate}

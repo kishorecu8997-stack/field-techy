@@ -126,14 +126,20 @@ const mapClientJobToJobOverview = (
   }
 
   // Extract work details - convert engagement model ID to label using engagementModelMap
-  const engagementModelId = getJobValue<number>("engagementModelId") ?? 
-    (getJobValue<string>("engagementModelId") ? parseInt(getJobValue<string>("engagementModelId")!, 10) : undefined);
+  const engagementModelId =
+    getJobValue<number>("engagementModelId") ??
+    (getJobValue<string>("engagementModelId")
+      ? parseInt(getJobValue<string>("engagementModelId")!, 10)
+      : undefined);
   let engagementModel: string | undefined;
   if (engagementModelId && engagementModelMap.has(engagementModelId)) {
     engagementModel = engagementModelMap.get(engagementModelId);
   } else {
     // Fallback to direct field if no mapping found
-    engagementModel = getJobValue<string>("jobType") || getJobValue<string>("type") || undefined;
+    engagementModel =
+      getJobValue<string>("jobType") ||
+      getJobValue<string>("type") ||
+      undefined;
   }
 
   // Extract experience level - try to convert ID to label using experienceLevelMap
@@ -339,7 +345,14 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
 
   // Prepare job overview for JobOverviewSection using real API data
   const jobOverview = useMemo(
-    () => mapClientJobToJobOverview(job, skillMap, toolMap, experienceLevelMap, engagementModelMap),
+    () =>
+      mapClientJobToJobOverview(
+        job,
+        skillMap,
+        toolMap,
+        experienceLevelMap,
+        engagementModelMap,
+      ),
     [job, skillMap, toolMap, experienceLevelMap, engagementModelMap],
   );
 

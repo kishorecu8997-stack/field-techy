@@ -1,14 +1,14 @@
 import { exampleMarkers } from "@/dummy_data/jobDetails";
 import MapComponent from "@/shared/components/MapComponent";
- 
+
 type CoordinateInput = string | number | null | undefined;
- 
+
 interface LocationMapProps {
   workLocationLat?: CoordinateInput;
   workLocationLng?: CoordinateInput;
   workLocationName?: string | null;
 }
- 
+
 /**
  * Displays the job's work location with a descriptive address and an interactive map.
  *
@@ -30,32 +30,28 @@ const LocationMap: React.FC<LocationMapProps> = ({
   const handleMapClick = (latlng: { lat: number; lng: number }) => {
     console.log("User clicked map at:", latlng);
   };
- 
+
   const parseCoord = (value: CoordinateInput): number | null => {
     if (value === null || value === undefined) return null;
     const num = typeof value === "number" ? value : parseFloat(String(value));
     return Number.isFinite(num) ? num : null;
   };
- 
+
   const normalizeLng = (value: number): number => {
-    const normalized =
-      ((((value + 180) % 360) + 360) % 360) - 180;
+    const normalized = ((((value + 180) % 360) + 360) % 360) - 180;
     return Object.is(normalized, -0) ? 0 : normalized;
   };
- 
+
   const lat = parseCoord(workLocationLat);
   const rawLng = parseCoord(workLocationLng);
   const lng = rawLng === null ? null : normalizeLng(rawLng);
- 
-  const hasValidCoords =
-    lat !== null &&
-    lng !== null &&
-    Math.abs(lat) <= 90;
- 
+
+  const hasValidCoords = lat !== null && lng !== null && Math.abs(lat) <= 90;
+
   const initialPosition: [number, number] = hasValidCoords
     ? [lat, lng]
     : [exampleMarkers.position[0], exampleMarkers.position[1]];
- 
+
   const markers = hasValidCoords
     ? [
         {
@@ -66,7 +62,7 @@ const LocationMap: React.FC<LocationMapProps> = ({
         },
       ]
     : [exampleMarkers];
- 
+
   return (
     <div className="p-4 mx-auto">
       <h1 className="text-2xl font-bold mb-4">Work Location Details</h1>
@@ -91,5 +87,5 @@ const LocationMap: React.FC<LocationMapProps> = ({
     </div>
   );
 };
- 
+
 export default LocationMap;

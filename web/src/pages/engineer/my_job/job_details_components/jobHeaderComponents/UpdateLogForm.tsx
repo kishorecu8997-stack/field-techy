@@ -148,7 +148,6 @@ const UpdateLogForm = ({
       </div>
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <div className="mb-2">
-          
           {/* future use 
           <InputField
             name="title"

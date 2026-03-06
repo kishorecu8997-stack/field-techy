@@ -383,9 +383,14 @@ const PostJobPage = () => {
           // Scroll to the first error field
           const firstErrorField = Object.keys(errors)[0];
           if (firstErrorField) {
-            const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+            const errorElement = document.querySelector(
+              `[name="${firstErrorField}"]`,
+            );
             if (errorElement) {
-              errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+              errorElement.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
               return;
             }
           }
