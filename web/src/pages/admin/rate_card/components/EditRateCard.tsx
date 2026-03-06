@@ -9,7 +9,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useUpdateRateCard } from "@/shared/apiServices/admin/adminService";
+import { useAdminUpdateRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * EditRateCard Component
@@ -33,8 +33,13 @@ const EditRateCard = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const { id } = useParams<{ id: string }>();
-  const rateCardId = id ? parseInt(id, 10) : 0;
-  console.log("Rate Card ID:", rateCardId, "from param:", id);
+  
+  // Parse serviceCategoryId and countryId from URL param (format: "serviceCategoryId-countryId")
+  const [serviceCategoryIdStr, countryIdStr] = id?.split("-") || ["0", "0"];
+  const serviceCategoryId = parseInt(serviceCategoryIdStr, 10) || 0;
+  const countryId = parseInt(countryIdStr, 10) || 0;
+  
+  console.log("Service Category ID:", serviceCategoryId, "Country ID:", countryId, "from param:", id);
 
   const methods = useForm({
     defaultValues: {
@@ -81,7 +86,7 @@ const EditRateCard = () => {
     },
   });
 
-  const updateRateCardMutation = useUpdateRateCard({
+  const updateRateCardMutation = useAdminUpdateRateCard({
     onSuccess: () => {
       toast.success("Rate card updated successfully!");
       navigate(absoluteUrls.admin.home.manage_rate_card);
@@ -96,9 +101,9 @@ const EditRateCard = () => {
   const handleSaveConfirmation = async (data: any) => {
     console.log("handleSaveConfirmation called with data:", data);
     
-    // Validate rate card ID
-    if (!rateCardId || rateCardId === 0) {
-      toast.error("Invalid rate card ID. Please try again from the list.");
+    // Validate service category ID
+    if (!serviceCategoryId || serviceCategoryId === 0) {
+      toast.error("Invalid service category ID. Please try again from the list.");
       return;
     }
     
@@ -117,16 +122,36 @@ const EditRateCard = () => {
           variant: "primary",
           action: async (close) => {
             // Transform form data to API format
-            // Based on the API body { "rate": 1 }, we send the primary rate value
-            // For now, we'll use the monthly rate from the first tier as the rate
+            // The API expects: { countryId, experienceLevels: [{ levelOrder, label, rates: { hourly, halfDay4h, fullDay8h, weekly5d, monthly } }] }
             const firstSkill = data.skills?.[0];
-            const firstTier = firstSkill?.tiers?.[0];
-            const rate = firstTier?.monthly || firstTier?.hourly || firstTier?.halfDay || 
-                         firstTier?.fullDay || firstTier?.weekly || 0;
+            const tiers = firstSkill?.tiers || [];
+            
+            const experienceLevels = tiers.map((tier: any) => {
+              // Convert level string (L1, L2, L3) to levelOrder number
+              const levelOrder = tier.level === "L1" ? 1 : tier.level === "L2" ? 2 : tier.level === "L3" ? 3 : 0;
+              
+              return {
+                levelOrder,
+                label: tier.description || "",
+                rates: {
+                  hourly: parseFloat(tier.hourly) || 0,
+                  halfDay4h: parseFloat(tier.halfDay) || 0,
+                  fullDay8h: parseFloat(tier.fullDay) || 0,
+                  weekly5d: parseFloat(tier.weekly) || 0,
+                  monthly: parseFloat(tier.monthly) || 0,
+                },
+              };
+            });
+            
+            // Get countryId from URL parameter
+            const finalCountryId = countryId || 1;
             
             updateRateCardMutation.mutate({
-              id: rateCardId,
-              data: { rate: parseFloat(rate) },
+              query: { serviceCategoryId },
+              body: {
+                countryId: finalCountryId,
+                experienceLevels,
+              },
             });
             close(true);
           },

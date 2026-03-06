@@ -11,7 +11,8 @@ import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useToggleStatus from "@/shared/components/ToggleStatus";
-import { useGetRateCards, useDeleteRateCard } from "@/shared/apiServices/admin/adminService";
+import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
+import { useAdminDeleteRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
 
@@ -43,7 +44,7 @@ const ManageRateCards: React.FC = () => {
     limit: 100,
   });
 
-  const deleteRateCardMutation = useDeleteRateCard({
+  const deleteRateCardMutation = useAdminDeleteRateCard({
     onSuccess: () => {
       toast.success("Rate card deleted successfully!");
       refetch();
@@ -162,7 +163,7 @@ const ManageRateCards: React.FC = () => {
           variant: "danger",
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
-            deleteRateCardMutation.mutate(rateCardServiceCategoryId);
+            deleteRateCardMutation.mutate({ query: { serviceCategoryId: rateCardServiceCategoryId } });
             close(true);
           },
         },
@@ -282,7 +283,7 @@ const ManageRateCards: React.FC = () => {
           </div>
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
-            onClick={() => navigate(absoluteUrls.admin.home.edit_rate_card.replace(":id", String(row.id)))}
+            onClick={() => navigate(absoluteUrls.admin.home.edit_rate_card.replace(":id", `${row.serviceCategoryId}-${row.countryId}`))}
           >
             <CiEdit className="text-blue-600" />
           </div>
