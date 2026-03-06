@@ -136,6 +136,7 @@ export default function ReportTable({
       label: "Sr.No.",
       renderCell: (_, index) => (currentPage - 1) * pageSize + index + 1,
     },
+    { key: "jobId", label: "Job ID" },
     { key: "reporterRole", label: "Role" },
     { key: "detailedDescription", label: "Issue" },
     { key: "issueCategory", label: "Issue category" },
@@ -240,6 +241,7 @@ export default function ReportTable({
           label: "Solved",
           value: null,
           variant: "primary",
+          disabled: row.status === "resolved",
           action: async () => {
             solvedConfirmation(row);
           },

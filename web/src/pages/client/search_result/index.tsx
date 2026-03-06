@@ -121,6 +121,7 @@ const SearchResult = () => {
         <MyJobsHeader
           title="Search Result"
           isShowBreadcrumb={false}
+          isShowSort={false}
           onSortChange={() => {}}
           currentSort={SORT_OPTIONS.NEWEST}
           description={`${filteredJobs.length} jobs found`}

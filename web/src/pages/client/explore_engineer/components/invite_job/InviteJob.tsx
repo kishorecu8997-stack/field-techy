@@ -146,7 +146,6 @@ const InviteJob: React.FC = () => {
               title="Select Jobs"
               description={undefined}
               isShowBreadcrumb={true}
-              isReport={false}
               isShowSort={false}
               action={
                 <Button

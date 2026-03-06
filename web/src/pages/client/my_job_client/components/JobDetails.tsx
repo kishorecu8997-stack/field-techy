@@ -43,7 +43,7 @@ const JobsDetails: React.FC = () => {
             <MyJobsHeader
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
-              isReport
+              isShowSort={false}
               onSortChange={() => {}}
             />
           </div>
@@ -66,7 +66,7 @@ const JobsDetails: React.FC = () => {
             <MyJobsHeader
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
-              isReport
+              isShowSort={false}
               onSortChange={() => {}}
             />
           </div>
@@ -89,7 +89,7 @@ const JobsDetails: React.FC = () => {
             <MyJobsHeader
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
-              isReport
+              isShowSort={false}
               onSortChange={() => {}}
             />
           </div>
@@ -150,8 +150,7 @@ const JobsDetails: React.FC = () => {
           <MyJobsHeader
             title={pageHeading}
             currentSort={SORT_OPTIONS.NEWEST}
-            isReport={breadcrumbExtra !== "chats"}
-            isShowSort={breadcrumbExtra !== "chats"}
+            isShowSort={false}
             onSortChange={() => {}}
             segments={segments}
             isChatVisible={breadcrumbExtra === "chats"}
