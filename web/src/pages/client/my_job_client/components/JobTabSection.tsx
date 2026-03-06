@@ -366,6 +366,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     "submit_pending_approval",
     "submitted",
     "rejected",
+    "invited",
   ];
   const unprocessedProposalsCount =
     assignmentsData?.filter(
