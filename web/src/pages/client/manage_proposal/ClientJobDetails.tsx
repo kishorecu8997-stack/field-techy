@@ -212,7 +212,7 @@ const ClientJobDetails = () => {
         <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
             title={pageHeading}
-            isReport={false}
+            isShowSort={false}
             isShowBreadcrumb
             customLabels={{
               [params.jobId || ""]:

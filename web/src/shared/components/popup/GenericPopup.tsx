@@ -16,6 +16,7 @@ export interface GenericPopupButton {
     | "warning"
     | undefined;
   className?: string;
+  disabled?: boolean;
   action?: (close: (result: unknown) => void) => Promise<void> | void;
 }
 
@@ -88,18 +89,22 @@ export function GenericPopup(props: GenericPopupProps) {
       <div className="p-4 bg-white dark:bg-neutral-800 flex gap-2 justify-end">
         {props.actionButtons?.map((button, idx) => {
           const isLoading = loadingIndex === idx;
+
+          // A button should be disabled if it's loading OR if its disabled property is true
+          const isButtonDisabled = isLoading || button.disabled;
+
           return (
             <Button
               key={idx}
               type="button"
               variant={button.variant}
               className={`px-4 py-2 font-medium transition-all ${
-                isLoading ? "opacity-75 cursor-not-allowed" : ""
+                isButtonDisabled ? "opacity-50 cursor-not-allowed" : ""
               } ${button.className ?? ""}`}
-              disabled={isLoading}
-              onClick={() => handleClick(button, idx)}
+              disabled={isButtonDisabled}
+              onClick={() => !isButtonDisabled && handleClick(button, idx)}
               onKeyUp={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+                if (!isButtonDisabled && (e.key === "Enter" || e.key === " ")) {
                   handleClick(button, idx);
                 }
               }}

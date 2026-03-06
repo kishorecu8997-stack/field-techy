@@ -59,6 +59,7 @@ const ManageProposal = () => {
         <MyJobsHeader
           title="Manage Proposal"
           currentSort="newest"
+          isShowSort={false}
           isShowBreadcrumb={false}
           description={`${filteredProposalList.length} jobs found`}
         />

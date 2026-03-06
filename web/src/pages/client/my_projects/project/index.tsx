@@ -74,7 +74,7 @@ const MyProjects: React.FC = () => {
           title="My Projects"
           currentSort={currentSort}
           onSortChange={setCurrentSort}
-          isReport={false}
+          isShowSort={false}
         />
       </div>
       <div className="container mx-auto ">

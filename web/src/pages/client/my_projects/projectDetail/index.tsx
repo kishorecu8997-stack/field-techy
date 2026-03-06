@@ -132,7 +132,6 @@ export default function ProjectDetails() {
                 currentSort={SORT_OPTIONS.NEWEST}
                 onSortChange={() => {}}
                 isShowSort={false}
-                isReport={false}
               />
             </div>
           </div>

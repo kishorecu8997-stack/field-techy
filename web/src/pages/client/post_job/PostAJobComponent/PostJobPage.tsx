@@ -394,7 +394,6 @@ const PostJobPage = () => {
                 ? "Post a Job - On Demand"
                 : "Post a Job"
           }
-          isReport={false}
           isShowSort={false}
           action={
             currentLocation === CurrentLocation.dispatch && (

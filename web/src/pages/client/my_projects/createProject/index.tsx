@@ -92,7 +92,6 @@ export default function CreateProject() {
                   currentSort={SORT_OPTIONS.NEWEST}
                   onSortChange={() => {}}
                   isShowSort={false}
-                  isReport={false}
                   action={
                     isDisable && (
                       <div className="flex gap-2">

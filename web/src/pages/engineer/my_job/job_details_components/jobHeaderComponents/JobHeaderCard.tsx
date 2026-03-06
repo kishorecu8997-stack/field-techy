@@ -17,6 +17,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import ReportPage from "@/pages/client/report";
 import { IoIosWarning } from "react-icons/io";
 import { absoluteUrls } from "@/config/urls";
+import { useReportCount } from "@/shared/hooks/useReportCount";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -74,6 +75,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
     "hold",
   );
+  const { count: reportCount, refetch: refetchCount } = useReportCount({
+    jobId: jobId,
+    status: "pending",
+  });
 
   const handleMenuAction = (action: string) => {
     let type: "hold" | "clone" | "cancel";
@@ -181,10 +186,12 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
             >
               <span>Report Updates</span>
-              <div className="relative">
-                <IoIosWarning size={20} />
-                <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
-              </div>
+              {reportCount > 0 && (
+                <div className="relative">
+                  <IoIosWarning size={20} />
+                  <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
+                </div>
+              )}
             </div>
 
             {/* Chats button - visible unless hideChats is true */}
@@ -318,7 +325,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           onClose={() => setIsConfirmOpen(false)}
         />
       </Popup>
-      <ReportPage open={isReportOpen} onClose={() => setIsReportOpen(false)} />
+      <ReportPage
+        open={isReportOpen}
+        refetchCount={refetchCount}
+        onClose={() => setIsReportOpen(false)}
+      />
     </>
   );
 };
