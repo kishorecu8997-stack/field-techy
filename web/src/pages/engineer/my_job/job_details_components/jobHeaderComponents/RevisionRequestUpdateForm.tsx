@@ -17,7 +17,7 @@ import {
   REVISION_UPDATE_STATUS,
   REVISION_UPDATE_COLORS,
 } from "@/constants/revisionUpdateConstants";
-import { useEngineerSubmitRevision } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useEngineerSubmitRevision, useMarkWorkLogFileUploaded } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
@@ -45,30 +45,34 @@ const RevisionRequestUpdateForm = ({
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
 
+  const refetchTimeline = async () => {
+    if (!assignmentId) return;
+    try {
+      const response = await getJobLogs({
+        client: apiClient,
+        path: { assignmentId },
+      });
+      const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+      queryClient.setQueryData(exactQueryKey, response.data);
+    } catch (error) {
+      console.error("Failed to refetch timeline:", error);
+      queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+    }
+  };
+
   // Mutation for submitting revision
-  const { mutate: submitRevision } = useEngineerSubmitRevision({
+  const { mutateAsync: submitRevision } = useEngineerSubmitRevision({
     assignmentId,
-    onSuccess: async () => {
-      toast.success("Revision submitted successfully!");
-      // Force refetch the job logs to update timeline immediately
-      if (assignmentId) {
-        try {
-          const response = await getJobLogs({
-            client: apiClient,
-            path: { assignmentId },
-          });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
-          queryClient.setQueryData(exactQueryKey, response.data);
-        } catch (error) {
-          console.error("Failed to refetch timeline:", error);
-          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
-        }
-      }
-      onClose();
-    },
     onError: (error) => {
       console.error("Failed to submit revision:", error);
       toast.error("Failed to submit revision. Please try again.");
+    },
+  });
+
+  // Mutation for marking worklog file as uploaded
+  const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
+    onError: (error) => {
+      console.error("Failed to mark file as uploaded:", error);
     },
   });
 
@@ -94,21 +98,49 @@ const RevisionRequestUpdateForm = ({
 
             // Call the API if we have all required IDs
             if (assignmentId && logId && revisionId) {
-              submitRevision({
-                body: {
-                  assignmentId,
-                  logId,
-                  revisionId,
-                  content: notes,
-                  attachment: attachment
-                    ? {
-                        filename: attachment.name,
-                        size: attachment.size,
-                        mimeType: attachment.type,
-                      }
-                    : undefined,
-                },
-              });
+              try {
+                // Submit revision and get response with upload URL
+                const response = await submitRevision({
+                  body: {
+                    assignmentId,
+                    logId,
+                    revisionId,
+                    content: notes,
+                    attachment: attachment
+                      ? {
+                          filename: attachment.name,
+                          size: attachment.size,
+                          mimeType: attachment.type,
+                        }
+                      : undefined,
+                  },
+                });
+
+                // Upload file to S3 if upload URL is provided in response
+                if (attachment && response.attachmentUploadUrl) {
+                  await fetch(response.attachmentUploadUrl, {
+                    method: "PUT",
+                    body: attachment,
+                    headers: { "Content-Type": attachment.type },
+                  });
+
+                  // Mark file as uploaded in the database
+                  await markFileUploaded({
+                    body: {
+                      assignmentId,
+                      target: "revision",
+                      revisionId: response.revisionId || revisionId,
+                      logId,
+                    },
+                  });
+                }
+
+                await refetchTimeline();
+                toast.success("Revision submitted successfully!");
+              } catch (error) {
+                console.error("Failed to submit revision:", error);
+                toast.error("Failed to submit revision. Please try again.");
+              }
             } else {
               // Fallback to local state update if no API data available
               toast.success(REVISION_UPDATE_MESSAGES.submitSuccess);

@@ -235,7 +235,7 @@ export const transformLogsToTimelineItems = (
 
       // Extract attachment name from URL if available
       const attachmentName = log.attachmentUrl
-        ? log.attachmentUrl.split("/").pop()?.split("?")[0]
+        ? decodeURIComponent(log.attachmentUrl.split("/").pop()?.split("?")[0] || "")
         : undefined;
 
       return {
@@ -398,14 +398,19 @@ export const transformSignOffsToItems = (
 
     if (so.attachmentUrl) {
       attachments.push({
-        name: "Work Submission",
+        name: decodeURIComponent(
+          so.attachmentUrl.split("/").pop()?.split("?")[0] || "Attachment",
+        ),
         url: so.attachmentUrl,
       });
     }
 
     if (so.signatureAttachmentUrl) {
       attachments.push({
-        name: "Signature",
+        name: decodeURIComponent(
+          so.signatureAttachmentUrl.split("/").pop()?.split("?")[0] ||
+            "Attachment",
+        ),
         url: so.signatureAttachmentUrl,
       });
     }

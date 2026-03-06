@@ -46,6 +46,7 @@ import {
   useClientActionOnWorkLog,
   useClientActionOnBreak,
   useClientRegionId,
+  useMarkWorkLogFileUploaded,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
@@ -215,7 +216,34 @@ const TimelineSection: React.FC<{
     },
   });
 
-  const { mutate: actionOnWorkLog } = useClientActionOnWorkLog({
+  // Mutation for marking worklog file as uploaded
+  const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
+    onSuccess: async () => {
+      // Refetch job logs after file is marked as uploaded
+      if (effectiveAssignmentId) {
+        try {
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId: effectiveAssignmentId },
+            query: regionId !== undefined ? { regionId } : undefined,
+          });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId: effectiveAssignmentId },
+            query: regionId !== undefined ? { regionId } : undefined,
+          });
+          queryClient.setQueryData(exactQueryKey, response.data);
+        } catch (error) {
+          console.error("Failed to refetch timeline after upload:", error);
+          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+      }
+    },
+    onError: (error) => {
+      console.error("Failed to mark file as uploaded:", error);
+    },
+  });
+
+  const { mutateAsync: actionOnWorkLog } = useClientActionOnWorkLog({
     onSuccess: async () => {
       if (effectiveAssignmentId) {
         try {
@@ -451,7 +479,10 @@ const TimelineSection: React.FC<{
       const attachments = progressLog.attachmentUrl
         ? [
             {
-              name: "View Document",
+              name: decodeURIComponent(
+                progressLog.attachmentUrl.split("/").pop()?.split("?")[0] ||
+                  "Attachment",
+              ),
               url: progressLog.attachmentUrl,
             },
           ]
@@ -548,9 +579,10 @@ const TimelineSection: React.FC<{
       attachments: latestRevision?.attachmentUrl
         ? [
             {
-              name:
+              name: decodeURIComponent(
                 latestRevision.attachmentUrl.split("/").pop()?.split("?")[0] ||
-                "Attachment",
+                  "Attachment",
+              ),
               url: latestRevision.attachmentUrl,
             },
           ]
@@ -619,13 +651,19 @@ const TimelineSection: React.FC<{
     const attachments: Array<{ name: string; url: string }> = [];
     if (signOff.attachmentUrl) {
       attachments.push({
-        name: "Work Submission",
+        name: decodeURIComponent(
+          signOff.attachmentUrl.split("/").pop()?.split("?")[0] ||
+            "Attachment",
+        ),
         url: signOff.attachmentUrl,
       });
     }
     if (signOff.signatureAttachmentUrl) {
       attachments.push({
-        name: "Signature",
+        name: decodeURIComponent(
+          signOff.signatureAttachmentUrl.split("/").pop()?.split("?")[0] ||
+            "Attachment",
+        ),
         url: signOff.signatureAttachmentUrl,
       });
     }
@@ -1086,7 +1124,7 @@ const TimelineSection: React.FC<{
     setShowFormConfirm(false);
   };
 
-  const handleRevisionSubmit = () => {
+  const handleRevisionSubmit = async () => {
     if (!showFormConfirm) {
       setShowFormModal(false);
       setShowFormConfirm(true);
@@ -1103,32 +1141,11 @@ const TimelineSection: React.FC<{
       effectiveAssignmentId &&
       formMode === FormMode.Revision
     ) {
-      actionOnWorkLog({
-        body: {
-          assignmentId: effectiveAssignmentId,
-          logId: currentRevisionLogId,
-          action: "request_revision",
-          clientComment: notes,
-          clientAttachment: attachment?.[0]
-            ? {
-                filename: attachment[0].name,
-                size: attachment[0].size,
-                mimeType: attachment[0].type,
-              }
-            : undefined,
-        },
-      });
-    }
-
-    if (formMode === FormMode.RevisionUpdate) {
-      const revisionId = currentRevisionId;
-      const logId = currentRevisionLogId;
-      if (logId && revisionId && effectiveAssignmentId) {
-        actionOnWorkLog({
+      try {
+        const response = await actionOnWorkLog({
           body: {
             assignmentId: effectiveAssignmentId,
-            logId: logId,
-            revisionId: revisionId,
+            logId: currentRevisionLogId,
             action: "request_revision",
             clientComment: notes,
             clientAttachment: attachment?.[0]
@@ -1140,6 +1157,71 @@ const TimelineSection: React.FC<{
               : undefined,
           },
         });
+
+        // Upload file to S3 and mark it as uploaded so clientAttachmentUrl is returned in logs
+        if (attachment?.[0] && response?.clientAttachmentUploadUrl) {
+          await fetch(response.clientAttachmentUploadUrl, {
+            method: "PUT",
+            body: attachment[0],
+            headers: { "Content-Type": attachment[0].type },
+          });
+
+          await markFileUploaded({
+            body: {
+              assignmentId: effectiveAssignmentId,
+              target: "client_revision",
+              logId: currentRevisionLogId,
+              revisionId: response?.revisionId,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Failed to submit revision:", error);
+      }
+    }
+
+    if (formMode === FormMode.RevisionUpdate) {
+      const revisionId = currentRevisionId;
+      const logId = currentRevisionLogId;
+      if (logId && revisionId && effectiveAssignmentId) {
+        try {
+          const response = await actionOnWorkLog({
+            body: {
+              assignmentId: effectiveAssignmentId,
+              logId: logId,
+              revisionId: revisionId,
+              action: "request_revision",
+              clientComment: notes,
+              clientAttachment: attachment?.[0]
+                ? {
+                    filename: attachment[0].name,
+                    size: attachment[0].size,
+                    mimeType: attachment[0].type,
+                  }
+                : undefined,
+            },
+          });
+
+          // Upload file to S3 and mark it as uploaded so clientAttachmentUrl is returned in logs
+          if (attachment?.[0] && response?.clientAttachmentUploadUrl) {
+            await fetch(response.clientAttachmentUploadUrl, {
+              method: "PUT",
+              body: attachment[0],
+              headers: { "Content-Type": attachment[0].type },
+            });
+
+            await markFileUploaded({
+              body: {
+                assignmentId: effectiveAssignmentId,
+                target: "client_revision",
+                logId,
+                revisionId: response?.revisionId || revisionId,
+              },
+            });
+          }
+        } catch (error) {
+          console.error("Failed to submit revision update:", error);
+        }
       }
     }
 
