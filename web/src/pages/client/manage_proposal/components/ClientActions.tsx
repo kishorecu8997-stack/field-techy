@@ -55,16 +55,16 @@ const ClientActions = ({
           </Button>
         ) : (
           jobStatus === "Posted" && (
-          <Button
-            variant="primary"
-            onClick={() => {
-              navigate(URl);
-            }}
-          >
-            Invite to Job
-          </Button>
-        ))
-        }
+            <Button
+              variant="primary"
+              onClick={() => {
+                navigate(URl);
+              }}
+            >
+              Invite to Job
+            </Button>
+          )
+        )}
       </div>
     </>
   );

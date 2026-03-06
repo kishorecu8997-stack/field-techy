@@ -29,22 +29,28 @@ import categoryCloud from "@/assets/category/category_cloud.jpg";
 import categoryNetworks from "@/assets/category/category_networks.jpg";
 import categorySoftware from "@/assets/category/category_software.jpg";
 import categoryEnd from "@/assets/category/category_end.jpg";
-import categoryCyber from "@/assets/category/category_cyber.jpg"
+import categoryCyber from "@/assets/category/category_cyber.jpg";
 
 // Array of images to cycle through for different categories
-const categoryImages = [categoryNetworks, categoryCyber, categoryCloud , categorySoftware, categoryEnd];
+const categoryImages = [
+  categoryNetworks,
+  categoryCyber,
+  categoryCloud,
+  categorySoftware,
+  categoryEnd,
+];
 
 // Get image for a category - uses partial matching and cycles through images for others
 const getCategoryImage = (name: string, id: number): string => {
   const lowerName = name.toLowerCase();
-  
+
   // Check for partial matches first
   if (lowerName.includes("network")) return categoryNetworks;
   if (lowerName.includes("cyber")) return categoryCyber;
   if (lowerName.includes("cloud")) return categoryCloud;
   if (lowerName.includes("software")) return categorySoftware;
   if (lowerName.includes("end")) return categoryEnd;
-  
+
   // For other categories, cycle through images based on category ID
   const fallbackIndex = (id - 1) % categoryImages.length;
   return categoryImages[fallbackIndex];
@@ -65,15 +71,24 @@ interface CategoryWithCountProps {
   categoryName: string;
 }
 
-const CategoryWithCount: React.FC<CategoryWithCountProps> = ({ categoryId, categoryName }) => {
+const CategoryWithCount: React.FC<CategoryWithCountProps> = ({
+  categoryId,
+  categoryName,
+}) => {
   const { count, isLoading } = useEngineerCountByCategory(categoryId);
   const image = getCategoryImage(categoryName, categoryId);
-  
+
   return (
     <ServiceCategoryCard
       id={categoryId}
       name={categoryName}
-      engineers={isLoading ? "Loading..." : count > 0 ? `${count} Engineers` : "No engineers"}
+      engineers={
+        isLoading
+          ? "Loading..."
+          : count > 0
+            ? `${count} Engineers`
+            : "No engineers"
+      }
       image={image}
       categoryId={categoryId}
     />
@@ -92,10 +107,11 @@ const Dashboard: React.FC = () => {
   const { checkPermission: checkNotificationPermission } = useFCM();
   const { setCompanyInfo } = useClientCompanyInfoStore();
   const { data: clientInfo } = useClientGetCompanyInfo();
-  
+
   // Fetch service categories from API
-  const { data: serviceCategoriesData, isLoading: isLoadingCategories } = useLookupData("serviceCategories");
-  
+  const { data: serviceCategoriesData, isLoading: isLoadingCategories } =
+    useLookupData("serviceCategories");
+
   useEffect(() => {
     if (clientInfo) {
       setCompanyInfo(clientInfo);
@@ -173,7 +189,10 @@ const Dashboard: React.FC = () => {
               {isLoadingCategories ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="rounded-xl overflow-hidden shadow-md animate-pulse">
+                    <div
+                      key={i}
+                      className="rounded-xl overflow-hidden shadow-md animate-pulse"
+                    >
                       <div className="w-full h-48 bg-gray-300 dark:bg-gray-700" />
                     </div>
                   ))}

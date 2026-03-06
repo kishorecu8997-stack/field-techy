@@ -20,11 +20,13 @@ export type FiltersType = {
  */
 const ExploreEngineer = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   // Get category from URL params and convert to number
   const categoryFromUrl = searchParams.get("category");
-  const initialCategory = categoryFromUrl ? parseInt(categoryFromUrl, 10) : null;
-  
+  const initialCategory = categoryFromUrl
+    ? parseInt(categoryFromUrl, 10)
+    : null;
+
   // Filter state - initialize with category from URL
   const [filters, setFilters] = useState<FiltersType>({
     location: null,
@@ -40,7 +42,7 @@ const ExploreEngineer = () => {
   const handleFilterChange = (newFilters: Partial<FiltersType>) => {
     setFilters((prev) => {
       const updatedFilters = { ...prev, ...newFilters };
-      
+
       // Update URL params when category changes
       if (newFilters.category !== undefined) {
         if (newFilters.category === null) {
@@ -50,7 +52,7 @@ const ExploreEngineer = () => {
         }
         setSearchParams(searchParams, { replace: true });
       }
-      
+
       return updatedFilters;
     });
   };
@@ -84,7 +86,10 @@ const ExploreEngineer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
           {/* Engineer List */}
           <div className="lg:col-span-2">
-            <EngineerListPage filters={filters} onTotalEngineerCountChange={setTotalEngineerCount} />
+            <EngineerListPage
+              filters={filters}
+              onTotalEngineerCountChange={setTotalEngineerCount}
+            />
           </div>
 
           {/* Sidebar Filters */}
