@@ -49,7 +49,11 @@ const MyJobsClient: React.FC = () => {
 
   // Sync activeFilter with URL filter param when it changes (e.g., navigation from Dashboard)
   useEffect(() => {
-    if (filterParam && jobFilters.includes(filterParam) && filterParam !== activeFilter) {
+    if (
+      filterParam &&
+      jobFilters.includes(filterParam) &&
+      filterParam !== activeFilter
+    ) {
       setActiveFilter(filterParam);
       setCurrentPage(1); // Reset pagination when filter changes via URL
     }

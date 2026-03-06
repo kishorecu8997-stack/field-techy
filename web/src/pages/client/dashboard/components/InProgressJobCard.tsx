@@ -88,14 +88,17 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
                     className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-800"
                   />
                 ))}
-                {job.engineers && Number(job.engineers) > job.engineerAvatars.length && (
-                  <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-medium">
-                    +{Number(job.engineers) - job.engineerAvatars.length}
-                  </div>
-                )}
+                {job.engineers &&
+                  Number(job.engineers) > job.engineerAvatars.length && (
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-medium">
+                      +{Number(job.engineers) - job.engineerAvatars.length}
+                    </div>
+                  )}
               </div>
               <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
-                {Number(job.engineers) > 0 ? `${job.engineers} Engineer${Number(job.engineers) > 1 ? 's' : ''}` : 'No Engineers'}
+                {Number(job.engineers) > 0
+                  ? `${job.engineers} Engineer${Number(job.engineers) > 1 ? "s" : ""}`
+                  : "No Engineers"}
               </span>
             </>
           ) : (

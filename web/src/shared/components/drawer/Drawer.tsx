@@ -116,7 +116,11 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
         className="fixed inset-y-0 right-0 z-50 w-[90%] md:w-[30rem] bg-white shadow-xl dark:bg-gray-800"
         role="dialog"
         aria-modal="true"
-        aria-label={typeof config.title === "function" ? config.title(clientProfile?.clientType) : config.title}
+        aria-label={
+          typeof config.title === "function"
+            ? config.title(clientProfile?.clientType)
+            : config.title
+        }
       >
         <div className="flex h-screen flex-col">
           <Suspense
@@ -128,7 +132,11 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
           >
             <div className="shrink-0 py-6 px-6">
               <DrawerHeader
-                title={typeof config.title === "function" ? config.title(clientProfile?.clientType) : config.title}
+                title={
+                  typeof config.title === "function"
+                    ? config.title(clientProfile?.clientType)
+                    : config.title
+                }
                 onClose={onClose}
                 onBack={onBack}
                 showBack={!!config.parent || !!immediateParentKey}

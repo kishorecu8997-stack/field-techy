@@ -280,10 +280,18 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           />
         )}
         <InputField
-          label={companyInfo?.clientType === "corporate" ? "Contact Person Name" : "First Name"}
+          label={
+            companyInfo?.clientType === "corporate"
+              ? "Contact Person Name"
+              : "First Name"
+          }
           name="contactPersonName"
           type="text"
-          placeholder={companyInfo?.clientType === "corporate" ? "Contact Person Name" : "First Name"}
+          placeholder={
+            companyInfo?.clientType === "corporate"
+              ? "Contact Person Name"
+              : "First Name"
+          }
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
           rules={{ validate: (v: string) => validateName(v) }}

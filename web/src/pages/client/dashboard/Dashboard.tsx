@@ -109,23 +109,35 @@ const Dashboard: React.FC = () => {
 
   // Fetch assignments for each in-progress job (max 4 jobs)
   // Call hooks at top level with enabled flag to avoid calls when jobId is undefined
-  const assignmentData1 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[0] }, !!inProgressJobIds[0]);
-  const assignmentData2 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[1] }, !!inProgressJobIds[1]);
-  const assignmentData3 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[2] }, !!inProgressJobIds[2]);
-  const assignmentData4 = useClientGetAssignmentDetails({ jobId: inProgressJobIds[3] }, !!inProgressJobIds[3]);
+  const assignmentData1 = useClientGetAssignmentDetails(
+    { jobId: inProgressJobIds[0] },
+    !!inProgressJobIds[0],
+  );
+  const assignmentData2 = useClientGetAssignmentDetails(
+    { jobId: inProgressJobIds[1] },
+    !!inProgressJobIds[1],
+  );
+  const assignmentData3 = useClientGetAssignmentDetails(
+    { jobId: inProgressJobIds[2] },
+    !!inProgressJobIds[2],
+  );
+  const assignmentData4 = useClientGetAssignmentDetails(
+    { jobId: inProgressJobIds[3] },
+    !!inProgressJobIds[3],
+  );
 
   // Build a map of jobId to assignment data
   // Depend on individual data properties instead of the array for effective memoization
   const jobAssignmentsMap = useMemo(() => {
     const map = new Map<number, { avatars: string[]; count: number }>();
-    
+
     const queries = [
       { data: assignmentData1.data, jobId: inProgressJobIds[0] },
       { data: assignmentData2.data, jobId: inProgressJobIds[1] },
       { data: assignmentData3.data, jobId: inProgressJobIds[2] },
       { data: assignmentData4.data, jobId: inProgressJobIds[3] },
     ];
-    
+
     queries.forEach(({ data, jobId }) => {
       if (jobId && data) {
         const assignments = data;
@@ -182,8 +194,15 @@ const Dashboard: React.FC = () => {
       return {
         id: job.id,
         title: job.jobTitle,
-        type: job.jobType === "On site" ? "on-site" : job.jobType === "Remote" ? "remote" : "hybrid",
-        startDate: job.startDate ? new Date(job.startDate).toLocaleDateString() : "Not scheduled",
+        type:
+          job.jobType === "On site"
+            ? "on-site"
+            : job.jobType === "Remote"
+              ? "remote"
+              : "hybrid",
+        startDate: job.startDate
+          ? new Date(job.startDate).toLocaleDateString()
+          : "Not scheduled",
         location: locationText,
         workLocationName: job.workLocationName || null,
         cityId: job.cityId,
@@ -194,8 +213,13 @@ const Dashboard: React.FC = () => {
             ? `${new Date(job.startDate).toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
             : `Not scheduled - ${new Date(job.endDate).toLocaleDateString()}`
           : "Duration not specified",
-        serviceType: job.serviceCategoryId ? getServiceCategoryName(job.serviceCategoryId) : "Service not specified",
-        pay: job.totalPrice != null ? `${job.currencySymbol || "$"}${job.totalPrice}` : "Price not set",
+        serviceType: job.serviceCategoryId
+          ? getServiceCategoryName(job.serviceCategoryId)
+          : "Service not specified",
+        pay:
+          job.totalPrice != null
+            ? `${job.currencySymbol || "$"}${job.totalPrice}`
+            : "Price not set",
         status: "inprogress",
         engineerAvatars: jobAssignmentsMap.get(job.id)?.avatars || [],
         engineers: String(jobAssignmentsMap.get(job.id)?.count || 0),

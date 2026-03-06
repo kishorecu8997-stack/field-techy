@@ -367,7 +367,10 @@ export const sectionConfig: Record<
   clientAccount: { component: ClientAccountDrawerMenu, title: "My Profile" },
   company: {
     component: ClientPersonalInformation,
-    title: (clientType) => clientType === "corporate" || clientType === "CORPORATE" ? "Company Information" : "Personal Information",
+    title: (clientType) =>
+      clientType === "corporate" || clientType === "CORPORATE"
+        ? "Company Information"
+        : "Personal Information",
     parent: "clientAccount",
   },
 
