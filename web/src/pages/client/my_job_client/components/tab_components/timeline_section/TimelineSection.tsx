@@ -665,8 +665,7 @@ const TimelineSection: React.FC<{
     if (signOff.attachmentUrl) {
       attachments.push({
         name: decodeURIComponent(
-          signOff.attachmentUrl.split("/").pop()?.split("?")[0] ||
-            "Attachment",
+          signOff.attachmentUrl.split("/").pop()?.split("?")[0] || "Attachment",
         ),
         url: signOff.attachmentUrl,
       });

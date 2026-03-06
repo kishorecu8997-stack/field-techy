@@ -33,7 +33,7 @@ import { toast } from "react-toastify";
 import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
- 
+
 /**
  * Maps API job data to JobOverviewProps format for the Job Overview tab
  * Uses the existing JobOverviewSection component for comprehensive job details display
@@ -46,18 +46,18 @@ import { apiClient } from "@/shared/apiServices/apiClient";
 //   const getJobValue = <T,>(key: string): T | null | undefined => {
 //     return (job as Record<string, unknown>)?.[key] as T | null | undefined;
 //   };
- 
+
 //   // Extract basic job info
 //   const jobTitle = job?.jobTitle || "";
 //   const jobDescription = job?.jobDescription || "";
- 
+
 //   // Extract skills - convert numbers to strings (engineer API returns numbers)
 //   const rawSkills = getJobValue<number[]>("skills");
 //   let skills: string[] = [];
 //   if (Array.isArray(rawSkills)) {
 //     skills = rawSkills.map((skill) => String(skill));
 //   }
- 
+
 //   // Extract tools - convert numbers to strings (engineer API returns numbers)
 //   const rawTools = getJobValue<number[]>("tools");
 //   let tools: Array<{ name: string; price: string; image?: string }> = [];
@@ -68,7 +68,7 @@ import { apiClient } from "@/shared/apiServices/apiClient";
 //       image: undefined,
 //     }));
 //   }
- 
+
 //   // Extract duration from startDate and endDate
 //   const startDate = getJobValue<string>("startDate");
 //   const endDate = getJobValue<string>("endDate");
@@ -80,36 +80,36 @@ import { apiClient } from "@/shared/apiServices/apiClient";
 //   } else if (startDate) {
 //     duration = `Starts: ${new Date(startDate).toLocaleDateString()}`;
 //   }
- 
+
 //   // Extract work details
 //   const engagementModel = getJobValue<string>("jobType") || undefined;
 //   const experienceLevel = getJobValue<number>("experienceLevelId")?.toString() || undefined;
 //   const numberOfVacancies = job?.vacancies ?? undefined;
- 
+
 //   // Extract earnings info - engineers see totalPrice as total payment
 //   const totalPrice = getJobValue<string>("totalPrice");
 //   const currencySymbol = getJobValue<string>("currencySymbol") || "$";
- 
+
 //   // Format total payment
 //   let totalPayment: string | undefined;
 //   if (totalPrice) {
 //     totalPayment = `${currencySymbol}${totalPrice}`;
 //   }
- 
+
 //   // Extract additional details
 //   const rawAdditionalDetails = getJobValue<string>("additionalDetails");
 //   let additionalDetails: string[] = [];
 //   if (rawAdditionalDetails) {
 //     additionalDetails = [rawAdditionalDetails];
 //   }
- 
+
 //   // Extract attachments - show as "View Document" with the URL
 //   const attachments: Array<{ name: string; url: string }> = [];
 //   const attachmentUrl = getJobValue<string | null>("attachmentUrl");
 //   if (attachmentUrl) {
 //     attachments.push({ name: "View Document", url: attachmentUrl });
 //   }
- 
+
 //   return {
 //     jobTitle,
 //     jobDescription,
@@ -124,7 +124,7 @@ import { apiClient } from "@/shared/apiServices/apiClient";
 //     attachments,
 //   };
 // };
- 
+
 /**
  * Engineer Job Tab Section with simplified 3-tab layout:
  * - Timeline
@@ -173,7 +173,7 @@ const JobTabSection = ({
   // isWorkSubmitted is used for prop interface compatibility with other components
   // Currently kept for future implementation of work submission tracking
   const queryClient = useQueryClient();
- 
+
   const { mutateAsync: applyJob } = useEngineerApplyJob({
     onSuccess: async () => {
       // After successful submission, set hasApplied to true to show Proposal Info tab
@@ -207,13 +207,13 @@ const JobTabSection = ({
       }
     },
   });
- 
+
   // Mutation for marking proposal file as uploaded
   const { mutateAsync: markUploaded } = useEngineerMarkProposalFileUploaded();
- 
+
   // Fetch engineer jobs from API to get proposal details
   const { data: engineerJobs } = useEngineerGetMyJobs(!!jobId);
- 
+
   // Get proposal details from API for the current job
   const apiProposalData = engineerJobs?.find((job) => job.id === jobId);
   const methods = useForm<ProposalFormData>({
@@ -222,7 +222,7 @@ const JobTabSection = ({
       attachments: null,
     },
   });
- 
+
   const [showReview, setShowReview] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [reviewData, setReviewData] = useState<ProposalFormData | null>(null);
@@ -233,7 +233,7 @@ const JobTabSection = ({
   const [selectedTab, setSelectedTab] = useState<string>(
     activeTab || JOB_TAB_LABELS.timeline,
   );
- 
+
   useEffect(() => {
     document.body.style.overflow =
       showSuccess || showReview ? "hidden" : "unset";
@@ -241,14 +241,14 @@ const JobTabSection = ({
       document.body.style.overflow = "unset";
     };
   }, [showSuccess, showReview]);
- 
+
   // Sync local selectedTab to parent's activeTab
   useEffect(() => {
     if (selectedTab !== activeTab) {
       setActiveTab?.(selectedTab);
     }
   }, [selectedTab, activeTab, setActiveTab]);
- 
+
   // Determine if engineer has applied based on OfferJobStatus from API (persists after refresh)
   // This is the primary source of truth - local hasApplied state only works within session
   // Note: "submitted" status is handled by local hasApplied state
@@ -261,15 +261,15 @@ const JobTabSection = ({
     OfferJobStatus === "submit_pending_approval" ||
     OfferJobStatus === "submitted" ||
     OfferJobStatus === "rejected";
- 
+
   // Show "Job Applied" status instead of "Send Proposal" after submission
   // Priority: API status (persists) > local state (session only)
- 
+
   const onSubmit = (data: ProposalFormData) => {
     setReviewData(data);
     setShowReview(true);
   };
- 
+
   // Handler to submit proposal to API
   const handleConfirmProposal = async (
     data: ProposalFormData,
@@ -278,11 +278,11 @@ const JobTabSection = ({
       toast.error("Job ID is missing. Cannot submit proposal.");
       throw new Error("Job ID is missing");
     }
- 
+
     // Get the file from attachments if present
     const fileList = data.attachments;
     const file = fileList && fileList.length > 0 ? fileList[0] : null;
- 
+
     const proposalAttachmentMeta = file
       ? {
           filename: file.name,
@@ -290,7 +290,7 @@ const JobTabSection = ({
           mimeType: file.type,
         }
       : undefined;
- 
+
     try {
       const response = await applyJob({
         body: {
@@ -299,7 +299,7 @@ const JobTabSection = ({
           proposalAttachment: proposalAttachmentMeta,
         },
       });
- 
+
       // If there's a file and we got an upload URL, upload the file
       if (file && response.uploadUrl) {
         const uploadResponse = await fetch(response.uploadUrl, {
@@ -309,19 +309,19 @@ const JobTabSection = ({
             "Content-Type": file.type,
           },
         });
- 
+
         if (!uploadResponse.ok) {
           throw new Error(
             `File upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`,
           );
         }
- 
+
         // Mark the file as uploaded so the client can view it
         await markUploaded({
           body: { jobId: Number(jobId) },
         });
       }
- 
+
       // Immediately update UI state before toast
       setHasApplied(true);
       // Also set submitted proposal data so it displays immediately in ProposalInfoTab
@@ -338,7 +338,7 @@ const JobTabSection = ({
       }
       // Force refetch timeline to update immediately
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
- 
+
       // Manually fetch and update engineerJobs cache for timeline
       try {
         const response = await engineerGetMyJobs({ client: apiClient });
@@ -349,7 +349,7 @@ const JobTabSection = ({
       } catch (error) {
         console.error("Error refetching engineer jobs:", error);
       }
- 
+
       if (assignmentId) {
         queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
         queryClient.invalidateQueries({
@@ -367,7 +367,7 @@ const JobTabSection = ({
           console.error("Error refetching timeline:", error);
         }
       }
- 
+
       toast.success("Proposal submitted successfully!");
     } catch (error) {
       console.error("Failed to submit proposal:", error);
@@ -375,11 +375,11 @@ const JobTabSection = ({
       throw error;
     }
   };
- 
+
   const attachmentFiles = reviewData?.attachments
     ? Array.from(reviewData.attachments).map((file: File) => file.name)
     : [];
- 
+
   // 3 tabs only: Timeline, Job Overview, Work Location
   const tabs = [
     {
@@ -440,7 +440,7 @@ const JobTabSection = ({
         ]
       : []),
   ];
- 
+
   return (
     <div>
       {!isSendProposal ? (
@@ -472,5 +472,5 @@ const JobTabSection = ({
     </div>
   );
 };
- 
+
 export default JobTabSection;

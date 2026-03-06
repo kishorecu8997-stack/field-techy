@@ -115,7 +115,8 @@ const FinalStatementForm = ({
           (submitResponse.workAttachmentId &&
             sheet.attachmentId === submitResponse.workAttachmentId) ||
           (submitResponse.signatureAttachmentId &&
-            sheet.signatureAttachmentId === submitResponse.signatureAttachmentId),
+            sheet.signatureAttachmentId ===
+              submitResponse.signatureAttachmentId),
       );
 
       return matched?.id || signOffSheets[0]?.id;
@@ -130,9 +131,7 @@ const FinalStatementForm = ({
       console.error("Failed to submit final statement:", error);
       const apiMessage = getApiErrorMessage(error);
       if (
-        apiMessage?.includes(
-          "Cannot submit work while there are pending logs",
-        )
+        apiMessage?.includes("Cannot submit work while there are pending logs")
       ) {
         toast.error(apiMessage);
       } else {

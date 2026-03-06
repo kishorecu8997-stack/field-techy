@@ -141,7 +141,7 @@ export const statusLabels: Record<string, string> = {
   flagged: "Flagged",
   declined: "Declined",
   invited: "Invited",
- };
+};
 
 export type BlockClientForm = {
   reason: string;

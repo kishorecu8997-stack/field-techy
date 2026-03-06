@@ -235,7 +235,9 @@ export const transformLogsToTimelineItems = (
 
       // Extract attachment name from URL if available
       const attachmentName = log.attachmentUrl
-        ? decodeURIComponent(log.attachmentUrl.split("/").pop()?.split("?")[0] || "")
+        ? decodeURIComponent(
+            log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
+          )
         : undefined;
 
       return {

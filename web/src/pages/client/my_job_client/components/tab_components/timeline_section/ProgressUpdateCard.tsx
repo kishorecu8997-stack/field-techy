@@ -234,22 +234,22 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                         </p>
                         {revision.clientAttachmentUrl && (
                           <div className="mt-2">
-                                <a
-                                  href={revision.clientAttachmentUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50"
-                                >
-                                  📎{" "}
-                                  {decodeURIComponent(
-                                    revision.clientAttachmentUrl
-                                      .split("/")
-                                      .pop()
-                                      ?.split("?")[0] || "",
-                                  )}
-                                </a>
-                              </div>
-                            )}
+                            <a
+                              href={revision.clientAttachmentUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50"
+                            >
+                              📎{" "}
+                              {decodeURIComponent(
+                                revision.clientAttachmentUrl
+                                  .split("/")
+                                  .pop()
+                                  ?.split("?")[0] || "",
+                              )}
+                            </a>
+                          </div>
+                        )}
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         <span className="text-xs text-gray-500 leading-4">
@@ -290,14 +290,12 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                                   className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50"
                                 >
                                   📎{" "}
-                                  {
-                                    decodeURIComponent(
-                                      revision.attachmentUrl
-                                        .split("/")
-                                        .pop()
-                                        ?.split("?")[0] || "",
-                                    )
-                                  }
+                                  {decodeURIComponent(
+                                    revision.attachmentUrl
+                                      .split("/")
+                                      .pop()
+                                      ?.split("?")[0] || "",
+                                  )}
                                 </a>
                               </div>
                             )}

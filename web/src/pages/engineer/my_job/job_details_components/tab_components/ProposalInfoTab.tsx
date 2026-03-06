@@ -66,12 +66,12 @@ const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({
   ]);
 
   const attachmentName = isApiData
-    ? (submittedProposal.attachmentUrl
-        ? decodeURIComponent(
-            submittedProposal.attachmentUrl.split("/").pop()?.split("?")[0] ||
-              "Attachment",
-          )
-        : null)
+    ? submittedProposal.attachmentUrl
+      ? decodeURIComponent(
+          submittedProposal.attachmentUrl.split("/").pop()?.split("?")[0] ||
+            "Attachment",
+        )
+      : null
     : submittedProposal.attachments
       ? (submittedProposal.attachments[0]?.name ?? null)
       : null;
