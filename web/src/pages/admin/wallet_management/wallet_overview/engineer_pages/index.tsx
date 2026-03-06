@@ -14,9 +14,9 @@ interface WalletTransaction {
   profileImageUrl?: string | null;
   mobileNo?: string | null;
   clientName?: string | null;
-  transactionId: string;
-  transactionType: "credit" | "debit";
-  amount: string;
+  transactionId?: string;
+  transactionType?: "credit" | "debit";
+  amount?: string;
 }
 /**
  * Engineer Component
