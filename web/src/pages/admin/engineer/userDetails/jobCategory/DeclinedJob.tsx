@@ -1,4 +1,4 @@
-import { chartData, days } from "@/dummy_data/admin/manageEngineer";
+import { days } from "@/dummy_data/admin/manageEngineer";
 import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import type { Column } from "@/shared/components/commonUI/custom_table";
@@ -8,6 +8,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { useAdminGetEngineerHistory } from "@/shared/apiServices/admin/adminOpenApiService";
 import React, { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { buildJobsChartData, coerceJobsChartGrouping } from "./jobChartUtils";
 import type { EngineerAssignment } from "./types";
 
 /**
@@ -41,9 +42,37 @@ const DeclinedJob: React.FC = () => {
     { enabled: hasValidUserId },
   );
 
+  /**
+   * Separate fetch for chart data so chart is not tied to table pagination.
+   * Uses a fixed page and a high limit to approximate full history.
+   */
+  const totalCount = engineerHistory?.total ?? 0;
+
+  const { data: engineerHistoryForChart } = useAdminGetEngineerHistory(
+    hasValidUserId ? userId : 0,
+    {
+      limit: totalCount > 0 ? totalCount : 1000,
+      type: "jobs",
+      statusGroup: "declined",
+    },
+    { enabled: hasValidUserId },
+  );
+  const chartJobs = (engineerHistoryForChart?.data ??
+    []) as EngineerAssignment[];
+
   const jobs: EngineerAssignment[] = useMemo(
     () => (engineerHistory?.data ?? []) as EngineerAssignment[],
     [engineerHistory?.data],
+  );
+
+  const jobChartData = useMemo(
+    () =>
+      buildJobsChartData(
+        chartJobs,
+        coerceJobsChartGrouping(selectedDay),
+        (a) => a.appliedAt ?? a.invitedAt ?? null,
+      ),
+    [chartJobs, selectedDay],
   );
 
   const filteredJobs = useMemo(() => {
@@ -179,13 +208,21 @@ const DeclinedJob: React.FC = () => {
         </div>
 
         <GeneralChart
-          data={chartData}
+          data={jobChartData}
           chartType="line"
           xAxisDataKey="name"
           aspectRatio={2}
           series={[{ dataKey: "jobs", name: "Jobs", fill: "#e5e5e5" }]}
           customTooltip={CustomTooltip}
           height={400}
+          isLoading={isLoading}
+          error={
+            !hasValidUserId
+              ? "Missing engineer id in the URL."
+              : error
+                ? "An error occurred while fetching declined jobs."
+                : null
+          }
           showLegend
           legend={{
             verticalAlign: "top",

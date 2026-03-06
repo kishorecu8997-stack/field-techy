@@ -73,9 +73,9 @@ const MyJobsPage = () => {
         <MyJobsHeader
           title="My Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
+          isShowSort={false}
           // todo: implement sort functionality later
           onSortChange={() => {}}
-          isReport
         />
         <div className="flex items-center justify-between mt-4">
           <FilterButton

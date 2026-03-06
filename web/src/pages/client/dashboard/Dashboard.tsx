@@ -1,12 +1,14 @@
 import { absoluteUrls } from "@/config/urls";
 import { jobOverviewData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
-import { sampleJobs } from "@/dummy_data/searchDataClient";
 import {
+  useClientGetAssignmentDetails,
   useClientGetCompanyInfo,
+  useClientGetJobs,
   useClientJobOverviewDashboard,
   useClientExploreEngineers,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import { useServiceCategories } from "@/shared/hooks/useLookup";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -92,10 +94,138 @@ const Dashboard: React.FC = () => {
     { ...jobOverviewData[2], count: summary?.cancelledJobsCount ?? 0 },
   ];
 
-  const inProgressJobsData = useMemo(
-    () => sampleJobs.filter((job) => job.status === "inprogress"),
-    [],
+  // Fetch in-progress jobs from API with server-side filtering
+  const { data: clientJobs } = useClientGetJobs("In Progress");
+  const { data: serviceCategories } = useServiceCategories();
+
+  // Get in-progress job IDs for fetching assignments
+  const inProgressJobIds = useMemo(() => {
+    if (!clientJobs) return [];
+    return clientJobs
+      .filter((job) => job.status === "In Progress")
+      .slice(0, 4)
+      .map((job) => job.id);
+  }, [clientJobs]);
+
+  // Fetch assignments for each in-progress job (max 4 jobs)
+  // Call hooks at top level with enabled flag to avoid calls when jobId is undefined
+  const assignmentData1 = useClientGetAssignmentDetails(
+    { jobId: inProgressJobIds[0] },
+    !!inProgressJobIds[0],
   );
+  const assignmentData2 = useClientGetAssignmentDetails(
+    { jobId: inProgressJobIds[1] },
+    !!inProgressJobIds[1],
+  );
+  const assignmentData3 = useClientGetAssignmentDetails(
+    { jobId: inProgressJobIds[2] },
+    !!inProgressJobIds[2],
+  );
+  const assignmentData4 = useClientGetAssignmentDetails(
+    { jobId: inProgressJobIds[3] },
+    !!inProgressJobIds[3],
+  );
+
+  // Build a map of jobId to assignment data
+  // Depend on individual data properties instead of the array for effective memoization
+  const jobAssignmentsMap = useMemo(() => {
+    const map = new Map<number, { avatars: string[]; count: number }>();
+
+    const queries = [
+      { data: assignmentData1.data, jobId: inProgressJobIds[0] },
+      { data: assignmentData2.data, jobId: inProgressJobIds[1] },
+      { data: assignmentData3.data, jobId: inProgressJobIds[2] },
+      { data: assignmentData4.data, jobId: inProgressJobIds[3] },
+    ];
+
+    queries.forEach(({ data, jobId }) => {
+      if (jobId && data) {
+        const assignments = data;
+        const validAssignments = assignments.filter(
+          (a) => a.engineer && a.assignmentStatus !== "rejected",
+        );
+        const avatars = validAssignments
+          .map((a) => a.engineer?.profilePictureUrl)
+          .filter((url): url is string => !!url);
+        map.set(jobId, {
+          avatars,
+          count: validAssignments.length,
+        });
+      }
+    });
+    return map;
+  }, [
+    inProgressJobIds,
+    assignmentData1.data,
+    assignmentData2.data,
+    assignmentData3.data,
+    assignmentData4.data,
+  ]);
+
+  // Memoized map of service category ID to name
+  const serviceCategoryMap = useMemo(() => {
+    const map = new Map<number, string>();
+    if (serviceCategories) {
+      serviceCategories.forEach((category) => {
+        map.set(Number(category.id), category.name);
+      });
+    }
+    return map;
+  }, [serviceCategories]);
+
+  // Helper function to get service category name from ID
+  const getServiceCategoryName = (serviceCategoryId: number): string => {
+    return (
+      serviceCategoryMap.get(serviceCategoryId) ||
+      `Service Category ${serviceCategoryId}`
+    );
+  };
+
+  // Map in-progress jobs to Job type for display
+  const inProgressJobsData = useMemo(() => {
+    if (!clientJobs) return [];
+    const inProgress = clientJobs.slice(0, 4);
+    return inProgress.map((job): Job => {
+      // Build location string - use workLocationName if available, otherwise try coordinates
+      let locationText = job.workLocationName || "Location not specified";
+      if (!job.workLocationName && job.workLocationLat && job.workLocationLng) {
+        locationText = `${job.workLocationLat}, ${job.workLocationLng}`;
+      }
+      return {
+        id: job.id,
+        title: job.jobTitle,
+        type:
+          job.jobType === "On site"
+            ? "on-site"
+            : job.jobType === "Remote"
+              ? "remote"
+              : "hybrid",
+        startDate: job.startDate
+          ? new Date(job.startDate).toLocaleDateString()
+          : "Not scheduled",
+        location: locationText,
+        workLocationName: job.workLocationName || null,
+        cityId: job.cityId,
+        stateId: job.stateId,
+        countryId: job.countryId,
+        duration: job.endDate
+          ? job.startDate
+            ? `${new Date(job.startDate).toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
+            : `Not scheduled - ${new Date(job.endDate).toLocaleDateString()}`
+          : "Duration not specified",
+        serviceType: job.serviceCategoryId
+          ? getServiceCategoryName(job.serviceCategoryId)
+          : "Service not specified",
+        pay:
+          job.totalPrice != null
+            ? `${job.currencySymbol || "$"}${job.totalPrice}`
+            : "Price not set",
+        status: "inprogress",
+        engineerAvatars: jobAssignmentsMap.get(job.id)?.avatars || [],
+        engineers: String(jobAssignmentsMap.get(job.id)?.count || 0),
+      };
+    });
+  }, [clientJobs, serviceCategoryMap, jobAssignmentsMap]);
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
     checkLocationPermission();
@@ -184,7 +314,7 @@ const Dashboard: React.FC = () => {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">In-Progress Jobs</h2>
                 <NavLink
-                  to={absoluteUrls.client.home.my_jobs}
+                  to={`${absoluteUrls.client.home.my_jobs}?filter=In-Progress`}
                   onClick={() => scrollToTop()}
                   className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                 >

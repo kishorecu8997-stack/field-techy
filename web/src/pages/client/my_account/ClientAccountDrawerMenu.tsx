@@ -139,7 +139,15 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
     //     navigate(absoluteUrls.client.home.manage_proposal);
     //   },
     // },
-    { label: "Company Information", icon: FaUser, key: "company" },
+    {
+      label:
+        clientProfile?.clientType === "CORPORATE" ||
+        clientProfile?.clientType === "corporate"
+          ? "Company Information"
+          : "Personal Information",
+      icon: FaUser,
+      key: "company",
+    },
     { label: "Documents", icon: IoDocumentText, key: "document" },
     { label: "Payment Methods", icon: FaWallet, key: "payment" },
     { label: "Change Password", icon: RiLockPasswordFill, key: "changePwd" },

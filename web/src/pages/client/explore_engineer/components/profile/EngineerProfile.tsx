@@ -88,6 +88,7 @@ const EngineerProfile: React.FC = () => {
           <MyJobsHeader
             title="Explore Engineers"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             isShowBreadcrumb={false}
             description={`${profile.name} - ${profile.jobTitle}`}
           />

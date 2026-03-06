@@ -69,6 +69,7 @@ const OfferPages = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
+          isShowSort={false}
           onSortChange={() => {}}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
@@ -93,6 +94,9 @@ const OfferPages = () => {
               isSendProposal={isSendProposal}
               activeTab={activeTab}
               jobId={Number(jobId)}
+              workLocationLat={rawJob?.workLocationLat ?? null}
+              workLocationLng={rawJob?.workLocationLng ?? null}
+              workLocationName={rawJob?.workLocationName ?? null}
             />
           </div>
           <div className="lg:col-span-1">
