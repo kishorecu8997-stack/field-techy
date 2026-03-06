@@ -4,12 +4,12 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { ActionReasonPopup } from "./ActionReasonPopup";
 import { toast } from "react-toastify";
 import { formatDate } from "@/utils/formatDate";
-import {
-  useClientActionOnBreak,
-  useGetJobLogs,
-} from "@/shared/apiServices/client/clientOpenApiService";
+import { useClientActionOnBreak } from "@/shared/apiServices/client/clientOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { useState, useEffect } from "react";
+import { useQueries } from "@tanstack/react-query";
+import { apiClient } from "@/shared/apiServices/apiClient";
+import { getJobLogsOptions } from "@/api/@tanstack/react-query.gen";
 
 interface BreakRequestDetailsProps {
   onClose: () => void;
@@ -57,44 +57,44 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
   const { showPopup } = usePopupStore();
   const { mutate: actionOnBreak } = useClientActionOnBreak({});
   const [allBreakRequests, setAllBreakRequests] = useState<Break[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch job logs for each assignment ID
-  const { data: jobLogsData } = useGetJobLogs(
-    assignmentIds?.[0] || 0,
-    !!assignmentIds?.length,
-  );
+  // Fetch job logs for all assignment IDs using useQueries for parallel fetching
+  const results = useQueries({
+    queries: (assignmentIds || []).map((id) => ({
+      ...getJobLogsOptions({
+        client: apiClient,
+        path: { assignmentId: id },
+      }),
+      enabled: !!assignmentIds?.length && id > 0,
+    })),
+  });
 
-  // Also need to fetch for other assignments
+  // Derived loading state from all query results
+  const isLoading = results.some((r) => r.isLoading);
+
+  // Collect all break requests from all assignments
   useEffect(() => {
-    const fetchAllBreakRequests = async () => {
-      if (!assignmentIds?.length) {
-        setIsLoading(false);
-        return;
-      }
+    if (!assignmentIds?.length) {
+      setAllBreakRequests([]);
+      return;
+    }
 
-      setIsLoading(true);
-      const breaks: Break[] = [];
+    const breaks: Break[] = [];
 
-      // For now, we'll use the first assignment's data
-      // In a real implementation, you'd want to fetch data for all assignments
-      if (jobLogsData?.breakRequests) {
-        jobLogsData.breakRequests.forEach((brk, index) => {
+    results.forEach((result, assignmentIndex) => {
+      if (result.data?.breakRequests) {
+        result.data.breakRequests.forEach((brk) => {
           breaks.push({
             ...brk,
-            // Map engineer name if available
-            engineerName:
-              engineerNames?.[index] || engineerNames?.[0] || undefined,
+            // Map engineer name if available for this assignment
+            engineerName: engineerNames?.[assignmentIndex] || undefined,
           });
         });
       }
+    });
 
-      setAllBreakRequests(breaks);
-      setIsLoading(false);
-    };
-
-    fetchAllBreakRequests();
-  }, [assignmentIds, jobLogsData, engineerNames]);
+    setAllBreakRequests(breaks);
+  }, [assignmentIds, results, engineerNames]);
 
   // If assignmentIds is provided, show all breaks; otherwise show nothing
   // On client view, show all breaks; on engineer view, show only pending

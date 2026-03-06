@@ -94,6 +94,9 @@ const OfferPages = () => {
               isSendProposal={isSendProposal}
               activeTab={activeTab}
               jobId={Number(jobId)}
+              workLocationLat={rawJob?.workLocationLat ?? null}
+              workLocationLng={rawJob?.workLocationLng ?? null}
+              workLocationName={rawJob?.workLocationName ?? null}
             />
           </div>
           <div className="lg:col-span-1">

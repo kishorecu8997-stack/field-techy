@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "leaflet/dist/leaflet.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapContainer,
   Marker,
@@ -16,6 +16,19 @@ import { fixLeafletIcon } from "@/utils/leafletSetup";
 
 // Fix default icon issue
 fixLeafletIcon();
+
+const MapViewUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({
+  center,
+  zoom,
+}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    map.setView(center, zoom, { animate: true });
+  }, [map, center[0], center[1], zoom]);
+
+  return null;
+};
 
 // Handle map clicks and update map view
 const MapEventHandler: React.FC<{
@@ -51,6 +64,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
 }) => {
   const [position, setPosition] = useState<[number, number]>(initialPosition);
 
+  useEffect(() => {
+    setPosition(initialPosition);
+  }, [initialPosition[0], initialPosition[1]]);
+
   return (
     <MapContainer
       center={initialPosition}
@@ -68,6 +85,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+
+      <MapViewUpdater center={initialPosition} zoom={initialZoom} />
 
       {/* Render provided markers */}
       {markers.map((marker, index) => (
