@@ -46,7 +46,7 @@ export const AuthLoginWithOtp: React.FC<AuthLoginWithOtpProps> = ({
     const otpFor = method.watch("otpFor");
 
     const handleSubmit = async (data: LoginOTPFormData) => {
-        const value = otpFor === "email" ? data.email : data.phone;
+        const value = data.email || data.phone;
         try {
             await onSendOtp(otpFor as "email" | "phoneNumber", value);
             setIsOpen(true);
@@ -56,7 +56,7 @@ export const AuthLoginWithOtp: React.FC<AuthLoginWithOtpProps> = ({
     };
 
     const handleOtpSubmission = async (otp: string) => {
-        const value = otpFor === "email" ? method.getValues("email") : method.getValues("phone");
+        const value = method.getValues("email") || method.getValues("phone");
         try {
             await onVerifyOtp(otpFor as "email" | "phoneNumber", value, otp);
             setIsOpen(false);
@@ -66,7 +66,7 @@ export const AuthLoginWithOtp: React.FC<AuthLoginWithOtpProps> = ({
     };
 
     const onResendOtp = async () => {
-        const value = otpFor === "email" ? method.getValues("email") : method.getValues("phone");
+        const value = method.getValues("email") || method.getValues("phone");
         try {
             await onSendOtp(otpFor as "email" | "phoneNumber", value);
         } catch (error) {

@@ -90,6 +90,8 @@ export {
   useResetPassword,
   useSendOtp,
   useVerifyOtp,
+  useAppSendLoginOtp,
+  useAppVerifyLoginOtp,
 } from "../commonOpenApiService";
 
 /**
@@ -150,7 +152,7 @@ export function useEngineerUpdatePersonalInfo(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetPersonalInfo",
+          "engineerGetPersonalInfo",
       });
 
       const updateData: Partial<EngineerData> = {};
@@ -193,7 +195,7 @@ export function useEngineerAddEducation(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetEducation",
+          "engineerGetEducation",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -231,7 +233,7 @@ export function useEngineerDeleteEducation(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetEducation",
+          "engineerGetEducation",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -255,7 +257,7 @@ export function useEngineerUpdateEducation(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetEducation",
+          "engineerGetEducation",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -286,7 +288,7 @@ export function useEngineerAddExperience(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetExperience",
+          "engineerGetExperience",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -310,7 +312,7 @@ export function useEngineerDeleteExperience(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetExperience",
+          "engineerGetExperience",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -334,7 +336,7 @@ export function useEngineerUpdateExperience(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetExperience",
+          "engineerGetExperience",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -365,7 +367,7 @@ export function useEngineerUpdateSkillsAndTools(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetSkillsAndTools",
+          "engineerGetSkillsAndTools",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -396,7 +398,7 @@ export function useEngineerUpdateWorkPreference(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetWorkPreference",
+          "engineerGetWorkPreference",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();

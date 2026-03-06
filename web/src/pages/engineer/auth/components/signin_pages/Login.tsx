@@ -1,8 +1,6 @@
 import { absoluteUrls } from "@/config/urls";
 import Popup from "@/shared/components/Popup";
-import { validatePassword } from "@/shared/libs/utils";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import { useEngineerLogin } from "@/shared/apiServices/engineer/engineerOpenApiService";
@@ -16,7 +14,6 @@ import {
 import { getTwoFaStorage } from "@/utils/TwoFAStorage";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import type { LoginEmailFormData } from "../../validations/LoginEmail";
 import { AuthLogin } from "@/shared/components/auth/AuthLogin";
 
 /**
