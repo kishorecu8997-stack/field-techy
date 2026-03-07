@@ -7,11 +7,12 @@ import BasicInformation from "./BasicInformation";
 import WalletTab from "./WalletTab";
 import DocumentView from "./DocumentView";
 import JobHistory from "./job_history/JobHistory";
-import { useAdminGetClientByUserId } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminGetClientByUserId, LookupTable, useAppGetLookupData } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useForm } from "react-hook-form";
 import BlockClient from "../BlockClient";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import type { BlockClientForm, CompanyInfo } from "../../types";
+import { taxDocuments } from "@/dummy_data/adminClientData";
 
 /**
  * ClientViewForm component displays detailed information about a client (Corporate or Home).
@@ -34,9 +35,26 @@ const ClientViewForm: React.FC = () => {
       refetchOnMount: "always",
     },
   );
-
+  
   const parsedUserId = Number(userId);
   const isValidUserId = !!userId && !isNaN(parsedUserId) && parsedUserId > 0;
+
+  // Lookup APIs for labels
+  const { data: countries } = useAppGetLookupData(LookupTable.Countries, undefined, { enabled: isValidUserId });
+  const { data: industries } = useAppGetLookupData(LookupTable.Industries, undefined, { enabled: isValidUserId });
+  const { data: businessTypes } = useAppGetLookupData(LookupTable.BusinessTypes, undefined, { enabled: isValidUserId });
+
+  const { data: states } = useAppGetLookupData(
+    LookupTable.States,
+    clientData?.countryId ?? undefined,
+    { enabled: !!clientData?.countryId && isValidUserId },
+  );
+
+  const { data: cities } = useAppGetLookupData(
+    LookupTable.Cities,
+    clientData?.stateId ?? undefined,
+    { enabled: !!clientData?.stateId && isValidUserId },
+  );
 
   if (isLoading) {
     return (
@@ -68,16 +86,36 @@ const ClientViewForm: React.FC = () => {
     profileImage: clientData?.profilePicture?.url,
     clientType: clientData?.clientType,
     companyName: clientData?.companyName || clientData?.name || "N/A",
-    businessType: clientData?.businessTypeName || "N/A",
-    country: clientData?.country?.name || "N/A",
+    businessType:
+      clientData?.businessTypeName ||
+      businessTypes?.find((b) => b.id === clientData?.businessTypeId)
+        ?.name ||
+      "N/A",
+    country:
+      countries?.find((c) => c.id === clientData?.countryId)?.name ||
+      clientData?.country?.name ||
+      "N/A",
     postalCode: clientData?.postalCode || "N/A",
     contactPersonName: clientData?.personName || clientData?.name || "N/A",
-    industry: clientData?.industry?.name || "N/A",
-    state: clientData?.state?.name || "N/A",
-    taxDocument: clientData?.documentType || "N/A",
+    industry:
+      industries?.find((i) => i.id === clientData?.industryId)?.name ||
+      clientData?.industry?.name ||
+      "N/A",
+    state:
+      states?.find((s) => s.id === clientData?.stateId)?.name ||
+      clientData?.state?.name ||
+      "N/A",
+    taxDocument:
+      taxDocuments.find((t) => t.value === clientData?.documentType)
+        ?.label ||
+      clientData?.documentType ||
+      "N/A",
     phoneNumber: clientData?.phoneNumber || "N/A",
     address: clientData?.address || "N/A",
-    city: clientData?.city?.name || "N/A",
+    city:
+      cities?.find((c) => c.id === clientData?.cityId)?.name ||
+      clientData?.city?.name ||
+      "N/A",
     documentNumber: clientData?.documentNumber || "N/A",
   };
 
