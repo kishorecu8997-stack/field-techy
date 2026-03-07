@@ -15,6 +15,7 @@ import { getTwoFaStorage } from "@/utils/TwoFAStorage";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { AuthLogin } from "@/shared/components/auth/AuthLogin";
+import type { LoginEmailFormData } from "../../validations/LoginEmail";
 
 /**
  * Login component
@@ -81,7 +82,7 @@ const Login = ({
     navigate(absoluteUrls.engineer.home.dashboard);
   });
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: LoginEmailFormData) => {
     currentEmail = data.email;
     await loginMutation({
       body: {
@@ -94,7 +95,7 @@ const Login = ({
 
   return (
     <>
-      <AuthLogin
+      <AuthLogin<LoginEmailFormData>
         isLoggingIn={isLoggingIn}
         onEmailLoginSubmit={handleSubmit}
         onOtpLoginClick={() => setIsNumberLogin(true)}

@@ -8,35 +8,37 @@ import {
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import { validatePassword } from "@/shared/libs/utils";
-import React from "react";
+import type { LoginEmailFormData } from "@/shared/types/auth";
 import { useForm } from "react-hook-form";
+import type { FieldValues, DefaultValues, Path } from "react-hook-form";
 import { CiMail } from "react-icons/ci";
 import { NavLink } from "react-router-dom";
-import type { LoginEmailFormData } from "@/pages/client/auth/validations/LoginEmail";
 
-interface AuthLoginProps {
+interface AuthLoginProps<T extends FieldValues = LoginEmailFormData> {
     isLoggingIn: boolean;
-    onEmailLoginSubmit: (data: LoginEmailFormData) => Promise<void>;
+    onEmailLoginSubmit: (data: T) => Promise<void>;
     onOtpLoginClick: () => void;
     signUpUrl: string;
     forgetPasswordUrl: string;
     validatePasswordRule?: boolean;
+    defaultValues?: DefaultValues<T>;
 }
 
-export const AuthLogin: React.FC<AuthLoginProps> = ({
+export const AuthLogin = <T extends FieldValues = LoginEmailFormData>({
     isLoggingIn,
     onEmailLoginSubmit,
     onOtpLoginClick,
     signUpUrl,
     forgetPasswordUrl,
     validatePasswordRule = false,
-}) => {
-    const methods = useForm<LoginEmailFormData>({
-        defaultValues: {
+    defaultValues,
+}: AuthLoginProps<T>) => {
+    const methods = useForm<T>({
+        defaultValues: defaultValues || ({
             email: "",
             password: "",
             rememberMe: false,
-        },
+        } as unknown as DefaultValues<T>),
     });
 
     return (
@@ -66,18 +68,18 @@ export const AuthLogin: React.FC<AuthLoginProps> = ({
                     </div>
                 </div>
                 <FormContainer
-                    methods={methods as any}
-                    onSubmit={onEmailLoginSubmit as any}
+                    methods={methods}
+                    onSubmit={onEmailLoginSubmit}
                     className="flex flex-col gap-3 w-full"
                 >
                     <InputField
-                        name="email"
+                        name={"email" as Path<T>}
                         label="Email Address"
                         type="email"
                         required
                     />
                     <PasswordInput
-                        name="password"
+                        name={"password" as Path<T>}
                         label="Password"
                         required
                         rules={
@@ -90,7 +92,7 @@ export const AuthLogin: React.FC<AuthLoginProps> = ({
                         }
                     />
                     <div className="flex items-center justify-between flex-wrap">
-                        <CheckboxInput name="rememberMe" secondaryLabel="Remember Me" />
+                        <CheckboxInput name={"rememberMe" as Path<T>} secondaryLabel="Remember Me" />
                         <NavLink
                             className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
                             to={forgetPasswordUrl}

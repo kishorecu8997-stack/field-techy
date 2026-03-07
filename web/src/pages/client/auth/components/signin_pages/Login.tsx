@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils";
 import { AuthLogin } from "@/shared/components/auth/AuthLogin";
+import type { LoginEmailFormData } from "../../validations/LoginEmail";
 
 /**
  * Login component
@@ -69,7 +70,7 @@ const Login = ({
     },
   );
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: LoginEmailFormData) => {
     await loginMutation({
       body: {
         email: data.email,
@@ -80,7 +81,7 @@ const Login = ({
   };
 
   return (
-    <AuthLogin
+    <AuthLogin<LoginEmailFormData>
       isLoggingIn={isLoggingIn}
       onEmailLoginSubmit={handleSubmit}
       onOtpLoginClick={() => setIsOtpLogin(true)}
