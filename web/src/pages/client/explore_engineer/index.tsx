@@ -48,7 +48,7 @@ const ExploreEngineer = () => {
       country: searchParams.get("country") || "",
       state: searchParams.get("state") || "",
       city: searchParams.get("city") || "",
-      category: searchParams.get("category") ? parseInt(searchParams.get("category")!, 10) : prev.category,
+      category: searchParams.get("category") ? parseInt(searchParams.get("category")!, 10) : null,
     }));
   }, [searchParams]);
 
@@ -99,7 +99,7 @@ const ExploreEngineer = () => {
         {/* Header */}
         <div className="w-full sticky top-16 z-10">
           <MyJobsHeader
-            title="Explore Engineersss"
+            title="Explore Engineers"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowSort={false}
             isShowBreadcrumb={false}

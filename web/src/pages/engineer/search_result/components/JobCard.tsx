@@ -205,7 +205,7 @@ const JobCard: React.FC<{
         id: job.id,
         title: job.jobTitle || getString("title") || "",
         clientName,
-        salary: job.salary || "-",
+        salary: job.salary,
         status: job.status,
         skills: job.skills,
         tools: job.tools,
@@ -265,7 +265,7 @@ const JobCard: React.FC<{
       ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
       : job.status;
 
-    const hasSalary = Boolean(jobData.salary);
+    const hasSalary = Boolean(jobData.salary) && jobData.salary !== "-";
 
     return (
       <>

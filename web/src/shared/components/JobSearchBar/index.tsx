@@ -2,7 +2,7 @@ import { absoluteUrls } from "@/config/urls";
 import { useAppResolveSignupRegion } from "@/shared/apiServices/commonOpenApiService";
 import { UserRole } from "@/shared/enums/users";
 import { useCities, useCountries, useStates, type LookupItem } from "@/shared/hooks/useLookup";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import { FaSearch } from "react-icons/fa";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -41,31 +41,24 @@ export const JobSearchBar = ({ navto, userType, showDropdowns = true }: JobSearc
     const isEngineerFallback = location.pathname.startsWith("/engineer");
     const isEngineerRoute = userType ? userType === UserRole.ENGINEER : isEngineerFallback;
 
-    // ── Region resolution ────────────────────────────────────────────────────
     const { data: signupRegion } = useAppResolveSignupRegion();
     const regionId = signupRegion?.regionId;
 
-    // ── Search param values ──────────────────────────────────────────────────
     const [keyword, setKeyword] = useState(searchParams.get("q") ?? "");
     const [country, setCountry] = useState(searchParams.get("country") ?? "");
     const [state, setState] = useState(searchParams.get("state") ?? "");
     const [city, setCity] = useState(searchParams.get("city") ?? "");
-
-    // ── Internal IDs for fetching ───────────────────────────────────────────
     const [countryId, setCountryId] = useState<string | number | null>(null);
     const [stateId, setStateId] = useState<string | number | null>(null);
+    const [activeDropdown, setActiveDropdown] = useState<DropdownId>(null);
 
-    // ── API Hooks ────────────────────────────────────────────────────────────
     const { data: countries = [], isLoading: loadingCountries } = useCountries(regionId);
     const { data: states = [], isLoading: loadingStates } = useStates(countryId, { enabled: !!countryId });
     const { data: cities = [], isLoading: loadingCities } = useCities(stateId, { enabled: !!stateId });
 
-    // ── Which dropdown is open ──────────────────────────────────────────────
-    const [activeDropdown, setActiveDropdown] = useState<DropdownId>(null);
 
     const prevPathRef = useRef<string | null>(null);
 
-    // ── Initial resolution of IDs from names in URL ─────────────────────────
     useEffect(() => {
         if (countries.length > 0 && country && !countryId) {
             const found = countries.find(c => c.name === country);
@@ -80,7 +73,6 @@ export const JobSearchBar = ({ navto, userType, showDropdowns = true }: JobSearc
         }
     }, [states, state, stateId]);
 
-    // ── Sync form values when params change ──────────────────────────────────
     useEffect(() => {
         setKeyword(searchParams.get("q") ?? "");
         setCountry(searchParams.get("country") ?? "");
@@ -136,7 +128,7 @@ export const JobSearchBar = ({ navto, userType, showDropdowns = true }: JobSearc
 
     // ── Keyword handler ──────────────────────────────────────────────────────
 
-    const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleKeywordChange = (e: ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setKeyword(val);
         // If keyword is deleted and no location filters are active, navigate back immediately
@@ -168,8 +160,6 @@ export const JobSearchBar = ({ navto, userType, showDropdowns = true }: JobSearc
     const handleCitySelect = (item: LookupItem) => {
         setCity(item.name);
     };
-
-    // ── Clear handlers ───────────────────────────────────────────────────────
 
     const handleClearCountry = () => {
         setCountry("");
