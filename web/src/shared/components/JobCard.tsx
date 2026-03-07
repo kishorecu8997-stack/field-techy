@@ -6,6 +6,7 @@ import { getDurationString, scrollToTop } from "@/utils";
 import { formatAmount } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
+import LocationDisplay from "./commonUI/LocationDisplay";
 
 /**
  * Formats a date string to a readable format (DD/MM/YYYY)
@@ -60,10 +61,14 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     totalPrice,
     clientDetails,
     currencySymbol,
+    countryId,
+    stateId,
+    cityId,
   } = props;
   const location = useLocation();
   const isClientPath = location.pathname.includes("/client");
   const formattedPay = formatAmount(totalPrice, currencySymbol);
+
 
   // Only call this API if we are in the client module to avoid permission errors
   const { data: client } = useClientGetCompanyInfo(
@@ -132,7 +137,14 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       <div className="flex justify-between items-start pt-2 border-t border-gray-200 dark:border-gray-700 gap-4">
         <div className="flex items-start gap-1.5 text-sm text-gray-600 dark:text-gray-400 min-w-0 flex-1">
           <MdLocationPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-          <span className="break-words">{workLocationName || "N/A"}</span>
+          <div className="break-words">
+            <LocationDisplay
+              countryId={countryId as number | undefined}
+              stateId={stateId as number | undefined}
+              cityId={cityId as number | undefined}
+              workLocationName={workLocationName}
+            />
+          </div>
         </div>
 
         <div className="flex-shrink-0 text-sm font-semibold text-teal-800 dark:text-teal-400 whitespace-nowrap pt-0.5">

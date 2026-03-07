@@ -15,7 +15,7 @@ import {
   WORKING_TYPES_PROPERTY,
   type Job,
 } from "../../search_result/types";
-import LocationDisplay from "./LocationDisplay";
+import LocationDisplay from "@/shared/components/commonUI/LocationDisplay";
 
 interface JobCardProps {
   job: Job;

@@ -8,7 +8,7 @@ import {
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import type { Job } from "../../search_result/types";
-import LocationDisplay from "../../my_job_client/components/LocationDisplay";
+import LocationDisplay from "@/shared/components/commonUI/LocationDisplay";
 
 /**
  * `InProgressJobCard` is a component that displays a summary of an in-progress job.
