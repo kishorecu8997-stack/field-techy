@@ -138,8 +138,8 @@ const PostJobPage = () => {
       ?.map((t) => ({ budget: Number(t.budget) || 0 }))
       .filter((t) => t.budget > 0).length
       ? toolsData
-        ?.map((t) => ({ budget: Number(t.budget) || 0 }))
-        .filter((t) => t.budget > 0)
+          ?.map((t) => ({ budget: Number(t.budget) || 0 }))
+          .filter((t) => t.budget > 0)
       : undefined;
 
     getJobPrice({
