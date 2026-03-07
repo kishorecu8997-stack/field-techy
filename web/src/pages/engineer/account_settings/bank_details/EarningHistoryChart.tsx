@@ -1,5 +1,5 @@
 import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
-import { useEngineerEarnings, useEngineerGetPersonalInfo } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { formatAmount } from "@/utils/currency";
 import React, { useMemo, useState } from "react";
 import { BiChevronDown, BiChevronUp, BiLineChart } from "react-icons/bi";
