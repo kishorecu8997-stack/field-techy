@@ -93,7 +93,7 @@ const JobInviteCard: React.FC<JobCardProps> = ({
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
           <IoConstructOutline className="w-4 h-4 mr-2" />
-          Service Type: {job.serviceType}
+          {job.serviceType}
         </div>
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">

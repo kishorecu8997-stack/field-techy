@@ -46,6 +46,7 @@ import {
   useClientActionOnWorkLog,
   useClientActionOnBreak,
   useClientRegionId,
+  useMarkWorkLogFileUploaded,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
@@ -106,6 +107,12 @@ const TimelineSection: React.FC<{
     useState(false);
   const [showProgressRejectConfirm, setShowProgressRejectConfirm] =
     useState(false);
+  const [showProgressApproveConfirm, setShowProgressApproveConfirm] =
+    useState(false);
+  const [pendingProgressApprove, setPendingProgressApprove] = useState<{
+    logId?: number;
+    keepExpanded: boolean;
+  } | null>(null);
   const [pendingProgressReject, setPendingProgressReject] = useState<{
     logId?: number;
     keepExpanded: boolean;
@@ -113,6 +120,13 @@ const TimelineSection: React.FC<{
   const [showRevisionRejectConfirm, setShowRevisionRejectConfirm] =
     useState(false);
   const [pendingRevisionReject, setPendingRevisionReject] = useState<{
+    revisionId?: number;
+    logId?: number;
+    keepExpanded: boolean;
+  } | null>(null);
+  const [showRevisionApproveConfirm, setShowRevisionApproveConfirm] =
+    useState(false);
+  const [pendingRevisionApprove, setPendingRevisionApprove] = useState<{
     revisionId?: number;
     logId?: number;
     keepExpanded: boolean;
@@ -215,7 +229,34 @@ const TimelineSection: React.FC<{
     },
   });
 
-  const { mutate: actionOnWorkLog } = useClientActionOnWorkLog({
+  // Mutation for marking worklog file as uploaded
+  const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
+    onSuccess: async () => {
+      // Refetch job logs after file is marked as uploaded
+      if (effectiveAssignmentId) {
+        try {
+          const response = await getJobLogs({
+            client: apiClient,
+            path: { assignmentId: effectiveAssignmentId },
+            query: regionId !== undefined ? { regionId } : undefined,
+          });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId: effectiveAssignmentId },
+            query: regionId !== undefined ? { regionId } : undefined,
+          });
+          queryClient.setQueryData(exactQueryKey, response.data);
+        } catch (error) {
+          console.error("Failed to refetch timeline after upload:", error);
+          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+      }
+    },
+    onError: (error) => {
+      console.error("Failed to mark file as uploaded:", error);
+    },
+  });
+
+  const { mutateAsync: actionOnWorkLog } = useClientActionOnWorkLog({
     onSuccess: async () => {
       if (effectiveAssignmentId) {
         try {
@@ -451,7 +492,10 @@ const TimelineSection: React.FC<{
       const attachments = progressLog.attachmentUrl
         ? [
             {
-              name: "View Document",
+              name: decodeURIComponent(
+                progressLog.attachmentUrl.split("/").pop()?.split("?")[0] ||
+                  "Attachment",
+              ),
               url: progressLog.attachmentUrl,
             },
           ]
@@ -548,9 +592,10 @@ const TimelineSection: React.FC<{
       attachments: latestRevision?.attachmentUrl
         ? [
             {
-              name:
+              name: decodeURIComponent(
                 latestRevision.attachmentUrl.split("/").pop()?.split("?")[0] ||
-                "Attachment",
+                  "Attachment",
+              ),
               url: latestRevision.attachmentUrl,
             },
           ]
@@ -619,13 +664,18 @@ const TimelineSection: React.FC<{
     const attachments: Array<{ name: string; url: string }> = [];
     if (signOff.attachmentUrl) {
       attachments.push({
-        name: "Work Submission",
+        name: decodeURIComponent(
+          signOff.attachmentUrl.split("/").pop()?.split("?")[0] || "Attachment",
+        ),
         url: signOff.attachmentUrl,
       });
     }
     if (signOff.signatureAttachmentUrl) {
       attachments.push({
-        name: "Signature",
+        name: decodeURIComponent(
+          signOff.signatureAttachmentUrl.split("/").pop()?.split("?")[0] ||
+            "Attachment",
+        ),
         url: signOff.signatureAttachmentUrl,
       });
     }
@@ -1050,20 +1100,8 @@ const TimelineSection: React.FC<{
     ) : null;
 
   const handleProgressApprove = (keepExpanded = false, logId?: number) => {
-    const targetLogId = logId ?? apiProgressData?.logId;
-    if (targetLogId && effectiveAssignmentId) {
-      actionOnWorkLog({
-        body: {
-          assignmentId: effectiveAssignmentId,
-          logId: targetLogId,
-          action: "approve",
-        },
-      });
-    }
-    setKeepProgressExpanded(keepExpanded);
-    setProgressStatus(TIMELINE_STATUS.approved);
-    if (!keepExpanded) setIsProgressCollapsed(true);
-    toast.success(TOAST_MESSAGES.progressApproved, { position: "top-right" });
+    setPendingProgressApprove({ logId, keepExpanded });
+    setShowProgressApproveConfirm(true);
   };
 
   const handleProgressReject = (keepExpanded = false, logId?: number) => {
@@ -1086,7 +1124,7 @@ const TimelineSection: React.FC<{
     setShowFormConfirm(false);
   };
 
-  const handleRevisionSubmit = () => {
+  const handleRevisionSubmit = async () => {
     if (!showFormConfirm) {
       setShowFormModal(false);
       setShowFormConfirm(true);
@@ -1103,32 +1141,11 @@ const TimelineSection: React.FC<{
       effectiveAssignmentId &&
       formMode === FormMode.Revision
     ) {
-      actionOnWorkLog({
-        body: {
-          assignmentId: effectiveAssignmentId,
-          logId: currentRevisionLogId,
-          action: "request_revision",
-          clientComment: notes,
-          clientAttachment: attachment?.[0]
-            ? {
-                filename: attachment[0].name,
-                size: attachment[0].size,
-                mimeType: attachment[0].type,
-              }
-            : undefined,
-        },
-      });
-    }
-
-    if (formMode === FormMode.RevisionUpdate) {
-      const revisionId = currentRevisionId;
-      const logId = currentRevisionLogId;
-      if (logId && revisionId && effectiveAssignmentId) {
-        actionOnWorkLog({
+      try {
+        const response = await actionOnWorkLog({
           body: {
             assignmentId: effectiveAssignmentId,
-            logId: logId,
-            revisionId: revisionId,
+            logId: currentRevisionLogId,
             action: "request_revision",
             clientComment: notes,
             clientAttachment: attachment?.[0]
@@ -1140,6 +1157,71 @@ const TimelineSection: React.FC<{
               : undefined,
           },
         });
+
+        // Upload file to S3 and mark it as uploaded so clientAttachmentUrl is returned in logs
+        if (attachment?.[0] && response?.clientAttachmentUploadUrl) {
+          await fetch(response.clientAttachmentUploadUrl, {
+            method: "PUT",
+            body: attachment[0],
+            headers: { "Content-Type": attachment[0].type },
+          });
+
+          await markFileUploaded({
+            body: {
+              assignmentId: effectiveAssignmentId,
+              target: "client_revision",
+              logId: currentRevisionLogId,
+              revisionId: response?.revisionId,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Failed to submit revision:", error);
+      }
+    }
+
+    if (formMode === FormMode.RevisionUpdate) {
+      const revisionId = currentRevisionId;
+      const logId = currentRevisionLogId;
+      if (logId && revisionId && effectiveAssignmentId) {
+        try {
+          const response = await actionOnWorkLog({
+            body: {
+              assignmentId: effectiveAssignmentId,
+              logId: logId,
+              revisionId: revisionId,
+              action: "request_revision",
+              clientComment: notes,
+              clientAttachment: attachment?.[0]
+                ? {
+                    filename: attachment[0].name,
+                    size: attachment[0].size,
+                    mimeType: attachment[0].type,
+                  }
+                : undefined,
+            },
+          });
+
+          // Upload file to S3 and mark it as uploaded so clientAttachmentUrl is returned in logs
+          if (attachment?.[0] && response?.clientAttachmentUploadUrl) {
+            await fetch(response.clientAttachmentUploadUrl, {
+              method: "PUT",
+              body: attachment[0],
+              headers: { "Content-Type": attachment[0].type },
+            });
+
+            await markFileUploaded({
+              body: {
+                assignmentId: effectiveAssignmentId,
+                target: "client_revision",
+                logId,
+                revisionId: response?.revisionId || revisionId,
+              },
+            });
+          }
+        } catch (error) {
+          console.error("Failed to submit revision update:", error);
+        }
       }
     }
 
@@ -1188,26 +1270,8 @@ const TimelineSection: React.FC<{
     revisionId?: number,
     logId?: number,
   ) => {
-    const revId = revisionId || apiRevisionUpdateData?.revisionId;
-    const lgId = logId || apiRevisionUpdateData?.logId;
-    if (lgId && revId && effectiveAssignmentId) {
-      actionOnWorkLog({
-        body: {
-          assignmentId: effectiveAssignmentId,
-          logId: lgId,
-          revisionId: revId,
-          action: "approve",
-        },
-      });
-    }
-    setKeepProgressExpanded(keepExpanded);
-    setRevisionUpdateStatus(TIMELINE_STATUS.approved);
-    setProgressStatus(TIMELINE_STATUS.approved);
-    if (!keepExpanded) {
-      // setIsRevisionUpdateCollapsed(true);
-      setIsProgressCollapsed(true);
-    }
-    toast.success(TOAST_MESSAGES.progressApproved, { position: "top-right" });
+    setPendingRevisionApprove({ revisionId, logId, keepExpanded });
+    setShowRevisionApproveConfirm(true);
   };
 
   const handleRevisionUpdateReject = (
@@ -1411,6 +1475,33 @@ const TimelineSection: React.FC<{
     setPendingProgressReject(null);
   };
 
+  const handleProgressApproveConfirm = () => {
+    if (pendingProgressApprove && effectiveAssignmentId) {
+      const { logId, keepExpanded } = pendingProgressApprove;
+      const targetLogId = logId ?? apiProgressData?.logId;
+      if (targetLogId) {
+        actionOnWorkLog({
+          body: {
+            assignmentId: effectiveAssignmentId,
+            logId: targetLogId,
+            action: "approve",
+          },
+        });
+      }
+      setKeepProgressExpanded(keepExpanded);
+      setProgressStatus(TIMELINE_STATUS.approved);
+      if (!keepExpanded) setIsProgressCollapsed(true);
+      toast.success(TOAST_MESSAGES.progressApproved, { position: "top-right" });
+    }
+    setShowProgressApproveConfirm(false);
+    setPendingProgressApprove(null);
+  };
+
+  const handleProgressApproveConfirmCancel = () => {
+    setShowProgressApproveConfirm(false);
+    setPendingProgressApprove(null);
+  };
+
   // Handler to show revision reject confirmation
   const handleRevisionRejectClick = (
     keepExpanded = false,
@@ -1454,6 +1545,40 @@ const TimelineSection: React.FC<{
   const handleRevisionRejectConfirmCancel = () => {
     setShowRevisionRejectConfirm(false);
     setPendingRevisionReject(null);
+  };
+
+  const handleRevisionApproveConfirm = () => {
+    if (pendingRevisionApprove && effectiveAssignmentId) {
+      const { revisionId, logId, keepExpanded } = pendingRevisionApprove;
+      const revId = revisionId || apiRevisionUpdateData?.revisionId;
+      const lgId = logId || apiRevisionUpdateData?.logId;
+      if (lgId && revId) {
+        actionOnWorkLog({
+          body: {
+            assignmentId: effectiveAssignmentId,
+            logId: lgId,
+            revisionId: revId,
+            action: "approve",
+          },
+        });
+      }
+      setKeepProgressExpanded(keepExpanded);
+      setRevisionUpdateStatus(TIMELINE_STATUS.approved);
+      setProgressStatus(TIMELINE_STATUS.approved);
+      if (!keepExpanded) {
+        setIsProgressCollapsed(true);
+      }
+      toast.success(TOAST_MESSAGES.revisionUpdateApproved, {
+        position: "top-right",
+      });
+    }
+    setShowRevisionApproveConfirm(false);
+    setPendingRevisionApprove(null);
+  };
+
+  const handleRevisionApproveConfirmCancel = () => {
+    setShowRevisionApproveConfirm(false);
+    setPendingRevisionApprove(null);
   };
 
   const confirmModals = [
@@ -1503,6 +1628,15 @@ const TimelineSection: React.FC<{
       onCancel: handleFinalStatementRejectConfirmCancel,
     },
     {
+      key: "progress-approve",
+      isOpen: showProgressApproveConfirm,
+      title: MODAL_TITLES.progressApprove,
+      message: MODAL_MESSAGES.progressApproveConfirm,
+      confirmLabel: "Approve",
+      onConfirm: handleProgressApproveConfirm,
+      onCancel: handleProgressApproveConfirmCancel,
+    },
+    {
       key: "progress-reject",
       isOpen: showProgressRejectConfirm,
       title: MODAL_TITLES.progressReject,
@@ -1510,6 +1644,15 @@ const TimelineSection: React.FC<{
       confirmLabel: "Reject",
       onConfirm: handleProgressRejectConfirm,
       onCancel: handleProgressRejectConfirmCancel,
+    },
+    {
+      key: "revision-approve",
+      isOpen: showRevisionApproveConfirm,
+      title: MODAL_TITLES.revisionApprove,
+      message: MODAL_MESSAGES.revisionApproveConfirm,
+      confirmLabel: "Approve",
+      onConfirm: handleRevisionApproveConfirm,
+      onCancel: handleRevisionApproveConfirmCancel,
     },
     {
       key: "revision-reject",

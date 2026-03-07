@@ -10,9 +10,14 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import Popup from "@/shared/components/Popup";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import { useCities, useCountries, useStates } from "@/shared/hooks/useLookup";
+import {
+  useCities,
+  useCountries,
+  useServiceCategories,
+  useStates,
+} from "@/shared/hooks/useLookup";
 import { scrollToTop } from "@/utils";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -98,6 +103,38 @@ const InviteJob: React.FC = () => {
   const totalPages = Math.ceil(postedJobs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedJobs = postedJobs.slice(startIndex, startIndex + itemsPerPage);
+  const { data: serviceCategories } = useServiceCategories();
+  // Create a memoized map of service category ID to name
+  const serviceCategoryMap = useMemo(() => {
+    const map = new Map<number, string>();
+    if (serviceCategories) {
+      serviceCategories.forEach((category) => {
+        map.set(Number(category.id), category.name);
+      });
+    }
+    return map;
+  }, [serviceCategories]);
+
+  const getServiceCategoryName = (serviceCategoryId: number): string => {
+    return (
+      serviceCategoryMap.get(serviceCategoryId) ||
+      `Service Category ${serviceCategoryId}`
+    );
+  };
+  // Helper function to calculate duration from start and end dates
+  const calculateDuration = (
+    startDate: string | null,
+    endDate: string | null,
+  ): string => {
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      return `${start.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
+    } else if (startDate) {
+      return `Starts: ${new Date(startDate).toLocaleDateString("en-GB")}`;
+    }
+    return "Not specified";
+  };
 
   const mappedJobs = paginatedJobs.map((apiJob) => ({
     id: apiJob.id,
@@ -107,11 +144,13 @@ const InviteJob: React.FC = () => {
     countryId: apiJob.countryId,
     stateId: apiJob.stateId,
     cityId: apiJob.cityId,
-    duration: apiJob.endDate ? "Calculated Duration" : "",
+    duration: calculateDuration(apiJob.startDate, apiJob.endDate),
     jobType: apiJob.jobType,
     status: apiJob.status,
-    serviceType: `Service Category ${apiJob.serviceCategoryId}`,
-    price: apiJob.totalPrice ? `$${apiJob.totalPrice}` : "",
+    serviceType: getServiceCategoryName(apiJob.serviceCategoryId),
+    price: apiJob.totalPrice
+      ? `${apiJob.currencySymbol || "$"} ${apiJob.totalPrice}`
+      : "",
   }));
 
   const getLocationString = (job: any) => {

@@ -177,7 +177,7 @@ export default function Dashboard() {
                 xAxisDataKey="name"
                 yAxisDomain={[0, "auto"]}
                 aspectRatio={2}
-                cursor={{ fill: "#fff", fillOpacity: 0.05 }}
+                cursor={{ fill: "#9ca3af", fillOpacity: 0.05 }}
                 series={[
                   {
                     dataKey: "users",
@@ -237,7 +237,7 @@ export default function Dashboard() {
               xAxisDataKey="name"
               yAxisDomain={[0, "auto"]}
               aspectRatio={2}
-              cursor={{ fill: "#fff", fillOpacity: 0.05 }}
+              cursor={{ fill: "#9ca3af", fillOpacity: 0.05 }}
               series={[
                 {
                   dataKey: "jobs",

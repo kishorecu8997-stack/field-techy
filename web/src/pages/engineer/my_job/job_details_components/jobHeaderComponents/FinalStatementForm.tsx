@@ -7,7 +7,10 @@ import {
   FINAL_STATEMENT_MESSAGES,
 } from "@/constants/finalStatementConstants";
 import { apiClient } from "@/shared/apiServices/apiClient";
-import { useEngineerSubmitSignOff } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useEngineerSubmitSignOff,
+  useMarkWorkLogFileUploaded,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
@@ -25,6 +28,32 @@ interface FinalStatementFields {
   signatureFile: FileList | null;
 }
 
+const getApiErrorMessage = (error: unknown): string | null => {
+  if (!error || typeof error !== "object") return null;
+  const err = error as Record<string, unknown>;
+
+  const directMessage =
+    typeof err.error === "string"
+      ? err.error
+      : typeof err.message === "string"
+        ? err.message
+        : null;
+  if (directMessage) return directMessage;
+
+  const nestedError = err.error as Record<string, unknown> | undefined;
+  if (nestedError) {
+    if (typeof nestedError.error === "string") return nestedError.error;
+    if (typeof nestedError.message === "string") return nestedError.message;
+  }
+
+  const response = err.response as Record<string, unknown> | undefined;
+  const responseData = response?.data as Record<string, unknown> | undefined;
+  if (typeof responseData?.error === "string") return responseData.error;
+  if (typeof responseData?.message === "string") return responseData.message;
+
+  return null;
+};
+
 const FinalStatementForm = ({
   onClose,
   assignmentId,
@@ -36,42 +65,83 @@ const FinalStatementForm = ({
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
 
+  const refetchTimeline = async () => {
+    if (!assignmentId) return;
+    try {
+      const response = await getJobLogs({
+        client: apiClient,
+        path: { assignmentId },
+      });
+
+      const exactQueryKey = getJobLogsQueryKey({
+        path: { assignmentId },
+      });
+
+      queryClient.setQueryData(exactQueryKey, response.data);
+      queryClient.setQueryData(
+        ["getJobLogs", { path: { assignmentId } }],
+        response.data,
+      );
+      queryClient.setQueryData(
+        queryKeys.engineer.jobLogs(assignmentId),
+        response.data,
+      );
+    } catch (error) {
+      console.error("Error refetching job logs:", error);
+      queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+    }
+  };
+
+  const resolveSignOffId = async (
+    assignmentIdValue: number,
+    submitResponse: {
+      signOffId?: number;
+      workAttachmentId?: number;
+      signatureAttachmentId?: number;
+    },
+  ): Promise<number | undefined> => {
+    if (submitResponse.signOffId) return submitResponse.signOffId;
+
+    try {
+      const logsResponse = await getJobLogs({
+        client: apiClient,
+        path: { assignmentId: assignmentIdValue },
+      });
+      const signOffSheets = logsResponse.data?.signOffSheets || [];
+      if (!signOffSheets.length) return undefined;
+
+      const matched = signOffSheets.find(
+        (sheet) =>
+          (submitResponse.workAttachmentId &&
+            sheet.attachmentId === submitResponse.workAttachmentId) ||
+          (submitResponse.signatureAttachmentId &&
+            sheet.signatureAttachmentId ===
+              submitResponse.signatureAttachmentId),
+      );
+
+      return matched?.id || signOffSheets[0]?.id;
+    } catch {
+      return undefined;
+    }
+  };
+
   const { mutateAsync: submitSignOff } = useEngineerSubmitSignOff({
     assignmentId,
-    onSuccess: async () => {
-      toast.success(FINAL_STATEMENT_MESSAGES.submitSuccess);
-
-      if (assignmentId) {
-        try {
-          const response = await getJobLogs({
-            client: apiClient,
-            path: { assignmentId },
-          });
-
-          const exactQueryKey = getJobLogsQueryKey({
-            path: { assignmentId },
-          });
-
-          queryClient.setQueryData(exactQueryKey, response.data);
-          queryClient.setQueryData(
-            ["getJobLogs", { path: { assignmentId } }],
-            response.data,
-          );
-          queryClient.setQueryData(
-            queryKeys.engineer.jobLogs(assignmentId),
-            response.data,
-          );
-        } catch (error) {
-          console.error("Error refetching job logs:", error);
-          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
-        }
-      }
-
-      onClose?.();
-    },
     onError: (error) => {
       console.error("Failed to submit final statement:", error);
-      toast.error("Failed to submit final statement. Please try again.");
+      const apiMessage = getApiErrorMessage(error);
+      if (
+        apiMessage?.includes("Cannot submit work while there are pending logs")
+      ) {
+        toast.error(apiMessage);
+      } else {
+        toast.error("Failed to submit final statement. Please try again.");
+      }
+    },
+  });
+  const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
+    onError: (error) => {
+      console.error("Failed to mark sign-off file as uploaded:", error);
     },
   });
 
@@ -158,12 +228,50 @@ const FinalStatementForm = ({
                 );
               }
 
+              if (taskFile || signatureFile) {
+                const signOffId = await resolveSignOffId(
+                  Number(assignmentId),
+                  response as {
+                    signOffId?: number;
+                    workAttachmentId?: number;
+                    signatureAttachmentId?: number;
+                  },
+                );
+
+                if (!signOffId) {
+                  throw new Error(
+                    "Unable to determine signOffId for upload finalization",
+                  );
+                }
+
+                await markFileUploaded({
+                  body: {
+                    assignmentId: Number(assignmentId),
+                    target: "signoff",
+                    signOffId,
+                  },
+                });
+              }
+
+              await refetchTimeline();
+              toast.success(FINAL_STATEMENT_MESSAGES.submitSuccess);
+              onClose?.();
+
               close(true);
             } catch (error) {
               console.error("Failed to submit final statement:", error);
-              toast.error(
-                "Failed to submit final statement. Please try again.",
-              );
+              const apiMessage = getApiErrorMessage(error);
+              if (
+                apiMessage?.includes(
+                  "Cannot submit work while there are pending logs",
+                )
+              ) {
+                toast.error(apiMessage);
+              } else {
+                toast.error(
+                  "Failed to submit final statement. Please try again.",
+                );
+              }
               close(true);
             }
           },
@@ -182,10 +290,10 @@ const FinalStatementForm = ({
         {/* Header */}
         <div className="flex items-start justify-between px-6 shrink-0">
           <div>
-            <h2 className="text-lg font-semibold text-white">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               {FINAL_STATEMENT_LABELS.title}
             </h2>
-            <p className="text-sm text-gray-300">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               {FINAL_STATEMENT_LABELS.subtitle}
             </p>
           </div>

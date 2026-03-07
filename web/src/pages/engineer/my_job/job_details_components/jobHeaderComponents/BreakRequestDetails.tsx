@@ -211,11 +211,11 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
   return (
     <div className="flex flex-col p-6 gap-4 max-h-[500px] overflow-y-auto">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
           Break Requests Details
         </h2>
         <div
-          className="cursor-pointer text-gray-300 hover:text-white"
+          className="cursor-pointer text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
           onClick={onClose}
         >
           <icons.close className="w-5 h-5" />

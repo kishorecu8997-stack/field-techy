@@ -163,7 +163,7 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
           {hasBreakDetails && (
             <button
               type="button"
-              className="text-xs font-semibold text-teal-700 underline underline-offset-2 mt-1 cursor-pointer"
+              className="text-xs font-semibold text-teal-800 dark:text-teal-300 underline underline-offset-2 mt-1 cursor-pointer hover:text-teal-900 dark:hover:text-teal-200"
               onClick={() => onOpenBreakDetails(update)}
             >
               {update.detailsLabel || LABELS.breakDetailsFallback}

@@ -364,9 +364,10 @@ const TimelineSection: React.FC<{
                 statusLower.includes("revise requested") ||
                 statusLower.includes("needs revision");
 
-              // Show if it's a revision request AND engineer has NOT yet responded
-              // (no content from engineer in the latest revision)
-              const engineerHasResponded = !!latestRevision?.content;
+              // Show if it's a revision request AND engineer has NOT yet responded.
+              // A response can be content-only, attachment-only, or both.
+              const engineerHasResponded =
+                !!latestRevision?.content || !!latestRevision?.attachmentUrl;
 
               return isRevisionRequest && !engineerHasResponded;
             });

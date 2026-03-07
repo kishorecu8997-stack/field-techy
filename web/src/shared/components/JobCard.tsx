@@ -40,7 +40,7 @@ interface JobCardProps {
     personName?: string | null;
     name?: string | null; // fallbacks
   } | null;
-  allocationType?: "Automatic" | "Manual";
+  // allocationType?: "Automatic" | "Manual";
   [key: string]: unknown;
 }
 
@@ -50,7 +50,7 @@ interface JobCardProps {
  */
 const JobCard: React.FC<JobCardProps> = (props) => {
   const {
-    allocationType = "Automatic",
+    // allocationType = "Automatic",
     id,
     jobTitle,
     status,
@@ -155,7 +155,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       <div className="mt-3">
         <JobStatusBadge status={status as any} />
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
-          <span className="font-medium">Allocation:</span> {allocationType}
+          {/* <span className="font-medium">Allocation:</span> {allocationType} */}
         </div>
       </div>
     </Link>
