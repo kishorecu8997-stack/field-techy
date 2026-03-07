@@ -11,12 +11,11 @@ interface ClientWalletStore {
   clearBalance: () => void;
 }
 
-export const useClientWalletStore = create<ClientWalletStore>((set, get) => ({
+export const useClientWalletStore = create<ClientWalletStore>((set) => ({
   balanceArr: null,
   loading: false,
   fetched: false,
   fetchBalance: async () => {
-    if (get().loading) return;
     set({ loading: true });
     try {
       const response = await getClientBalance({

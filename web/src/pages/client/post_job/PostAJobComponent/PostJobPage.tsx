@@ -54,9 +54,9 @@ const PostJobPage = () => {
 
   const formCtx = useForm<PostAJobFieldsProps>({
     defaultValues: {
-      projectName: "",
-      jobName: "",
-      jobTitle: "",
+      projectName: "testng",
+      jobName: "testng",
+      jobTitle: "testng",
       serviceCategory: "",
       locationType: JOB_TYPES.onsite,
       location: "",
@@ -71,20 +71,20 @@ const PostJobPage = () => {
       tools: [],
       safetyWears: [],
       task: "",
-      description: "",
+      description: "Post a Job - Full Time Post a Job - Full Time",
       backFills: backFillsType.required,
       budget: "",
       primaryLanguage: "",
       secondaryLanguage: "",
       attachment: null,
       otherInfo: "",
-      startDate: null,
+      startDate: new Date(),
       startTime: "",
-      endDate: null,
+      endDate: new Date(),
       endTime: "",
       jobDuration: "",
-      tentativeStartDate: null,
-      tentativeEndDate: null,
+      tentativeStartDate: new Date(),
+      tentativeEndDate: new Date(),
       tentativeEndTime: "",
       jobOccurrence: OccurrenceFields.repeat,
       repeatedBy: RepeatByFields.week,
@@ -93,7 +93,7 @@ const PostJobPage = () => {
       repeatedByMonth: "",
       templatesName: "",
       repeatedByYear: "",
-      JobOccurrenceEndDate: null,
+      JobOccurrenceEndDate: new Date(),
       estimatedDuration: "",
       saveAsTemplate: false,
       workLocationLat: null,
@@ -138,8 +138,8 @@ const PostJobPage = () => {
       ?.map((t) => ({ budget: Number(t.budget) || 0 }))
       .filter((t) => t.budget > 0).length
       ? toolsData
-          ?.map((t) => ({ budget: Number(t.budget) || 0 }))
-          .filter((t) => t.budget > 0)
+        ?.map((t) => ({ budget: Number(t.budget) || 0 }))
+        .filter((t) => t.budget > 0)
       : undefined;
 
     getJobPrice({

@@ -81,6 +81,25 @@ import { queryKeys } from "../queryKeys";
 export * from "../commonOpenApiService";
 
 /**
+ * Robust balance invalidation helper to ensure consistency.
+ * Inconsistent updates can occur if the backend database is still processing.
+ * This helper performs one immediate invalidation and two delayed ones to catch up.
+ */
+export const syncClientBalance = (queryClient: ReturnType<typeof useQueryClient>) => {
+  const performSync = () => {
+    void queryClient.invalidateQueries({
+      queryKey: getClientBalanceQueryKey({ client: apiClient }),
+      refetchType: "all",
+    });
+    void useClientWalletStore.getState().fetchBalance();
+  };
+
+  performSync(); // Initial sync
+  setTimeout(performSync, 1000); // Delayed sync for server processing
+  setTimeout(performSync, 3000); // Long delayed sync for safety
+};
+
+/**
  * Returns the regionId stored in the current client session (decoded from JWT at login).
  * Returns undefined if not available (e.g. not logged in yet or old session pre-dating this feature).
  */
@@ -192,11 +211,7 @@ export function useCreatePaymentIntent(options?: {
     ...createPaymentIntentMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
-      void queryClient.invalidateQueries({
-        queryKey: queryKeys.client.balance,
-        refetchType: "active",
-      });
-      useClientWalletStore.getState().fetchBalance();
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -291,10 +306,12 @@ export function useClientPostJob(options?: {
       return data!;
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       queryClient.invalidateQueries({
         queryKey: clientGetJobsQueryKey({ client: apiClient }),
         exact: false,
       });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -366,6 +383,7 @@ export function useClientMarkJobFileUploaded(options?: {
       queryClient.invalidateQueries({
         queryKey: clientGetJobsQueryKey({ client: apiClient }),
       });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -397,6 +415,7 @@ export function useClientInviteEngineer(options?: {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data as ClientInviteEngineerResponse);
     },
     onError: options?.onError,
@@ -456,6 +475,7 @@ export function useClientActionOnAssignment(options?: {
           exact: false,
         });
       }
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -487,6 +507,7 @@ export function useClientCancelJob(options?: {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -577,6 +598,7 @@ export function useClientActionOnWorkLog(options?: {
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -597,6 +619,7 @@ export function useMarkWorkLogFileUploaded(options?: {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -635,6 +658,7 @@ export function useClientActionOnBreak(options?: {
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

@@ -1,9 +1,9 @@
 import {
   useClientBalance,
   useCreatePaymentIntent,
+  syncClientBalance,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/shared/apiServices/queryKeys";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -131,9 +131,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
         }
 
         // Ensure queries are invalidated so active consumers refetch
-        void queryClient.invalidateQueries({
-          queryKey: queryKeys.client.balance,
-        });
+        syncClientBalance(queryClient);
 
         if (updated) {
           success("Payment successful");
