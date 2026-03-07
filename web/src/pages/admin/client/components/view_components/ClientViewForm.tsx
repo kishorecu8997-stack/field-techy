@@ -35,28 +35,26 @@ const ClientViewForm: React.FC = () => {
       refetchOnMount: "always",
     },
   );
-
-  console.log("clientData", clientData)
   
+  const parsedUserId = Number(userId);
+  const isValidUserId = !!userId && !isNaN(parsedUserId) && parsedUserId > 0;
+
   // Lookup APIs for labels
-  const { data: countries } = useAppGetLookupData(LookupTable.Countries);
-  const { data: industries } = useAppGetLookupData(LookupTable.Industries);
-  const { data: businessTypes } = useAppGetLookupData(LookupTable.BusinessTypes);
+  const { data: countries } = useAppGetLookupData(LookupTable.Countries, undefined, { enabled: isValidUserId });
+  const { data: industries } = useAppGetLookupData(LookupTable.Industries, undefined, { enabled: isValidUserId });
+  const { data: businessTypes } = useAppGetLookupData(LookupTable.BusinessTypes, undefined, { enabled: isValidUserId });
 
   const { data: states } = useAppGetLookupData(
     LookupTable.States,
     clientData?.countryId ?? undefined,
-    { enabled: !!clientData?.countryId },
+    { enabled: !!clientData?.countryId && isValidUserId },
   );
 
   const { data: cities } = useAppGetLookupData(
     LookupTable.Cities,
     clientData?.stateId ?? undefined,
-    { enabled: !!clientData?.stateId },
+    { enabled: !!clientData?.stateId && isValidUserId },
   );
-
-  const parsedUserId = Number(userId);
-  const isValidUserId = !!userId && !isNaN(parsedUserId) && parsedUserId > 0;
 
   if (isLoading) {
     return (
@@ -90,32 +88,32 @@ const ClientViewForm: React.FC = () => {
     companyName: clientData?.companyName || clientData?.name || "N/A",
     businessType:
       clientData?.businessTypeName ||
-      businessTypes?.find((b: any) => b.id === clientData?.businessTypeId)
+      businessTypes?.find((b) => b.id === clientData?.businessTypeId)
         ?.name ||
       "N/A",
     country:
-      countries?.find((c: any) => c.id === clientData?.countryId)?.name ||
+      countries?.find((c) => c.id === clientData?.countryId)?.name ||
       clientData?.country?.name ||
       "N/A",
     postalCode: clientData?.postalCode || "N/A",
     contactPersonName: clientData?.personName || clientData?.name || "N/A",
     industry:
-      industries?.find((i: any) => i.id === clientData?.industryId)?.name ||
+      industries?.find((i) => i.id === clientData?.industryId)?.name ||
       clientData?.industry?.name ||
       "N/A",
     state:
-      states?.find((s: any) => s.id === clientData?.stateId)?.name ||
+      states?.find((s) => s.id === clientData?.stateId)?.name ||
       clientData?.state?.name ||
       "N/A",
     taxDocument:
-      taxDocuments.find((t: any) => t.value === clientData?.documentType)
+      taxDocuments.find((t) => t.value === clientData?.documentType)
         ?.label ||
       clientData?.documentType ||
       "N/A",
     phoneNumber: clientData?.phoneNumber || "N/A",
     address: clientData?.address || "N/A",
     city:
-      cities?.find((c: any) => c.id === clientData?.cityId)?.name ||
+      cities?.find((c) => c.id === clientData?.cityId)?.name ||
       clientData?.city?.name ||
       "N/A",
     documentNumber: clientData?.documentNumber || "N/A",
