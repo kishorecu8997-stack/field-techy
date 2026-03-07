@@ -77,7 +77,6 @@ export class ClientRouteStrategy implements RouteStrategy {
             React.Fragment,
             null,
             withSuspense(Components.ClientLayout),
-            // withSuspense(Components.LiveChatWidget),
           ),
         }),
         children: [
@@ -90,18 +89,6 @@ export class ClientRouteStrategy implements RouteStrategy {
             path: `${urls.client.home.my_jobs}/:jobId`,
             element: withSuspense(Components.ClientJobDetails),
           },
-          // {
-          //   path: urls.client.home.my_projects,
-          //   element: withSuspense(Components.ClientMyProjectsPage),
-          // },
-          // {
-          //   path: `${urls.client.home.my_projects}/:projectId`,
-          //   element: withSuspense(Components.ClientProjectDetailsPage),
-          // },
-          // {
-          //   path: urls.client.home.create_project,
-          //   element: withSuspense(Components.ClientCreateProjectPage),
-          // },
           {
             path: `${urls.client.home.my_jobs}/:jobId/report_updates`,
             element: withSuspense(Components.ClientReportIssue),
@@ -114,22 +101,10 @@ export class ClientRouteStrategy implements RouteStrategy {
             path: urls.client.home.client_Explore_engineers,
             element: withSuspense(Components.ClientExploreEngineers),
           },
-          // {
-          //   path: urls.client.home.search_analytics,
-          //   element: withSuspense(Components.ClientSearchAnalyticsPage),
-          // },
           {
             path: urls.client.home.post_JobPage,
             element: withSuspense(Components.ClientPostJobPage),
           },
-          // {
-          //   path: urls.client.home.manage_proposal,
-          //   element: withSuspense(Components.ClientManageProposal),
-          // },
-          // {
-          //   path: `${urls.client.home.manage_proposal}/:id`,
-          //   element: withSuspense(Components.ClientManageProposalDetails),
-          // },
           {
             path: `${urls.client.home.job_details}/:id`,
             element: withSuspense(Components.ClientJobDetails),

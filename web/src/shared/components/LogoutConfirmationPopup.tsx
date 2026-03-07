@@ -55,14 +55,6 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
               <Button variant="primary" onClick={onConfirm} type="button">
                 Logout
               </Button>
-              {/* <Button
-                type="button"
-                className="col-span-2 bg-red-700 hover:bg-red-800"
-                variant="primary"
-                onClick={onConfirm}
-              >
-                Logout All Other Sessions
-              </Button> */}
             </div>
           </div>
         </div>

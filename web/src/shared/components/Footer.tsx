@@ -203,14 +203,6 @@ const Footer = () => {
               SUPPORT
             </h3>
             <ul className="space-y-4">
-              {/* <li>
-                <div
-                  onClick={() => setOpen(true)}
-                  className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors cursor-pointer"
-                >
-                  Report A Problem
-                </div>
-              </li> */}
               <li>
                 <div
                   onClick={() => {
@@ -261,17 +253,6 @@ const Footer = () => {
                   Privacy Policy
                 </NavLink>
               </li>
-              {/* <li>
-                <NavLink
-                  to="#"
-                  onClick={(e) => e.preventDefault()}
-                  className="text-gray-400 dark:text-gray-600 cursor-not-allowed pointer-events-none"
-                  aria-disabled="true"
-                  tabIndex={-1}
-                >
-                  Video Tutorials
-                </NavLink>
-              </li> */}
             </ul>
           </div>
         </div>
