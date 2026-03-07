@@ -10,7 +10,7 @@ import IconWithTheme from "@/shared/components/IconWithTheme";
 import { validatePassword } from "@/shared/libs/utils";
 import type { LoginEmailFormData } from "@/shared/types/auth";
 import { useForm } from "react-hook-form";
-import type { FieldValues, DefaultValues, Path } from "react-hook-form";
+import type { FieldValues, DefaultValues, Path, Resolver } from "react-hook-form";
 import { CiMail } from "react-icons/ci";
 import { NavLink } from "react-router-dom";
 
@@ -22,6 +22,7 @@ interface AuthLoginProps<T extends FieldValues = LoginEmailFormData> {
     forgetPasswordUrl: string;
     validatePasswordRule?: boolean;
     defaultValues?: DefaultValues<T>;
+    resolver?: Resolver<T>;
 }
 
 export const AuthLogin = <T extends FieldValues = LoginEmailFormData>({
@@ -32,6 +33,7 @@ export const AuthLogin = <T extends FieldValues = LoginEmailFormData>({
     forgetPasswordUrl,
     validatePasswordRule = false,
     defaultValues,
+    resolver,
 }: AuthLoginProps<T>) => {
     const methods = useForm<T>({
         defaultValues: defaultValues || ({
@@ -39,6 +41,7 @@ export const AuthLogin = <T extends FieldValues = LoginEmailFormData>({
             password: "",
             rememberMe: false,
         } as unknown as DefaultValues<T>),
+        resolver,
     });
 
     return (

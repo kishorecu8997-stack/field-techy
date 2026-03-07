@@ -698,11 +698,9 @@ export function useClientExploreEngineersInfinite(
     }),
     enabled: enabled,
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
+    getNextPageParam: (lastPage, allPages) => {
       if (lastPage.data && lastPage.data.length > 0) {
-        // Assuming pagination uses 'page' parameter
-        const currentPage = query.page || 1;
-        return currentPage + 1;
+        return allPages.length + 1;
       }
       return undefined;
     },

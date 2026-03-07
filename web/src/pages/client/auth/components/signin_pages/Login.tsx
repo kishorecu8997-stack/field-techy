@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils";
 import { AuthLogin } from "@/shared/components/auth/AuthLogin";
-import type { LoginEmailFormData } from "../../validations/LoginEmail";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginEmailFormData } from "../../validations/LoginEmail";
 
 /**
  * Login component
@@ -87,6 +88,7 @@ const Login = ({
       onOtpLoginClick={() => setIsOtpLogin(true)}
       signUpUrl={absoluteUrls.client.auth.signup}
       forgetPasswordUrl={absoluteUrls.client.auth.forget_password}
+      resolver={zodResolver(loginSchema)}
     />
   );
 };

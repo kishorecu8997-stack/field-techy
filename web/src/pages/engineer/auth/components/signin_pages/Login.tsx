@@ -1,6 +1,6 @@
 import { absoluteUrls } from "@/config/urls";
 import Popup from "@/shared/components/Popup";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useEngineerLogin } from "@/shared/apiServices/engineer/engineerOpenApiService";
@@ -15,7 +15,8 @@ import { getTwoFaStorage } from "@/utils/TwoFAStorage";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { AuthLogin } from "@/shared/components/auth/AuthLogin";
-import type { LoginEmailFormData } from "../../validations/LoginEmail";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginEmailFormData } from "../../validations/LoginEmail";
 
 /**
  * Login component
@@ -36,7 +37,7 @@ const Login = ({
   const navigate = useNavigate();
 
   const setUserSession = useUserSessionStore((s) => s.setSession);
-  let currentEmail = ""; // Needed for useTwoFactorAuth
+  const [currentEmail, setCurrentEmail] = useState(""); // Needed for useTwoFactorAuth
 
   const { mutateAsync: loginMutation, isPending: isLoggingIn } =
     useEngineerLogin({
@@ -83,7 +84,7 @@ const Login = ({
   });
 
   const handleSubmit = async (data: LoginEmailFormData) => {
-    currentEmail = data.email;
+    setCurrentEmail(data.email);
     await loginMutation({
       body: {
         email: data.email,
@@ -102,6 +103,7 @@ const Login = ({
         signUpUrl={absoluteUrls.engineer.auth.signup}
         forgetPasswordUrl={absoluteUrls.engineer.auth.forget_password}
         validatePasswordRule={true}
+        resolver={zodResolver(loginSchema)}
       />
       <Popup open={isTwoFaOpen} onClose={() => setIsTwoFaOpen(false)}>
         <TwoFASetup
