@@ -25,6 +25,18 @@ interface AuthLoginProps<T extends FieldValues = LoginEmailFormData> {
     resolver?: Resolver<T>;
 }
 
+/**
+ * This component is used to login with email and password
+ * @param {isLoggingIn} - Boolean to check if the user is logging in
+ * @param {onEmailLoginSubmit} - Function to handle the email login submit
+ * @param {onOtpLoginClick} - Function to handle the OTP login click
+ * @param {signUpUrl} - URL to the sign up page
+ * @param {forgetPasswordUrl} - URL to the forget password page
+ * @param {validatePasswordRule} - Boolean to validate the password rule
+ * @param {defaultValues} - Default values for the form
+ * @param {resolver} - Resolver for the form
+ */
+
 export const AuthLogin = <T extends FieldValues = LoginEmailFormData>({
     isLoggingIn,
     onEmailLoginSubmit,

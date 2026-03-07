@@ -26,6 +26,16 @@ interface AuthLoginWithOtpProps {
     logoDark?: string;
 }
 
+/**
+ * This component is used to login with OTP
+ * @param {isSending} - Boolean to check if the user is sending OTP
+ * @param {onSendOtp} - Function to handle the OTP send
+ * @param {onVerifyOtp} - Function to handle the OTP verify
+ * @param {onBackClick} - Function to handle the back click
+ * @param {signUpUrl} - URL to the sign up page
+ * @param {logoDark} - Logo for the dark mode
+ */
+
 export const AuthLoginWithOtp: React.FC<AuthLoginWithOtpProps> = ({
     isSending,
     onSendOtp,

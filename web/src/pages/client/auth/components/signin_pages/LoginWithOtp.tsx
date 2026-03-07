@@ -10,6 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthLoginWithOtp } from "@/shared/components/auth/AuthLoginWithOtp";
 
+/*
+* This component is used to login with OTP
+* @param {setIsOtpLogin} - Function to set the OTP login state
+*/
 const LoginWithOtp = ({
   setIsOtpLogin,
 }: {
