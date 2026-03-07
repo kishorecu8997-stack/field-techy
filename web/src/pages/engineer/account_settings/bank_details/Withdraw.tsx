@@ -70,7 +70,7 @@ const Withdraw = () => {
             addTransaction({
               id: Date.now(),
               description: `Withdrawal to ${data.bank}`,
-              amount: -parseFloat(data.amount),
+              amount: -parseFloat(data.amount || "0"),
               date: new Date(),
               status: "Pending",
             });
