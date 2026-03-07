@@ -28,7 +28,7 @@ const MyEarning = () => {
   const { data: personalInfo } = useEngineerGetPersonalInfo();
   const balance = balanceArr?.[0];
   const hasCompletedOnboarding =
-    personalInfo?.onboardingStatus?.toLowerCase() === "completed";
+    personalInfo?.stripeOnboardingStatus?.toLowerCase() === "completed";
   const bankDetailsButtonLabel = hasCompletedOnboarding
     ? "Edit Bank Details"
     : "Add Bank Details";
