@@ -258,8 +258,7 @@ const JobTabSection = ({
     ? JOB_TAB_LABELS.timeline
     : JOB_TAB_LABELS.jobOverview;
   const initialTab =
-    activeTab &&
-    (showTimelineTab || activeTab !== JOB_TAB_LABELS.timeline)
+    activeTab && (showTimelineTab || activeTab !== JOB_TAB_LABELS.timeline)
       ? activeTab
       : defaultTabLabel;
 

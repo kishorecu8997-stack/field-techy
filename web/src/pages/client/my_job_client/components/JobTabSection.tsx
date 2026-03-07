@@ -79,7 +79,9 @@ const mapClientJobToJobOverview = (
       : "";
   };
 
-  const getToolImage = (toolObj: Record<string, unknown>): string | undefined => {
+  const getToolImage = (
+    toolObj: Record<string, unknown>,
+  ): string | undefined => {
     const candidate =
       toolObj.image ??
       toolObj.imageUrl ??
@@ -313,9 +315,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     activeTab && activeTab !== JOB_TAB_LABELS.timeline
       ? activeTab
       : JOB_TAB_LABELS.jobOverview;
-  const [selectedTab, setSelectedTab] = useState<string>(
-    initialTab,
-  );
+  const [selectedTab, setSelectedTab] = useState<string>(initialTab);
   const [hasUserSelectedTab, setHasUserSelectedTab] = useState(false);
 
   // Fetch assignments/proposals for this job when showManageProposals is true
