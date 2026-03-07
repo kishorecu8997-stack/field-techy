@@ -10,7 +10,13 @@ export interface Transaction {
 }
 
 export interface BankDetails {
-  bank: string;
-  amount: string;
+  bank?: string;
+  amount?: string;
+  bankName?: string;
+  bankAddress?: string;
+  accountNumber?: string;
+  swiftcode?: string;
+  iban?: string;
+  name?: string;
 }
 export type bankDetails = BankDetails;
