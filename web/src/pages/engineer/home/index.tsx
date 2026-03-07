@@ -187,7 +187,7 @@ const Home = () => {
                 userSkills={[]}
                 userTools={profile?.tools || []}
                 onViewAll={handleExploreJobs}
-                title="Recommended Jobss"
+                title="Recommended Jobs"
                 totalJobs={recommendedJobs.length}
                 bookMarkRefetch={refetch}
               />
