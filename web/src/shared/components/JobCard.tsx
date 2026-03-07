@@ -117,26 +117,26 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           })()}
         </span>
       </div>
-      <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">
-        <p>
+      <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3 min-w-0">
+        <p className="truncate">
           <span className="font-medium">Client:</span> {companyName}
         </p>
-        <p>
+        <p className="truncate">
           <span className="font-medium">Start: </span>
           {formatDate(startDate)}
         </p>
-        <p>
+        <p className="truncate">
           <span className="font-medium">Duration:</span> {getDuration()}
         </p>
       </div>
-      <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
-          <MdLocationPin className="h-4 w-4 flex-shrink-0" />
-          <span className="truncate">{workLocationName || "N/A"}</span>
+      <div className="flex justify-between items-start pt-2 border-t border-gray-200 dark:border-gray-700 gap-4">
+        <div className="flex items-start gap-1.5 text-sm text-gray-600 dark:text-gray-400 min-w-0 flex-1">
+          <MdLocationPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+          <span className="break-words">{workLocationName || "N/A"}</span>
         </div>
 
-        <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
-          <span>{formattedPay}</span>
+        <div className="flex-shrink-0 text-sm font-semibold text-teal-800 dark:text-teal-400 whitespace-nowrap pt-0.5">
+          {formattedPay}
         </div>
       </div>
 

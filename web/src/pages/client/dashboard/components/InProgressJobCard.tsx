@@ -30,12 +30,12 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
   return (
     <Link to={navigateToJob}>
       <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-4 shadow-sm hover:shadow-md transition-shadow">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <div className="flex justify-between items-start mb-3 min-w-0">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate mr-2">
             {job.title}
           </h3>
           <span
-            className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor(
+            className={`px-3 py-1 rounded-md text-xs font-medium flex-shrink-0 ${getWorkModeColor(
               job.type || "",
             )}`}
           >
@@ -44,20 +44,22 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
         </div>
 
         <div className="space-y-2">
-          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 min-w-0">
             <IoMdTime className="w-4 h-4 mr-2 flex-shrink-0" />
-            {job.startDate}
+            <span className="truncate">{job.startDate}</span>
           </div>
 
-          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-            <IoLocationOutline className="w-4 h-4 mr-2 flex-shrink-0" />
-            <LocationDisplay
-              countryId={job.countryId}
-              stateId={job.stateId}
-              cityId={job.cityId}
-              workLocationName={job.workLocationName}
-              fallback={job.location}
-            />
+          <div className="flex items-start text-sm text-gray-600 dark:text-gray-300 min-w-0">
+            <IoLocationOutline className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
+            <div className="break-words">
+              <LocationDisplay
+                countryId={job.countryId}
+                stateId={job.stateId}
+                cityId={job.cityId}
+                workLocationName={job.workLocationName}
+                fallback={job.location}
+              />
+            </div>
           </div>
 
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">

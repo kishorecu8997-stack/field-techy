@@ -293,7 +293,6 @@ const JobCard: React.FC<{
       ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
       : job.status;
 
-    const salaryDisplay = jobData.salary ?? "-";
     const hasSalary = Boolean(jobData.salary);
 
     return (
@@ -399,9 +398,9 @@ const JobCard: React.FC<{
           <div className="flex flex-wrap items-center justify-between bg-gray-100 dark:bg-gray-700/50 rounded-md p-3">
             <div className="flex flex-wrap items-center gap-5">
               {jobData.location && (
-                <div className="flex items-center gap-1.5">
-                  <IoLocationSharp className="h-4 w-4 text-gray-500" />
-                  <span className="text-gray-800 dark:text-gray-200">
+                <div className="flex items-start gap-1.5 min-w-0">
+                  <IoLocationSharp className="h-4 w-4 mt-0.5 flex-shrink-0 text-gray-500" />
+                  <span className="text-gray-800 dark:text-gray-200 break-words">
                     {jobData.location}
                   </span>
                 </div>
