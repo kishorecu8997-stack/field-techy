@@ -4,6 +4,7 @@ import { Button } from "./commonUI/Buttons";
 import Drawer from "./drawer/Drawer";
 import { useState } from "react";
 import { useClientBalance } from "../apiServices/client/clientOpenApiService";
+import AddFundComponent from "@/pages/client/my_wallet/components/AddFundComponent";
 
 /**
  * A card component that displays the user's wallet balance and provides
@@ -88,23 +89,14 @@ export const WalletCard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Button
-          variant="primary"
-          className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
-          onClick={() => {
-            setISOpenSidebar(true);
-            setActiveKey("clientAddFund");
-          }}
-        >
-          Add Fund
-        </Button>
+        <AddFundComponent buttonWidth="w-full" />
         <Button
           variant="primary"
           onClick={() => {
             setISOpenSidebar(true);
             setActiveKey("recentTransactions");
           }}
-          className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-full text-sm font-medium transition-colors duration-200"
         >
           Transactions
         </Button>

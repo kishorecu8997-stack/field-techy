@@ -6,13 +6,16 @@ import React, { useState, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import {
-  useAdminGetTransactionRequests,
-  useAdminUpdateTransactionRequestStatus,
+  useAdminGetPendingPayments,
+  useAdminApprovePayment,
+  adminGetPendingPaymentsQueryKey,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { toast } from "react-toastify";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
+import { apiClient } from "@/shared/apiServices/apiClient";
+import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
+import { formatAmount } from "@/utils/currency";
 
 /**
  * PendingTable Component
@@ -22,17 +25,16 @@ import { useQueryClient, type QueryKey } from "@tanstack/react-query";
  */
 
 type TransactionRequest = {
-  id: number;
-  walletId: number;
+  assignmentId: number;
+  jobId: number;
+  jobCode: string;
+  jobTitle: string;
   amount: string;
-  type: "credit" | "debit";
-  status: "pending" | "approved" | "rejected";
-  description: string | null;
-  createdAt: string;
-  updatedAt: string;
-  clientName?: string;
-  clientEmail?: string;
-  currencyCode?: string;
+  engineerId: number;
+  engineerName: string;
+  engineerProfileUrl?: string | null;
+  submittedAt?: string | null;
+  currencySymbol: string;
 };
 
 interface TransactionRequestsQueryData {
@@ -54,12 +56,13 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
 
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
-  const { data, isLoading, refetch } = useAdminGetTransactionRequests(
+  const { data, isLoading, refetch } = useAdminGetPendingPayments(
     {
-      status: "pending",
       limit,
-      offset: (page - 1) * limit,
+      page,
+      status: "pending",
     },
     {
       enabled: active,
@@ -68,13 +71,13 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
 
   type ClosePopup = (success?: boolean) => void;
 
-  const updateStatusMutation = useAdminUpdateTransactionRequestStatus({
+  const updateStatusMutation = useAdminApprovePayment({
     onSuccess: () => {
-      toast.success("Status updated successfully!");
+      toast.success("Payment action processed successfully!");
       refetch();
     },
     onError: () => {
-      toast.error("Failed to update status. Please try again.");
+      toast.error("Failed to process payment action. Please try again.");
     },
   });
 
@@ -88,13 +91,14 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
 
     return apiItems.filter((row) => {
       return (
-        row.clientName?.toLowerCase().includes(term) ||
-        row.clientEmail?.toLowerCase().includes(term) ||
+        row.engineerName?.toLowerCase().includes(term) ||
+        row.jobTitle?.toLowerCase().includes(term) ||
+        row.jobCode?.toLowerCase().includes(term) ||
         row.amount?.toLowerCase().includes(term) ||
-        row.id.toString().includes(term) ||
-        row.createdAt?.toLowerCase().includes(term) ||
-        row.description?.toLowerCase().includes(term) ||
-        row.type?.toLowerCase().includes(term)
+        row.jobId.toString().includes(term) ||
+        row.assignmentId.toString().includes(term) ||
+        row.submittedAt?.toLowerCase().includes(term) ||
+        row.currencySymbol?.toLowerCase().includes(term)
       );
     });
   }, [apiItems, search]);
@@ -102,17 +106,18 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
   const displayTotal = search.trim() ? filteredData.length : total;
 
   const handleStatusChange = useCallback(
-    async (row: TransactionRequest, newStatus: "approved" | "rejected") => {
-      if (!newStatus || newStatus === row.status) return;
+    async (row: TransactionRequest, newStatus: "approve" | "reject") => {
+      if (!newStatus) return;
 
-      const queryKey: QueryKey = [
-        "adminGetTransactionRequests",
-        {
-          status: "pending",
+      const queryKey = adminGetPendingPaymentsQueryKey({
+        client: apiClient,
+        query: {
           limit,
-          offset: (page - 1) * limit,
+          page,
+          status: "pending",
+          regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
         },
-      ];
+      }) as unknown as QueryKey;
 
       const previousData =
         queryClient.getQueryData<TransactionRequestsQueryData>(queryKey);
@@ -123,7 +128,9 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
           if (!old) return old;
           const updatedData = {
             ...old,
-            data: old.data.filter((item) => item.id !== row.id),
+            data: old.data.filter(
+              (item) => item.assignmentId !== row.assignmentId,
+            ),
             total: Math.max(0, old.total - 1),
           };
           return updatedData;
@@ -131,8 +138,8 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
       );
 
       await showPopup({
-        title: `${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} Request`,
-        body: `Are you sure you want to ${newStatus} this request?`,
+        title: `${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} Payment`,
+        body: `Are you sure you want to ${newStatus} this payment?`,
         actionButtons: [
           {
             label: "Cancel",
@@ -147,17 +154,16 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
             label: "Yes",
             value: "yes",
             variant:
-              newStatus.toLowerCase() === "approved" ? "primary" : "danger",
+              newStatus.toLowerCase() === "approve" ? "primary" : "danger",
             action: async (close: ClosePopup) => {
               try {
                 await updateStatusMutation.mutateAsync({
-                  query: { id: row.id },
-                  body: { status: newStatus },
+                  body: { assignmentId: row.assignmentId, action: newStatus },
                 });
                 refetch();
                 close(true);
               } catch {
-                toast.error("Failed to update status. Please try again.");
+                toast.error("Failed to process payment. Please try again.");
                 queryClient.setQueryData(queryKey, previousData);
                 close(false);
               }
@@ -166,7 +172,15 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         ],
       });
     },
-    [queryClient, showPopup, updateStatusMutation, page, limit, refetch],
+    [
+      queryClient,
+      showPopup,
+      updateStatusMutation,
+      page,
+      limit,
+      refetch,
+      selectedRegionId,
+    ],
   );
 
   const columns: Column<TransactionRequest>[] = [
@@ -178,35 +192,49 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
     },
 
     {
-      key: "clientDetails",
-      label: "Client Details",
+      key: "engineerDetails",
+      label: "Engineer Details",
       renderCell: (row: TransactionRequest) => (
         <div className="flex items-center gap-2">
           <div>
-            <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+            {row.engineerProfileUrl ? (
+              <img
+                src={row.engineerProfileUrl}
+                alt="profile"
+                className="h-6 w-6 rounded-full object-cover"
+              />
+            ) : (
+              <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+            )}
           </div>
           <div>
-            <div className="font-semibold">{row.clientName || "—"}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {row.clientEmail || "—"}
-            </div>
+            <div className="font-semibold">{row.engineerName || "—"}</div>
           </div>
         </div>
       ),
     },
-
     {
-      key: "walletBalance",
-      label: "Wallet Balance",
+      key: "jobDetails",
+      label: "Job Details",
+      renderCell: (row: TransactionRequest) => (
+        <div className="flex flex-col">
+          <span className="font-semibold">{row.jobCode || "—"}</span>
+          <span className="text-sm text-neutral-500 dark:text-neutral-400">
+            {row.jobTitle || "—"}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: "amount",
+      label: "Amount",
       renderCell: (row: TransactionRequest) => {
-        const currency = row.currencyCode || "-";
         const amountNum = Number(row.amount || 0);
 
         return (
           <span className="font-medium">
-            {currency}
-            {""}
-            {amountNum.toLocaleString("en-IN")}
+            {/* {amountNum.toLocaleString("en-IN")} */}
+            {formatAmount(amountNum, row.currencySymbol)}
           </span>
         );
       },
@@ -219,31 +247,26 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         <div className="relative w-full">
           <SelectMenu
             placeholder="Select Action"
-            value={row.status || ""}
+            value="pending"
             onChange={(value: string | null) => {
-              if (!value || value === row.status) return;
+              if (!value || value === "pending") return;
 
               const lowerValue = value.toLowerCase();
               const normalizedStatus =
                 lowerValue === "approve"
-                  ? "approved"
+                  ? "approve"
                   : lowerValue === "reject"
-                    ? "rejected"
+                    ? "reject"
                     : null;
 
               if (!normalizedStatus) return;
 
               handleStatusChange(row, normalizedStatus);
             }}
-            options={JobStatus.filter((opt) => opt.value !== "pending").map(
-              (opt) => ({
-                ...opt,
-                className:
-                  opt.value === "approved"
-                    ? "bg-green-100 text-green-800 border-green-300"
-                    : "bg-red-100 text-red-800 border-red-300",
-              }),
-            )}
+            options={[
+              { label: "Approve", value: "approve" },
+              { label: "Reject", value: "reject" },
+            ]}
             badge
             disabled={updateStatusMutation.isPending}
           />
