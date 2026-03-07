@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
-import {  TextareaInput } from "@/shared/components/commonUI/inputs";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { MODAL_TITLES } from "@/constants/timelineConstants";
 import type { UseFormReturn } from "react-hook-form";
 import type { RevisionFormData } from "./clientTimelineTypes";

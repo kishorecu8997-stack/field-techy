@@ -114,8 +114,7 @@ const FeatureJobCard: React.FC<
   const { bookMarkRefetch } = props;
   const { data: engagementModels } = useLookupData("engagementModels");
   // Fetch service categories from API
-  const { data: serviceCategoriesData } =
-    useLookupData("serviceCategories");
+  const { data: serviceCategoriesData } = useLookupData("serviceCategories");
 
   const { refetch } = useGetEngineerSavedJobs({
     limit: 10,
@@ -292,7 +291,7 @@ const FeatureJobCard: React.FC<
       </>
     </div>
   );
-};;
+};
 
 interface FeaturedJobsProps {
   jobs: JobItem[];
