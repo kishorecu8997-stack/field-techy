@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
-import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
+import {  TextareaInput } from "@/shared/components/commonUI/inputs";
 import { MODAL_TITLES } from "@/constants/timelineConstants";
 import type { UseFormReturn } from "react-hook-form";
 import type { RevisionFormData } from "./clientTimelineTypes";
@@ -20,7 +20,7 @@ interface RevisionFormModalProps {
  */
 const RevisionFormModal: React.FC<RevisionFormModalProps> = ({
   isOpen,
-  isRevisionMode,
+  // isRevisionMode,
   formMethods,
   onSubmit,
   onCancel,
@@ -40,14 +40,14 @@ const RevisionFormModal: React.FC<RevisionFormModalProps> = ({
             onSubmit={onSubmit}
             className="space-y-4"
           >
-            {isRevisionMode && (
+            {/* {isRevisionMode && (
               <InputField
                 name="title"
                 label="Title"
                 placeholder="Enter title"
                 required
               />
-            )}
+            )} */}
             <TextareaInput
               name="notes"
               label="Your Notes"
