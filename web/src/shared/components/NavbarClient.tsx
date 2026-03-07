@@ -11,6 +11,8 @@ import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useDrawerStore from "../store/useDrawerStore";
+import { UserRole } from "@/shared/enums/users";
+import { JobSearchBar } from "./JobSearchBar/index";
 import Drawer from "./drawer/Drawer";
 import IconWithTheme from "./IconWithTheme";
 
@@ -125,9 +127,9 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         </div>
       </div>
 
-      {/* <div className="flex-1 mx-4 w-full">
-        <JobSearchBar />
-      </div> */}
+      <div className="flex-1 mx-4 w-full">
+        <JobSearchBar userType={UserRole.CLIENT} navto={absoluteUrls.client.home.client_Explore_engineers} showDropdowns={false} />
+      </div>
 
       <div className="flex items-center space-x-4 md:hidden">
         <button

@@ -1,5 +1,6 @@
 import { absoluteUrls } from "@/config/urls";
 import { useAppResolveSignupRegion } from "@/shared/apiServices/commonOpenApiService";
+import { UserRole } from "@/shared/enums/users";
 import { useCities, useCountries, useStates, type LookupItem } from "@/shared/hooks/useLookup";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,6 +17,12 @@ const Divider = () => (
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 
+interface JobSearchBarProps {
+    navto?: string;
+    userType?: typeof UserRole.ENGINEER | typeof UserRole.CLIENT;
+    showDropdowns?: boolean;
+}
+
 /**
  * A job search bar component with keyword input and cascading
  * Country → State → City location dropdowns sourced from the Lookup API.
@@ -25,13 +32,14 @@ const Divider = () => (
  * @example
  * <JobSearchBar />
  */
-export const JobSearchBar = () => {
+export const JobSearchBar = ({ navto, userType, showDropdowns = true }: JobSearchBarProps) => {
     const methods = useForm({});
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = useSearchParams();
 
-    const isEngineerRoute = location.pathname.startsWith("/engineer");
+    const isEngineerFallback = location.pathname.startsWith("/engineer");
+    const isEngineerRoute = userType ? userType === UserRole.ENGINEER : isEngineerFallback;
 
     // ── Region resolution ────────────────────────────────────────────────────
     const { data: signupRegion } = useAppResolveSignupRegion();
@@ -120,9 +128,9 @@ export const JobSearchBar = () => {
             return;
         }
 
-        const base = isEngineerRoute
+        const base = navto ?? (isEngineerRoute
             ? absoluteUrls.engineer.home.search_result
-            : absoluteUrls.client.home.search_result;
+            : absoluteUrls.client.home.search_result);
         navigate(`${base}?${qs}`);
     };
 
@@ -187,7 +195,7 @@ export const JobSearchBar = () => {
     const handleSearch = () => navigateToResults();
 
     return (
-        <div className="relative w-full max-w-4xl mx-auto">
+        <div className={`relative w-full ${showDropdowns ? "max-w-4xl" : "max-w-lg"} mx-auto`}>
             <FormContainer onSubmit={handleSearch} methods={methods} className="w-full">
                 <div
                     className="flex items-center w-full bg-white rounded-full border border-gray-200 shadow-md"
@@ -206,48 +214,50 @@ export const JobSearchBar = () => {
                         />
                     </div>
 
-                    <div className="hidden lg:flex items-center flex-shrink-0">
-                        <Divider />
-                        <InlineDropdown
-                            id="country"
-                            activeId={activeDropdown}
-                            placeholder="Country"
-                            value={country}
-                            options={countries}
-                            onToggle={toggleDropdown}
-                            onSelect={handleCountrySelect}
-                            onClear={handleClearCountry}
-                            loading={loadingCountries}
-                        />
+                    {showDropdowns && (
+                        <div className="hidden lg:flex items-center flex-shrink-0">
+                            <Divider />
+                            <InlineDropdown
+                                id="country"
+                                activeId={activeDropdown}
+                                placeholder="Country"
+                                value={country}
+                                options={countries}
+                                onToggle={toggleDropdown}
+                                onSelect={handleCountrySelect}
+                                onClear={handleClearCountry}
+                                loading={loadingCountries}
+                            />
 
-                        <Divider />
-                        <InlineDropdown
-                            id="state"
-                            activeId={activeDropdown}
-                            placeholder="State"
-                            value={state}
-                            options={states}
-                            onToggle={toggleDropdown}
-                            onSelect={handleStateSelect}
-                            onClear={handleClearState}
-                            disabled={!countryId}
-                            loading={loadingStates}
-                        />
+                            <Divider />
+                            <InlineDropdown
+                                id="state"
+                                activeId={activeDropdown}
+                                placeholder="State"
+                                value={state}
+                                options={states}
+                                onToggle={toggleDropdown}
+                                onSelect={handleStateSelect}
+                                onClear={handleClearState}
+                                disabled={!countryId}
+                                loading={loadingStates}
+                            />
 
-                        <Divider />
-                        <InlineDropdown
-                            id="city"
-                            activeId={activeDropdown}
-                            placeholder="City"
-                            value={city}
-                            options={cities}
-                            onToggle={toggleDropdown}
-                            onSelect={handleCitySelect}
-                            onClear={handleClearCity}
-                            disabled={!stateId}
-                            loading={loadingCities}
-                        />
-                    </div>
+                            <Divider />
+                            <InlineDropdown
+                                id="city"
+                                activeId={activeDropdown}
+                                placeholder="City"
+                                value={city}
+                                options={cities}
+                                onToggle={toggleDropdown}
+                                onSelect={handleCitySelect}
+                                onClear={handleClearCity}
+                                disabled={!stateId}
+                                loading={loadingCities}
+                            />
+                        </div>
+                    )}
                     <div className="pr-2 pl-2 flex-shrink-0">
                         <button
                             type="submit"

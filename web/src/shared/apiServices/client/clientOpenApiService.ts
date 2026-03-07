@@ -59,13 +59,14 @@ import {
   clientUpdateCompanyInfoMutation,
   getJobLogsOptions,
   clientExploreEngineersOptions,
+  clientExploreEngineersInfiniteOptions,
   clientGetPublicEngineerProfileOptions,
   submitReportMutation,
   getUserReportsOptions,
   clientGetJobsQueryKey,
 } from "@/api/@tanstack/react-query.gen";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
 
@@ -565,7 +566,7 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => {},
+    refetch: () => { },
   };
 }
 
@@ -661,6 +662,28 @@ export function useClientExploreEngineers(
     }),
     enabled: enabled,
     staleTime: 0,
+  });
+}
+
+export function useClientExploreEngineersInfinite(
+  query: ClientExploreEngineersData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useInfiniteQuery({
+    ...clientExploreEngineersInfiniteOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.data && lastPage.data.length > 0) {
+        // Assuming pagination uses 'page' parameter
+        const currentPage = query.page || 1;
+        return currentPage + 1;
+      }
+      return undefined;
+    },
   });
 }
 

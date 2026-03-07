@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { UserRole } from "@/shared/enums/users";
 import { JobSearchBar } from "./JobSearchBar/index";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
@@ -86,8 +87,8 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             <NavLink
               to={absoluteUrls.engineer.home.my_jobs}
               className={`${location.pathname.startsWith(absoluteUrls.engineer.home.my_jobs)
-                  ? "text-teal-800 font-semibold"
-                  : ""
+                ? "text-teal-800 font-semibold"
+                : ""
                 } hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer dark:text-gray-400`}
               aria-label="View your applied and active jobs"
             >
@@ -114,7 +115,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
       {/* Middle Section: Search Bar - Flexible but not greedy */}
       <div className="flex-1 mx-4 w-full">
         {/* <Link to={absoluteUrls.engineer.home.search_result}> */}
-        <JobSearchBar />
+        <JobSearchBar userType={UserRole.ENGINEER} />
         {/* </Link> */}
       </div>
 

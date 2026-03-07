@@ -432,7 +432,7 @@ const SearchResult = () => {
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
-          title="Search Result"
+          title="Search Resultss"
           isShowBreadcrumb={false}
           description={`${filteredJobs.length} jobs found`}
           isShowSort={false}
@@ -489,11 +489,19 @@ const SearchResult = () => {
                 navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
               />
             ))}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+            {currentJobs.length > 0 ? (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            ) : (
+              <div className="col-span-full flex justify-center items-center min-h-[15rem]">
+                <p className="text-gray-500 dark:text-gray-400 text-lg text-center">
+                  No jobs found. Try adjusting your filters.
+                </p>
+              </div>
+            )}
           </div>
           <div className="lg:col-span-1">
             <FilterPanel
