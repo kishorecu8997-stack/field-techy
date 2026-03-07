@@ -50,7 +50,6 @@ interface JobCardProps {
  */
 const JobCard: React.FC<JobCardProps> = (props) => {
   const {
-    // allocationType = "Automatic",
     id,
     jobTitle,
     status,
@@ -155,7 +154,6 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       <div className="mt-3">
         <JobStatusBadge status={status as any} />
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
-          {/* <span className="font-medium">Allocation:</span> {allocationType} */}
         </div>
       </div>
     </Link>
