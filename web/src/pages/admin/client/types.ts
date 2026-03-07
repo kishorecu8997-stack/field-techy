@@ -59,6 +59,10 @@ export interface ManageClientProps {
     name: string;
     state_id: number;
   };
+  state?: {
+    id: number;
+    name: string;
+  };
   country?: {
     id: number;
     name: string;
