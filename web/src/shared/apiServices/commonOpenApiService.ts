@@ -13,6 +13,8 @@ import {
   type CreateRateAndReviewAssignmentResponse,
   type AppCheckExistenceData,
   createRateAndReviewAssignment,
+  type AppSendLoginOtpResponse,
+  type AppVerifyLoginOtpResponse,
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -28,6 +30,8 @@ import {
   getUserRatingAndReviewsQueryKey,
   appCheckExistenceOptions,
   appResolveSignupRegionOptions,
+  appSendLoginOtpMutation,
+  appVerifyLoginOtpMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   appDownloadProfileFile as appDownloadProfileFileSdk,
@@ -83,6 +87,34 @@ export function useVerifyOtp(options?: {
 }) {
   return useMutation({
     ...appVerifyOtpMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useAppSendLoginOtp(options?: {
+  onSuccess?: (data: AppSendLoginOtpResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    ...appSendLoginOtpMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useAppVerifyLoginOtp(options?: {
+  onSuccess?: (data: AppVerifyLoginOtpResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    ...appVerifyLoginOtpMutation({
       client: apiClient,
       headers: { authorization: "" },
     }),
@@ -242,9 +274,9 @@ export function useGetUserRatingAndReviews(
     refetchOnMount: true,
     select: assignmentId
       ? (data) =>
-          Array.isArray(data)
-            ? data.filter((r) => r.jobAssignmentId === assignmentId)
-            : data
+        Array.isArray(data)
+          ? data.filter((r) => r.jobAssignmentId === assignmentId)
+          : data
       : undefined,
   });
 }

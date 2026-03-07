@@ -2,10 +2,14 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import EngineerListPage from "./components/EngineerListPage";
 import Filters from "@/shared/components/Filters";
 import { SORT_OPTIONS } from "@/pages/client/search_result/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export type FiltersType = {
+  q: string;
+  country: string;
+  state: string;
+  city: string;
   location: number | null;
   category: number | null;
   rating: number | null;
@@ -21,53 +25,72 @@ export type FiltersType = {
 const ExploreEngineer = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Get category from URL params and convert to number
-  const categoryFromUrl = searchParams.get("category");
-  const initialCategory = categoryFromUrl
-    ? parseInt(categoryFromUrl, 10)
-    : null;
-
-  // Filter state - initialize with category from URL
-  const [filters, setFilters] = useState<FiltersType>({
+  // Filter state - initialize from URL params
+  const [filters, setFilters] = useState<FiltersType>(() => ({
+    q: searchParams.get("q") || "",
+    country: searchParams.get("country") || "",
+    state: searchParams.get("state") || "",
+    city: searchParams.get("city") || "",
     location: null,
-    category: initialCategory,
+    category: searchParams.get("category") ? parseInt(searchParams.get("category")!, 10) : null,
     rating: null,
     experience: 0,
     skills: new Set(),
-  });
+  }));
 
   const [totalEngineerCount, setTotalEngineerCount] = useState<number>(0);
 
-  // Update URL when category filter changes
+  // Sync state with URL manually (for external changes like SearchBar)
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      q: searchParams.get("q") || "",
+      country: searchParams.get("country") || "",
+      state: searchParams.get("state") || "",
+      city: searchParams.get("city") || "",
+      category: searchParams.get("category") ? parseInt(searchParams.get("category")!, 10) : null,
+    }));
+  }, [searchParams]);
+
+  // Update URL when filters change
   const handleFilterChange = (newFilters: Partial<FiltersType>) => {
     setFilters((prev) => {
       const updatedFilters = { ...prev, ...newFilters };
+      const newParams = new URLSearchParams(searchParams);
 
-      // Update URL params when category changes
-      if (newFilters.category !== undefined) {
-        if (newFilters.category === null) {
-          searchParams.delete("category");
-        } else {
-          searchParams.set("category", String(newFilters.category));
-        }
-        setSearchParams(searchParams, { replace: true });
-      }
+      if (updatedFilters.q) newParams.set("q", updatedFilters.q);
+      else newParams.delete("q");
 
+      if (updatedFilters.country) newParams.set("country", updatedFilters.country);
+      else newParams.delete("country");
+
+      if (updatedFilters.state) newParams.set("state", updatedFilters.state);
+      else newParams.delete("state");
+
+      if (updatedFilters.city) newParams.set("city", updatedFilters.city);
+      else newParams.delete("city");
+
+      if (updatedFilters.category !== null) newParams.set("category", String(updatedFilters.category));
+      else newParams.delete("category");
+
+      setSearchParams(newParams, { replace: true });
       return updatedFilters;
     });
   };
 
   const handleClearAllFilters = () => {
     setFilters({
+      q: "",
+      country: "",
+      state: "",
+      city: "",
       location: null,
       category: null,
       rating: null,
       experience: 0,
       skills: new Set(),
     });
-    // Clear category from URL
-    searchParams.delete("category");
-    setSearchParams(searchParams, { replace: true });
+    setSearchParams({}, { replace: true });
   };
 
   return (

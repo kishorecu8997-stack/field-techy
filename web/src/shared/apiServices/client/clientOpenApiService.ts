@@ -65,6 +65,7 @@ import {
   getClientBalanceOptions,
   getClientBalanceQueryKey,
   getJobLogsOptions,
+  clientExploreEngineersInfiniteOptions,
   getUserReportsOptions,
   clientGetJobsQueryKey,
   markWorkLogFileUploadedMutation,
@@ -72,7 +73,7 @@ import {
 } from "@/api/@tanstack/react-query.gen";
 import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
@@ -755,6 +756,26 @@ export function useClientExploreEngineers(
     }),
     enabled: enabled,
     staleTime: 0,
+  });
+}
+
+export function useClientExploreEngineersInfinite(
+  query: ClientExploreEngineersData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useInfiniteQuery({
+    ...clientExploreEngineersInfiniteOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.data && lastPage.data.length > 0) {
+        return allPages.length + 1;
+      }
+      return undefined;
+    },
   });
 }
 

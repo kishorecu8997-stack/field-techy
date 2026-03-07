@@ -1,9 +1,10 @@
 import { absoluteUrls } from "@/config/urls";
 import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useCountries, useStates, useCities } from "@/shared/hooks/useLookup";
 import { mapApiJobToJobItem } from "./mappers";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import AdvancedSearchBar from "./components/AdvancedSearchBar";
 import FilterPanel from "./components/FilterPanel";
@@ -24,6 +25,12 @@ const parseFiltersFromUrl = (
   searchParams: URLSearchParams,
 ): Partial<Filters> => {
   const filters: Partial<Filters> = {};
+
+  // Parse new search fields
+  filters.q = searchParams.get("q") || "";
+  filters.country = searchParams.get("country") || "";
+  filters.state = searchParams.get("state") || "";
+  filters.city = searchParams.get("city") || "";
 
   // Parse array fields
   const locationType = searchParams.get("locationType");
@@ -67,6 +74,11 @@ const parseFiltersFromUrl = (
  */
 const filtersToSearchParams = (filters: Filters): URLSearchParams => {
   const params = new URLSearchParams();
+
+  if (filters.q) params.set("q", filters.q);
+  if (filters.country) params.set("country", filters.country);
+  if (filters.state) params.set("state", filters.state);
+  if (filters.city) params.set("city", filters.city);
 
   if (filters.locationType.length > 0) {
     params.set("locationType", filters.locationType.join(","));
@@ -112,10 +124,21 @@ const SearchResult = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  // Guard to prevent the filters→URL effect from firing when we are
+  // already updating filters FROM the URL (breaks the circular sync loop).
+  const isUpdatingFromUrl = useRef(false);
+
   // Initialize filters from URL or use defaults
   const [filters, setFilters] = useState<Filters>(() => {
     const urlFilters = parseFiltersFromUrl(searchParams);
     return {
+      q: urlFilters.q || "",
+      country: urlFilters.country || "",
+      state: urlFilters.state || "",
+      city: urlFilters.city || "",
+      countryId: null,
+      stateId: null,
+      cityId: null,
       location: [],
       category: urlFilters.category || [],
       rating: urlFilters.rating || [],
@@ -134,8 +157,40 @@ const SearchResult = () => {
     };
   });
 
-  // Sync filters to URL whenever they change
+  // When the URL changes externally (e.g. a new search submitted from the
+  // Navbar), re-parse the params and update the filters state so the page
+  // reflects the new search rather than keeping the stale previous filters.
   useEffect(() => {
+    isUpdatingFromUrl.current = true;
+    const urlFilters = parseFiltersFromUrl(searchParams);
+    setFilters(prev => ({
+      ...prev,
+      q: urlFilters.q ?? "",
+      country: urlFilters.country ?? "",
+      state: urlFilters.state ?? "",
+      city: urlFilters.city ?? "",
+      // Reset resolved IDs so the lookup effects re-resolve them
+      countryId: urlFilters.country !== prev.country ? null : prev.countryId,
+      stateId: urlFilters.state !== prev.state ? null : prev.stateId,
+      cityId: urlFilters.city !== prev.city ? null : prev.cityId,
+      category: urlFilters.category ?? [],
+      rating: urlFilters.rating ?? [],
+      experience: urlFilters.experience ?? 0,
+      budgetType: urlFilters.budgetType ?? null,
+      skills: urlFilters.skills ?? [],
+      locationType: urlFilters.locationType ?? [],
+      budgetRange: urlFilters.budgetRange ?? { min: 0, max: 10000 },
+    }));
+  }, [searchParams]);
+
+  // Sync filters to URL whenever they change (user interacts with FilterPanel
+  // or AdvancedSearchBar). Skip when the change itself came from the URL so
+  // we don't immediately overwrite the URL we just read.
+  useEffect(() => {
+    if (isUpdatingFromUrl.current) {
+      isUpdatingFromUrl.current = false;
+      return;
+    }
     const params = filtersToSearchParams(filters);
     setSearchParams(params, { replace: true });
   }, [filters, setSearchParams]);
@@ -144,6 +199,42 @@ const SearchResult = () => {
     SORT_OPTIONS.RELEVANCE,
   );
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
+  // ── Location ID Resolution ──────────────────────────────────────────────
+  const { data: countryData = [] } = useCountries();
+  const { data: stateData = [] } = useStates(filters.countryId, { enabled: !!filters.countryId });
+  const { data: cityData = [] } = useCities(filters.stateId, { enabled: !!filters.stateId });
+
+  // Resolve Country ID from name
+  useEffect(() => {
+    if (countryData.length > 0 && filters.country && !filters.countryId) {
+      const found = countryData.find(c => c.name === filters.country);
+      if (found) {
+        setFilters(prev => ({ ...prev, countryId: found.id }));
+      }
+    }
+  }, [countryData, filters.country]);
+
+  // Resolve State ID from name
+  useEffect(() => {
+    if (stateData.length > 0 && filters.state && !filters.stateId) {
+      const found = stateData.find(s => s.name === filters.state);
+      if (found) {
+        setFilters(prev => ({ ...prev, stateId: found.id }));
+      }
+    }
+  }, [stateData, filters.state]);
+
+  // Resolve City ID from name
+  useEffect(() => {
+    if (cityData.length > 0 && filters.city && !filters.cityId) {
+      const found = cityData.find(c => c.name === filters.city);
+      if (found) {
+        setFilters(prev => ({ ...prev, cityId: found.id }));
+      }
+    }
+  }, [cityData, filters.city]);
+  // ─────────────────────────────────────────────────────────────────────────
 
   // Map filters to API query parameters
   const apiQuery = useMemo(() => mapFiltersToApiQuery(filters), [filters]);
@@ -227,11 +318,11 @@ const SearchResult = () => {
     const saved = localStorage.getItem("searchHistory");
     return saved
       ? JSON.parse(saved).map(
-          (item: { id: string; filters: Filters; timestamp: string }) => ({
-            ...item,
-            timestamp: new Date(item.timestamp),
-          }),
-        )
+        (item: { id: string; filters: Filters; timestamp: string }) => ({
+          ...item,
+          timestamp: new Date(item.timestamp),
+        }),
+      )
       : [];
   });
 
@@ -256,6 +347,13 @@ const SearchResult = () => {
    */
   const handleClearAllFilters = () => {
     setFilters({
+      q: "",
+      country: "",
+      state: "",
+      city: "",
+      countryId: null,
+      stateId: null,
+      cityId: null,
       location: [],
       category: [],
       rating: [],
@@ -349,9 +447,8 @@ const SearchResult = () => {
           <Button
             leftIcon={
               <svg
-                className={`w-4 h-4 transition-transform ${
-                  showAdvancedSearch ? "rotate-180" : ""
-                }`}
+                className={`w-4 h-4 transition-transform ${showAdvancedSearch ? "rotate-180" : ""
+                  }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -392,11 +489,19 @@ const SearchResult = () => {
                 navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
               />
             ))}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+            {currentJobs.length > 0 ? (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            ) : (
+              <div className="col-span-full flex justify-center items-center min-h-[15rem]">
+                <p className="text-gray-500 dark:text-gray-400 text-lg text-center">
+                  No jobs found. Try adjusting your filters.
+                </p>
+              </div>
+            )}
           </div>
           <div className="lg:col-span-1">
             <FilterPanel
