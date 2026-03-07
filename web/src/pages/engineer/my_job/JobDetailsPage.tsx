@@ -120,13 +120,13 @@ const mapJobToJobOverview = (
 
   // Extract tools - convert IDs to labels using toolMap
   const tools = Array.isArray(job.tools)
-    ? job.tools.map((tool) => {
+    ? job.tools.map((tool, index) => {
         const toolId = String(tool);
         const toolLabel = toolMap.get(toolId);
         return {
           name: toolLabel || String(tool),
           price: "",
-          image: undefined,
+          image: job.toolAttachmentUrls?.[index],
         };
       })
     : [];

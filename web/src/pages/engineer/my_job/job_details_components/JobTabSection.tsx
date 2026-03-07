@@ -230,9 +230,6 @@ const JobTabSection = ({
     useState<ProposalFormData | null>(null);
   // Track if engineer has applied to show Proposal Info tab
   const [hasApplied, setHasApplied] = useState(false);
-  const [selectedTab, setSelectedTab] = useState<string>(
-    activeTab || JOB_TAB_LABELS.timeline,
-  );
 
   useEffect(() => {
     document.body.style.overflow =
@@ -241,13 +238,6 @@ const JobTabSection = ({
       document.body.style.overflow = "unset";
     };
   }, [showSuccess, showReview]);
-
-  // Sync local selectedTab to parent's activeTab
-  useEffect(() => {
-    if (selectedTab !== activeTab) {
-      setActiveTab?.(selectedTab);
-    }
-  }, [selectedTab, activeTab, setActiveTab]);
 
   // Determine if engineer has applied based on OfferJobStatus from API (persists after refresh)
   // This is the primary source of truth - local hasApplied state only works within session
@@ -261,6 +251,38 @@ const JobTabSection = ({
     OfferJobStatus === "submit_pending_approval" ||
     OfferJobStatus === "submitted" ||
     OfferJobStatus === "rejected";
+
+  const showTimelineTab =
+    hasAppliedFromApi || !!hasApplied || !!submittedProposal;
+  const defaultTabLabel = showTimelineTab
+    ? JOB_TAB_LABELS.timeline
+    : JOB_TAB_LABELS.jobOverview;
+  const initialTab =
+    activeTab &&
+    (showTimelineTab || activeTab !== JOB_TAB_LABELS.timeline)
+      ? activeTab
+      : defaultTabLabel;
+
+  const [selectedTab, setSelectedTab] = useState<string>(initialTab);
+
+  useEffect(() => {
+    // Keep selected tab valid when timeline is hidden before proposal.
+    if (!showTimelineTab && selectedTab === JOB_TAB_LABELS.timeline) {
+      setSelectedTab(JOB_TAB_LABELS.jobOverview);
+      return;
+    }
+
+    if (!activeTab && selectedTab !== defaultTabLabel) {
+      setSelectedTab(defaultTabLabel);
+    }
+  }, [showTimelineTab, selectedTab, activeTab, defaultTabLabel]);
+
+  // Sync local selectedTab to parent's activeTab
+  useEffect(() => {
+    if (selectedTab !== activeTab) {
+      setActiveTab?.(selectedTab);
+    }
+  }, [selectedTab, activeTab, setActiveTab]);
 
   // Show "Job Applied" status instead of "Send Proposal" after submission
   // Priority: API status (persists) > local state (session only)
@@ -382,18 +404,24 @@ const JobTabSection = ({
 
   // 3 tabs only: Timeline, Job Overview, Work Location
   const tabs = [
-    {
-      label: JOB_TAB_LABELS.timeline,
-      content: (
-        <TimelineSection
-          progressUpdates={progressUpdates}
-          onAddProgressUpdate={onAddProgressUpdate}
-          assignmentId={assignmentId}
-          jobId={jobId}
-          hasApplied={hasAppliedFromApi || !!hasApplied || !!submittedProposal}
-        />
-      ),
-    },
+    ...(showTimelineTab
+      ? [
+          {
+            label: JOB_TAB_LABELS.timeline,
+            content: (
+              <TimelineSection
+                progressUpdates={progressUpdates}
+                onAddProgressUpdate={onAddProgressUpdate}
+                assignmentId={assignmentId}
+                jobId={jobId}
+                hasApplied={
+                  hasAppliedFromApi || !!hasApplied || !!submittedProposal
+                }
+              />
+            ),
+          },
+        ]
+      : []),
     {
       label: JOB_TAB_LABELS.jobOverview,
       content: jobOverview ? (
@@ -446,7 +474,7 @@ const JobTabSection = ({
       {!isSendProposal ? (
         <TabComponent
           tabs={tabs}
-          defaultActiveTab={activeTab || JOB_TAB_LABELS.timeline}
+          defaultActiveTab={selectedTab}
           onTabChange={(tabLabel) => {
             setSelectedTab(tabLabel);
             setActiveTab?.(tabLabel);

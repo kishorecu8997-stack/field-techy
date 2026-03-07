@@ -106,14 +106,18 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                         className="w-8 h-8 object-contain"
                       />
                     )}
-                    <div className="h-7 w-px bg-gray-200 dark:bg-gray-600" />
+                    {tool.image && (
+                      <div className="h-7 w-px bg-gray-200 dark:bg-gray-600" />
+                    )}
                     <div className="space-y-0">
                       <p className="text-sm font-medium text-gray-900 dark:text-white leading-snug">
                         {tool.name}
                       </p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {tool.price}
-                      </p>
+                      {tool.price && (
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          {tool.price}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -233,7 +237,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
               {totalPayment && (
                 <div className="pt-4">
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    Total You'll Receive
+                    Total Amount
                   </p>
                   <p className="text-sm font-bold text-gray-900 dark:text-white">
                     {totalPayment}
