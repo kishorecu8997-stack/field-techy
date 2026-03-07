@@ -31,39 +31,39 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
         onMenuItemClick("changePassword");
       },
     },
-    {
-      label: "Manage Bank Accounts",
-      icon: icons.wallet,
-      id: "manageBankAccounts",
-      onClick: () => {
-        setNavigationSource("settings", "settings");
-        onMenuItemClick("manageBankAccounts");
-      },
-    },
+    // {
+    //   label: "Manage Bank Accounts",
+    //   icon: icons.wallet,
+    //   id: "manageBankAccounts",
+    //   onClick: () => {
+    //     setNavigationSource("settings", "settings");
+    //     onMenuItemClick("manageBankAccounts");
+    //   },
+    // },
     {
       id: "notifications",
       label: "Notifications",
       icon: icons.notifications,
       onClick: () => onMenuItemClick("NotificationPreferences"),
     },
-    {
-      id: "activeSessions",
-      label: "Active Sessions",
-      icon: icons.sessions,
-      onClick: () => onMenuItemClick("activeSessions"),
-    },
-    {
-      id: "security",
-      label: "Security",
-      icon: icons.security,
-      onClick: () => onMenuItemClick("security"),
-    },
-    {
-      id: "loginHistory",
-      label: "Login History",
-      icon: icons.history,
-      onClick: () => onMenuItemClick("loginHistory"),
-    },
+    // {
+    //   id: "activeSessions",
+    //   label: "Active Sessions",
+    //   icon: icons.sessions,
+    //   onClick: () => onMenuItemClick("activeSessions"),
+    // },
+    // {
+    //   id: "security",
+    //   label: "Security",
+    //   icon: icons.security,
+    //   onClick: () => onMenuItemClick("security"),
+    // },
+    // {
+    //   id: "loginHistory",
+    //   label: "Login History",
+    //   icon: icons.history,
+    //   onClick: () => onMenuItemClick("loginHistory"),
+    // },
     {
       label: "Contact Us",
       icon: icons.contactSupport,

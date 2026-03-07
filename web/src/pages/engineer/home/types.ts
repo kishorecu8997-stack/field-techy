@@ -44,7 +44,7 @@ export interface JobItem {
   toolImage?: string | null;
   toolAdditionalBudget?: string | null;
   postedTime: string;
-  jobDuration: string;
+  jobDuration?: string;
   rating?: number;
   slaLevel?: string;
   client: Client;

@@ -431,10 +431,14 @@ const JobDetailsPage = () => {
     showPopup({
       body: (
         <GiveFeedbackModal
-          targetName={job?.clientDetails?.companyName ?? "Test Client"}
-          targetRole={job?.clientDetails?.clientType ?? "client"}
+          targetName={
+            job?.clientDetails?.companyName ||
+            job?.clientDetails?.personName ||
+            "Test Client"
+          }
+          targetRole={job?.clientDetails?.clientType || "client"}
           placeholder="Share your feedback about your experience with the client..."
-          assignmentId={job?.assignmentId ?? undefined}
+          assignmentId={job?.assignmentId || undefined}
         />
       ),
     });
@@ -446,9 +450,9 @@ const JobDetailsPage = () => {
         <ViewClientFeedbackModal
           onClose={closePopup}
           clientName={reviewsData?.[0]?.reviewerName || clientName || "Client"}
-          clientImage={reviewsData?.[0]?.reviewerProfilePictureUrl ?? undefined}
-          rating={reviewsData?.[0]?.rating ?? undefined}
-          review={reviewsData?.[0]?.review ?? undefined}
+          clientImage={reviewsData?.[0]?.reviewerProfilePictureUrl || undefined}
+          rating={reviewsData?.[0]?.rating || undefined}
+          review={reviewsData?.[0]?.review || undefined}
         />
       ),
     });
