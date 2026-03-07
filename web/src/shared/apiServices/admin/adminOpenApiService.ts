@@ -88,6 +88,9 @@ import {
   type AdminGetWalletOverviewData,
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
+  type AdminGetPendingPaymentsData,
+  type AdminGetPendingPaymentsResponse,
+  type AdminApprovePaymentResponses,
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
@@ -142,7 +145,12 @@ import {
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
   adminUpdateTransactionRequestStatusMutation,
+  adminGetPendingPaymentsOptions,
+  adminGetPendingPaymentsQueryKey,
+  adminApprovePaymentMutation,
 } from "@/api/@tanstack/react-query.gen";
+
+export { adminGetPendingPaymentsQueryKey };
 import {
   useMutation,
   useQuery,
@@ -673,17 +681,17 @@ export function useGetCmsContent(
       const response = await getCmsContent({
         client: apiClient,
         query: { key },
+        throwOnError: true,
       });
-      return response.data;
+      return response.data ?? null;
     },
 
     enabled: options?.enabled ?? true,
 
-    staleTime: 0,
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
     refetchIntervalInBackground: false,
-
-
+    refetchInterval: false,
   });
 }
 export function useCreateFaq(options?: {
@@ -1527,6 +1535,73 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
       options?.onSuccess?.(data);
     },
 
+    onError: options?.onError,
+  });
+}
+
+export function useAdminGetPendingPayments(
+  query?: AdminGetPendingPaymentsData["query"] & { regionId?: number },
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetPendingPaymentsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    // @ts-ignore - regionId may not be in types yet
+    ...adminGetPendingPaymentsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+export function useAdminApprovePayment(options?: {
+  onSuccess?: (data: AdminApprovePaymentResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminApprovePaymentMutation({ client: apiClient }),
+    mutationFn: (variables, context) => {
+      return adminApprovePaymentMutation({ client: apiClient }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+          } as any,
+        },
+        context,
+      );
+    },
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) => {
+          const firstKeyItem = query.queryKey?.[0];
+          if (!firstKeyItem || typeof firstKeyItem !== "object") {
+            return false;
+          }
+          return (
+            (firstKeyItem as { _id?: string })._id === "adminGetPendingPayments"
+          );
+        },
+        type: "all",
+      });
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 }

@@ -16,6 +16,14 @@ export interface InlineDropdownProps {
     loading?: boolean;
 }
 
+/**
+ * A dropdown component used within the `JobSearchBar`.
+ * It displays a list of options and allows the user to select one.
+ * It also supports clearing the selected value.
+ * 
+ * @param {InlineDropdownProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered dropdown component.
+ */
 export const InlineDropdown = ({
     id,
     activeId,

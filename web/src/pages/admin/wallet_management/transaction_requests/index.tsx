@@ -4,6 +4,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import ApprovedTable from "./ApprovedTable";
 import PendingTable from "./PendingTable";
 import RejectedTable from "./RejectedTable";
+import { useSearchParams } from "react-router-dom";
 
 /**
  * WalletTransactionRequests Component
@@ -13,6 +14,19 @@ import RejectedTable from "./RejectedTable";
  */
 export default function WalletTransactionRequests() {
   const [activeTab, setActiveTab] = useState("Pending");
+  const [, setSearchParams] = useSearchParams();
+
+  const handleTabChange = (newTab: string) => {
+    setActiveTab(newTab);
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("page", "1");
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
   const tabs = [
     {
@@ -44,7 +58,7 @@ export default function WalletTransactionRequests() {
           <AdminTabComponent
             tabs={tabs}
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={handleTabChange}
           />
         </div>
       </div>

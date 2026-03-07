@@ -76,7 +76,7 @@ const Home = () => {
         toolImage: null,
         toolAdditionalBudget: null,
         postedTime: job.createdAt || new Date().toISOString(),
-        jobDuration: "10 Days",
+        // jobDuration: "",
         budgetType: null,
         isSaved: job.isSaved,
         client: {
