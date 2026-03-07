@@ -142,7 +142,13 @@ const Dashboard: React.FC = () => {
       if (jobId && data) {
         const assignments = data;
         const validAssignments = assignments.filter(
-          (a) => a.engineer && a.assignmentStatus !== "rejected",
+          (a) =>
+            a.engineer &&
+            (a.assignmentStatus === "assigned" ||
+              a.assignmentStatus === "start_pending_approval" ||
+              a.assignmentStatus === "started" ||
+              a.assignmentStatus === "submitted" ||
+              a.assignmentStatus === "submit_pending_approval"),
         );
         const avatars = validAssignments
           .map((a) => a.engineer?.profilePictureUrl)
