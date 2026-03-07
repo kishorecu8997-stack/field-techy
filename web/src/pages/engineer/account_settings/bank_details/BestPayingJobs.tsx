@@ -67,9 +67,8 @@ const BestPayingJobs: React.FC = () => {
         </div>
 
         <div
-          className={`transition-transform duration-300 ${
-            isExpanded ? "rotate-180" : ""
-          }`}
+          className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""
+            }`}
         >
           {isExpanded ? (
             <BiChevronUp className="w-6 h-6 text-gray-500" />
@@ -81,9 +80,8 @@ const BestPayingJobs: React.FC = () => {
 
       {/* Expandable Full List */}
       <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${
-          isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
       >
         <div className="px-6 pb-6 pt-2">
           {isLoading ? (
@@ -111,15 +109,14 @@ const BestPayingJobs: React.FC = () => {
                   <div className="flex items-center gap-4 flex-1 min-w-0">
                     {/* Rank Badge */}
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-base flex-shrink-0 shadow-md ${
-                        index === 0
-                          ? "bg-gradient-to-br from-yellow-400 to-amber-500 text-white"
-                          : index === 1
-                            ? "bg-gradient-to-br from-gray-300 to-gray-500 text-white"
-                            : index === 2
-                              ? "bg-gradient-to-br from-orange-400 to-red-500 text-white"
-                              : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                      }`}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-base flex-shrink-0 shadow-md ${index === 0
+                        ? "bg-gradient-to-br from-yellow-400 to-amber-500 text-white"
+                        : index === 1
+                          ? "bg-gradient-to-br from-gray-300 to-gray-500 text-white"
+                          : index === 2
+                            ? "bg-gradient-to-br from-orange-400 to-red-500 text-white"
+                            : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                        }`}
                     >
                       {job.rank}
                     </div>

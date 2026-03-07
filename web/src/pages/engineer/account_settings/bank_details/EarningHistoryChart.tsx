@@ -1,17 +1,17 @@
+import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
+import { useEngineerEarnings, useEngineerGetPersonalInfo } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { formatAmount } from "@/utils/currency";
 import React, { useMemo, useState } from "react";
+import { BiChevronDown, BiChevronUp, BiLineChart } from "react-icons/bi";
 import {
-  LineChart,
+  CartesianGrid,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from "recharts";
-import { BiLineChart, BiChevronDown, BiChevronUp } from "react-icons/bi";
-import { formatCurrency } from "@/shared/libs/utils";
-import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
-import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenApiService";
 interface ChartData {
   month: string;
   earnings: number;
@@ -77,16 +77,15 @@ const EarningHistoryChart: React.FC = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Latest:{" "}
               <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(latest.earnings, currencyCode ?? "USD")}
+                {formatAmount(latest.earnings, data?.currencySymbol ?? "")}
               </span>{" "}
               in {latest.month}
             </p>
           </div>
         </div>
         <div
-          className={`transition-transform duration-300 ${
-            isExpanded ? "rotate-180" : ""
-          }`}
+          className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""
+            }`}
         >
           {isExpanded ? (
             <BiChevronUp className="w-6 h-6 text-gray-500" />
@@ -98,9 +97,8 @@ const EarningHistoryChart: React.FC = () => {
 
       {/* Chart Body */}
       <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${
-          isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
       >
         <div className="px-6 pb-6">
           {isLoading ? (
