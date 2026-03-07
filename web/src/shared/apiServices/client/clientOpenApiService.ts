@@ -85,7 +85,9 @@ export * from "../commonOpenApiService";
  * Inconsistent updates can occur if the backend database is still processing.
  * This helper performs one immediate invalidation and two delayed ones to catch up.
  */
-export const syncClientBalance = (queryClient: ReturnType<typeof useQueryClient>) => {
+export const syncClientBalance = (
+  queryClient: ReturnType<typeof useQueryClient>,
+) => {
   const performSync = () => {
     void queryClient.invalidateQueries({
       queryKey: getClientBalanceQueryKey({ client: apiClient }),
@@ -673,7 +675,7 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => { },
+    refetch: () => {},
   };
 }
 
