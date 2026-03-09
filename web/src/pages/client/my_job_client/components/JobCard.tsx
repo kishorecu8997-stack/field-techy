@@ -15,7 +15,7 @@ import {
   WORKING_TYPES_PROPERTY,
   type Job,
 } from "../../search_result/types";
-import LocationDisplay from "./LocationDisplay";
+import LocationDisplay from "@/shared/components/commonUI/LocationDisplay";
 
 interface JobCardProps {
   job: Job;
@@ -95,12 +95,12 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
       to={`${absoluteUrls.client.home.my_jobs}/${id}`}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
-      <div className="flex justify-between items-start mb-3">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+      <div className="flex justify-between items-start mb-3 min-w-0">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate mr-2">
           {title}
         </h3>
         <span
-          className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor()}`}
+          className={`px-3 py-1 rounded-md text-xs font-medium flex-shrink-0 ${getWorkModeColor()}`}
         >
           {isOnsite
             ? WORKING_TYPES_PROPERTY.onsite
@@ -110,26 +110,28 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
-          <div className="flex items-center">
+          <div className="flex items-center min-w-0">
             <IoMdTime className="w-4 h-4 mr-2 flex-shrink-0" />
-            {startDate}
+            <span className="truncate">{startDate}</span>
           </div>
-          <span className={`text-xs font-medium ${getStatusColor(status)}`}>
+          <span className={`text-xs font-medium flex-shrink-0 ${getStatusColor(status)}`}>
             {status.toLowerCase() === "inprogress"
               ? "In-Progress"
               : status.charAt(0).toUpperCase() + status.slice(1)}
           </span>
         </div>
 
-        <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-          <IoLocationOutline className="w-4 h-4 mr-2 flex-shrink-0" />
-          <LocationDisplay
-            countryId={job.countryId}
-            stateId={job.stateId}
-            cityId={job.cityId}
-            workLocationName={job.workLocationName}
-            fallback={location}
-          />
+        <div className="flex items-start text-sm text-gray-600 dark:text-gray-300 min-w-0">
+          <IoLocationOutline className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
+          <div className="break-words">
+            <LocationDisplay
+              countryId={job.countryId}
+              stateId={job.stateId}
+              cityId={job.cityId}
+              workLocationName={job.workLocationName}
+              fallback={location}
+            />
+          </div>
         </div>
 
         {!isDummyNetworkEngineer && (

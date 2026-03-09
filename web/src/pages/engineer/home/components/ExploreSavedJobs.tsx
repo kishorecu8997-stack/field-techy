@@ -26,6 +26,13 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 const ExploreSavedJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<Filters>({
+    q: "",
+    country: "",
+    state: "",
+    city: "",
+    countryId: null,
+    stateId: null,
+    cityId: null,
     location: [],
     category: [],
     rating: [],
@@ -155,6 +162,13 @@ const ExploreSavedJobs = () => {
 
   const handleClearAllFilters = () => {
     setFilters({
+      q: "",
+      country: "",
+      state: "",
+      city: "",
+      countryId: null,
+      stateId: null,
+      cityId: null,
       location: [],
       category: [],
       rating: [],
@@ -183,9 +197,8 @@ const ExploreSavedJobs = () => {
           currentSort={SORT_OPTIONS.NEWEST}
           isShowSort={false}
           isShowBreadcrumb={false}
-          description={`${data?.summary?.savedJobsCount} saved job${
-            data?.summary?.savedJobsCount !== 1 ? "s" : ""
-          }`}
+          description={`${data?.summary?.savedJobsCount} saved job${data?.summary?.savedJobsCount !== 1 ? "s" : ""
+            }`}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">

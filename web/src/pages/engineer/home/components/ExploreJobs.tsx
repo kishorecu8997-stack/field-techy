@@ -25,6 +25,13 @@ const ExploreJobs: React.FC = () => {
   const profile = useEngineerProfile();
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<Filters>({
+    q: "",
+    country: "",
+    state: "",
+    city: "",
+    countryId: null,
+    stateId: null,
+    cityId: null,
     location: [],
     category: [],
     rating: [],
@@ -40,6 +47,7 @@ const ExploreJobs: React.FC = () => {
     locationRadius: 0,
     primaryLanguage: "",
     slaLevel: "",
+    jobTypeEnum: "",
   });
   const {
     data: apiJobsResponse,
@@ -76,6 +84,13 @@ const ExploreJobs: React.FC = () => {
   };
   const handleClearAllFilters = () => {
     setFilters({
+      q: "",
+      country: "",
+      state: "",
+      city: "",
+      countryId: null,
+      stateId: null,
+      cityId: null,
       location: [],
       category: [],
       rating: [],
@@ -91,6 +106,7 @@ const ExploreJobs: React.FC = () => {
       locationRadius: 0,
       primaryLanguage: "",
       slaLevel: "",
+      jobTypeEnum: "",
     });
     setCurrentPage(1);
   };
@@ -105,9 +121,8 @@ const ExploreJobs: React.FC = () => {
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">
         <MyJobsHeader
           title="Explore Jobs"
-          description={`${apiJobs.length} job${
-            apiJobs.length !== 1 ? "s" : ""
-          } found`}
+          description={`${apiJobs.length} job${apiJobs.length !== 1 ? "s" : ""
+            } found`}
           isShowBreadcrumb={false}
           isShowSort={false}
           currentSort={sortBy}

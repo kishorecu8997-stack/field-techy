@@ -7,7 +7,11 @@ import BasicInformation from "./BasicInformation";
 import WalletTab from "./WalletTab";
 import DocumentView from "./DocumentView";
 import JobHistory from "./job_history/JobHistory";
-import { useAdminGetClientByUserId, LookupTable, useAppGetLookupData } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminGetClientByUserId,
+  LookupTable,
+  useAppGetLookupData,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import { useForm } from "react-hook-form";
 import BlockClient from "../BlockClient";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -35,14 +39,26 @@ const ClientViewForm: React.FC = () => {
       refetchOnMount: "always",
     },
   );
-  
+
   const parsedUserId = Number(userId);
   const isValidUserId = !!userId && !isNaN(parsedUserId) && parsedUserId > 0;
 
   // Lookup APIs for labels
-  const { data: countries } = useAppGetLookupData(LookupTable.Countries, undefined, { enabled: isValidUserId });
-  const { data: industries } = useAppGetLookupData(LookupTable.Industries, undefined, { enabled: isValidUserId });
-  const { data: businessTypes } = useAppGetLookupData(LookupTable.BusinessTypes, undefined, { enabled: isValidUserId });
+  const { data: countries } = useAppGetLookupData(
+    LookupTable.Countries,
+    undefined,
+    { enabled: isValidUserId },
+  );
+  const { data: industries } = useAppGetLookupData(
+    LookupTable.Industries,
+    undefined,
+    { enabled: isValidUserId },
+  );
+  const { data: businessTypes } = useAppGetLookupData(
+    LookupTable.BusinessTypes,
+    undefined,
+    { enabled: isValidUserId },
+  );
 
   const { data: states } = useAppGetLookupData(
     LookupTable.States,
@@ -88,8 +104,7 @@ const ClientViewForm: React.FC = () => {
     companyName: clientData?.companyName || clientData?.name || "N/A",
     businessType:
       clientData?.businessTypeName ||
-      businessTypes?.find((b) => b.id === clientData?.businessTypeId)
-        ?.name ||
+      businessTypes?.find((b) => b.id === clientData?.businessTypeId)?.name ||
       "N/A",
     country:
       countries?.find((c) => c.id === clientData?.countryId)?.name ||
@@ -106,8 +121,7 @@ const ClientViewForm: React.FC = () => {
       clientData?.state?.name ||
       "N/A",
     taxDocument:
-      taxDocuments.find((t) => t.value === clientData?.documentType)
-        ?.label ||
+      taxDocuments.find((t) => t.value === clientData?.documentType)?.label ||
       clientData?.documentType ||
       "N/A",
     phoneNumber: clientData?.phoneNumber || "N/A",

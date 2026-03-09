@@ -199,7 +199,7 @@ const BasicDetailsFields = () => {
         name="amount"
         label="Hourly Rate / Budget"
         type="text"
-        placeholder="$50/hr"
+        placeholder="50/hr"
         required
         leftIcon={<IoWalletOutline className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateAmount(v) }}

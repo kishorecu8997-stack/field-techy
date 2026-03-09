@@ -65,6 +65,7 @@ import {
   getClientBalanceOptions,
   getClientBalanceQueryKey,
   getJobLogsOptions,
+  clientExploreEngineersInfiniteOptions,
   getUserReportsOptions,
   clientGetJobsQueryKey,
   markWorkLogFileUploadedMutation,
@@ -72,7 +73,7 @@ import {
 } from "@/api/@tanstack/react-query.gen";
 import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
@@ -85,7 +86,9 @@ export * from "../commonOpenApiService";
  * Inconsistent updates can occur if the backend database is still processing.
  * This helper performs one immediate invalidation and two delayed ones to catch up.
  */
-export const syncClientBalance = (queryClient: ReturnType<typeof useQueryClient>) => {
+export const syncClientBalance = (
+  queryClient: ReturnType<typeof useQueryClient>,
+) => {
   const performSync = () => {
     void queryClient.invalidateQueries({
       queryKey: getClientBalanceQueryKey({ client: apiClient }),
@@ -673,7 +676,7 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => { },
+    refetch: () => {},
   };
 }
 
@@ -753,6 +756,26 @@ export function useClientExploreEngineers(
     }),
     enabled: enabled,
     staleTime: 0,
+  });
+}
+
+export function useClientExploreEngineersInfinite(
+  query: ClientExploreEngineersData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useInfiniteQuery({
+    ...clientExploreEngineersInfiniteOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.data && lastPage.data.length > 0) {
+        return allPages.length + 1;
+      }
+      return undefined;
+    },
   });
 }
 

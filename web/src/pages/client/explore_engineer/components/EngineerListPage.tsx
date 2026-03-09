@@ -29,6 +29,10 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
   useEffect(() => {
     setCurrentPage(1);
   }, [
+    filters.q,
+    filters.country,
+    filters.state,
+    filters.city,
     filters.location,
     filters.category,
     filters.rating,
@@ -40,6 +44,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
     {
       page: currentPage,
       limit: itemsPerPage,
+      search: filters.q || undefined,
       jobType:
         filters.location === 1
           ? "On site"
@@ -107,11 +112,13 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
         </div>
 
         {/* Pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
+        {mappedEngineers.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

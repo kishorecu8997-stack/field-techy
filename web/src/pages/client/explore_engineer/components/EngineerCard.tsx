@@ -27,20 +27,20 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
         alt={engineer.name}
         className="w-25 h-full rounded-full object-cover"
       />
-      <div className="flex-1">
-        <h3 className="font-bold text-lg">{engineer.name}</h3>
+      <div className="flex-1 min-w-0">
+        <h3 className="font-bold text-lg truncate">{engineer.name}</h3>
         <div className="flex items-center gap-1 text-sm mb-1">
           <span className="text-yellow-500">★</span>
-          <span>
+          <span className="truncate">
             {engineer.rating} ({engineer.reviewCount} reviews)
           </span>
         </div>
-        <p className="text-sm font-medium">{engineer.title}</p>
-        <p className="text-sm font-medium">
+        <p className="text-sm font-medium truncate">{engineer.title}</p>
+        <p className="text-sm font-medium truncate">
           <span className="text-gray-500 dark:text-white">Pay Type:</span>{" "}
           {engineer.pay_type}
         </p>
-        <p className="text-sm font-medium">
+        <p className="text-sm font-medium truncate">
           <span className="text-gray-500 dark:text-white">Availability:</span>{" "}
           {engineer.availability}
         </p>
