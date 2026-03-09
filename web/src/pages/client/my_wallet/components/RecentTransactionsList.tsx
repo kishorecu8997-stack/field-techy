@@ -13,7 +13,7 @@ import Pagination from "../../search_result/components/Pagination";
 
 const RecentTransactionsList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const transactionsPerPage = 5;
+  const transactionsPerPage = 10;
   const today = new Date();
   const startDate = new Date(today);
   startDate.setMonth(today.getMonth() - 3);
@@ -25,6 +25,7 @@ const RecentTransactionsList: React.FC = () => {
   const { data: balanceArr } = useClientBalance();
   const balance = balanceArr?.[0];
   const currencyCode = balance?.currencyCode;
+  const offset = (currentPage - 1) * transactionsPerPage;
   const {
     data: transactionsRaw,
     isLoading,
@@ -34,6 +35,8 @@ const RecentTransactionsList: React.FC = () => {
       sortOrder: "desc",
       startDate: startDateStr,
       endDate: endDateStr,
+      limit: transactionsPerPage,
+      offset: offset,
     },
     true,
   );
@@ -57,13 +60,7 @@ const RecentTransactionsList: React.FC = () => {
     },
   );
 
-  // Pagination: slice transactions
-  const indexOfLastTransaction = currentPage * transactionsPerPage;
-  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
-  const paginatedTransactions = transactions.slice(
-    indexOfFirstTransaction,
-    indexOfLastTransaction,
-  );
+  const paginatedTransactions = transactions;
 
   // Group transactions by date (Today/Yesterday/Other)
   const groupTransactionsByDate = (txs: Transaction[]) => {
@@ -125,6 +122,7 @@ const RecentTransactionsList: React.FC = () => {
       ? "text-emerald-600 dark:text-emerald-400"
       : "text-red-600 dark:text-red-400";
   };
+  const totalPages = Math.ceil(123 / transactionsPerPage);
 
   return (
     <div className="max-w-md mx-auto p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm">
@@ -169,7 +167,7 @@ const RecentTransactionsList: React.FC = () => {
       })}
       <Pagination
         currentPage={currentPage}
-        totalPages={Math.ceil(transactions.length / transactionsPerPage)}
+        totalPages={totalPages}
         onPageChange={(page) => setCurrentPage(page)}
       />
     </div>
