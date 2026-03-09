@@ -17,6 +17,9 @@ import {
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { toast } from "react-toastify";
 import { useCallback, useState } from "react";
+import Popup from "@/shared/components/Popup";
+import ClientWithdraw from "./ClientWithdraw";
+
 /**
  * Displays the user's current balance with quick actions (Bank Details, Withdraw) and a transaction history dashboard.
  * Uses dummy transaction data and integrates with the drawer store for navigation.
@@ -24,6 +27,7 @@ import { useCallback, useState } from "react";
 const MyEarning = () => {
   const { setActiveKey } = useDrawerStore();
   const [showBalance, setShowBalance] = useState<boolean>(false);
+  const [showWithdrawPopup, setShowWithdrawPopup] = useState<boolean>(false);
   const { data: balanceArr } = useEngineerBalance();
   const { data: personalInfo } = useEngineerGetPersonalInfo();
   const balance = balanceArr?.[0];
@@ -35,10 +39,10 @@ const MyEarning = () => {
 
   const formattedBalance = showBalance
     ? (() => {
-      const amount = Number(balance?.balance);
-      const currency = balance?.currencyCode ?? "USD";
-      return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
-    })()
+        const amount = Number(balance?.balance);
+        const currency = balance?.currencyCode ?? "USD";
+        return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+      })()
     : "******";
 
   const [hasError, setHasError] = useState(false);
@@ -121,6 +125,10 @@ const MyEarning = () => {
     }
   }, [connectStripeAccountAsync, getOnboardingLinkAsync, setActiveKey]);
 
+  const Withdraw = () => {
+    setShowWithdrawPopup(true);
+  };
+
   const BankSection = () => {
     return (
       <div>
@@ -168,6 +176,17 @@ const MyEarning = () => {
             </p>
           )}
           <div className="flex gap-3 justify-end">
+            {/* Withdraw Button */}
+            {balance && balance.balance > 0 && (
+              <Button
+                onClick={() => Withdraw()}
+                className="px-6 py-3 bg-teal-700 text-white rounded-full font-medium hover:bg-teal-800 transition dark:bg-teal-700 dark:text-white"
+              >
+                Withdraw
+              </Button>
+            )}
+
+            {/* Add/Edit Bank Details Button */}
             {hasError ? (
               <Button
                 onClick={() => void startStripeOnboarding()}
@@ -216,8 +235,21 @@ const MyEarning = () => {
           <MonthlyComparison />
         </div>
       </div>
+
+      // Withdraw Popup
+      
+      {showWithdrawPopup && balance && (
+        <Popup open={showWithdrawPopup} onClose={() => setShowWithdrawPopup(false)}>
+          <ClientWithdraw
+            balance={balance.balance}
+            currencyCode={balance.currencyCode}
+            onClose={() => setShowWithdrawPopup(false)}
+          />
+        </Popup>
+      )}
     </div>
   );
 };
 
 export default MyEarning;
+
