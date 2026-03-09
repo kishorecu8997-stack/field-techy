@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { JOB_STATUSES, type JobStatus } from "@/constants/jobStatus";
 import { useAdminGetJobDetails } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * JobDetails Component
@@ -28,32 +29,82 @@ const JobDetails = () => {
     { enabled: shouldFetch },
   );
 
-  const mapJobStatus = (status?: string): JobStatus => {
-    if (!status) return JOB_STATUSES.PENDING;
-    const normalized = status.toLowerCase();
-    if (normalized === "posted") return JOB_STATUSES.PENDING;
-    if (normalized === "in progress" || normalized === "in-progress") {
+  const { showPopup } = usePopupStore();
+
+const mapJobStatus = (status?: string): JobStatus => {
+  switch (status) {
+    case "Posted":
+      return JOB_STATUSES.PENDING;
+    case "In Progress":
       return JOB_STATUSES.IN_PROGRESS;
-    }
-    if (normalized === "completed") return JOB_STATUSES.COMPLETED;
-    if (normalized === "closed") return JOB_STATUSES.CLOSED;
-    if (normalized === "hold") return JOB_STATUSES.HOLD;
-    if (normalized === "cancelled" || normalized === "canceled") {
+    case "Cancelled":
       return JOB_STATUSES.CANCELED;
-    }
-    return status as JobStatus;
-  };
+    case "Closed":
+      return JOB_STATUSES.CLOSED;
+    case "Hold":
+      return JOB_STATUSES.HOLD;
+    case "Flagged":
+      return JOB_STATUSES.FLAGGED;
+    default:
+      return JOB_STATUSES.PENDING;
+  }
+};
 
   const job = data?.job;
   const client = data?.client;
   const engineers = (data?.engineers ?? []).filter(
-    (engineer) => engineer.assignmentStatus === "started",
+    (engineer) => engineer.assignmentStatus === "started" || 
+    engineer.assignmentStatus === "assigned" ||
+    engineer.assignmentStatus === "paid",
+
+
   );
+
+    const showJobDescriptionModal = (description?: string) => {
+      if (!description) return;
+      showPopup({
+        title: "Job Description",
+        body: (
+          <div
+            className="max-h-[70vh] w-full overflow-y-auto p-4 whitespace-pre-wrap break-words"
+            style={{ wordBreak: "break-word" }}
+          >
+            {" "}
+            {description}
+          </div>
+        ),
+        actionButtons: [
+          {
+            label: "Close",
+            value: "close",
+            variant: "primary",
+            action: (close: (result: unknown) => void) => close(null),
+          },
+        ],
+      });
+    };
 
   const infoData = [
     { label: "Job Title", value: job?.jobTitle ?? "-" },
-    { label: "Job Description", value: job?.jobDescription ?? "-" },
-    { label: "Job Type", value: job?.jobType ?? "-" },
+{
+      label: "Job Description",
+      value: (
+        <div className="flex items-center gap-2">
+          <span className="truncate max-w-[200px]" title={job?.jobDescription ?? ""}>
+            {job?.jobDescription ?? "-"}
+          </span>
+          {job?.jobDescription && (
+            <button
+              type="button"
+              className="text-blue-600 underline text-sm cursor-pointer hover:underline"
+              onClick={() => showJobDescriptionModal(job.jobDescription || undefined)}
+            >
+              See More
+            </button>
+          )}
+        </div>
+      ),
+    },    { label: "Job Type", value: job?.jobType ?? "-" },
     { label: "Service Category", value: job?.categoryName ?? "-" },
     {
       label: "Job Price",
@@ -65,8 +116,7 @@ const JobDetails = () => {
     { label: "Country", value: job?.countryName ?? "-" },
     { label: "State", value: job?.stateName ?? "-" },
     { label: "City", value: job?.cityName ?? "-" },
-    { label: "No of Engineers", value: engineers.length || "-" },
-  ];
+    { label: "No of Engineers", value: (job as { vacancies?: number })?.vacancies ?? "-" },  ];
 
   if (!shouldFetch) {
     return (

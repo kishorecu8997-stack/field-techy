@@ -15,7 +15,7 @@ import InprogressJob from "./InprogressJob";
  * - Inprogress Jobs
  * - Invited Jobs
  * - Completed Jobs
- * - Declined Jobs
+ * - Cancelled Jobs
  * - Hold Jobs
  *
  * Responsibilities:
@@ -53,7 +53,7 @@ export default function EngineerJobCategory() {
       hide: false,
     },
     {
-      label: "Declined Jobs",
+      label: "Cancelled Jobs",
       content: <DeclinedJob />,
       hide: false,
     },
