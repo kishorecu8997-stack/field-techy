@@ -25,6 +25,17 @@ import {
 import type { JobByCategoryProps, JobItem } from "./types";
 import { toast } from "react-toastify";
 
+/**
+ * Renders the "All Jobs" tab content within the manage jobs page.
+ * This component displays a customizable table of all jobs, using dummy data.
+ * It includes functionality for searching and filtering jobs by various criteria
+ * such as category, region, budget, and job type. It also allows for inline
+ * status changes (Approve/Reject) for each job and provides action buttons
+ * for viewing details and deleting a job.
+ *
+ * @returns {JSX.Element} The rendered "All Jobs" view with filters and a data table.
+ */
+
 type StatusKind = "Hold" | "Flagged" | "Cancelled" | "Unknown";
 const getCurrentStatusKind = (status: string | null | undefined): StatusKind => {
   const s = (status ?? "").trim().toLowerCase();
@@ -372,7 +383,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
           </Button>
         )}
       </div>
-      
+
       <div className="h-full flex-1 overflow-y-auto my-4">
         <CustomTable<JobItem>
           columns={columns}
