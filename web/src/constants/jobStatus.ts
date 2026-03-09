@@ -4,7 +4,7 @@ export const JOB_STATUSES = {
   IN_PROGRESS: "in-progress", 
   NOTIFIED: "Notified",
   ASSIGNED: "Assigned",
-  HOLD: "Test",
+  HOLD: "Hold",
   DRAFT: "Draft",
   CANCELED: "Canceled",
   ESCALATION_IN_PROGRESS: "Escalation In Progress",
