@@ -88,6 +88,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     return "bg-indigo-600 text-white"; // both use same style per your code
   };
   const isOnsite = type === WORKING_TYPES.onsite;
+  const isHybrid = type === WORKING_TYPES.hybrid;
   const isDummyNetworkEngineer = isDummyNetworkEngineerJob(id);
 
   return (
@@ -104,7 +105,9 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
         >
           {isOnsite
             ? WORKING_TYPES_PROPERTY.onsite
-            : WORKING_TYPES_PROPERTY.remote}
+            : isHybrid
+              ? WORKING_TYPES_PROPERTY.hybrid
+              : WORKING_TYPES_PROPERTY.remote}
         </span>
       </div>
 

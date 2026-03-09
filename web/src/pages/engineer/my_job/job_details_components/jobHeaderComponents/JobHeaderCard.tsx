@@ -18,6 +18,8 @@ import ReportPage from "@/pages/client/report";
 import { IoIosWarning } from "react-icons/io";
 import { absoluteUrls } from "@/config/urls";
 import { useReportCount } from "@/shared/hooks/useReportCount";
+import { useClientCancelJob } from "@/shared/apiServices/client/clientOpenApiService";
+import { toast } from "react-toastify";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -75,9 +77,35 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
     "hold",
   );
+  // Track if job is cancelled locally for UI update (for immediate feedback during cancellation)
+  // const [isJobCancelled, setIsJobCancelled] = useState(false);
+  
+  // Check if job is already cancelled from the status prop
+  // const isJobCancelledStatus = status?.toLowerCase() === "cancelled" || isJobCancelled;
   const { count: reportCount, refetch: refetchCount } = useReportCount({
     jobId: jobId,
     status: "pending",
+  });
+
+  // Cancel job mutation
+  const { mutate: cancelJob } = useClientCancelJob({
+    onSuccess: () => {
+      console.log("Job cancelled successfully");
+      // setIsJobCancelled(true);
+      toast.success("Job cancelled successfully!");
+      // Delay navigation to show the cancelled badge and toast
+      setTimeout(() => {
+        if (isClient) {
+          navigate(absoluteUrls.client.home.my_jobs);
+        } else {
+          navigate(absoluteUrls.engineer.home.my_jobs);
+        }
+      }, 2000);
+    },
+    onError: (error) => {
+      console.error("Failed to cancel job:", error);
+      toast.error("Failed to cancel job. Please try again.");
+    },
   });
 
   const handleMenuAction = (action: string) => {
@@ -103,6 +131,21 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   };
 
   const handleConfirmAction = () => {
+    if (actionType === "cancel" && jobId) {
+      // Trigger the cancel job API
+      const jobIdNumber = Number(jobId);
+      if (isNaN(jobIdNumber)) {
+        console.error("Invalid job ID:", jobId);
+        setIsConfirmOpen(false);
+        return;
+      }
+      cancelJob({
+        body: {
+          jobId: jobIdNumber,
+          status: "Cancelled" as const,
+        },
+      });
+    }
     setIsConfirmOpen(false);
   };
 

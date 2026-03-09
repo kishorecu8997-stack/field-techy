@@ -410,6 +410,17 @@ const TimelineSection: React.FC<{
         formatApiDate(assignment.invitedAt) ||
         formatDateTime();
 
+      // Get timestamps for different events
+      const acceptedDate =
+        formatApiDate((assignment as { assignedAt?: string | null }).assignedAt) ||
+        formatApiDate((assignment as { respondedAt?: string | null }).respondedAt) ||
+        appliedDate;
+
+      const startedDate =
+        formatApiDate((assignment as { startedAt?: string | null }).startedAt) ||
+        formatApiDate((assignment as { startRequestedAt?: string | null }).startRequestedAt) ||
+        acceptedDate;
+
       if (status === "submitted") {
         allItems.push({
           title: "Work Submitted",
@@ -425,7 +436,7 @@ const TimelineSection: React.FC<{
       if (status === "started" || status === "submitted") {
         allItems.push({
           title: "Job Started",
-          timestamp: appliedDate,
+          timestamp: startedDate,
           statusText: "Approved",
           statusColor: "#22c55e",
           accentColor: "#22c55e",
@@ -444,7 +455,7 @@ const TimelineSection: React.FC<{
       ) {
         allItems.push({
           title: "Proposal Accepted",
-          timestamp: appliedDate,
+          timestamp: acceptedDate,
           statusText: "Approved",
           statusColor: "#22c55e",
           accentColor: "#22c55e",
@@ -970,6 +981,19 @@ const TimelineSection: React.FC<{
     return assignmentDetails.some(
       (a) => a.assignmentStatus === "start_pending_approval",
     );
+  }, [assignmentDetails]);
+
+  // Get startRequestedAt timestamp from the assignment with pending start request
+  // Using type casting as the API response includes startRequestedAt but the generated type doesn't
+  const pendingStartRequestTimestamp = useMemo(() => {
+    if (!assignmentDetails || assignmentDetails.length === 0) return null;
+    const pendingAssignment = (assignmentDetails as Array<{
+      assignmentStatus: string;
+      startRequestedAt?: string | null;
+    }>).find(
+      (a) => a.assignmentStatus === "start_pending_approval" && a.startRequestedAt,
+    );
+    return pendingAssignment?.startRequestedAt || null;
   }, [assignmentDetails]);
 
   const hasJobStartedData = apiJobStartedData !== null;
@@ -1980,14 +2004,16 @@ const TimelineSection: React.FC<{
                         title: "Job Started",
                         description:
                           "Engineer has requested to start working on the job",
-                        timestamp: new Date().toLocaleDateString("en-US", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        }),
+                        timestamp: pendingStartRequestTimestamp
+                          ? formatApiDate(pendingStartRequestTimestamp)
+                          : new Date().toLocaleDateString("en-US", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            }),
                         accentColor: TIMELINE_CARD_COLORS.orange,
                         buttons: ["reject", "approve"],
                       }

@@ -39,10 +39,18 @@ const ClientActions = ({
   const showFeedbackButton =
     activeTab === JOB_TAB_LABELS.timeline && allCardsApproved;
 
+  // Check if job is cancelled
+  const isCancelled = jobStatus?.toLowerCase() === "cancelled";
+
   return (
     <>
       <div className="flex flex-wrap gap-4 w-full justify-end">
-        {showFeedbackButton ? (
+        {isCancelled ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-red-500 w-6 h-6" />
+            <span className="text-lg">Job Cancelled</span>
+          </div>
+        ) : showFeedbackButton ? (
           <Button
             variant="no_style"
             className="text-white text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white rounded-none hover:rounded-t-lg hover:bg-white/4"

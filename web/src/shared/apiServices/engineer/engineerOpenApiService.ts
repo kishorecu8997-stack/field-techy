@@ -69,6 +69,7 @@ import {
   engineerUpdateSkillsAndToolsMutation,
   engineerUpdateWorkPreferenceMutation,
   getJobLogsOptions,
+  getJobLogsQueryKey,
   engineerGetProfileCompletionOptions,
   engineerGetMyDocumentsOptions,
   getOnboardingLinkMutation,
@@ -527,12 +528,19 @@ export function useEngineerRequestStart(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerRequestStartMutation({ client: apiClient }),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // Invalidate job logs query when start request is submitted
       if (options?.assignmentId) {
         queryClient.invalidateQueries({
+          queryKey: getJobLogsQueryKey({ path: { assignmentId: options.assignmentId } }),
+        });
+        queryClient.invalidateQueries({
           queryKey: ["getJobLogs"],
           exact: false,
+        });
+        await queryClient.refetchQueries({
+          queryKey: getJobLogsQueryKey({ path: { assignmentId: options.assignmentId } }),
+          type: "active",
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
