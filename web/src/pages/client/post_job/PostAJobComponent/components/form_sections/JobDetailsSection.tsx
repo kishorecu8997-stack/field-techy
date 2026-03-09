@@ -25,6 +25,16 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
             value: 100,
             message: "Maximum length is 100 characters",
           },
+          validate: (value: string) => {
+            if (!value || value.trim() === "") {
+              return "Job Title is required";
+            }
+            // Reject spaces-only input
+            if (/^\s+$/.test(value)) {
+              return "Job Title cannot be only spaces";
+            }
+            return true;
+          },
         }}
       />
       <TextareaInput
@@ -33,7 +43,19 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
         placeholder="Describe the role"
         required
         disabled={isDisable}
-        rules={validateDescription(50, 2000, "Job Description")}
+        rules={{
+          ...validateDescription(50, 2000, "Job Description"),
+          validate: (value: string) => {
+            if (!value || value.trim() === "") {
+              return "Job Description is required";
+            }
+            // Reject spaces-only input
+            if (/^\s+$/.test(value)) {
+              return "Job Description cannot be only spaces";
+            }
+            return true;
+          },
+        }}
       />
     </div>
   );
