@@ -11,7 +11,7 @@ import {
   useAppMarkNotificationAsRead,
   useAppMarkAllNotificationsAsRead,
 } from "@/shared/apiServices/notifications/notificationOpenApiService";
-import { formatApiDate } from "@/utils/timelineUtils"; 
+import { formatApiDate } from "@/utils/timelineUtils";
 
 interface ReceivedNotificationProps {
   id: number;
@@ -20,7 +20,6 @@ interface ReceivedNotificationProps {
   time: string;
   read: boolean;
 }
-
 
 /**
  * ReceviedNotification Component
@@ -34,44 +33,39 @@ const ReceivedNotification: React.FC = () => {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
 
-
   const { notifications, isLoading } = useAppNotifications();
-
 
   const deleteNotification = useAppDeleteNotification({
     onSuccess: () => toast.success("Notification deleted successfully!"),
     onError: () => toast.error("Failed to delete notification"),
   });
 
-
   const markAsRead = useAppMarkNotificationAsRead({
     onError: () => toast.error("Failed to mark notification as read"),
   });
-
 
   const markAllAsRead = useAppMarkAllNotificationsAsRead({
     onSuccess: () => toast.success("All notifications marked as read"),
     onError: () => toast.error("Failed to mark all notifications as read"),
   });
 
- 
   const handleMarkAsRead = async (id: number) => {
-  try {
-    await markAsRead.mutateAsync({
-      body: { id },
-    });
-  } catch {
-    toast.error("Failed to mark notification as read");
-  }
-};
+    try {
+      await markAsRead.mutateAsync({
+        body: { id },
+      });
+    } catch {
+      toast.error("Failed to mark notification as read");
+    }
+  };
 
-const handleMarkAll = async () => {
-  try {
-    await markAllAsRead.mutateAsync({});
-  } catch {
-    toast.error("Failed to mark all notifications as read");
-  }
-};
+  const handleMarkAll = async () => {
+    try {
+      await markAllAsRead.mutateAsync({});
+    } catch {
+      toast.error("Failed to mark all notifications as read");
+    }
+  };
 
   const notificationData: ReceivedNotificationProps[] = useMemo(() => {
     return notifications
@@ -92,7 +86,6 @@ const handleMarkAll = async () => {
       }));
   }, [notifications, search]);
 
-
   const handleDeleteNotification = async (
     notification: ReceivedNotificationProps,
   ) => {
@@ -111,8 +104,8 @@ const handleMarkAll = async () => {
                 body: { id: notification.id },
               });
               close(true);
-            } catch  {
-              toast.error("Failed to delete notification", );
+            } catch {
+              toast.error("Failed to delete notification");
               close(false);
             }
           },
@@ -224,7 +217,6 @@ const handleMarkAll = async () => {
     <div className="w-full h-full flex flex-col p-3 gap-3">
       <h1 className="font-semibold">Manage Received Notifications</h1>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
-      
         <div className="flex justify-between items-center">
           <SearchInput
             value={search}
