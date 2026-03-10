@@ -107,11 +107,6 @@ const PostAJobFields = ({
         if (durationInDays < 30 && model.id === 3) {
           return false;
         }
-
-        // Optional: If duration is more than 90 days, maybe hide "Hourly" (ID 1)
-        // if (durationInDays > 90 && model.id === 1) {
-        //   return false;
-        // }
         return true;
       })
       .map((e) => ({
