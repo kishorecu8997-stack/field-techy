@@ -146,13 +146,10 @@ const EngineersActions = ({
         // Invalidate queries to refetch updated job data without page reload
         queryClient.invalidateQueries({ queryKey: ["engineers"] });
         queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
-        // Force refetch the job details
+        // Force refetch the job logs
         if (assignmentId) {
           const jobLogsQueryKey = getJobLogsQueryKey({
             path: { assignmentId },
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["engineer", "jobDetails", assignmentId],
           });
           queryClient.invalidateQueries({ queryKey: jobLogsQueryKey });
           queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });

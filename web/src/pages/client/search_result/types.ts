@@ -4,13 +4,13 @@ export const BUDGET_TYPES = {
   Fixed: "fixed",
 } as const;
 
-export type JobStatus = "completed" | "posted" | "inprogress" | "hold" |"cancelled";
+export type JobStatus = "completed" | "posted" | "inprogress" | "hold" | "cancelled";
 export const JOB_STATUSES = {
   completed: "completed",
   posted: "posted",
   inprogress: "inprogress",
   hold: "hold",
-  cancelled:"cancelled"
+  cancelled: "cancelled"
 } as const;
 
 export type WorkingType = "on-site" | "remote" | "hybrid";

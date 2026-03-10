@@ -77,11 +77,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
     "hold",
   );
-  // Track if job is cancelled locally for UI update (for immediate feedback during cancellation)
-  // const [isJobCancelled, setIsJobCancelled] = useState(false);
-  
-  // Check if job is already cancelled from the status prop
-  // const isJobCancelledStatus = status?.toLowerCase() === "cancelled" || isJobCancelled;
   const { count: reportCount, refetch: refetchCount } = useReportCount({
     jobId: jobId,
     status: "pending",
@@ -91,7 +86,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const { mutate: cancelJob } = useClientCancelJob({
     onSuccess: () => {
       console.log("Job cancelled successfully");
-      // setIsJobCancelled(true);
       toast.success("Job cancelled successfully!");
       // Delay navigation to show the cancelled badge and toast
       setTimeout(() => {
