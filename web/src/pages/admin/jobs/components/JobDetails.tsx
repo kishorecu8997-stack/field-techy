@@ -116,7 +116,7 @@ const mapJobStatus = (status?: string): JobStatus => {
     { label: "Country", value: job?.countryName ?? "-" },
     { label: "State", value: job?.stateName ?? "-" },
     { label: "City", value: job?.cityName ?? "-" },
-    { label: "No of Engineers", value: (job as { vacancies?: number })?.vacancies ?? "-" },  ];
+    { label: "No of Vacancies", value: (job as { vacancies?: number })?.vacancies ?? "-" },  ];
 
   if (!shouldFetch) {
     return (

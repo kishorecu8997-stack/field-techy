@@ -1,7 +1,7 @@
 export const JOB_STATUSES = {
   COMPLETED: "completed",
   PENDING: "pending",
-  IN_PROGRESS: "in-progress", 
+  IN_PROGRESS: "in-progress",
   NOTIFIED: "Notified",
   ASSIGNED: "Assigned",
   HOLD: "Hold",

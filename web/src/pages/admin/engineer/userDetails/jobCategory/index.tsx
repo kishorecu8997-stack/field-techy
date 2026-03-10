@@ -2,7 +2,7 @@ import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import AppliedJob from "./AppliedJobs";
 import InvitedJob from "./InvitedJob";
 import CompletedJob from "./CompletedJob";
-import DeclinedJob from "./DeclinedJob";
+import CancelledJob from "./CancelledJob";
 import HoldJob from "./HoldJob";
 import InprogressJob from "./InprogressJob";
 
@@ -54,7 +54,7 @@ export default function EngineerJobCategory() {
     },
     {
       label: "Cancelled Jobs",
-      content: <DeclinedJob />,
+      content: <CancelledJob />,
       hide: false,
     },
     {
