@@ -5,8 +5,6 @@ import { getAdminPersonalInfo } from "../apiServices/admin/adminOpenApiService";
 import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 import { toast } from "react-toastify";
 import { queryClient } from "@/main";
-import { appDownloadProfileFileQueryKey } from "@/api/@tanstack/react-query.gen";
-import { apiClient } from "../apiServices/apiClient";
 
 interface AdminProfile {
   id: string;
@@ -116,11 +114,12 @@ useUserSessionStore.subscribe((state, prevState) => {
   if (state.session?.accessToken !== prevState.session?.accessToken) {
     useAdminProfileStore.getState().clearAdminProfile();
     queryClient.invalidateQueries({
-      queryKey: appDownloadProfileFileQueryKey({
-        client: apiClient,
-        query: { fileType: "profilePicture" },
-        headers: { authorization: "" },
-      }),
+      predicate: (query) =>
+        Array.isArray(query.queryKey) &&
+        query.queryKey[0] &&
+        typeof query.queryKey[0] === "object" &&
+        (query.queryKey[0] as { _id?: string })._id ===
+          "appDownloadProfileFile",
     });
   }
 });
