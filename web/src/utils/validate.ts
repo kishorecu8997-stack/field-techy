@@ -689,7 +689,7 @@ export const validatePricingModel = (
   field: PricingField,
   relatedValues?: PricingRelations,
 ): true | string => {
-  const v = (value || "").trim();
+  const v = String(value ?? "").trim();
 
   // Allow empty (legacy behavior)
   if (!v) return "";
