@@ -8,12 +8,10 @@ import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
-import { usePopupStore } from "@/shared/store/popupStore";
 import useToggleStatus from "@/shared/components/ToggleStatus";
 import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
 // import { useAdminDeleteRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-import { toast } from "react-toastify";
 
 /**
  * ManageRateCards Component
@@ -34,7 +32,6 @@ import { toast } from "react-toastify";
 
 const ManageRateCards: React.FC = () => {
   const navigate = useNavigate();
-  const { showPopup } = usePopupStore();
   const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch rate cards from API
