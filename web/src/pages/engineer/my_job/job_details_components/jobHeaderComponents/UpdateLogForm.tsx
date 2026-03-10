@@ -55,7 +55,7 @@ const UpdateLogForm = ({
         path: { assignmentId },
         query: { regionId }
       });
-      const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+      const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId }, query: { regionId } });
       queryClient.setQueryData(exactQueryKey, response.data);
     } catch (error) {
       console.error("Failed to refetch timeline:", error);
@@ -123,14 +123,17 @@ const UpdateLogForm = ({
                 requestBody.attachment = attachmentMeta;
               }
 
+
               // Call the API to submit work log and get response with upload URL
               const response = await addWorkLog({
                 body: requestBody,
               });
 
+              console.log("Response", response);
+
               // Upload file to S3 if URL is provided in response
-              if (attachment && response.attachment?.url) {
-                await fetch(response.attachment.url, {
+              if (attachment && response.uploadUrl) {
+                await fetch(response.uploadUrl, {
                   method: "PUT",
                   body: attachment,
                   headers: { "Content-Type": attachment.type },
@@ -138,6 +141,7 @@ const UpdateLogForm = ({
 
                 // Mark file as uploaded in the database
                 if (response.id && assignmentId) {
+                  console.log("Marking file as uploaded", response.id, assignmentId);
                   await markFileUploaded({
                     body: {
                       assignmentId,

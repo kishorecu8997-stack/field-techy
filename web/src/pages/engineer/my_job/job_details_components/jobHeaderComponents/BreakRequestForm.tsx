@@ -87,7 +87,7 @@ const BreakRequestForm = ({
           });
 
           // Update the query cache with the new data using exact key from getJobLogsQueryKey
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId }, query: { regionId } });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Failed to refetch timeline:", error);

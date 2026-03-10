@@ -59,7 +59,7 @@ const RevisionRequestUpdateForm = ({
         path: { assignmentId },
         query: { regionId }
       });
-      const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+      const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId }, query: { regionId } });
       queryClient.setQueryData(exactQueryKey, response.data);
     } catch (error) {
       console.error("Failed to refetch timeline:", error);
@@ -181,7 +181,7 @@ const RevisionRequestUpdateForm = ({
 
   return (
     <div className="flex flex-col p-6 gap-4">
-      <h2 className="text-xl font-semibold text-gray-900">
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
         {REVISION_UPDATE_LABELS.title}
       </h2>
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>

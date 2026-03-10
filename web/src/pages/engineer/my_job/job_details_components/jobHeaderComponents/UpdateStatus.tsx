@@ -45,7 +45,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
             client: apiClient,
             path: { assignmentId },
           });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId }, query: { regionId } });
           queryClient.setQueryData(exactQueryKey, response.data);
           queryClient.setQueryData(
             ["getJobLogs", { path: { assignmentId } }],

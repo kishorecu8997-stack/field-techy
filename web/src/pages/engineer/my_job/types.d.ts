@@ -233,7 +233,12 @@ export interface ProgressUpdate {
     status: string;
     clientComment: string | null;
     clientAttachmentId: number | null;
-    clientAttachmentUrl?: string | null;
+    clientAttachment?: {
+      filename: string;
+      id: number;
+      size: number;
+      url: string;
+    };
     createdAt: string | null;
     updatedAt: string | null;
   }>;

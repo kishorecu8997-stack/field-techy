@@ -201,7 +201,11 @@ const JobTabSection = ({
             client: apiClient,
             path: { assignmentId },
           });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId }, query: {
+              regionId
+            }
+          });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Error refetching timeline:", error);
@@ -385,7 +389,11 @@ const JobTabSection = ({
             client: apiClient,
             path: { assignmentId },
           });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId }, query: {
+              regionId
+            }
+          });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Error refetching timeline:", error);

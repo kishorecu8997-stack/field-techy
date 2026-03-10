@@ -4,17 +4,21 @@ import { HiCheckCircle, HiClock, HiXCircle } from "react-icons/hi";
 
 // Proper type for revision data from API
 export interface RevisionData {
-  revisionId: number;
+  id: string;
   logId: number;
-  content: string | null;
-  attachmentUrl?: string | null;
+  revisionId: number;
+  type: "revisionRequestUpdate";
+  title: string;
   status: string;
+  description: string;
+  timestamp: string;
   revisions?: Array<{
     revisionId: number;
+    logId: number;
     content: string | null;
+    attachmentUrl?: string | null;
     clientComment: string | null;
     clientAttachmentUrl?: string | null;
-    attachmentUrl?: string | null;
     createdAt: string | null;
     updatedAt: string | null;
     status: string;
@@ -109,8 +113,8 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
             item.attachmentName ||
             (item.attachmentUrl
               ? decodeURIComponent(
-                  item.attachmentUrl.split("/").pop()?.split("?")[0] || "",
-                )
+                item.attachmentUrl.split("/").pop()?.split("?")[0] || "",
+              )
               : "Attachment");
 
           // Engineer timeline style: border-gray-200 bg-gray-50 rounded-lg p-4 shadow-sm
@@ -242,9 +246,9 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                       ) : item.statusText.toLowerCase() === "rejected" ? (
                         <HiXCircle aria-hidden className="h-3.5 w-3.5" />
                       ) : item.statusText.toLowerCase() ===
-                          "revision requested" ||
+                        "revision requested" ||
                         item.statusText.toLowerCase() ===
-                          "revision_requested" ? (
+                        "revision_requested" ? (
                         <HiArrowUturnRight
                           aria-hidden
                           className="h-3.5 w-3.5"
@@ -310,16 +314,16 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                               <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
                                 {revision.createdAt
                                   ? new Date(revision.createdAt).toLocaleString(
-                                      "en-US",
-                                      {
-                                        day: "2-digit",
-                                        month: "short",
-                                        year: "numeric",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        hour12: true,
-                                      },
-                                    )
+                                    "en-US",
+                                    {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    },
+                                  )
                                   : item.timestamp}
                               </span>
                             </div>
@@ -373,16 +377,16 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                               <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
                                 {revision.updatedAt
                                   ? new Date(revision.updatedAt).toLocaleString(
-                                      "en-US",
-                                      {
-                                        day: "2-digit",
-                                        month: "short",
-                                        year: "numeric",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        hour12: true,
-                                      },
-                                    )
+                                    "en-US",
+                                    {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    },
+                                  )
                                   : item.timestamp}
                               </span>
                             </div>
