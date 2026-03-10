@@ -20,6 +20,7 @@ import {
 import { UserRole } from "@/shared/enums/users";
 import { useAdminLogin } from "@/shared/apiServices/admin/adminOpenApiService";
 import { AxiosError } from "axios";
+import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 
 /**
  * AdminLogin
@@ -47,6 +48,7 @@ export default function AdminLogin() {
 
   const navigate = useNavigate();
   const setUserSession = useUserSessionStore((s) => s.setSession);
+  const setRegion = useAdminCountryStore((s) => s.setRegion);
 
   const { mutateAsync: loginMutation, isPending: isLoggingIn } = useAdminLogin({
     onSuccess: async (resp) => {
@@ -56,9 +58,14 @@ export default function AdminLogin() {
         localStorage.setItem("auth_token", resp.token);
       }
 
+      if (resp?.regionId) {
+        setRegion(resp.regionId.toString(), null);
+      }
+
       setUserSession({
         accessToken: resp.token,
         userId: "uuid-123", // TODO: Get actual user ID from token or profile response
+        regionId: resp?.regionId,
         role: UserRole.ADMIN,
         initiatedAt: Date.now(),
       } as UserSession);
