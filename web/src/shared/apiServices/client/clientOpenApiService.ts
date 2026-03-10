@@ -321,12 +321,17 @@ export function useClientPostJob(options?: {
   });
 }
 
-export function useClientGetJobs(
-  jobId?: number,
-  regionId?: number,
-  jobStatus?: NonNullable<ClientGetJobsData["query"]>["jobStatus"],
-  enabled: boolean = true,
-) {
+export function useClientGetJobs({
+  jobId,
+  regionId,
+  jobStatus,
+  enabled,
+}: {
+  jobId?: number;
+  regionId?: number;
+  jobStatus?: NonNullable<ClientGetJobsData["query"]>["jobStatus"];
+  enabled: boolean;
+}) {
   return useQuery({
     ...clientGetJobsOptions({
       client: apiClient,

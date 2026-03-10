@@ -22,13 +22,13 @@ const MyJobsPage = () => {
   const jobStatus = (() => {
     switch (activeFilter) {
       case JOB_FILTERS.APPLIED:
-        return "Posted";
+        return "applied";
       case JOB_FILTERS.IN_PROGRESS:
-        return "In Progress";
+        return "assigned";
       case JOB_FILTERS.COMPLETED:
-        return "Closed";
+        return "submitted";
       case JOB_FILTERS.CANCELLED:
-        return "Cancelled";
+        return "rejected";
       default:
         return undefined;
     }
@@ -52,7 +52,7 @@ const MyJobsPage = () => {
     isLoading,
     isError,
     refetch,
-  } = useEngineerGetJobs(jobStatus, jobType);
+  } = useEngineerGetJobs({ jobStatus, jobType, options: { enabled: true } });
 
   const jobFilters = [
     JOB_FILTERS.ALL_JOBS,

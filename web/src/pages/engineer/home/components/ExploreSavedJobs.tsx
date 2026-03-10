@@ -104,9 +104,9 @@ const ExploreSavedJobs = () => {
           }) ?? null,
 
         tools:
-          job.tools?.map((toolId: number) => {
-            const found = toolsData?.find((s) => s.id === toolId);
-            return found?.name ?? String(toolId);
+          job.tools?.map((tool) => {
+            const found = toolsData?.find((s) => s.id === tool.toolId);
+            return found?.name ?? String(tool.toolId);
           }) ?? null,
         postedTime: job.createdAt ?? "",
         jobDuration: "",

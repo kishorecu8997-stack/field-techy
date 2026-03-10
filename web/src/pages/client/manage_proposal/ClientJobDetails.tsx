@@ -46,7 +46,11 @@ const ClientJobDetails = () => {
 
   const jobId = Number(params.jobId);
 
-  const { data: jobsData } = useClientGetJobs(jobId, Number(regionIdParam));
+  const { data: jobsData } = useClientGetJobs({
+    jobId,
+    regionId: regionIdParam ? Number(regionIdParam) : undefined,
+    enabled: true,
+  });
 
   // Fallback to useClientGetJobs if needed for job details
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];

@@ -432,11 +432,15 @@ export function useEngineerChangePassword(options?: {
   });
 }
 
-export function useEngineerGetJobs(
+export function useEngineerGetJobs({
+  jobStatus,
+  jobType,
+  options,
+}: {
   jobStatus?: NonNullable<EngineerGetMyJobsData["query"]>["assignmentStatus"],
   jobType?: NonNullable<EngineerGetMyJobsData["query"]>["jobType"],
   options?: { enabled?: boolean },
-) {
+}) {
   const regionId = useUserSessionStore.getState().session?.regionId;
   return useQuery({
     ...engineerGetMyJobsOptions({

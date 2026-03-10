@@ -183,7 +183,7 @@ const TimelineSection: React.FC<{
     refetch: refetchAssignmentDetails,
   } = useClientGetAssignmentDetails(
     { jobId: validJobId, regionId: Number(regionIdParam) },
-    !!(validJobId),
+    !!(validJobId || regionIdParam),
   );
 
   // Use API data when available (after refetch), otherwise use prop
@@ -239,6 +239,7 @@ const TimelineSection: React.FC<{
   const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
     onSuccess: async () => {
       // Refetch job logs after file is marked as uploaded
+      refetchAssignmentDetails()
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
@@ -507,7 +508,7 @@ const TimelineSection: React.FC<{
         ]
         : undefined;
 
-      let title = progressLog.title || "Progress Update";
+      let title = progressLog.logType || "Progress Update";
       const logStatus = progressLog.status as string;
       if (progressLog.logType === "SUBMISSION") {
         if (logStatus === "pending") title = "Proposal Submitted";
@@ -517,7 +518,7 @@ const TimelineSection: React.FC<{
         progressLog.logType === "progress_update" &&
         logStatus === "revision_requested"
       ) {
-        title = progressLog.title || "Revision Requested";
+        title = progressLog.logType || "Revision Requested";
       }
 
       return {
@@ -676,13 +677,13 @@ const TimelineSection: React.FC<{
         url: signOff.attachment?.url,
       });
     }
-    if (signOff.signatureAttachmentUrl) {
+    if (signOff.signature?.url) {
       attachments.push({
         name: decodeURIComponent(
-          signOff.signatureAttachmentUrl.split("/").pop()?.split("?")[0] ||
+          signOff.signature.url.split("/").pop()?.split("?")[0] ||
           "Attachment",
         ),
-        url: signOff.signatureAttachmentUrl,
+        url: signOff.signature.url,
       });
     }
 
