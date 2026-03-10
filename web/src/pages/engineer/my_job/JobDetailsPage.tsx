@@ -118,14 +118,27 @@ const mapJobToJobOverview = (
       })
     : [];
 
-  // Extract tools - convert IDs to labels using toolMap
+  // Extract tools - handle both new structure (with toolId, toolName, budget, imageUrl) and old structure (Array<number>)
   const tools = Array.isArray(job.tools)
     ? job.tools.map((tool, index) => {
+        // Check if it's the new object structure with toolId, toolName, budget, imageUrl
+        if (typeof tool === 'object' && tool !== null) {
+          const toolObj = tool as Record<string, unknown>;
+          const toolName = toolObj.toolName || toolObj.name || toolObj.toolId || toolObj.id;
+          const toolBudget = toolObj.budget || toolObj.price || toolObj.amount || '';
+          const toolImage = toolObj.imageUrl || toolObj.image || toolObj.url || job.toolAttachmentUrls?.[index];
+          return {
+            name: toolName ? String(toolName) : '',
+            price: toolBudget ? String(toolBudget) : '',
+            image: toolImage ? String(toolImage) : undefined,
+          };
+        }
+        // Old structure: tool is just an ID/number
         const toolId = String(tool);
         const toolLabel = toolMap.get(toolId);
         return {
           name: toolLabel || String(tool),
-          price: "",
+          price: '',
           image: job.toolAttachmentUrls?.[index],
         };
       })
