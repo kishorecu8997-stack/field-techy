@@ -10,7 +10,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminUpdateRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useUpdateRateCard } from "@/shared/apiServices/admin/adminService";
 import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
 
 /**
@@ -121,18 +121,56 @@ const EditRateCard = () => {
         const countryValue = countryValueMap[firstItem.country] || firstItem.country;
         
         // Transform API data to form format
-        const tiers = filteredData.map((item) => {
-          const level = item.experienceLevels?.[0] || "L1";
-          return {
-            level: level,
-            description: level === "L1" ? "Junior (1–3 yrs)" : level === "L2" ? "Mid (3–3 yrs)" : "Senior (5+ yrs)",
-            hourly: parseFloat(item.hourly) || 0,
-            halfDay: item.halfDay === "-" ? 0 : parseFloat(item.halfDay) || 0,
-            fullDay: item.fullDay === "-" ? 0 : parseFloat(item.fullDay) || 0,
-            weekly: item.weekly === "-" ? 0 : parseFloat(item.weekly) || 0,
-            monthly: item.monthly === "-" ? 0 : parseFloat(item.monthly) || 0,
-          };
+        // Group by experience level
+        const levelRatesMap: Record<number, { hourly: number; daily: number; monthly: number }> = {};
+        
+        filteredData.forEach((item) => {
+          const levelId = item.experienceLevelId || 1;
+          
+          // Parse the rates array
+          if (item.rates && Array.isArray(item.rates)) {
+            item.rates.forEach((rate) => {
+              if (!levelRatesMap[levelId]) {
+                levelRatesMap[levelId] = { hourly: 0, daily: 0, monthly: 0 };
+              }
+              
+              // Map engagementModelId to rate type
+              // 1: Hourly, 2: Daily, 3: Monthly
+              if (rate.engagementModelId === 1) {
+                levelRatesMap[levelId].hourly = parseFloat(rate.rate) || 0;
+              } else if (rate.engagementModelId === 2) {
+                levelRatesMap[levelId].daily = parseFloat(rate.rate) || 0;
+              } else if (rate.engagementModelId === 3) {
+                levelRatesMap[levelId].monthly = parseFloat(rate.rate) || 0;
+              }
+            });
+          }
         });
+        
+        // Build tiers array from the mapped data
+        const tiers = [
+          {
+            level: "L1",
+            description: "Junior (1–3 yrs)",
+            hourly: levelRatesMap[1]?.hourly || 0,
+            daily: levelRatesMap[1]?.daily || 0,
+            monthly: levelRatesMap[1]?.monthly || 0,
+          },
+          {
+            level: "L2",
+            description: "Mid (3–5 yrs)",
+            hourly: levelRatesMap[2]?.hourly || 0,
+            daily: levelRatesMap[2]?.daily || 0,
+            monthly: levelRatesMap[2]?.monthly || 0,
+          },
+          {
+            level: "L3",
+            description: "Senior (5+ yrs)",
+            hourly: levelRatesMap[3]?.hourly || 0,
+            daily: levelRatesMap[3]?.daily || 0,
+            monthly: levelRatesMap[3]?.monthly || 0,
+          },
+        ];
 
         methods.reset({
           rateType: "masterRateCard",
@@ -153,7 +191,7 @@ const EditRateCard = () => {
     }
   }, [rateCardsResponse, serviceCategoryId, methods]);
 
-  const updateRateCardMutation = useAdminUpdateRateCard({
+  const updateRateCardMutation = useUpdateRateCard({
     onSuccess: () => {
       toast.success("Rate card updated successfully!");
       navigate(absoluteUrls.admin.home.manage_rate_card);
@@ -188,25 +226,31 @@ const EditRateCard = () => {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            // Transform form data to API format
-            // The API expects: { countryId, experienceLevels: [{ levelOrder, label, rates: { hourly, halfDay4h, fullDay8h, weekly5d, monthly } }] }
+            // Transform form data to new API format
+            // The API expects: { experienceLevels: [{ levelOrder, label, rates: { "1": hourly, "2": daily, "3": monthly } }] }
             const firstSkill = data.skills?.[0];
             const tiers = firstSkill?.tiers || [];
             
+            // Map rate type to engagementModelId
+            // 1: Hourly, 2: Daily, 3: Monthly
             const experienceLevels = tiers.map((tier: any) => {
               // Convert level string (L1, L2, L3) to levelOrder number
               const levelOrder = tier.level === "L1" ? 1 : tier.level === "L2" ? 2 : tier.level === "L3" ? 3 : 0;
               
+              // Build rates object with engagementModelId as keys
+              const rates: Record<string, number> = {};
+              const hourly = parseFloat(tier.hourly) || 0;
+              const daily = parseFloat(tier.daily) || 0;
+              const monthly = parseFloat(tier.monthly) || 0;
+              
+              if (hourly > 0) rates["1"] = hourly;
+              if (daily > 0) rates["2"] = daily;
+              if (monthly > 0) rates["3"] = monthly;
+              
               return {
                 levelOrder,
                 label: tier.description || "",
-                rates: {
-                  hourly: parseFloat(tier.hourly) || 0,
-                  halfDay4h: parseFloat(tier.halfDay) || 0,
-                  fullDay8h: parseFloat(tier.fullDay) || 0,
-                  weekly5d: parseFloat(tier.weekly) || 0,
-                  monthly: parseFloat(tier.monthly) || 0,
-                },
+                rates,
               };
             });
             
@@ -214,8 +258,8 @@ const EditRateCard = () => {
             const finalCountryId = countryIdRef.current;
             
             updateRateCardMutation.mutate({
-              query: { serviceCategoryId },
-              body: {
+              id: serviceCategoryId,
+              data: {
                 countryId: finalCountryId,
                 experienceLevels,
               },

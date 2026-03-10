@@ -2,7 +2,7 @@ export interface PricingTier {
   level: string;
   description: string;
   hourly: number | "";
-  fullDay: number | "";
+  daily: number | "";
   monthly: number | "";
 }
 

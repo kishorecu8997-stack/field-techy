@@ -367,7 +367,8 @@ export class AdminAdapter {
     try {
       const response = await axiosInstance.post(
         ADMIN_ROUTER_PATHS.CREATE_RATE_CARD,
-        data,
+        { experienceLevels: data.experienceLevels },
+        { params: { countryId: data.countryId, serviceCategoryId: data.serviceCategoryId } }
       );
       return response.data;
     } catch (error) {

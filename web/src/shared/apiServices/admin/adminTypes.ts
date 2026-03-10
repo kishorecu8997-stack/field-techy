@@ -140,9 +140,9 @@ export interface RateCardSkill {
 
 // New API structure types
 export interface ExperienceLevelRate {
-  hourly: number;
-  daily: number;
-  monthly: number;
+  // Using index signature to allow dynamic keys based on engagementModelId
+  // e.g., "1": hourly, "2": daily, "3": monthly
+  [key: string]: number;
 }
 
 export interface ExperienceLevel {
@@ -170,7 +170,8 @@ export interface CreateRateCardResponse {
 }
 
 export interface UpdateRateCardParams {
-  rate: number;
+  countryId: number;
+  experienceLevels: ExperienceLevel[];
 }
 
 export interface UpdateRateCardResponse {

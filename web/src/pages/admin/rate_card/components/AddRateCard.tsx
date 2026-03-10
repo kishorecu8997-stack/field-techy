@@ -66,6 +66,14 @@ const AddRateCard = () => {
       L3: 3,
     };
 
+    // Map rate type to engagementModelId
+    // 1: Hourly, 2: Daily, 3: Monthly
+    const rateTypeToEngagementId: Record<string, number> = {
+      hourly: 1,
+      daily: 2,
+      monthly: 3,
+    };
+
     formData.skills?.forEach((skill: any) => {
       skill.tiers?.forEach((tier: any) => {
         const levelOrder = levelOrderMap[tier.level] || 1;
@@ -81,25 +89,24 @@ const AddRateCard = () => {
           (exp) => exp.levelOrder === levelOrder
         );
 
+        // Build rates object with engagementModelId as keys
+        const rates: Record<string, number> = {};
+        if (hourly > 0) rates[String(rateTypeToEngagementId.hourly)] = hourly;
+        if (daily > 0) rates[String(rateTypeToEngagementId.daily)] = daily;
+        if (monthly > 0) rates[String(rateTypeToEngagementId.monthly)] = monthly;
+
         if (existingIndex >= 0) {
           // Update existing entry with new rates
           experienceLevels[existingIndex].rates = {
-            hourly: hourly || experienceLevels[existingIndex].rates.hourly,
-            
-            daily: daily || experienceLevels[existingIndex].rates.daily,
-            
-            monthly: monthly || experienceLevels[existingIndex].rates.monthly,
+            ...experienceLevels[existingIndex].rates,
+            ...rates,
           };
         } else {
           // Add new experience level
           experienceLevels.push({
             levelOrder,
             label,
-            rates: {
-              hourly,
-              daily,
-              monthly,
-            },
+            rates,
           });
         }
       });
