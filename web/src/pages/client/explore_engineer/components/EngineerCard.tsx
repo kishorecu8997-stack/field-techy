@@ -1,9 +1,9 @@
-import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import type { EngineerCardProps } from "../types";
+import { assetsConfig } from "@/assets";
 
 /**
  * `EngineerCard` is a component that displays a summary of an engineer's profile.
@@ -15,44 +15,43 @@ import type { EngineerCardProps } from "../types";
  */
 const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
   const navigate = useNavigate();
+  const detailsUrl = `${absoluteUrls.client.home.client_Explore_engineers_details}/${engineer.id}`;
+
   return (
     <div
       className="p-4 rounded-lg flex items-center gap-4 bg-slate-100 dark:bg-teal-800 text-gray-800 dark:text-white transition-colors duration-300 cursor-pointer"
-      onClick={() =>
-        navigate(absoluteUrls.client.home.client_Explore_engineers_details)
-      }
+      onClick={() => navigate(detailsUrl)}
     >
       <img
-        // src={engineer.imageUrl}
-        src={assetsConfig.images.users.user}
+        src={engineer.imageUrl || assetsConfig.images.users.user}
         alt={engineer.name}
-        className="w-25 h-full rounded-lg object-cover"
+        className="w-25 h-full rounded-full object-cover"
       />
-      <div className="flex-1">
-        <h3 className="font-bold text-lg">{engineer.name}</h3>
+      <div className="flex-1 min-w-0">
+        <h3 className="font-bold text-lg truncate">{engineer.name}</h3>
         <div className="flex items-center gap-1 text-sm mb-1">
           <span className="text-yellow-500">★</span>
-          <span>
+          <span className="truncate">
             {engineer.rating} ({engineer.reviewCount} reviews)
           </span>
         </div>
-        <p className="text-sm font-medium">{engineer.title}</p>
-        <p className="text-sm font-medium">
+        <p className="text-sm font-medium truncate">{engineer.title}</p>
+        <p className="text-sm font-medium truncate">
           <span className="text-gray-500 dark:text-white">Pay Type:</span>{" "}
           {engineer.pay_type}
         </p>
-        <p className="text-sm font-medium">
+        <p className="text-sm font-medium truncate">
           <span className="text-gray-500 dark:text-white">Availability:</span>{" "}
           {engineer.availability}
         </p>
         <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           <NavLink
-            to={absoluteUrls.client.home.client_Explore_engineers_details}
+            to={detailsUrl}
             className="hover:text-teal-900 text-[1rem] whitespace-nowrap"
           >
             <Button
               variant="primary"
-              className="bg-teal-800 dark:bg-teal text-white"
+              className="bg-teal-800 dark:bg-teal-500 text-white"
             >
               Invite to Job
             </Button>

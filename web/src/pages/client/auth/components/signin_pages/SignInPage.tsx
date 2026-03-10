@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Login from "./Login";
-import LoginWithNumber from "./LoginWithNumber";
+import LoginWithOtp from "./LoginWithOtp";
 
 /**
  * Sign In page component that provides both email and phone number login options.
@@ -15,12 +15,12 @@ import LoginWithNumber from "./LoginWithNumber";
  * @returns {JSX.Element} The rendered Sign In page component with conditional rendering
  */
 const ClientSignInPage = () => {
-  const [isNumberLogin, setIsNumberLogin] = useState(false);
+  const [isOtpLogin, setIsOtpLogin] = useState(false);
 
   return (
     <div className="flex w-full justify-center">
-      {isNumberLogin && <LoginWithNumber setIsNumberLogin={setIsNumberLogin} />}
-      {!isNumberLogin && <Login setIsNumberLogin={setIsNumberLogin} />}
+      {isOtpLogin && <LoginWithOtp setIsOtpLogin={setIsOtpLogin} />}
+      {!isOtpLogin && <Login setIsOtpLogin={setIsOtpLogin} />}
     </div>
   );
 };

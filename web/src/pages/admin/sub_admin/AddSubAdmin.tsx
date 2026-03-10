@@ -114,6 +114,7 @@ export default function AddSubAdmin() {
                 email: data.email,
                 phoneNumber: data.phoneNumber,
                 password: data.password,
+                regionId: Number(data.region),
               };
 
               await createSubAdmin({

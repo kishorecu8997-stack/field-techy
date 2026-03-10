@@ -39,6 +39,8 @@ const FilterPanel: React.FC<{
   const [selectedSkills, setSelectedSkills] = useState<string[]>(
     currentFilters.skills || [],
   );
+  //skills expended boolean state
+  const [isAllSkillsExpanded, setIsAllSkillsExpanded] = useState(false);
 
   // Sync local state with currentFilters when they change
   useEffect(() => {
@@ -252,30 +254,37 @@ const FilterPanel: React.FC<{
           Skills
         </h3>
         <div className="flex flex-wrap gap-2">
-          {skillsData?.slice(0, 9).map((skill) => (
-            <button
-              key={skill.id}
-              onClick={() =>
-                toggleFilter(
-                  selectedSkills,
-                  String(skill.id),
-                  setSelectedSkills,
-                  "skills",
-                )
-              }
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                selectedSkills.includes(String(skill.id))
-                  ? "bg-green-700 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-              }`}
-            >
-              {skill.name}
-            </button>
-          ))}
+          {(isAllSkillsExpanded ? skillsData : skillsData?.slice(0, 9))?.map(
+            (skill) => (
+              <button
+                key={skill.id}
+                onClick={() =>
+                  toggleFilter(
+                    selectedSkills,
+                    String(skill.id),
+                    setSelectedSkills,
+                    "skills",
+                  )
+                }
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                  selectedSkills.includes(String(skill.id))
+                    ? "bg-green-700 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                }`}
+              >
+                {skill.name}
+              </button>
+            ),
+          )}
         </div>
-        <button className="text-sm text-teal-800 dark:text-teal-400 mt-2 hover:underline font-medium cursor-pointer">
-          View all
-        </button>
+        {skillsData && skillsData.length > 9 && (
+          <button
+            onClick={() => setIsAllSkillsExpanded(!isAllSkillsExpanded)}
+            className="text-sm text-teal-800 dark:text-teal-400 mt-2 hover:underline font-medium cursor-pointer"
+          >
+            {isAllSkillsExpanded ? "Show less" : "View all"}
+          </button>
+        )}
       </div>
     </div>
   );

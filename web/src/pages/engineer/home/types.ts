@@ -21,6 +21,9 @@ export interface JobItem {
 
   numberOfVacancy: number;
 
+  // Number of engineers already assigned to this job
+  assignedEngineerCount?: number;
+
   experience: string | null | number;
   salary: string | null;
   budgetType: string | null;
@@ -41,7 +44,7 @@ export interface JobItem {
   toolImage?: string | null;
   toolAdditionalBudget?: string | null;
   postedTime: string;
-  jobDuration: string;
+  jobDuration?: string;
   rating?: number;
   slaLevel?: string;
   client: Client;

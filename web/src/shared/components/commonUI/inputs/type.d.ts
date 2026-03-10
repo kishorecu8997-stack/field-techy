@@ -67,7 +67,7 @@ interface Country {
   code: string;
   name: string;
   flag: string;
-  validationKey?: "india" | "uk";
+  validationKey?: "india" | "uk" | "srilanka" | "japan";
 }
 
 /**

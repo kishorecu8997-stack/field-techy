@@ -1,5 +1,6 @@
 import { BiLogoLinkedin, BiSolidMessageRounded } from "react-icons/bi";
 import { CgNotes } from "react-icons/cg";
+import { FaFilePdf } from "react-icons/fa6";
 import { CiLocationOn } from "react-icons/ci";
 import {
   FaBookmark,
@@ -90,4 +91,5 @@ export const icons = {
   hold: AiOutlinePause,
   flagged: MdReportProblem,
   cancel: MdCancel,
+  pdf: FaFilePdf,
 };

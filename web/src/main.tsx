@@ -10,6 +10,8 @@ import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
 import { FCMHandler } from "./shared/components/FCMHandler.tsx";
 import GlobalErrorBoundary from "./shared/components/commonUI/GlobalErrorBoundary.tsx";
 
+// Stripe is initialized lazily in AddFundModal to avoid loading Stripe SDK on every page
+
 /**
  * Creates a configured QueryClient instance with default query behaviors.
  *

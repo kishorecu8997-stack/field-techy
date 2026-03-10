@@ -18,10 +18,13 @@ import {
   useAdminManageClients,
   useAdminClientsByUserIdStatus,
   useAdminDeleteClientMutation,
+  LookupTable,
+  useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
 import { documentType, type ManageClientProps } from "../types";
 import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
+import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 
 interface ClientListProps {
   clientType: "corporate" | "home";
@@ -58,6 +61,15 @@ const ClientList: React.FC<ClientListProps> = ({
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
   const { mutateAsync: deleteClient } = useAdminDeleteClientMutation();
+
+  // Lookup APIs for country and state names
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+  const { data: countries } = useAppGetLookupData(LookupTable.Countries);
+  const { data: states } = useAppGetLookupData(
+    LookupTable.States,
+    selectedRegionId || undefined,
+    { enabled: !!selectedRegionId },
+  );
 
   const { showPopup } = usePopupStore();
 
@@ -170,7 +182,23 @@ const ClientList: React.FC<ClientListProps> = ({
     {
       key: "location",
       label: "Location",
-      renderCell: (row: ManageClientProps) => row.location || "N/A",
+      renderCell: (row: ManageClientProps) => {
+        const countryName =
+          countries?.find((c) => c.id === row.countryId)?.name ||
+          row.country?.name;
+
+        const stateName =
+          states?.find((s) => s.id === row.stateId)?.name || row.state?.name;
+
+        const cityName = row.city?.name;
+
+        const mainLocation = cityName || stateName;
+
+        const locationParts = [mainLocation, countryName].filter(Boolean);
+        return locationParts.length > 0
+          ? locationParts.join(", ")
+          : row.location || "N/A";
+      },
     },
     {
       key: "registrationDate",

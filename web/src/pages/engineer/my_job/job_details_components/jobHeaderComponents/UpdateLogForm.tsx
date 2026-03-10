@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -11,7 +11,10 @@ import {
   UPDATE_LOG_LABELS,
   UPDATE_LOG_MESSAGES,
 } from "@/constants/updateLogConstants";
-import { useEngineerAddWorkLog } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useEngineerAddWorkLog,
+  useMarkWorkLogFileUploaded,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
@@ -41,30 +44,34 @@ const UpdateLogForm = ({
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
 
+  const refetchTimeline = async () => {
+    if (!assignmentId) return;
+    try {
+      const response = await getJobLogs({
+        client: apiClient,
+        path: { assignmentId },
+      });
+      const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+      queryClient.setQueryData(exactQueryKey, response.data);
+    } catch (error) {
+      console.error("Failed to refetch timeline:", error);
+      queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+    }
+  };
+
   // Mutation for adding work log
   const { mutateAsync: addWorkLog } = useEngineerAddWorkLog({
     assignmentId,
-    onSuccess: async () => {
-      toast.success("Log submitted successfully!");
-      // Force refetch the job logs to update timeline immediately
-      if (assignmentId) {
-        try {
-          const response = await getJobLogs({
-            client: apiClient,
-            path: { assignmentId },
-          });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
-          queryClient.setQueryData(exactQueryKey, response.data);
-        } catch (error) {
-          console.error("Failed to refetch timeline:", error);
-          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
-        }
-      }
-      onClose();
-    },
     onError: (error) => {
       console.error("Failed to submit log:", error);
       toast.error("Failed to submit log. Please try again.");
+    },
+  });
+
+  // Mutation for marking worklog file as uploaded
+  const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
+    onError: (error) => {
+      console.error("Failed to mark file as uploaded:", error);
     },
   });
 
@@ -123,7 +130,22 @@ const UpdateLogForm = ({
                   body: attachment,
                   headers: { "Content-Type": attachment.type },
                 });
+
+                // Mark file as uploaded in the database
+                if (response.id && assignmentId) {
+                  await markFileUploaded({
+                    body: {
+                      assignmentId,
+                      target: "log",
+                      logId: response.id,
+                    },
+                  });
+                }
               }
+
+              await refetchTimeline();
+              toast.success("Log submitted successfully!");
+              onClose();
             } else {
               toast.error("No assignment found. Cannot submit log.");
             }
@@ -148,13 +170,14 @@ const UpdateLogForm = ({
       </div>
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <div className="mb-2">
+          {/* future use 
           <InputField
             name="title"
             label={UPDATE_LOG_LABELS.titleLabel}
             required
             placeholder={UPDATE_LOG_LABELS.titlePlaceholder}
             rules={{ required: UPDATE_LOG_LABELS.titleRequiredMessage }}
-          />
+          /> */}
         </div>
         <div className="mb-2">
           <TextareaInput

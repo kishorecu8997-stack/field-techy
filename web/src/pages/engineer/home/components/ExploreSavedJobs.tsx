@@ -15,6 +15,8 @@ import { scrollToTop } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
 import type { JobItem } from "../types";
 import type { JobType } from "@/constants/jobTypes";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * explore jobs page component
@@ -24,6 +26,13 @@ import type { JobType } from "@/constants/jobTypes";
 const ExploreSavedJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<Filters>({
+    q: "",
+    country: "",
+    state: "",
+    city: "",
+    countryId: null,
+    stateId: null,
+    cityId: null,
     location: [],
     category: [],
     rating: [],
@@ -42,7 +51,11 @@ const ExploreSavedJobs = () => {
     jobTypeEnum: "",
   });
 
-  const { data, refetch } = useGetEngineerSavedJobs({
+  const {
+    data,
+    refetch,
+    isLoading: savedJobsLoading,
+  } = useGetEngineerSavedJobs({
     limit: 10,
     page: currentPage,
     jobType: (filters.jobTypeEnum as JobType) || null,
@@ -138,15 +151,24 @@ const ExploreSavedJobs = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    scrollToTop();
   };
 
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
     setCurrentPage(1);
+    scrollToTop();
   };
 
   const handleClearAllFilters = () => {
     setFilters({
+      q: "",
+      country: "",
+      state: "",
+      city: "",
+      countryId: null,
+      stateId: null,
+      cityId: null,
       location: [],
       category: [],
       rating: [],
@@ -173,16 +195,21 @@ const ExploreSavedJobs = () => {
         <MyJobsHeader
           title="Saved Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
+          isShowSort={false}
           isShowBreadcrumb={false}
-          description={`${data?.summary?.savedJobsCount} saved job${
-            data?.summary?.savedJobsCount !== 1 ? "s" : ""
-          }`}
+          description={`${data?.summary?.savedJobsCount} saved job${data?.summary?.savedJobsCount !== 1 ? "s" : ""
+            }`}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
           {/* LEFT SIDE (Jobs Listing) */}
           <div className="lg:col-span-3">
-            {paginatedJobs.length > 0 ? (
+            {savedJobsLoading ? (
+              /* This centers the loader horizontally and vertically */
+              <div className="flex h-64 w-full items-center justify-center">
+                <LoaderComponent />
+              </div>
+            ) : paginatedJobs.length > 0 ? (
               paginatedJobs.map((job) => (
                 <JobCard
                   key={job.id}
@@ -197,19 +224,28 @@ const ExploreSavedJobs = () => {
                 <p className="text-xl text-gray-600 dark:text-gray-400">
                   No jobs found.
                 </p>
-                <p className="mt-4 text-gray-500 dark:text-gray-300">
+                <p className="mt-4 mb-2 text-gray-500 dark:text-gray-300">
                   Browse jobs and click the bookmark icon to save them here!
                 </p>
+                <Button
+                  onClick={handleClearAllFilters}
+                  variant="primary"
+                  size="lg"
+                >
+                  Clear all filters
+                </Button>
               </div>
             )}
 
             {/* Pagination Component */}
             {paginatedJobs.length > 0 && totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
+              <div className="mt-10 flex justify-center">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
             )}
           </div>
 

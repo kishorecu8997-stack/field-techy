@@ -145,48 +145,13 @@ export const PhoneInputWithValidation = ({
       if (!/^[789]/.test(phoneNumber)) {
         return "UK mobile numbers must start with 7, 8, or 9";
       }
-    } else if (validationKey === COUNTRIES.australia) {
-      if (phoneNumber.length !== 9) {
-        return "Australia mobile number must be exactly 9 digits long";
-      }
-    } else if (validationKey === COUNTRIES.brazil) {
-      if (phoneNumber.length !== 11) {
-        return "Brazil mobile number must be exactly 11 digits long";
-      }
-    } else if (validationKey === COUNTRIES.china) {
-      if (phoneNumber.length !== 11) {
-        return "China mobile number must be exactly 11 digits long";
-      }
-    } else if (validationKey === COUNTRIES.egypt) {
-      if (phoneNumber.length !== 10) {
-        return "Egypt mobile number must be exactly 10 digits long";
-      }
-    } else if (validationKey === COUNTRIES.france) {
-      if (phoneNumber.length !== 9) {
-        return "France mobile number must be exactly 9 digits long";
-      }
-      if (!/^[67]/.test(phoneNumber)) {
-        return "France mobile numbers must start with 6 or 7";
-      }
-    } else if (validationKey === COUNTRIES.germany) {
-      if (phoneNumber.length < 10 || phoneNumber.length > 11) {
-        return "Germany mobile number must be 10 to 11 digits long";
-      }
     } else if (validationKey === COUNTRIES.japan) {
       if (phoneNumber.length !== 10) {
         return "Japan mobile number must be exactly 10 digits long";
       }
-    } else if (validationKey === COUNTRIES.spain) {
+    } else if (validationKey === COUNTRIES.srilanka) {
       if (phoneNumber.length !== 9) {
-        return "Spain mobile number must be exactly 9 digits long";
-      }
-    } else if (validationKey === COUNTRIES.usa) {
-      if (phoneNumber.length !== 10) {
-        return "United States mobile number must be exactly 10 digits long";
-      }
-    } else if (validationKey === COUNTRIES.uae) {
-      if (phoneNumber.length !== 9) {
-        return "UAE mobile number must be exactly 9 digits long";
+        return "Sri Lanka mobile number must be exactly 9 digits long";
       }
     }
 
@@ -239,25 +204,13 @@ export const PhoneInputWithValidation = ({
             if (
               selectedCountry.validationKey === COUNTRIES.india ||
               selectedCountry.validationKey === COUNTRIES.uk ||
-              selectedCountry.validationKey === COUNTRIES.japan ||
-              selectedCountry.validationKey === COUNTRIES.egypt ||
-              selectedCountry.validationKey === COUNTRIES.usa
+              selectedCountry.validationKey === COUNTRIES.japan
             ) {
               maxLength = 10;
             } else if (
-              selectedCountry.validationKey === COUNTRIES.australia ||
-              selectedCountry.validationKey === COUNTRIES.uae ||
-              selectedCountry.validationKey === COUNTRIES.spain ||
-              selectedCountry.validationKey === COUNTRIES.france
+              selectedCountry.validationKey === COUNTRIES.srilanka
             ) {
               maxLength = 9;
-            } else if (
-              selectedCountry.validationKey === COUNTRIES.brazil ||
-              selectedCountry.validationKey === COUNTRIES.china
-            ) {
-              maxLength = 11;
-            } else if (selectedCountry.validationKey === COUNTRIES.germany) {
-              maxLength = 11;
             }
           }
 
@@ -286,15 +239,14 @@ export const PhoneInputWithValidation = ({
             <div className="flex flex-col gap-1">
               <div className="relative">
                 <div
-                  className={`flex w-full rounded-md border ${
-                    error
-                      ? "border-red-500"
-                      : isAvailable
-                        ? "border-green-500"
-                        : isUnavailable
-                          ? "border-red-500"
-                          : "border-gray-300 dark:border-gray-600"
-                  }`}
+                  className={`flex w-full rounded-md border ${error
+                    ? "border-red-500"
+                    : isAvailable
+                      ? "border-green-500"
+                      : isUnavailable
+                        ? "border-red-500"
+                        : "border-gray-300 dark:border-gray-600"
+                    }`}
                 >
                   <CountrySelect
                     countries={phoneCountries}

@@ -1,6 +1,8 @@
 import { absoluteUrls } from "@/config/urls";
 import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
+import ErrorState from "@/shared/components/commonUI/ErrorState";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { useFCM } from "@/shared/hooks/useFCM";
 import { useGeolocation } from "@/shared/hooks/useGeolocation";
 import { useDeviceStore } from "@/shared/store/useDeviceStore";
@@ -14,9 +16,6 @@ import { FeaturedJobs } from "./components/FeaturedJobs";
 import JobExplorationBanner from "./components/JobExplorationBanner";
 import { RecommendedJobs } from "./components/RecommendedJobs";
 import type { JobItem } from "./types";
-import { formatAmount } from "@/utils/currency";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-import ErrorState from "@/shared/components/commonUI/ErrorState";
 
 /**
  * Home page component.
@@ -47,7 +46,7 @@ const Home = () => {
       const pay = job.totalPrice;
       const currencySymbol = job.currencySymbol ?? "$";
 
-      const formattedPay = formatAmount(pay, currencySymbol);
+      // const formattedPay = formatAmount(pay, currencySymbol);
 
       return {
         id: job.id.toString(),
@@ -65,15 +64,19 @@ const Home = () => {
         startDate: job.startDate || new Date().toISOString(),
         endDate: job.endDate || null,
         numberOfVacancy: job.vacancies || 1,
+        assignedEngineerCount:
+          (job as unknown as { assignedEngineerCount?: number })
+            .assignedEngineerCount || 0,
         experience: job.experienceLevelId || 0,
-        salary: formattedPay,
+        salary: pay,
+        currencySymbol: currencySymbol,
         status: job.status || "NEW",
         skills: [],
         tools: [],
         toolImage: null,
         toolAdditionalBudget: null,
         postedTime: job.createdAt || new Date().toISOString(),
-        jobDuration: "10 Days",
+        // jobDuration: "",
         budgetType: null,
         isSaved: job.isSaved,
         client: {
@@ -109,15 +112,21 @@ const Home = () => {
 
   const findNewJobs = useMemo(() => {
     return (
-      jobs?.filter((job) => job.status === "Posted" || job.status === "NEW") ||
-      []
+      jobs?.filter(
+        (job) =>
+          (job.status === "Posted" || job.status === "NEW") &&
+          (job.assignedEngineerCount ?? 0) < job.numberOfVacancy,
+      ) || []
     );
   }, [jobs]);
 
   const recommendedJobs = useMemo(() => {
     return (
-      jobs?.filter((job) => job.status === "Posted" || job.status === "NEW") ||
-      []
+      jobs?.filter(
+        (job) =>
+          (job.status === "Posted" || job.status === "NEW") &&
+          (job.assignedEngineerCount ?? 0) < job.numberOfVacancy,
+      ) || []
     );
   }, [jobs]);
 
