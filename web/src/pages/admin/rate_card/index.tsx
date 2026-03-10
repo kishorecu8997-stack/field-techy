@@ -9,8 +9,7 @@ import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
 import useToggleStatus from "@/shared/components/ToggleStatus";
-import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
-// import { useAdminDeleteRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useGetRateCards } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
@@ -40,16 +39,7 @@ const ManageRateCards: React.FC = () => {
     limit: 100,
   });
 
-  // const deleteRateCardMutation = useAdminDeleteRateCard({
-  //   onSuccess: () => {
-  //     toast.success("Rate card deleted successfully!");
-  //     refetch();
-  //   },
-  //   onError: (error: unknown) => {
-  //     console.error("Failed to delete rate card:", error);
-  //     toast.error("Failed to delete rate card. Please try again.");
-  //   },
-  // });
+
 
   // Transform API data to match table format with grouped experience levels
   const tableData: RateCardProps[] = useMemo(() => {
@@ -57,10 +47,15 @@ const ManageRateCards: React.FC = () => {
     
     // Group by serviceCategoryId
     const groupedData = new Map<number, RateCardProps>();
-    
+
     rateCardsResponse.data.forEach((item) => {
       const key = item.serviceCategoryId;
-      
+      // Map experienceLevelId to level string
+      let level: "L1" | "L2" | "L3" | undefined;
+      if (item.experienceLevelId === 1) level = "L1";
+      else if (item.experienceLevelId === 2) level = "L2";
+      else if (item.experienceLevelId === 3) level = "L3";
+
       if (!groupedData.has(key)) {
         // First entry for this service category - create base row
         groupedData.set(key, {
@@ -68,7 +63,7 @@ const ManageRateCards: React.FC = () => {
           skillSet: item.serviceCategory || "-",
           region: item.region || "-",
           location: item.country || "-",
-          experienceLevel: item.experienceLevels?.join(", ") || "-",
+          experienceLevel: ["L1", "L2", "L3"].join(", ") || "-",
           hourly: "-",
           daily: "-",
           monthly: "-",
@@ -87,11 +82,10 @@ const ManageRateCards: React.FC = () => {
           },
         });
       }
-      
+
       // Get the existing row and update with this level's rates
       const existingRow = groupedData.get(key)!;
-      const level = item.experienceLevels?.[0] as "L1" | "L2" | "L3";
-      
+
       if (level && existingRow.experienceLevelRates) {
         // Parse the rates array from the new API response
         const ratesMap: Record<string, string> = {};
@@ -103,7 +97,8 @@ const ManageRateCards: React.FC = () => {
             else if (rate.modelName === "Monthly") ratesMap.monthly = rate.rate || "-";
           });
         }
-        
+
+        // Update only the correct level in the grouped row
         existingRow.experienceLevelRates[level] = {
           hourly: ratesMap.hourly || "-",
           daily: ratesMap.daily || "-",
@@ -111,7 +106,7 @@ const ManageRateCards: React.FC = () => {
         };
       }
     });
-    
+
     return Array.from(groupedData.values());
   }, [rateCardsResponse]);
 
