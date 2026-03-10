@@ -7,6 +7,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import Popup from "@/shared/components/Popup";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useForm } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
@@ -32,6 +33,8 @@ const ReportPage = ({
   refetchCount: () => void;
 }) => {
   const { showPopup } = usePopupStore();
+  const regionId = useUserSessionStore.getState().session?.regionId;
+
   const { jobId } = useParams();
   const isClient = location.pathname.includes("client");
   const { mutate: saveClientReport } = useSaveReportClient();
@@ -67,10 +70,10 @@ const ReportPage = ({
 
             const attachmentData = selectedFile
               ? {
-                  filename: selectedFile.name,
-                  size: selectedFile.size,
-                  mimeType: selectedFile.type,
-                }
+                filename: selectedFile.name,
+                size: selectedFile.size,
+                mimeType: selectedFile.type,
+              }
               : undefined;
 
             const reportPayload = {
@@ -79,6 +82,7 @@ const ReportPage = ({
               issueCategory: data.category,
               priorityLevel: data.priority,
               attachment: attachmentData,
+              regionId,
             };
 
             const mutationOptions = {

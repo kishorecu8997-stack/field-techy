@@ -19,6 +19,7 @@ import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
 import { useQueryClient } from "@tanstack/react-query";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 interface UpdateLogFormProps {
   onClose: () => void;
@@ -43,6 +44,8 @@ const UpdateLogForm = ({
   });
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
+  const regionId = useUserSessionStore.getState().session?.regionId;
+
 
   const refetchTimeline = async () => {
     if (!assignmentId) return;
@@ -50,6 +53,7 @@ const UpdateLogForm = ({
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
+        query: { regionId }
       });
       const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
       queryClient.setQueryData(exactQueryKey, response.data);
@@ -97,10 +101,10 @@ const UpdateLogForm = ({
               // Prepare attachment metadata if file exists
               const attachmentMeta = attachment
                 ? {
-                    filename: attachment.name,
-                    size: attachment.size,
-                    mimeType: attachment.type,
-                  }
+                  filename: attachment.name,
+                  size: attachment.size,
+                  mimeType: attachment.type,
+                }
                 : undefined;
 
               // Prepare request body - only include attachment if file exists
@@ -111,6 +115,7 @@ const UpdateLogForm = ({
                 logType: "progress_update",
                 title: data.title,
                 details: data.notes,
+                regionId
               };
 
               // Only add attachment if file exists
@@ -124,8 +129,8 @@ const UpdateLogForm = ({
               });
 
               // Upload file to S3 if URL is provided in response
-              if (attachment && response.attachmentUrl) {
-                await fetch(response.attachmentUrl, {
+              if (attachment && response.attachment?.url) {
+                await fetch(response.attachment.url, {
                   method: "PUT",
                   body: attachment,
                   headers: { "Content-Type": attachment.type },

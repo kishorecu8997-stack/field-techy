@@ -127,6 +127,7 @@ const MyJobsClient: React.FC = () => {
     description: apiJob.jobDescription || undefined,
     postedTime: apiJob.createdAt || undefined,
     currencySymbol: apiJob.currencySymbol || "$",
+    regionId: apiJob.regionId,
   });
 
   // allJobs is already filtered by the API — no client-side filtering needed

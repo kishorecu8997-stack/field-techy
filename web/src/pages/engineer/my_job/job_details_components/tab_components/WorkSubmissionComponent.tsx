@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { scrollToTop } from "@/utils";
 import { useEngineerSubmitSignOff } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Form data structure for work submission component.
@@ -61,6 +62,9 @@ const WorkSubmissionComponent: React.FC<{
     rating,
     reviewComment,
   } = workSubmissions;
+
+  const regionId = useUserSessionStore.getState().session?.regionId;
+
   const { showPopup } = usePopupStore();
   const { mutateAsync: submitSignOff } = useEngineerSubmitSignOff({
     assignmentId,
@@ -70,9 +74,8 @@ const WorkSubmissionComponent: React.FC<{
     return Array.from({ length: 5 }, (_, i) => (
       <span
         key={i}
-        className={`text-xl ${
-          i < rating ? "text-yellow-400" : "text-gray-300"
-        }`}
+        className={`text-xl ${i < rating ? "text-yellow-400" : "text-gray-300"
+          }`}
       >
         ★
       </span>
@@ -123,27 +126,28 @@ const WorkSubmissionComponent: React.FC<{
               // Prepare attachment metadata if file exists
               const attachmentMeta = file
                 ? {
-                    filename: file.name,
-                    size: file.size,
-                    mimeType: file.type,
-                  }
+                  filename: file.name,
+                  size: file.size,
+                  mimeType: file.type,
+                }
                 : undefined;
 
               // Call the API to submit work
               await submitSignOff({
                 body: {
                   assignmentId: Number(assignmentId),
+                  regionId,
                   workAttachment: attachmentMeta
                     ? {
-                        filename: attachmentMeta.filename,
-                        size: attachmentMeta.size,
-                        mimeType: attachmentMeta.mimeType,
-                      }
+                      filename: attachmentMeta.filename,
+                      size: attachmentMeta.size,
+                      mimeType: attachmentMeta.mimeType,
+                    }
                     : {
-                        filename: "",
-                        size: 0,
-                        mimeType: "",
-                      },
+                      filename: "",
+                      size: 0,
+                      mimeType: "",
+                    },
                   signatureAttachment: {
                     filename: "signature",
                     size: 0,

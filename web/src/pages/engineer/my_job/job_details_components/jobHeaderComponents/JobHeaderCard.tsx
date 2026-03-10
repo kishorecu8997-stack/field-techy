@@ -1,23 +1,23 @@
 import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
 
+import { absoluteUrls } from "@/config/urls";
 import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
 import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
+import ReportPage from "@/pages/client/report";
 import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
+import { useReportCount } from "@/shared/hooks/useReportCount";
 import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
+import { IoIosWarning } from "react-icons/io";
 import { IoChatbubble, IoEllipsisVerticalOutline } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import ReportPage from "@/pages/client/report";
-import { IoIosWarning } from "react-icons/io";
-import { absoluteUrls } from "@/config/urls";
-import { useReportCount } from "@/shared/hooks/useReportCount";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -62,6 +62,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   jobStartDate,
   jobEndDate,
   onToggleChat,
+  clientRegionId,
 }) => {
   const params = useParams();
   const location = useLocation();
@@ -147,41 +148,41 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             {(numberOfVacancy !== undefined ||
               numberOfApplicants !== undefined ||
               numberOfApprovedProposals !== undefined) && (
-              <p className="text-sm mt-1">
-                {numberOfVacancy !== undefined && (
-                  <span>
-                    {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
-                  </span>
-                )}
-                {numberOfVacancy !== undefined &&
-                  numberOfApprovedProposals !== undefined && (
-                    <span className="ml-2 text-green-400">
-                      (Filled: {numberOfApprovedProposals}/{numberOfVacancy})
+                <p className="text-sm mt-1">
+                  {numberOfVacancy !== undefined && (
+                    <span>
+                      {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
                     </span>
                   )}
-                {numberOfVacancy !== undefined &&
-                  (numberOfApplicants !== undefined ||
-                    numberOfApprovedProposals !== undefined) && (
-                    <span>{JOB_HEADER_COPY.separator}</span>
+                  {numberOfVacancy !== undefined &&
+                    numberOfApprovedProposals !== undefined && (
+                      <span className="ml-2 text-green-400">
+                        (Filled: {numberOfApprovedProposals}/{numberOfVacancy})
+                      </span>
+                    )}
+                  {numberOfVacancy !== undefined &&
+                    (numberOfApplicants !== undefined ||
+                      numberOfApprovedProposals !== undefined) && (
+                      <span>{JOB_HEADER_COPY.separator}</span>
+                    )}
+                  {numberOfApplicants !== undefined && (
+                    <span>
+                      {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
+                    </span>
                   )}
-                {numberOfApplicants !== undefined && (
-                  <span>
-                    {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
-                  </span>
-                )}
-              </p>
-            )}
+                </p>
+              )}
           </div>
           <div className="flex gap-2 items-center">
             <div
               onClick={() =>
                 isClient
                   ? navigate(
-                      `${absoluteUrls.client.home.my_jobs}/${params.jobId}/report_updates`,
-                    )
+                    `${absoluteUrls.client.home.my_jobs}/${params.jobId}/report_updates`,
+                  )
                   : navigate(
-                      `${absoluteUrls.engineer.home.my_jobs}/${params.jobId}/report_updates`,
-                    )
+                    `${absoluteUrls.engineer.home.my_jobs}/${params.jobId}/report_updates`,
+                  )
               }
               className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
             >
@@ -307,6 +308,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             numberOfApprovedProposals={numberOfApprovedProposals}
             jobStartDate={jobStartDate}
             jobEndDate={jobEndDate}
+            clientRegionId={clientRegionId}
           />
         )}
       </div>

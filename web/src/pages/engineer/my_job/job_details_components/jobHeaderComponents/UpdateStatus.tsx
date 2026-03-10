@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * UpdateStatus Component
@@ -29,6 +30,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   const { jobId } = useParams<{ jobId: string }>();
   const queryClient = useQueryClient();
+  const regionId = useUserSessionStore.getState().session?.regionId;
 
   // Use jobId as assignmentId since that's what the API expects
   const assignmentId = jobId ? Number(jobId) : undefined;
@@ -126,54 +128,21 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
               if (data.workScreenShot && data.workScreenShot.length > 0) {
                 const file = data.workScreenShot[0];
                 console.log(file);
-
-                // Replace the correct API, once the API is ready
-                // 1. Get presigned URL
-                // const uploadRes = await uploadFile({
-                //   body: {
-                //     fileType: "WORK_SCREEN_SHOT",
-                //     filename: file.name,
-                //     mimeType: file.type,
-                //     size: file.size,
-                //   },
-                //   headers: { authorization: "" },
-                // });
-
-                // if (uploadRes.uploadUrl) {
-                //   // 2. Upload to S3
-                //   await axios.put(uploadRes.uploadUrl, file, {
-                //     headers: { "Content-Type": file.type },
-                //   });
-
-                //   // 3. Mark as uploaded
-                //   await markFileUploaded({
-                //     body: {
-                //       fileId: Number(uploadRes.fileId),
-                //     },
-                //     headers: { authorization: "" },
-                //   });
-
-                //   attachmentMetadata = {
-                //     filename: file.name,
-                //     mimeType: file.type,
-                //     size: file.size,
-                //   };
-                // }
               }
 
               // Handle Status Update
               if (data.status === "in-progress") {
                 await requestStart({
-                  body: { assignmentId: Number(jobId) },
+                  body: { assignmentId: Number(jobId), regionId },
                 });
               } else {
-                // For 'check-in', 'delayed', 'approved' -> use Work Log
                 await addWorkLog({
                   body: {
                     assignmentId: Number(jobId),
                     logType: data.status,
                     details: data.remarks,
                     attachment: attachmentMetadata,
+                    regionId
                   },
                 });
               }

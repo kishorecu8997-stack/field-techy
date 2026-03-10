@@ -1,13 +1,13 @@
 import { assetsConfig } from "@/assets";
+import { useCreateRateAndReviewAssignment } from "@/shared/apiServices/commonOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { TextareaInput } from "@/shared/components/commonUI/inputs/TextareaInput";
 import { StarRating } from "@/shared/components/commonUI/StarRating";
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { Button } from "../commonUI/Buttons";
 import { FormContainer } from "../commonUI/inputs/FormContainer";
-import { toast } from "react-toastify";
-import { useCreateRateAndReviewAssignment } from "@/shared/apiServices/commonOpenApiService";
-import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 type GiveFeedbackModalProps = {
   onClose?: (result: unknown) => void;
@@ -16,6 +16,7 @@ type GiveFeedbackModalProps = {
   targetRole?: string;
   placeholder?: string;
   assignmentId?: number;
+  regionId?: number;
 };
 
 type FormValues = {
@@ -36,7 +37,12 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
   placeholder = "Share your feedback...",
   onClose,
   assignmentId,
+  regionId,
 }) => {
+
+  // const [searchParams] = useSearchParams();
+  // const regionId = searchParams.get("regionId");
+
   const { mutate: submitFeedback, isPending } =
     useCreateRateAndReviewAssignment({
       onSuccess: () => {
@@ -74,6 +80,7 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
         assignmentId,
         rating: data.rating,
         review: (data.review || "").trim(),
+        regionId,
       },
     });
   };

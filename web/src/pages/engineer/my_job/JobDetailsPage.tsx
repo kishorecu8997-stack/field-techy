@@ -35,6 +35,7 @@ import type {
   OfferedJobStatusType,
   ProgressUpdate,
 } from "./types.d";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -55,9 +56,9 @@ const mapJobToJobInfo = (
     },
     // Add total price if available
     job.totalPrice &&
-      job.currencySymbol && {
-        text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
-      },
+    job.currencySymbol && {
+      text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
+    },
     // Add work location
     job.workLocationName && { text: `Location: ${job.workLocationName}` },
   ].filter(Boolean) as Array<{ text: string }>;
@@ -111,24 +112,24 @@ const mapJobToJobOverview = (
   // Extract skills - convert IDs to labels using skillMap
   const skills = Array.isArray(job.skills)
     ? job.skills.map((skill) => {
-        const skillId =
-          typeof skill === "number" ? skill : parseInt(String(skill), 10);
-        const skillLabel = skillMap.get(skillId);
-        return skillLabel || String(skill);
-      })
+      const skillId =
+        typeof skill === "number" ? skill : parseInt(String(skill), 10);
+      const skillLabel = skillMap.get(skillId);
+      return skillLabel || String(skill);
+    })
     : [];
 
   // Extract tools - convert IDs to labels using toolMap
   const tools = Array.isArray(job.tools)
-    ? job.tools.map((tool, index) => {
-        const toolId = String(tool);
-        const toolLabel = toolMap.get(toolId);
-        return {
-          name: toolLabel || String(tool),
-          price: "",
-          image: job.toolAttachmentUrls?.[index],
-        };
-      })
+    ? job.tools.map((tool) => {
+      const toolId = String(tool.toolId);
+      const toolLabel = toolMap.get(toolId);
+      return {
+        name: toolLabel || tool.toolName || toolId,
+        price: tool.budget || "",
+        image: tool.imageUrl || undefined,
+      };
+    })
     : [];
 
   // Extract duration from startDate and endDate
@@ -299,12 +300,12 @@ const JobDetailsPage = () => {
         // Get original engineer's content
         const originalContent =
           log.details || "Engineer submitted a progress update";
-        const originalAttachment = log.attachmentUrl
+        const originalAttachment = log.attachment?.url
           ? decodeURIComponent(
-              log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
-            )
+            log.attachment?.url.split("/").pop()?.split("?")[0] || "",
+          )
           : undefined;
-        const originalAttachmentUrl = log.attachmentUrl;
+        const originalAttachmentUrl = log.attachment?.url;
 
         // Determine statusText based on log status OR latest revision status
         // If there's a pending revision, show "Revision Requested"
@@ -329,13 +330,13 @@ const JobDetailsPage = () => {
           attachmentUrl: originalAttachmentUrl,
           timestamp: log.timestamp
             ? new Date(log.timestamp).toLocaleString("en-US", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              })
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })
             : "",
           statusText,
           statusColor:
@@ -426,7 +427,7 @@ const JobDetailsPage = () => {
   };
 
   const { data: reviewsData } = useGetUserRatingAndReviews(true, assignmentId);
-
+  const regionId = useUserSessionStore((state) => state.session?.regionId);
   const handleOpenGiveClientFeedback = () => {
     showPopup({
       body: (
@@ -439,6 +440,7 @@ const JobDetailsPage = () => {
           targetRole={job?.clientDetails?.clientType || "client"}
           placeholder="Share your feedback about your experience with the client..."
           assignmentId={job?.assignmentId || undefined}
+          regionId={regionId || undefined}
         />
       ),
     });
@@ -482,7 +484,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowSort={false}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -507,7 +509,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowSort={false}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <LoaderComponent />
@@ -526,7 +528,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowSort={false}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -618,7 +620,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isShowSort={false}
           isShowBreadcrumb
           customLabels={
@@ -694,10 +696,10 @@ const JobDetailsPage = () => {
                   job
                     ? mapJobToJobInfo(job)
                     : {
-                        jobTitle: "",
-                        terms: { title: "Job Details", items: [] },
-                        files: [],
-                      }
+                      jobTitle: "",
+                      terms: { title: "Job Details", items: [] },
+                      files: [],
+                    }
                 }
                 jobOverview={job ? jobOverview : undefined}
               />
@@ -733,7 +735,7 @@ const JobDetailsPage = () => {
           isOpen={isReviewOpen}
           onClose={() => setIsReviewOpen(false)}
           clientName={clientName}
-          // onSubmit={handleSubmitReview}
+        // onSubmit={handleSubmitReview}
         />
       )}
     </div>

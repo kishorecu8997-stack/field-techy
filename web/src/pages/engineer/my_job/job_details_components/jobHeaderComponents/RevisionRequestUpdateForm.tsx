@@ -25,6 +25,7 @@ import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
 import { useQueryClient } from "@tanstack/react-query";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Revision request/update form for engineers to send notes and optional attachments.
@@ -47,6 +48,8 @@ const RevisionRequestUpdateForm = ({
 
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
+  const regionId = useUserSessionStore.getState().session?.regionId;
+
 
   const refetchTimeline = async () => {
     if (!assignmentId) return;
@@ -54,6 +57,7 @@ const RevisionRequestUpdateForm = ({
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
+        query: { regionId }
       });
       const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
       queryClient.setQueryData(exactQueryKey, response.data);
@@ -109,12 +113,13 @@ const RevisionRequestUpdateForm = ({
                     logId,
                     revisionId,
                     content: notes,
+                    regionId,
                     attachment: attachment
                       ? {
-                          filename: attachment.name,
-                          size: attachment.size,
-                          mimeType: attachment.type,
-                        }
+                        filename: attachment.name,
+                        size: attachment.size,
+                        mimeType: attachment.type,
+                      }
                       : undefined,
                   },
                 });

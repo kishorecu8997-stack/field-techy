@@ -9,7 +9,6 @@ import { UserRole } from "@/shared/enums/users";
 import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
 import {
   useUserSessionStore,
-  type UserSession,
 } from "@/shared/store/useUserSessionStore";
 import { getTwoFaStorage } from "@/utils/TwoFAStorage";
 import { AxiosError } from "axios";
@@ -17,6 +16,7 @@ import { toast } from "react-toastify";
 import { AuthLogin } from "@/shared/components/auth/AuthLogin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginEmailFormData } from "../../validations/LoginEmail";
+import { decodeJwtPayload, type JwtClientPayload } from "@/utils/jwtUtils";
 
 /**
  * Login component
@@ -46,12 +46,19 @@ const Login = ({
           localStorage.setItem("auth_token", resp.token);
         }
 
+        const payload = decodeJwtPayload<JwtClientPayload>(resp.token);
+        if (!payload) {
+          toast.error("Login failed: unable to verify session. Please try again.");
+          return;
+        }
+
         setUserSession({
           accessToken: resp.token,
-          userId: "uuid-123", // TODO: Get actual user ID from token or profile response
+          userId: payload.userId ? String(payload.userId) : "uuid-123",
           role: UserRole.ENGINEER,
           initiatedAt: Date.now(),
-        } as UserSession);
+          regionId: payload.regionId,
+        });
 
         const twoFa = getTwoFaStorage();
         if (twoFa.enabled) {

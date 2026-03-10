@@ -29,6 +29,7 @@ import {
   BREAK_REQUEST_MESSAGES,
 } from "@/dummy_data/breakRequestDummy";
 import { useEngineerRequestBreak } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 // import { queryKeys } from "@/shared/apiServices/queryKeys";
 
 /**
@@ -56,6 +57,8 @@ const BreakRequestForm = ({
   const formCtx = useForm<BreakRequestFormFields>({
     defaultValues: BREAK_REQUEST_DEFAULTS,
   });
+  const regionId = useUserSessionStore.getState().session?.regionId;
+
 
   const { watch, setValue, setError, clearErrors } = formCtx;
   const startTime = watch("startTime");
@@ -80,6 +83,7 @@ const BreakRequestForm = ({
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
+            query: { regionId }
           });
 
           // Update the query cache with the new data using exact key from getJobLogsQueryKey
@@ -164,11 +168,11 @@ const BreakRequestForm = ({
 
   const minEndDate = startDate
     ? (() => {
-        const d = new Date(startDate);
-        d.setDate(d.getDate() + 1);
-        d.setHours(0, 0, 0, 0);
-        return d;
-      })()
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + 1);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    })()
     : undefined;
 
   const formatDateToMMDDYYYY = (dateString: string) => {
@@ -229,6 +233,7 @@ const BreakRequestForm = ({
           reason: data.reason || "",
           startAt,
           endAt,
+          regionId
         },
       });
 

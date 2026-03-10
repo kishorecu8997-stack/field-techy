@@ -10,6 +10,7 @@ import ManageProposalsTab from "./tab_components/ManageProposalsTab";
 import TimelineSection from "./tab_components/timeline_section/TimelineSection";
 import type { JobOverviewProps } from "@/shared/components/types";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
+import { useSearchParams } from "react-router-dom";
 
 //future use
 // // Helper function to get skill name from ID
@@ -39,6 +40,7 @@ const mapClientJobToJobOverview = (
   const getJobValue = <T,>(key: string): T | null | undefined => {
     return (job as Record<string, unknown>)?.[key] as T | null | undefined;
   };
+
 
   // Extract basic job info
   const jobTitle = job?.jobTitle || job?.title || "";
@@ -311,6 +313,10 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   jobID,
   numberOfVacancy,
 }) => {
+
+  const [searchParams] = useSearchParams();
+  const regionIdParam = searchParams.get("regionId");
+
   const initialTab =
     activeTab && activeTab !== JOB_TAB_LABELS.timeline
       ? activeTab
@@ -325,8 +331,8 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     parsedJobId && !isNaN(parsedJobId) ? parsedJobId : undefined;
   const { data: assignmentsData, isLoading: isLoadingAssignments } =
     useClientGetAssignmentDetails(
-      { jobId: validJobId, assignmentId },
-      !!(validJobId || assignmentId),
+      { jobId: validJobId, regionId: Number(regionIdParam) },
+      !!(validJobId),
     );
 
   // Fetch skills, tools, experience levels and engagement models from the lookup API
@@ -453,99 +459,102 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   const tabs = [
     ...(showTimelineTab
       ? [
-          {
-            label: JOB_TAB_LABELS.timeline,
-            content: (
-              <div className="space-y-2 md:space-y-5 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm pt-4 pb-5 px-4 md:px-5 md:pt-5">
-                {isLoadingAssignments ? (
-                  <div className="p-8 text-center text-gray-500">
-                    Loading engineers and timeline...
-                  </div>
-                ) : !assignmentsData || assignmentsData.length === 0 ? (
-                  <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg border">
-                    No engineers assigned yet.
-                  </div>
-                ) : (
-                  // First, filter to active assignments and then group by unique engineer
-                  (() => {
-                    // Define active statuses
-                    const activeStatuses = [
-                      "assigned",
-                      "accepted",
-                      "started",
-                      "submitted",
-                      "start_pending_approval",
-                      "submit_pending_approval",
-                      "submit_pending",
-                      "in_progress",
-                      "active",
-                    ];
+        {
+          label: JOB_TAB_LABELS.timeline,
+          content: (
+            <div className="space-y-2 md:space-y-5 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm pt-4 pb-5 px-4 md:px-5 md:pt-5">
+              {isLoadingAssignments ? (
+                <div className="p-8 text-center text-gray-500">
+                  Loading engineers and timeline...
+                </div>
+              ) : !assignmentsData || assignmentsData.length === 0 ? (
+                <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg border">
+                  No engineers assigned yet.
+                </div>
+              ) : (
+                // First, filter to active assignments and then group by unique engineer
+                (() => {
+                  // Define active statuses
+                  const activeStatuses = [
+                    "assigned",
+                    "accepted",
+                    "started",
+                    "submitted",
+                    "start_pending_approval",
+                    "submit_pending_approval",
+                    "submit_pending",
+                    "in_progress",
+                    "active",
+                  ];
 
-                    // Filter to active assignments with engineers
-                    const activeAssignments = assignmentsData.filter((ass) => {
-                      const status = (ass?.assignmentStatus || "")
-                        .toLowerCase()
-                        .trim();
-                      const hasEngineer = !!ass?.engineer?.id;
-                      return (
-                        hasEngineer &&
-                        (activeStatuses.some((s) => status.includes(s)) ||
-                          status === "" ||
-                          status === "pending")
-                      );
-                    });
-
-                    // Group by unique engineerId to avoid duplicates
-                    const assignmentsByEngineer = new Map<
-                      number,
-                      (typeof activeAssignments)[0]
-                    >();
-                    activeAssignments.forEach((ass) => {
-                      const engineerId = ass.engineer?.id;
-                      if (engineerId) {
-                        // If we already have this engineer, prefer the one matching current assignmentId
-                        const existing = assignmentsByEngineer.get(engineerId);
-                        if (
-                          !existing ||
-                          (assignmentId && ass.assignmentId === assignmentId)
-                        ) {
-                          assignmentsByEngineer.set(engineerId, ass);
-                        }
-                      }
-                    });
-
-                    // Convert to array
-                    const uniqueEngineerAssignments = Array.from(
-                      assignmentsByEngineer.values(),
+                  // Filter to active assignments with engineers
+                  const activeAssignments = assignmentsData.filter((ass) => {
+                    const status = (ass?.assignmentStatus || "")
+                      .toLowerCase()
+                      .trim();
+                    const hasEngineer = !!ass?.engineer?.id;
+                    return (
+                      hasEngineer &&
+                      (activeStatuses.some((s) => status.includes(s)) ||
+                        status === "" ||
+                        status === "pending")
                     );
+                  });
 
-                    if (uniqueEngineerAssignments.length === 0) {
-                      return (
-                        <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg border">
-                          No active engineers assigned yet.
-                        </div>
-                      );
+                  // Group by unique engineerId to avoid duplicates
+                  const assignmentsByEngineer = new Map<
+                    number,
+                    (typeof activeAssignments)[0]
+                  >();
+                  activeAssignments.forEach((ass) => {
+                    const engineerId = ass.engineer?.id;
+                    if (engineerId) {
+                      // If we already have this engineer, prefer the one matching current assignmentId
+                      const existing = assignmentsByEngineer.get(engineerId);
+                      if (
+                        !existing ||
+                        (assignmentId && ass.assignmentId === assignmentId)
+                      ) {
+                        assignmentsByEngineer.set(engineerId, ass);
+                      }
                     }
+                  });
 
-                    return uniqueEngineerAssignments.map((assignment) => (
-                      <div
-                        key={`${assignment.engineer?.id}-${assignment.assignmentId}`}
-                        className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800"
-                      >
-                        <TimelineSection
-                          assignmentId={assignment.assignmentId}
-                          jobId={validJobId}
-                          hasProposals={false}
-                          assignments={[assignment]}
-                        />
+                  // Convert to array
+                  const uniqueEngineerAssignments = Array.from(
+                    assignmentsByEngineer.values(),
+                  );
+
+                  console.log("uniqueEngineerAssignments", uniqueEngineerAssignments);
+
+                  if (uniqueEngineerAssignments.length === 0) {
+                    return (
+                      <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg border">
+                        No active engineers assigned yet.
                       </div>
-                    ));
-                  })()
-                )}
-              </div>
-            ),
-          },
-        ]
+                    );
+                  }
+
+                  return uniqueEngineerAssignments.map((assignment) => (
+                    <div
+                      key={`${assignment.engineer?.id}-${assignment.assignmentId}`}
+                      className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800"
+                    >
+                      <TimelineSection
+                        assignmentId={assignment.assignmentId}
+                        jobId={validJobId}
+                        hasProposals={false}
+                        assignments={[assignment]}
+                        regionId={Number(job?.regionId)}
+                      />
+                    </div>
+                  ));
+                })()
+              )}
+            </div>
+          ),
+        },
+      ]
       : []),
     {
       label: JOB_TAB_LABELS.jobOverview,
@@ -557,21 +566,21 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
         <LocationMap
           workLocationLat={
             (job as Record<string, unknown>)?.workLocationLat as
-              | string
-              | null
-              | undefined
+            | string
+            | null
+            | undefined
           }
           workLocationLng={
             (job as Record<string, unknown>)?.workLocationLng as
-              | string
-              | null
-              | undefined
+            | string
+            | null
+            | undefined
           }
           workLocationName={
             (job as Record<string, unknown>)?.workLocationName as
-              | string
-              | null
-              | undefined
+            | string
+            | null
+            | undefined
           }
           cityId={job?.cityId as number | null | undefined}
           stateId={job?.stateId as number | null | undefined}
@@ -582,22 +591,23 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     // Add Manage Proposals tab when showManageProposals is true
     ...(showManageProposals
       ? [
-          {
-            label: JOB_TAB_LABELS.manageProposals || "Manage Proposals",
-            badge:
-              unprocessedProposalsCount > 0
-                ? unprocessedProposalsCount
-                : undefined,
-            content: (
-              <ManageProposalsTab
-                assignments={assignmentsData}
-                isLoading={isLoadingAssignments}
-                jobId={Number(jobID)}
-                numberOfVacancy={numberOfVacancy ?? job?.vacancies ?? undefined}
-              />
-            ),
-          },
-        ]
+        {
+          label: JOB_TAB_LABELS.manageProposals || "Manage Proposals",
+          badge:
+            unprocessedProposalsCount > 0
+              ? unprocessedProposalsCount
+              : undefined,
+          content: (
+            <ManageProposalsTab
+              assignments={assignmentsData}
+              isLoading={isLoadingAssignments}
+              jobId={Number(jobID)}
+              regionId={job?.regionId ? Number(job.regionId) : undefined}
+              numberOfVacancy={numberOfVacancy ?? job?.vacancies ?? undefined}
+            />
+          ),
+        },
+      ]
       : []),
   ];
 

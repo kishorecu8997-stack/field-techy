@@ -55,6 +55,7 @@ interface ManageProposalsTabProps {
   isLoading?: boolean;
   jobId?: number;
   numberOfVacancy?: number;
+  regionId?: number;
 }
 
 /**
@@ -64,8 +65,8 @@ interface ManageProposalsTabProps {
 const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
   assignments = [],
   isLoading = false,
-  // jobId kept for future use
   numberOfVacancy,
+  regionId,
 }) => {
   const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
   const [rejectedProposals, setRejectedProposals] = useState<string[]>([]);
@@ -142,6 +143,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           assignmentId: assignmentId,
           pendingApproval: "application",
           action: "approve",
+          regionId: regionId,
         },
       });
       setAcceptedProposals((prev) => [...prev, String(assignmentId)]);
@@ -167,6 +169,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           assignmentId: assignmentId,
           pendingApproval: "application",
           action: "reject",
+          regionId: regionId,
         },
       });
       setRejectedProposals((prev) => [...prev, String(assignmentId)]);
@@ -288,8 +291,8 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             <span className="text-xs text-gray-500 dark:text-gray-400">
               {proposal.appliedAt || proposal.invitedAt
                 ? `${DUMMY_TABS_LABELS.receivedOn} ${new Date(
-                    proposal.appliedAt || proposal.invitedAt || "",
-                  ).toLocaleDateString()}`
+                  proposal.appliedAt || proposal.invitedAt || "",
+                ).toLocaleDateString()}`
                 : ""}
             </span>
           </div>
@@ -300,18 +303,18 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
 
           {(proposal.proposalAttachmentUrl ||
             proposal.proposalAttachmentId) && (
-            <div className="mb-4">
-              <a
-                href={proposal.proposalAttachmentUrl || `#`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all hover:bg-gray-200 dark:hover:bg-gray-600 transition"
-              >
-                <IoAttach className="w-4 h-4 flex-shrink-0" />
-                View Attachment
-              </a>
-            </div>
-          )}
+              <div className="mb-4">
+                <a
+                  href={proposal.proposalAttachmentUrl || `#`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                >
+                  <IoAttach className="w-4 h-4 flex-shrink-0" />
+                  View Attachment
+                </a>
+              </div>
+            )}
           <div className="flex gap-3 justify-end">
             <Button
               variant="no_style"
@@ -336,11 +339,10 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                 acceptedProposals.includes(String(proposal.assignmentId)) ||
                 isJobFullyFilled
               }
-              className={`px-6 py-2 rounded transition font-medium ${
-                isJobFullyFilled
+              className={`px-6 py-2 rounded transition font-medium ${isJobFullyFilled
                   ? "bg-gray-400 cursor-not-allowed opacity-50"
                   : "bg-green-800 hover:bg-green-900 text-white"
-              }`}
+                }`}
             >
               {isJobFullyFilled ? "Vacancies Filled" : DUMMY_TABS_LABELS.accept}
             </Button>

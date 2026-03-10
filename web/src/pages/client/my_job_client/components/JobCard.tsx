@@ -92,7 +92,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
   return (
     <Link
-      to={`${absoluteUrls.client.home.my_jobs}/${id}`}
+      to={`${absoluteUrls.client.home.my_jobs}/${id}?regionId=${job.regionId}`}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
       <div className="flex justify-between items-start mb-3 min-w-0">

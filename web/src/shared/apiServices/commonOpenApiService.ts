@@ -237,15 +237,10 @@ export function useCreateRateAndReviewAssignment(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useUserSessionStore((s) => s.session?.regionId);
   return useMutation({
     ...createRateAndReviewAssignmentMutation({ client: apiClient }),
     mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
+      const body = fnOptions?.body as (typeof fnOptions)["body"];
       const { data } = await createRateAndReviewAssignment({
         client: apiClient,
         ...fnOptions,

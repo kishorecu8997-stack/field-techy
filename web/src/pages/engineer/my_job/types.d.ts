@@ -145,6 +145,7 @@ export interface JobHeaderCardProps {
   jobEndDate?: string;
   onToggleChat?: (jobId: string) => void;
   onCloseChat?: () => void;
+  clientRegionId?: number;
 }
 
 export interface JobTabsProps {
@@ -347,16 +348,16 @@ export interface ProposalApiData {
  */
 export type ProposalInfoTabProps = {
   submittedProposal:
-    | {
-        proposalDescription: string;
-        attachments?: never;
-        attachmentUrl?: string | null;
-      }
-    | {
-        proposalDescription: string;
-        attachments: FileList | null;
-        attachmentUrl?: never;
-      };
+  | {
+    proposalDescription: string;
+    attachments?: never;
+    attachmentUrl?: string | null;
+  }
+  | {
+    proposalDescription: string;
+    attachments: FileList | null;
+    attachmentUrl?: never;
+  };
   proposalAppliedDate?: string | null;
 };
 

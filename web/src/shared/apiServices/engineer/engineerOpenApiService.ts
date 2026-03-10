@@ -1,16 +1,8 @@
 import {
+  engineerMarkProposalFileUploaded,
   getEngineerBalance,
   getEngineerTransactions,
-  engineerApplyJob,
-  engineerRequestStart,
-  engineerSubmitSignOff,
-  engineerAddWorkLog,
-  engineerSubmitRevision,
-  engineerRequestBreak,
-  engineerMarkProposalFileUploaded,
   markWorkLogFileUploaded,
-  engineerToggleSaveJob,
-  submitReport,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
   type AppLoginResponse,
@@ -22,23 +14,13 @@ import {
   type EngineerAddExperienceResponse,
   type EngineerAddWorkLogResponse,
   type EngineerApplyJobResponse,
-  type EngineerApplyJobData,
-  type EngineerMarkProposalFileUploadedData,
-  type MarkWorkLogFileUploadedData,
-  type EngineerToggleSaveJobData,
-  type SubmitReportData,
-  type SubmitReportResponse,
   type EngineerDeleteEducationResponse,
   type EngineerDeleteExperienceResponse,
   type EngineerGetMyJobsData,
   type EngineerGetSavedJobsData,
+  type EngineerMarkProposalFileUploadedData,
   type EngineerRequestBreakResponse,
   type EngineerRequestStartResponse,
-  type EngineerRequestStartData,
-  type EngineerSubmitSignOffData,
-  type EngineerAddWorkLogData,
-  type EngineerSubmitRevisionData,
-  type EngineerRequestBreakData,
   type EngineerSearchJobsData,
   type EngineerSubmitRevisionResponse,
   type EngineerSubmitSignOffResponse,
@@ -53,12 +35,13 @@ import {
   type GetEngineerTransactionsData,
   type GetEngineerTransactionsError,
   type GetEngineerTransactionsResponse,
-  type GetOnboardingLinkResponse,
   type GetOnboardingLinkError,
+  type GetOnboardingLinkResponse,
   type GetUserReportsData,
   type GetUserReportsResponses,
+  type MarkWorkLogFileUploadedData,
   type MarkWorkLogFileUploadedResponse,
-  type Options,
+  type Options
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -75,8 +58,11 @@ import {
   engineerDeleteExperienceMutation,
   engineerGetEducationOptions,
   engineerGetExperienceOptions,
+  engineerGetMyDocumentsOptions,
   engineerGetMyJobsOptions,
   engineerGetPersonalInfoOptions,
+  engineerGetProfileCompletionOptions,
+  engineerGetSavedJobsOptions,
   engineerGetSkillsAndToolsOptions,
   engineerGetWorkPreferenceOptions,
   engineerMarkProposalFileUploadedMutation,
@@ -85,44 +71,37 @@ import {
   engineerSearchJobsOptions,
   engineerSubmitRevisionMutation,
   engineerSubmitSignOffMutation,
+  engineerToggleSaveJobMutation,
   engineerUpdateEducationMutation,
   engineerUpdateExperienceMutation,
   engineerUpdatePersonalInfoMutation,
   engineerUpdateSkillsAndToolsMutation,
   engineerUpdateWorkPreferenceMutation,
-  getJobLogsOptions,
-  engineerGetProfileCompletionOptions,
-  engineerGetMyDocumentsOptions,
-  getOnboardingLinkMutation,
-  engineerGetSavedJobsOptions,
-  engineerToggleSaveJobMutation,
   getEngineerEarningsOptions,
-  submitReportMutation,
+  getJobLogsOptions,
+  getOnboardingLinkMutation,
   getUserReportsOptions,
   markWorkLogFileUploadedMutation,
+  submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
-import { type EngineerData } from "./engineerTypes";
 import { refetchProfileCompletion } from "./engineerProfileBarCompletionHelper";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { type EngineerData } from "./engineerTypes";
 
 /**
  * Re-export shared hooks for convenience (avoiding naming conflicts)
  */
 export {
   getDownloadUrl,
-  useAppDownloadProfileFile,
-  useAppUploadProfileFile,
-  useForgotPassword,
+  useAppDownloadProfileFile, useAppSendLoginOtp, useAppUploadProfileFile, useAppVerifyLoginOtp, useForgotPassword,
   useLookupData,
   useResetPassword,
   useSendOtp,
-  useVerifyOtp,
-  useAppSendLoginOtp,
-  useAppVerifyLoginOtp,
+  useVerifyOtp
 } from "../commonOpenApiService";
 
 /**
@@ -523,30 +502,8 @@ export function useEngineerApplyJob(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const base = engineerApplyJobMutation({ client: apiClient });
-
   return useMutation({
-    ...base,
-    mutationFn: async (fnOptions: Options<EngineerApplyJobData>) => {
-      const regionId = useUserSessionStore.getState().session?.regionId;
-      const body = {
-        ...(fnOptions.body ?? {}),
-        regionId,
-      } as EngineerApplyJobData["body"];
-
-      if (!body || typeof body.jobId !== "number") {
-        throw new Error("engineerApplyJob requires body.jobId");
-      }
-
-      const mergedOptions: Options<EngineerApplyJobData> = {
-        ...fnOptions,
-        body,
-      };
-
-      const { data } = await engineerApplyJob({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from engineerApplyJob");
-      return data;
-    },
+    ...engineerApplyJobMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
@@ -554,6 +511,7 @@ export function useEngineerApplyJob(options?: {
     onError: options?.onError,
   });
 }
+
 
 export function useEngineerMarkProposalFileUploaded(options?: {
   onSuccess?: (data: unknown) => void;
@@ -565,8 +523,6 @@ export function useEngineerMarkProposalFileUploaded(options?: {
     ...base,
     mutationFn: async (fnOptions: Options<EngineerMarkProposalFileUploadedData>) => {
       const regionId = useUserSessionStore.getState().session?.regionId;
-
-      console.log("regionId", regionId);
 
       const body = {
         ...(fnOptions.body ?? {}),
@@ -597,30 +553,8 @@ export function useEngineerRequestStart(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const base = engineerRequestStartMutation({ client: apiClient });
-
   return useMutation({
-    ...base,
-    mutationFn: async (fnOptions: Options<EngineerRequestStartData>) => {
-      const regionId = useUserSessionStore.getState().session?.regionId;
-      const body = {
-        ...(fnOptions.body ?? {}),
-        regionId,
-      } as EngineerRequestStartData["body"];
-
-      if (!body || typeof body.assignmentId !== "number") {
-        throw new Error("engineerRequestStart requires body.assignmentId");
-      }
-
-      const mergedOptions: Options<EngineerRequestStartData> = {
-        ...fnOptions,
-        body,
-      };
-
-      const { data } = await engineerRequestStart({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from engineerRequestStart");
-      return data;
-    },
+    ...engineerRequestStartMutation({ client: apiClient }),
     onSuccess: (data) => {
       // Invalidate job logs query when start request is submitted
       if (options?.assignmentId) {
@@ -636,36 +570,15 @@ export function useEngineerRequestStart(options?: {
   });
 }
 
+
 export function useEngineerSubmitSignOff(options?: {
   onSuccess?: (data: EngineerSubmitSignOffResponse) => void;
   onError?: (error: unknown) => void;
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const base = engineerSubmitSignOffMutation({ client: apiClient });
-
   return useMutation({
-    ...base,
-    mutationFn: async (fnOptions: Options<EngineerSubmitSignOffData>) => {
-      const regionId = useUserSessionStore.getState().session?.regionId;
-      const body = {
-        ...(fnOptions.body ?? {}),
-        regionId,
-      } as EngineerSubmitSignOffData["body"];
-
-      if (!body || typeof body.assignmentId !== "number") {
-        throw new Error("engineerSubmitSignOff requires body.assignmentId");
-      }
-
-      const mergedOptions: Options<EngineerSubmitSignOffData> = {
-        ...fnOptions,
-        body,
-      };
-
-      const { data } = await engineerSubmitSignOff({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from engineerSubmitSignOff");
-      return data;
-    },
+    ...engineerSubmitSignOffMutation({ client: apiClient }),
     onSuccess: (data) => {
       // Invalidate job logs query when sign-off is submitted
       if (options?.assignmentId) {
@@ -687,30 +600,8 @@ export function useEngineerAddWorkLog(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const base = engineerAddWorkLogMutation({ client: apiClient });
-
   return useMutation({
-    ...base,
-    mutationFn: async (fnOptions: Options<EngineerAddWorkLogData>) => {
-      const regionId = useUserSessionStore.getState().session?.regionId;
-      const body = {
-        ...(fnOptions.body ?? {}),
-        regionId,
-      } as EngineerAddWorkLogData["body"];
-
-      if (!body || typeof body.assignmentId !== "number") {
-        throw new Error("engineerAddWorkLog requires body.assignmentId");
-      }
-
-      const mergedOptions: Options<EngineerAddWorkLogData> = {
-        ...fnOptions,
-        body,
-      };
-
-      const { data } = await engineerAddWorkLog({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from engineerAddWorkLog");
-      return data;
-    },
+    ...engineerAddWorkLogMutation({ client: apiClient }),
     onSuccess: (data) => {
       // Invalidate job logs query when work log is added
       if (options?.assignmentId) {
@@ -732,30 +623,8 @@ export function useEngineerSubmitRevision(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const base = engineerSubmitRevisionMutation({ client: apiClient });
-
   return useMutation({
-    ...base,
-    mutationFn: async (fnOptions: Options<EngineerSubmitRevisionData>) => {
-      const regionId = useUserSessionStore.getState().session?.regionId;
-      const body = {
-        ...(fnOptions.body ?? {}),
-        regionId,
-      } as EngineerSubmitRevisionData["body"];
-
-      if (!body || typeof body.assignmentId !== "number") {
-        throw new Error("engineerSubmitRevision requires body.assignmentId");
-      }
-
-      const mergedOptions: Options<EngineerSubmitRevisionData> = {
-        ...fnOptions,
-        body,
-      };
-
-      const { data } = await engineerSubmitRevision({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from engineerSubmitRevision");
-      return data;
-    },
+    ...engineerSubmitRevisionMutation({ client: apiClient }),
     onSuccess: (data) => {
       // Invalidate job logs query when revision is submitted
       if (options?.assignmentId) {
@@ -770,7 +639,6 @@ export function useEngineerSubmitRevision(options?: {
     onError: options?.onError,
   });
 }
-
 /**
  * Hook to mark worklog related files as uploaded
  * Used for worklog, revision, client_revision, and signoff attachments
@@ -819,30 +687,8 @@ export function useEngineerRequestBreak(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const base = engineerRequestBreakMutation({ client: apiClient });
-
   return useMutation({
-    ...base,
-    mutationFn: async (fnOptions: Options<EngineerRequestBreakData>) => {
-      const regionId = useUserSessionStore.getState().session?.regionId;
-      const body = {
-        ...(fnOptions.body ?? {}),
-        regionId,
-      } as EngineerRequestBreakData["body"];
-
-      if (!body || typeof body.assignmentId !== "number") {
-        throw new Error("engineerRequestBreak requires body.assignmentId");
-      }
-
-      const mergedOptions: Options<EngineerRequestBreakData> = {
-        ...fnOptions,
-        body,
-      };
-
-      const { data } = await engineerRequestBreak({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from engineerRequestBreak");
-      return data;
-    },
+    ...engineerRequestBreakMutation({ client: apiClient }),
     onSuccess: (data) => {
       // Invalidate job logs query when break request is submitted
       if (options?.assignmentId) {
@@ -862,6 +708,7 @@ export function useEngineerRequestBreak(options?: {
   });
 }
 
+
 export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
   return useQuery({
     ...getJobLogsOptions({
@@ -880,30 +727,8 @@ export function useStoreEngineerSaveJobs(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const base = engineerToggleSaveJobMutation({ client: apiClient });
-
   return useMutation({
-    ...base,
-    mutationFn: async (fnOptions: Options<EngineerToggleSaveJobData>) => {
-      const regionId = useUserSessionStore.getState().session?.regionId;
-      const body = {
-        ...(fnOptions.body ?? {}),
-        regionId,
-      } as EngineerToggleSaveJobData["body"];
-
-      if (!body || typeof body.jobId !== "number") {
-        throw new Error("engineerToggleSaveJob requires body.jobId");
-      }
-
-      const mergedOptions: Options<EngineerToggleSaveJobData> = {
-        ...fnOptions,
-        body,
-      };
-
-      const { data } = await engineerToggleSaveJob({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from engineerToggleSaveJob");
-      return data;
-    },
+    ...engineerToggleSaveJobMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
@@ -911,6 +736,7 @@ export function useStoreEngineerSaveJobs(options?: {
     onError: options?.onError,
   });
 }
+
 
 export function useGetEngineerSavedJobs(
   query: EngineerGetSavedJobsData["query"] = {},
@@ -929,30 +755,12 @@ export function useGetEngineerSavedJobs(
 }
 
 export function useSaveReportEngineer(options?: {
-  onSuccess?: (data: SubmitReportResponse) => void;
+  onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const base = submitReportMutation({ client: apiClient });
-
   return useMutation({
-    ...base,
-    mutationFn: async (fnOptions: Options<SubmitReportData>) => {
-      const regionId = useUserSessionStore.getState().session?.regionId;
-      const body = {
-        ...(fnOptions.body ?? {}),
-        regionId,
-      } as SubmitReportData["body"];
-
-      const mergedOptions: Options<SubmitReportData> = {
-        ...fnOptions,
-        body,
-      };
-
-      const { data } = await submitReport({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from submitReport");
-      return data;
-    },
+    ...submitReportMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);

@@ -1,7 +1,7 @@
 import { absoluteUrls } from "@/config/urls";
 import {
   useEngineerApplyJob,
-  useEngineerMarkProposalFileUploaded,
+  useEngineerMarkProposalFileUploaded
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
@@ -9,11 +9,12 @@ import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { getUserId } from "@/utils";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { validateDescription, validateNumericInput } from "../validation";
-import { getUserId } from "@/utils";
 
 export interface proposalTypes {
   description: string;
@@ -83,6 +84,7 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
 
   const { mutateAsync: applyJob } = useEngineerApplyJob();
   const { mutateAsync: markUploaded } = useEngineerMarkProposalFileUploaded();
+  const regionId = useUserSessionStore.getState().session?.regionId;
 
   const handleSubmit = async (data: proposalTypes) => {
     if (!userId) {
@@ -111,10 +113,10 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
               const file = data.attachment?.[0];
               const proposalAttachmentMeta = file
                 ? {
-                    filename: file.name,
-                    size: file.size,
-                    mimeType: file.type,
-                  }
+                  filename: file.name,
+                  size: file.size,
+                  mimeType: file.type,
+                }
                 : undefined;
 
               // Append extra fields to description as they are not in new API
@@ -125,6 +127,7 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
                   jobId: Number(jobId),
                   proposalDetail: fullDescription,
                   proposalAttachment: proposalAttachmentMeta,
+                  regionId
                 },
               });
 

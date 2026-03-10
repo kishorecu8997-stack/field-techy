@@ -17,6 +17,7 @@ import type { JobItem } from "../../home/types";
 import { getExperienceLevel, JOB_STATUSES } from "../types";
 import { Badge } from "./BadgeVariant";
 import { formatAmount } from "@/utils/currency";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 dayjs.extend(relativeTime);
 
@@ -170,6 +171,7 @@ const JobCard: React.FC<{
   userTools = [],
 }) => {
     const [showWhyPopover, setShowWhyPopover] = useState(false);
+    const regionId = useUserSessionStore.getState().session?.regionId;
 
     const { refetch } = useGetEngineerSavedJobs({
       limit: 10,
@@ -235,6 +237,7 @@ const JobCard: React.FC<{
       toggleSaveMutation({
         body: {
           jobId: Number(job.id),
+          regionId
         },
       });
     };
