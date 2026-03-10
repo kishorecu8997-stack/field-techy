@@ -12,7 +12,7 @@ import type { RateCardProps } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useToggleStatus from "@/shared/components/ToggleStatus";
 import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
-import { useAdminDeleteRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
+// import { useAdminDeleteRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
 
@@ -44,16 +44,16 @@ const ManageRateCards: React.FC = () => {
     limit: 100,
   });
 
-  const deleteRateCardMutation = useAdminDeleteRateCard({
-    onSuccess: () => {
-      toast.success("Rate card deleted successfully!");
-      refetch();
-    },
-    onError: (error: unknown) => {
-      console.error("Failed to delete rate card:", error);
-      toast.error("Failed to delete rate card. Please try again.");
-    },
-  });
+  // const deleteRateCardMutation = useAdminDeleteRateCard({
+  //   onSuccess: () => {
+  //     toast.success("Rate card deleted successfully!");
+  //     refetch();
+  //   },
+  //   onError: (error: unknown) => {
+  //     console.error("Failed to delete rate card:", error);
+  //     toast.error("Failed to delete rate card. Please try again.");
+  //   },
+  // });
 
   // Transform API data to match table format with grouped experience levels
   const tableData: RateCardProps[] = useMemo(() => {
@@ -74,12 +74,10 @@ const ManageRateCards: React.FC = () => {
           location: item.country || "-",
           experienceLevel: item.experienceLevels?.join(", ") || "-",
           hourly: "-",
-          halfDay: "-",
           fullDay: "-",
-          weekly: "-",
           monthly: "-",
           project: "-",
-          createdDate: item.createdDate ? new Date(item.createdDate).toLocaleDateString() : "-",
+          createdDate: item.createdDate || "-",
           status: true,
           experienceLevels: ["L1", "L2", "L3"], // All three levels
           country: item.country,
@@ -87,9 +85,9 @@ const ManageRateCards: React.FC = () => {
           countryId: item.countryId,
           // Store individual rates per level
           experienceLevelRates: {
-            L1: { hourly: "-", halfDay: "-", fullDay: "-", weekly: "-", monthly: "-" },
-            L2: { hourly: "-", halfDay: "-", fullDay: "-", weekly: "-", monthly: "-" },
-            L3: { hourly: "-", halfDay: "-", fullDay: "-", weekly: "-", monthly: "-" },
+            L1: { hourly: "-", daily: "-", monthly: "-" },
+            L2: { hourly: "-", daily: "-", monthly: "-" },
+            L3: { hourly: "-", daily: "-", monthly: "-" },
           },
         });
       }
@@ -99,12 +97,21 @@ const ManageRateCards: React.FC = () => {
       const level = item.experienceLevels?.[0] as "L1" | "L2" | "L3";
       
       if (level && existingRow.experienceLevelRates) {
+        // Parse the rates array from the new API response
+        const ratesMap: Record<string, string> = {};
+        if (item.rates && Array.isArray(item.rates)) {
+          item.rates.forEach((rate: { modelName: string; rate: string }) => {
+            // Map modelName to our internal format
+            if (rate.modelName === "Hourly") ratesMap.hourly = rate.rate || "-";
+            else if (rate.modelName === "Daily") ratesMap.daily = rate.rate || "-";
+            else if (rate.modelName === "Monthly") ratesMap.monthly = rate.rate || "-";
+          });
+        }
+        
         existingRow.experienceLevelRates[level] = {
-          hourly: item.hourly || "-",
-          halfDay: item.halfDay || "-",
-          fullDay: item.fullDay || "-",
-          weekly: item.weekly || "-",
-          monthly: item.monthly || "-",
+          hourly: ratesMap.hourly || "-",
+          daily: ratesMap.daily || "-",
+          monthly: ratesMap.monthly || "-",
         };
       }
     });
@@ -123,9 +130,7 @@ const ManageRateCards: React.FC = () => {
         item.location.toLowerCase().includes(search) ||
         item.experienceLevel.toLowerCase().includes(search) ||
         item.hourly.toLowerCase().includes(search) ||
-        item.halfDay.toLowerCase().includes(search) ||
         item.fullDay.toLowerCase().includes(search) ||
-        item.weekly.toLowerCase().includes(search) ||
         item.monthly.toLowerCase().includes(search)
     );
   }, [tableData, searchTerm]);
@@ -157,16 +162,16 @@ const ManageRateCards: React.FC = () => {
           value: null,
           variant: "outline",
         },
-        {
-          label: "Delete",
-          value: "delete",
-          variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            deleteRateCardMutation.mutate({ query: { serviceCategoryId: rateCardServiceCategoryId } });
-            close(true);
-          },
-        },
+        // {
+        //   label: "Delete",
+        //   value: "delete",
+        //   variant: "danger",
+        //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        //   action: async (close: any) => {
+        //     deleteRateCardMutation.mutate({ query: { serviceCategoryId: rateCardServiceCategoryId } });
+        //     close(true);
+        //   },
+        // },
       ],
     });
   };
@@ -214,30 +219,12 @@ const ManageRateCards: React.FC = () => {
         </div>
       ),
     },
-    { key: "halfDay", label: "Half-Day (4h)",
+    { key: "fullDay", label: "Daily",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.experienceLevelRates?.L1.halfDay || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L2.halfDay || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L3.halfDay || "-"}</div>
-        </div>
-      ),
-    },
-    { key: "fullDay", label: "Full-Day (8h)",
-      renderCell: (row: RateCardProps) => (
-        <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.experienceLevelRates?.L1.fullDay || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L2.fullDay || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L3.fullDay || "-"}</div>
-        </div>
-      ),
-    },
-    { key: "weekly", label: "Weekly (5d)",
-      renderCell: (row: RateCardProps) => (
-        <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.experienceLevelRates?.L1.weekly || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L2.weekly || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L3.weekly || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L1.daily || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L2.daily || "-"}</div>
+          <div className="text-sm">{row.experienceLevelRates?.L3.daily || "-"}</div>
         </div>
       ),
     },
