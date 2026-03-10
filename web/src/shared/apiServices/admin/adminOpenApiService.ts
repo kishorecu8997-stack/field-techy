@@ -94,12 +94,6 @@ import {
   type AdminUpdateTransactionRequestStatusResponses,
   type BulkCreateRateCardsResponse,
   type BulkCreateRateCardsData,
-
-  // Rate Card types
-  // type UpdateRateCardData,
-  // type UpdateRateCardResponse,
-  // type DeleteRateCardData,
-  // type DeleteRateCardResponse,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -148,9 +142,6 @@ import {
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
   adminUpdateTransactionRequestStatusMutation,
-  // Rate Card mutations
-  // updateRateCardMutation,
-  // deleteRateCardMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { getRateCards, bulkCreateRateCards } from "@/api";
 import {
@@ -1524,43 +1515,6 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
     onError: options?.onError,
   });
 }
-
-// Rate Card Hooks
-
-// export type UpdateRateCardBody = NonNullable<UpdateRateCardData["body"]>;
-// export type UpdateRateCardQuery = NonNullable<UpdateRateCardData["query"]>;
-
-// export function useAdminUpdateRateCard(options?: {
-//   onSuccess?: (data: UpdateRateCardResponse) => void;
-//   onError?: (error: unknown) => void;
-// }) {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     ...updateRateCardMutation({ client: apiClient }),
-//     onSuccess: (data) => {
-//       queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
-//       options?.onSuccess?.(data);
-//     },
-//     onError: options?.onError,
-//   });
-// }
-
-// export type DeleteRateCardQuery = NonNullable<DeleteRateCardData["query"]>;
-
-// export function useAdminDeleteRateCard(options?: {
-//   onSuccess?: (data: DeleteRateCardResponse) => void;
-//   onError?: (error: unknown) => void;
-// }) {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     ...deleteRateCardMutation({ client: apiClient }),
-//     onSuccess: (data) => {
-//       queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
-//       options?.onSuccess?.(data);
-//     },
-//     onError: options?.onError,
-//   });
-// }
 
 // Rate Card - Create
 export function useAdminCreateRateCard(options?: {
