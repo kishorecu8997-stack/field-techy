@@ -258,9 +258,11 @@ const EditRateCard = () => {
             
             // Use POST API for update as well
             createRateCardMutation.mutate({
-              countryId: finalCountryId,
-              serviceCategoryId: serviceCategoryId,
-              experienceLevels,
+              body: { experienceLevels },
+              query: { 
+                countryId: finalCountryId,
+                serviceCategoryId: serviceCategoryId 
+              }
             });
             close(true);
           },

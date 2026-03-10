@@ -93,9 +93,7 @@ import {
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
   type BulkCreateRateCardsResponse,
-  type GetRateCardsResponse,
   type BulkCreateRateCardsData,
-  type GetRateCardsData,
 
   // Rate Card types
   // type UpdateRateCardData,
@@ -154,6 +152,7 @@ import {
   // updateRateCardMutation,
   // deleteRateCardMutation,
 } from "@/api/@tanstack/react-query.gen";
+import { getRateCards, bulkCreateRateCards } from "@/api";
 import {
   useMutation,
   useQuery,
@@ -1570,7 +1569,15 @@ export function useAdminCreateRateCard(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: BulkCreateRateCardsData) => AdminAdapter.createRateCard(data),
+    mutationFn: async (data: { body: BulkCreateRateCardsData["body"]; query: BulkCreateRateCardsData["query"] }) => {
+      const response = await bulkCreateRateCards({
+        client: apiClient,
+        body: data.body,
+        query: data.query,
+        throwOnError: true,
+      });
+      return response.data;
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
       options?.onSuccess?.(data);
@@ -1581,12 +1588,20 @@ export function useAdminCreateRateCard(options?: {
 
 // Rate Card - Get All
 export function useGetRateCards(
-  params?: GetRateCardsData,
+  params?: { page?: number; limit?: number; search?: string; countryId?: number; serviceCategoryId?: number },
   options?: { enabled?: boolean },
 ) {
-  return useQuery<GetRateCardsResponse>({
+  return useQuery({
     queryKey: ["admin", "rateCards", params],
-    queryFn: () => (params),
+    queryFn: async ({ signal }) => {
+      const { data } = await getRateCards({
+        client: apiClient,
+        query: params,
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
     enabled: options?.enabled ?? true,
   });
 }

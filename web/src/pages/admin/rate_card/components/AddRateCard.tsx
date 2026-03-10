@@ -138,7 +138,11 @@ const AddRateCard = () => {
           action: async (close) => {
             if (isCreatingRateCard) return;
             const apiData = transformFormDataToApi(data);
-            await createRateCard(apiData);
+            // Transform to the format expected by the API
+            await createRateCard({
+              body: { experienceLevels: apiData.experienceLevels },
+              query: { countryId: apiData.countryId, serviceCategoryId: apiData.serviceCategoryId }
+            });
             close(true);
           },
         },
