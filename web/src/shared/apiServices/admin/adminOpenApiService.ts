@@ -6,6 +6,8 @@ import {
   adminGetClientsForManagement,
   getExchangeRates,
   updateExchangeRate,
+  getRateCards,
+  bulkCreateRateCards,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -143,7 +145,6 @@ import {
   adminDownloadInvoiceOptions,
   adminUpdateTransactionRequestStatusMutation,
 } from "@/api/@tanstack/react-query.gen";
-import { getRateCards, bulkCreateRateCards } from "@/api";
 import {
   useMutation,
   useQuery,
