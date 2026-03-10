@@ -1,6 +1,5 @@
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SectionHeader from "../../SectionHeader";
-import { validateDescription } from "@/pages/engineer/home/validation";
 
 /**
  * Job Details Section Component
@@ -18,21 +17,20 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
         placeholder="Enter Job Title"
         required
         disabled={isDisable}
-        maxLength={50}
         rules={{
           required: "Job Title is required",
-          maxLength: {
-            value: 100,
-            message: "Maximum length is 100 characters",
-          },
           validate: (value: string) => {
-            if (!value || value.trim() === "") {
-              return "Job Title is required";
+            if (!value) return "Job Title is required";
+            // Check for leading or trailing spaces
+            if (value !== value.trim()) {
+              return "Job Title must not have leading or trailing spaces";
             }
-            // Reject spaces-only input
-            if (/^\s+$/.test(value)) {
-              return "Job Title cannot be only spaces";
+            // Check for multiple consecutive spaces
+            if (/\s{2,}/.test(value)) {
+              return "Job Title must not have consecutive spaces";
             }
+            if (value.length < 2) return "Job Title must be at least 2 characters";
+            if (value.length > 100) return "Job Title must not exceed 100 characters";
             return true;
           },
         }}
@@ -44,14 +42,22 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
         required
         disabled={isDisable}
         rules={{
-          ...validateDescription(50, 2000, "Job Description"),
+          required: "Job Description is required",
           validate: (value: string) => {
-            if (!value || value.trim() === "") {
-              return "Job Description is required";
+            if (!value) return "Job Description is required";
+            // Check for leading or trailing spaces
+            if (value !== value.trim()) {
+              return "Job Description must not have leading or trailing spaces";
             }
-            // Reject spaces-only input
-            if (/^\s+$/.test(value)) {
-              return "Job Description cannot be only spaces";
+            // Check for multiple consecutive spaces
+            if (/\s{2,}/.test(value)) {
+              return "Job Description must not have consecutive spaces";
+            }
+            if (value.length < 50) return "Job Description must be at least 50 characters";
+            if (value.length > 2000) return "Job Description must not exceed 2000 characters";
+            // Allow letters, numbers, spaces, and special characters / ( ) , . - #
+            if (!/^[A-Za-z0-9\s\/(),.\-#]+$/.test(value)) {
+              return "Only letters, numbers, spaces, and special characters / ( ) , . - # are allowed";
             }
             return true;
           },
@@ -61,3 +67,4 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
   );
 };
 export default JobDetailsSection;
+
