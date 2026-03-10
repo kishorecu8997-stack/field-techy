@@ -92,6 +92,11 @@ import {
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
+  type BulkCreateRateCardsResponse,
+  type GetRateCardsResponse,
+  type BulkCreateRateCardsData,
+  type GetRateCardsData,
+
   // Rate Card types
   // type UpdateRateCardData,
   // type UpdateRateCardResponse,
@@ -158,9 +163,7 @@ import {
 import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 import { useAdminCountryStore } from "../../store/useAdminCountryStore";
-import { AdminAdapter } from "./adminAdapter";
-import type { CreateRateCardParams, CreateRateCardResponse } from "@/pages/admin/rate_card/types";
-import type { RateCardsResponse, RateCardParams } from "@/pages/admin/rate_card/types";
+
 
 export const LookupTable = {
   Countries: "countries",
@@ -1562,12 +1565,12 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
 
 // Rate Card - Create
 export function useAdminCreateRateCard(options?: {
-  onSuccess?: (data: CreateRateCardResponse) => void;
+  onSuccess?: (data: BulkCreateRateCardsResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateRateCardParams) => AdminAdapter.createRateCard(data),
+    mutationFn: (data: BulkCreateRateCardsData) => AdminAdapter.createRateCard(data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
       options?.onSuccess?.(data);
@@ -1578,12 +1581,12 @@ export function useAdminCreateRateCard(options?: {
 
 // Rate Card - Get All
 export function useGetRateCards(
-  params?: RateCardParams,
+  params?: GetRateCardsData,
   options?: { enabled?: boolean },
 ) {
-  return useQuery<RateCardsResponse>({
+  return useQuery<GetRateCardsResponse>({
     queryKey: ["admin", "rateCards", params],
-    queryFn: () => AdminAdapter.getRateCards(params),
+    queryFn: () => (params),
     enabled: options?.enabled ?? true,
   });
 }
