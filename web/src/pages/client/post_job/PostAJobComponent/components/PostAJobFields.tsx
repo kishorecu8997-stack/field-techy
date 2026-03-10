@@ -31,6 +31,18 @@ const PostAJobFields = ({
   const selectedCountry = watch("country");
   const selectedState = watch("state");
 
+  const [startDate, endDate] = watch(["startDate", "endDate"]);
+
+  //calculate the duration
+  const durationInDays = useMemo(() => {
+    if (!startDate || !endDate) return 0;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffInMs = end.getTime() - start.getTime();
+    const days = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+    return days > 0 ? days : 0;
+  }, [startDate, endDate]);
+
   const { data: countriesData } = useLookupData("countries");
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
   const { data: experienceLevelsData } = useLookupData("experienceLevels");
@@ -85,14 +97,28 @@ const PostAJobFields = ({
       })) || [],
     [experienceLevelsData],
   );
-  const engagementModelOptions = useMemo(
-    () =>
-      engagementModelsData?.map((e) => ({
+  const engagementModelOptions = useMemo(() => {
+    if (!engagementModelsData) return [];
+
+    return engagementModelsData
+      .filter((model) => {
+        // Example Logic:
+        // If duration is less than 30 days, hide "Monthly" (ID 3)
+        if (durationInDays < 30 && model.id === 3) {
+          return false;
+        }
+
+        // Optional: If duration is more than 90 days, maybe hide "Hourly" (ID 1)
+        // if (durationInDays > 90 && model.id === 1) {
+        //   return false;
+        // }
+        return true;
+      })
+      .map((e) => ({
         label: e.name,
         value: String(e.id),
-      })) || [],
-    [engagementModelsData],
-  );
+      }));
+  }, [engagementModelsData, durationInDays]);
 
   const skillOptions = useMemo(
     () =>
