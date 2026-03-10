@@ -141,9 +141,7 @@ export interface RateCardSkill {
 // New API structure types
 export interface ExperienceLevelRate {
   hourly: number;
-  halfDay4h: number;
-  fullDay8h: number;
-  weekly5d: number;
+  daily: number;
   monthly: number;
 }
 

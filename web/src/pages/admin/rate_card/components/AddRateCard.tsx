@@ -73,9 +73,7 @@ const AddRateCard = () => {
 
         // Convert tier values to numbers, defaulting to 0 if empty
         const hourly = parseFloat(tier.hourly) || 0;
-        const halfDay4h = parseFloat(tier.halfDay) || 0;
-        const fullDay8h = parseFloat(tier.fullDay) || 0;
-        const weekly5d = parseFloat(tier.weekly) || 0;
+        const daily = parseFloat(tier.daily) || 0;
         const monthly = parseFloat(tier.monthly) || 0;
 
         // Check if we already have an entry for this level
@@ -87,9 +85,9 @@ const AddRateCard = () => {
           // Update existing entry with new rates
           experienceLevels[existingIndex].rates = {
             hourly: hourly || experienceLevels[existingIndex].rates.hourly,
-            halfDay4h: halfDay4h || experienceLevels[existingIndex].rates.halfDay4h,
-            fullDay8h: fullDay8h || experienceLevels[existingIndex].rates.fullDay8h,
-            weekly5d: weekly5d || experienceLevels[existingIndex].rates.weekly5d,
+            
+            daily: daily || experienceLevels[existingIndex].rates.daily,
+            
             monthly: monthly || experienceLevels[existingIndex].rates.monthly,
           };
         } else {
@@ -99,9 +97,7 @@ const AddRateCard = () => {
             label,
             rates: {
               hourly,
-              halfDay4h,
-              fullDay8h,
-              weekly5d,
+              daily,
               monthly,
             },
           });
