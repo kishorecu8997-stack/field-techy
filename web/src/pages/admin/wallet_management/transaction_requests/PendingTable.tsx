@@ -8,7 +8,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { usePopupStore } from "@/shared/store/popupStore";
 import {
   useAdminGetPendingPayments,
-  useAdminApprovePayment,
+  useAdminWithdrawalAction,
   adminGetPendingPaymentsQueryKey,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { toast } from "react-toastify";
@@ -71,7 +71,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
 
   type ClosePopup = (success?: boolean) => void;
 
-  const updateStatusMutation = useAdminApprovePayment({
+  const updateStatusMutation = useAdminWithdrawalAction({
     onSuccess: () => {
       toast.success("Payment action processed successfully!");
       refetch();
@@ -158,7 +158,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
             action: async (close: ClosePopup) => {
               try {
                 await updateStatusMutation.mutateAsync({
-                  body: { assignmentId: row.assignmentId, action: newStatus },
+                  body: { transactionId: row.transactionId, action: newStatus },
                 });
                 refetch();
                 close(true);
@@ -213,15 +213,24 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         </div>
       ),
     },
+    // {
+    //   key: "jobDetails",
+    //   label: "Job Details",
+    //   renderCell: (row: TransactionRequest) => (
+    //     <div className="flex flex-col">
+    //       <span className="font-semibold">{row.jobCode || "—"}</span>
+    //       <span className="text-sm text-neutral-500 dark:text-neutral-400">
+    //         {row.jobTitle || "—"}
+    //       </span>
+    //     </div>
+    //   ),
+    // },
     {
-      key: "jobDetails",
-      label: "Job Details",
+      key: "date&time",
+      label: "Date",
       renderCell: (row: TransactionRequest) => (
         <div className="flex flex-col">
-          <span className="font-semibold">{row.jobCode || "—"}</span>
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">
-            {row.jobTitle || "—"}
-          </span>
+          <span className="font-semibold">{row.submittedAt || "—"}</span>
         </div>
       ),
     },

@@ -18,7 +18,7 @@ import {
 import { toast } from "react-toastify";
 import { useCallback, useState } from "react";
 import Popup from "@/shared/components/Popup";
-import ClientWithdraw from "./ClientWithdraw";
+import EngineerWithdraw from "./EngineerWithdraw";
 
 /**
  * Displays the user's current balance with quick actions (Bank Details, Withdraw) and a transaction history dashboard.
@@ -177,7 +177,7 @@ const MyEarning = () => {
           )}
           <div className="flex gap-3 justify-end">
             {/* Withdraw Button */}
-            {balance && balance.balance > 0 && (
+            {balance && Number(balance?.balance) > 0 && (
               <Button
                 onClick={() => Withdraw()}
                 className="px-6 py-3 bg-teal-700 text-white rounded-full font-medium hover:bg-teal-800 transition dark:bg-teal-700 dark:text-white"
@@ -240,9 +240,9 @@ const MyEarning = () => {
       
       {showWithdrawPopup && balance && (
         <Popup open={showWithdrawPopup} onClose={() => setShowWithdrawPopup(false)}>
-          <ClientWithdraw
-            balance={balance.balance}
-            currencyCode={balance.currencyCode}
+          <EngineerWithdraw
+            balance={Number(balance?.balance)}
+            currencyCode={String(balance?.currencyCode)}
             onClose={() => setShowWithdrawPopup(false)}
           />
         </Popup>

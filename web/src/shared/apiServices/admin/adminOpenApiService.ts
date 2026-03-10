@@ -94,6 +94,7 @@ import {
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
+  type AdminWithdrawalActionResponses,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -148,6 +149,7 @@ import {
   adminGetPendingPaymentsOptions,
   adminGetPendingPaymentsQueryKey,
   adminApprovePaymentMutation,
+  adminWithdrawalActionMutation,
 } from "@/api/@tanstack/react-query.gen";
 
 export { adminGetPendingPaymentsQueryKey };
@@ -1577,6 +1579,48 @@ export function useAdminApprovePayment(options?: {
     ...adminApprovePaymentMutation({ client: apiClient }),
     mutationFn: (variables, context) => {
       return adminApprovePaymentMutation({ client: apiClient }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+          } as any,
+        },
+        context,
+      );
+    },
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) => {
+          const firstKeyItem = query.queryKey?.[0];
+          if (!firstKeyItem || typeof firstKeyItem !== "object") {
+            return false;
+          }
+          return (
+            (firstKeyItem as { _id?: string })._id === "adminGetPendingPayments"
+          );
+        },
+        type: "all",
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+
+
+export function useAdminWithdrawalAction(options?: {
+  onSuccess?: (data: AdminWithdrawalActionResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminWithdrawalActionMutation({ client: apiClient }),
+    mutationFn: (variables, context) => {
+      return adminWithdrawalActionMutation({ client: apiClient }).mutationFn!(
         {
           ...variables,
           query: {

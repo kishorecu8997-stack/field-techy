@@ -34,6 +34,8 @@ import {
   type GetEngineerTransactionsResponse,
   type GetOnboardingLinkResponse,
   type GetOnboardingLinkError,
+  type RequestWithdrawalResponse,
+  type RequestWithdrawalError,
   type GetUserReportsData,
   type GetUserReportsResponses,
   type MarkWorkLogFileUploadedResponse,
@@ -72,6 +74,7 @@ import {
   engineerGetProfileCompletionOptions,
   engineerGetMyDocumentsOptions,
   getOnboardingLinkMutation,
+  requestWithdrawalMutation,
   engineerGetSavedJobsOptions,
   engineerToggleSaveJobMutation,
   getEngineerEarningsOptions,
@@ -817,6 +820,21 @@ export function useGetOnboardingLink(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...getOnboardingLinkMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useRequestWithdrawal(options?: {
+  onSuccess?: (data: RequestWithdrawalResponse) => void;
+  onError?: (error: RequestWithdrawalError | unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...requestWithdrawalMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
