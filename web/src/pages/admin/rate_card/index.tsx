@@ -6,7 +6,6 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import React, { useState, useMemo } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -144,38 +143,6 @@ const ManageRateCards: React.FC = () => {
   }, [tableData]);
   const { get, toggle } = useToggleStatus(initialStatus);
 
-  //Delete confirmation
-  const handleDeleteJob = async (job: RateCardProps) => {
-    const rateCardServiceCategoryId = job.serviceCategoryId;
-    
-    if (rateCardServiceCategoryId === undefined) {
-      toast.error("Unable to delete: Service category ID not found.");
-      return;
-    }
-    
-    await showPopup({
-      title: "Rate Card",
-      body: "Are you sure you want to delete this rate card?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        // {
-        //   label: "Delete",
-        //   value: "delete",
-        //   variant: "danger",
-        //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        //   action: async (close: any) => {
-        //     deleteRateCardMutation.mutate({ query: { serviceCategoryId: rateCardServiceCategoryId } });
-        //     close(true);
-        //   },
-        // },
-      ],
-    });
-  };
-
   const columns: Column<RateCardProps>[] = [
     {
       key: "id",
@@ -273,12 +240,6 @@ const ManageRateCards: React.FC = () => {
             onClick={() => navigate(absoluteUrls.admin.home.edit_rate_card.replace(":id", String(row.serviceCategoryId)))}
           >
             <CiEdit className="text-blue-600" />
-          </div>
-          <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteJob(row)}
-          >
-            <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
       ),
