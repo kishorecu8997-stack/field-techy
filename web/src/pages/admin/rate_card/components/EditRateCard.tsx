@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useAdminCreateRateCard, useGetRateCards } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * EditRateCard Component
@@ -34,6 +35,7 @@ const EditRateCard = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
   
   // Parse serviceCategoryId from URL param
   const serviceCategoryId = id ? parseInt(id, 10) : 0;
@@ -191,7 +193,9 @@ const EditRateCard = () => {
   }, [rateCardsResponse, serviceCategoryId, methods]);
 
   const createRateCardMutation = useAdminCreateRateCard({
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Refetch the rate cards to ensure the index table has latest data
+      await queryClient.refetchQueries({ queryKey: ["admin", "rateCards"] });
       toast.success("Rate card updated successfully!");
       navigate(absoluteUrls.admin.home.manage_rate_card);
       methods.reset();

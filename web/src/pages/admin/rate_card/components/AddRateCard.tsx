@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { absoluteUrls } from "@/config/urls";
 import { useAdminCreateRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 import type { PricingFormValues, CreateRateCardParams } from "../types";
 
 /**
@@ -32,9 +33,12 @@ const AddRateCard = () => {
     },
   });
   const { showPopup } = usePopupStore();
+  const queryClient = useQueryClient();
 
   const { mutateAsync: createRateCard, isPending: isCreatingRateCard } = useAdminCreateRateCard({
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Refetch the rate cards to ensure the index table has latest data
+      await queryClient.refetchQueries({ queryKey: ["admin", "rateCards"] });
       toast.success("Rate card created successfully!");
       navigate(absoluteUrls.admin.home.manage_rate_card);
       methods.reset();
