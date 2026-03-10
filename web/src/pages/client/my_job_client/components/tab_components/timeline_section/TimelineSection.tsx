@@ -410,16 +410,20 @@ const TimelineSection: React.FC<{
         formatApiDate(assignment.invitedAt) ||
         formatDateTime();
 
-      // Get timestamps for different events
-      const acceptedDate =
-        formatApiDate((assignment as { assignedAt?: string | null }).assignedAt) ||
-        formatApiDate((assignment as { respondedAt?: string | null }).respondedAt) ||
-        appliedDate;
+      // Get timestamps for different events - pick raw timestamp first, then format once
+      const rawAcceptedDate =
+        (assignment as { assignedAt?: string | null }).assignedAt ||
+        (assignment as { respondedAt?: string | null }).respondedAt ||
+        null;
 
-      const startedDate =
-        formatApiDate((assignment as { startedAt?: string | null }).startedAt) ||
-        formatApiDate((assignment as { startRequestedAt?: string | null }).startRequestedAt) ||
-        acceptedDate;
+      const acceptedDate = formatApiDate(rawAcceptedDate) || appliedDate;
+
+      const rawStartedDate =
+        (assignment as { startedAt?: string | null }).startedAt ||
+        (assignment as { startRequestedAt?: string | null }).startRequestedAt ||
+        null;
+
+      const startedDate = formatApiDate(rawStartedDate) || acceptedDate;
 
       if (status === "submitted") {
         allItems.push({
