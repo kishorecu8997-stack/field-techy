@@ -10,7 +10,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useUpdateRateCard } from "@/shared/apiServices/admin/adminService";
+import { useCreateRateCard} from "@/shared/apiServices/admin/adminService";
 import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
 
 /**
@@ -191,7 +191,7 @@ const EditRateCard = () => {
     }
   }, [rateCardsResponse, serviceCategoryId, methods]);
 
-  const updateRateCardMutation = useUpdateRateCard({
+  const createRateCardMutation = useCreateRateCard({
     onSuccess: () => {
       toast.success("Rate card updated successfully!");
       navigate(absoluteUrls.admin.home.manage_rate_card);
@@ -257,12 +257,11 @@ const EditRateCard = () => {
             // Get countryId from API response
             const finalCountryId = countryIdRef.current;
             
-            updateRateCardMutation.mutate({
-              id: serviceCategoryId,
-              data: {
-                countryId: finalCountryId,
-                experienceLevels,
-              },
+            // Use POST API for update as well
+            createRateCardMutation.mutate({
+              countryId: finalCountryId,
+              serviceCategoryId: serviceCategoryId,
+              experienceLevels,
             });
             close(true);
           },
