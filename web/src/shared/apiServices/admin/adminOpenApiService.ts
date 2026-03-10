@@ -159,7 +159,7 @@ import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 import { useAdminCountryStore } from "../../store/useAdminCountryStore";
 import { AdminAdapter } from "./adminAdapter";
-import type { CreateRateCardParams, CreateRateCardResponse } from "./adminTypes";
+import type { CreateRateCardParams, CreateRateCardResponse } from "@/pages/admin/rate_card/types";
 
 export const LookupTable = {
   Countries: "countries",

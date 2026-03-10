@@ -61,3 +61,25 @@ export type PricingRelations = {
 };
 
 export type PricingField = keyof PricingRelations;
+
+// API Request/Response types
+export interface CreateRateCardRate {
+  [key: string]: number;
+}
+
+export interface CreateRateCardExperienceLevel {
+  levelOrder: number;
+  label: string;
+  rates: CreateRateCardRate;
+}
+
+export interface CreateRateCardParams {
+  countryId: number;
+  serviceCategoryId: number;
+  experienceLevels: CreateRateCardExperienceLevel[];
+}
+
+export interface CreateRateCardResponse {
+  message: string;
+  id?: number;
+}

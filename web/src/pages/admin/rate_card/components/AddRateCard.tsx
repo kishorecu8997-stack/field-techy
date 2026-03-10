@@ -9,8 +9,7 @@ import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { absoluteUrls } from "@/config/urls";
 import { useAdminCreateRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
-import type { CreateRateCardParams } from "@/shared/apiServices/admin/adminTypes";
-import type { PricingFormValues } from "../types";
+import type { PricingFormValues, CreateRateCardParams } from "../types";
 
 /**
  * AddRateCard Component
