@@ -4,6 +4,9 @@ import { useUserSessionStore } from "./useUserSessionStore";
 import { getAdminPersonalInfo } from "../apiServices/admin/adminOpenApiService";
 import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 import { toast } from "react-toastify";
+import { queryClient } from "@/main";
+import { appDownloadProfileFileQueryKey } from "@/api/@tanstack/react-query.gen";
+import { apiClient } from "../apiServices/apiClient";
 
 interface AdminProfile {
   id: string;
@@ -106,3 +109,18 @@ export const useAdminProfile = () => {
 
   return profile;
 };
+
+// Clear profile store and invalidate profile picture cache when session changes or is cleared.
+// This ensures the new logged-in user's profile picture is fetched immediately without a page refresh.
+useUserSessionStore.subscribe((state, prevState) => {
+  if (state.session?.accessToken !== prevState.session?.accessToken) {
+    useAdminProfileStore.getState().clearAdminProfile();
+    queryClient.invalidateQueries({
+      queryKey: appDownloadProfileFileQueryKey({
+        client: apiClient,
+        query: { fileType: "profilePicture" },
+        headers: { authorization: "" },
+      }),
+    });
+  }
+});
