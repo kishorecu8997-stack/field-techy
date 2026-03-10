@@ -357,10 +357,27 @@ const JobDetailsPage = () => {
           logId: log.id,
           // Map revisions to include jobLogId as required by type
           revisions: (log.revisions || []).map((rev) => {
-            const revision = rev as typeof rev & { jobLogId?: number };
             return {
-              ...revision,
-              jobLogId: revision.jobLogId || log.id,
+              revisionId: rev.revisionId,
+              // prefer jobLogId from rev, otherwise use current log id
+              jobLogId: rev.jobLogId ?? log.id,
+              logId: rev.jobLogId || log.id,
+              content: rev.content ?? null,
+              attachmentId: rev.attachmentId ?? null,
+              attachmentUrl: rev.attachment?.url ?? null,
+              status: rev.status, 
+              clientComment: rev.clientComment ?? null,
+              clientAttachmentId: rev.clientAttachmentId ?? null,
+              clientAttachment: rev.clientAttachment
+                ? {
+                    filename: rev.clientAttachment.filename ?? "",
+                    id: rev.clientAttachment.id,
+                    size: rev.clientAttachment.size ?? 0,
+                    url: rev.clientAttachment.url ?? "",
+                  }
+                : undefined,
+              createdAt: rev.createdAt ?? null,
+              updatedAt: rev.updatedAt ?? null,
             };
           }),
         });

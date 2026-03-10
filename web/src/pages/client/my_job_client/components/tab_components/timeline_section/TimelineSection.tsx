@@ -561,11 +561,14 @@ const TimelineSection: React.FC<{
           status: rev.status,
         }));
         revisionDataList.push({
+          id: `revision-update-${log.id}`,
           logId: log.id,
           revisionId: revisions[0]?.revisionId || 0,
-          content: revisions[0]?.content || null,
-          attachmentUrl: revisions[0]?.attachmentUrl || null,
+          type: "revisionRequestUpdate" as const,
+          title: "Revision Request",
           status: revisions[0]?.status || "pending",
+          description: revisions[0]?.clientComment || revisions[0]?.content || "",
+          timestamp: formatApiDate(revisions[0]?.createdAt) || formatApiDate(log.timestamp),
           revisions: revisions,
         });
       }
