@@ -1,6 +1,6 @@
 import type { ServerCategoryProps } from "@/pages/admin/job_category";
 import type { PaymentProps } from "@/pages/admin/payment/types";
-import type { RateCardProps } from "@/pages/admin/rate_card/types";
+// import type { RateCardProps } from "@/pages/admin/rate_card/types";
 import { MANAGE_NOTIFICATION_TYPE, type NotificationProps } from "./manageNotification";
 import type {
   EngineerPage,
@@ -45,83 +45,83 @@ export const serviceCategoriesData: ServerCategoryProps[] = [
   },
 ];
 
-export const RateCardData: RateCardProps[] = [
-  {
-    id: "1",
-    skillSet: "Electrical Maintenance",
-    region: "West",
-    location: "Mumbai, India",
-    experienceLevel: "Junior",
-    hourly: "₹4,800",
-    halfDay: "₹9,600",
-    fullDay: "₹19,200",
-    weekly: "₹96,000",
-    monthly: "₹384,000",
-    project: "Residential Power Backup Installation",
-    createdDate: "2024-11-01",
-    status: true,
-  },
-  {
-    id: "2",
-    skillSet: "HVAC Technician",
-    region: "South",
-    location: "Bangalore, India",
-    experienceLevel: "Mid-Level",
-    hourly: "₹2,500",
-    halfDay: "₹5,000",
-    fullDay: "₹10,000",
-    weekly: "₹50,000",
-    monthly: "₹200,000",
-    project: "Commercial AC Setup",
-    createdDate: "2024-10-22",
-    status: true,
-  },
-  {
-    id: "3",
-    skillSet: "Plumbing",
-    region: "North",
-    location: "Delhi, India",
-    experienceLevel: "Senior",
-    hourly: "₹3,100",
-    halfDay: "₹6,200",
-    fullDay: "₹12,400",
-    weekly: "₹62,000",
-    monthly: "₹248,000",
-    project: "Corporate Office Maintenance",
-    createdDate: "2024-09-15",
-    status: false,
-  },
-  {
-    id: "4",
-    skillSet: "Solar Panel Installation",
-    region: "West",
-    location: "Pune, India",
-    experienceLevel: "Expert",
-    hourly: "₹1,200",
-    halfDay: "₹2,400",
-    fullDay: "₹4,800",
-    weekly: "₹24,000",
-    monthly: "₹96,000",
-    project: "Industrial Solar Deployment",
-    createdDate: "2024-08-12",
-    status: true,
-  },
-  {
-    id: "5",
-    skillSet: "Painting & Finishing",
-    region: "South",
-    location: "Chennai, India",
-    experienceLevel: "Mid-Level",
-    hourly: "₹4,500",
-    halfDay: "₹9,000",
-    fullDay: "₹18,000",
-    weekly: "₹90,000",
-    monthly: "₹360,000",
-    project: "Apartment Interior Painting",
-    createdDate: "2024-07-25",
-    status: false,
-  },
-];
+// export const RateCardData: RateCardProps[] = [
+//   {
+//     id: "1",
+//     skillSet: "Electrical Maintenance",
+//     region: "West",
+//     location: "Mumbai, India",
+//     experienceLevel: "Junior",
+//     hourly: "₹4,800",
+//     halfDay: "₹9,600",
+//     fullDay: "₹19,200",
+//     weekly: "₹96,000",
+//     monthly: "₹384,000",
+//     project: "Residential Power Backup Installation",
+//     createdDate: "2024-11-01",
+//     status: true,
+//   },
+//   {
+//     id: "2",
+//     skillSet: "HVAC Technician",
+//     region: "South",
+//     location: "Bangalore, India",
+//     experienceLevel: "Mid-Level",
+//     hourly: "₹2,500",
+//     halfDay: "₹5,000",
+//     fullDay: "₹10,000",
+//     weekly: "₹50,000",
+//     monthly: "₹200,000",
+//     project: "Commercial AC Setup",
+//     createdDate: "2024-10-22",
+//     status: true,
+//   },
+//   {
+//     id: "3",
+//     skillSet: "Plumbing",
+//     region: "North",
+//     location: "Delhi, India",
+//     experienceLevel: "Senior",
+//     hourly: "₹3,100",
+//     halfDay: "₹6,200",
+//     fullDay: "₹12,400",
+//     weekly: "₹62,000",
+//     monthly: "₹248,000",
+//     project: "Corporate Office Maintenance",
+//     createdDate: "2024-09-15",
+//     status: false,
+//   },
+//   {
+//     id: "4",
+//     skillSet: "Solar Panel Installation",
+//     region: "West",
+//     location: "Pune, India",
+//     experienceLevel: "Expert",
+//     hourly: "₹1,200",
+//     halfDay: "₹2,400",
+//     fullDay: "₹4,800",
+//     weekly: "₹24,000",
+//     monthly: "₹96,000",
+//     project: "Industrial Solar Deployment",
+//     createdDate: "2024-08-12",
+//     status: true,
+//   },
+//   {
+//     id: "5",
+//     skillSet: "Painting & Finishing",
+//     region: "South",
+//     location: "Chennai, India",
+//     experienceLevel: "Mid-Level",
+//     hourly: "₹4,500",
+//     halfDay: "₹9,000",
+//     fullDay: "₹18,000",
+//     weekly: "₹90,000",
+//     monthly: "₹360,000",
+//     project: "Apartment Interior Painting",
+//     createdDate: "2024-07-25",
+//     status: false,
+//   },
+// ];
 
 export const PaymentData: PaymentProps[] = [
   {
@@ -257,8 +257,7 @@ export const notifications: NotificationProps[] = [
 ];
 
 export const rateCardTypes = [
-  { label: "Master Rate Card", value: "masterRateCard" },
-  { label: "Service Category", value: "serviceCategory" },
+  { label: "Master Rate Card", value: "masterRateCard" }
 ];
 
 export const ClientNameList = [

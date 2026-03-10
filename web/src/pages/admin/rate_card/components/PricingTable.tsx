@@ -15,12 +15,10 @@ const PricingTable: React.FC<{
 }> = ({ control, index, tiers, editable }) => {
   const headers = [
     "Hourly",
-    "Half-Day (4h)",
-    "Full-Day (8h)",
-    "Weekly (5d)",
+    "Daily",
     "Monthly",
   ];
-  const fields = ["hourly", "halfDay", "fullDay", "weekly", "monthly"];
+  const fields = ["hourly", "daily", "monthly"];
 
   const rowValues = useWatch({
     control,
@@ -61,9 +59,7 @@ const PricingTable: React.FC<{
                           validate: (v: string) =>
                             validatePricingModel(v, field as PricingField, {
                               hourly: Number(relatedValues.hourly),
-                              halfDay: Number(relatedValues.halfDay),
-                              fullDay: Number(relatedValues.fullDay),
-                              weekly: Number(relatedValues.weekly),
+                              daily: Number(relatedValues.daily),
                               monthly: Number(relatedValues.monthly),
                             }),
                         }}

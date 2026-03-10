@@ -70,7 +70,7 @@ const ManageRateCards: React.FC = () => {
           location: item.country || "-",
           experienceLevel: item.experienceLevels?.join(", ") || "-",
           hourly: "-",
-          fullDay: "-",
+          daily: "-",
           monthly: "-",
           project: "-",
           createdDate: item.createdDate || "-",
@@ -126,7 +126,7 @@ const ManageRateCards: React.FC = () => {
         item.location.toLowerCase().includes(search) ||
         item.experienceLevel.toLowerCase().includes(search) ||
         item.hourly.toLowerCase().includes(search) ||
-        item.fullDay.toLowerCase().includes(search) ||
+        item.daily.toLowerCase().includes(search) ||
         item.monthly.toLowerCase().includes(search)
     );
   }, [tableData, searchTerm]);

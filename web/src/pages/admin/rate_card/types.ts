@@ -31,7 +31,7 @@ export interface RateCardProps {
   location: string;
   experienceLevel: string;
   hourly: string;
-  fullDay: string;
+  daily: string;
   monthly: string;
   project: string;
   createdDate: string;
@@ -56,7 +56,7 @@ export interface PricingFormValues {
 
 export type PricingRelations = {
   hourly?: number;
-  fullDay?: number;
+  daily?: number;
   monthly?: number;
 };
 
