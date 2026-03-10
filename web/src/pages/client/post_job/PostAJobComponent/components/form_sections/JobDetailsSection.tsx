@@ -50,7 +50,7 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
               return "Job Description must not have leading or trailing spaces";
             }
             // Check for multiple consecutive spaces
-            if (/\s{2,}/.test(value)) {
+            if (/[^\S\r\n]{2,}/.test(value)) {
               return "Job Description must not have consecutive spaces";
             }
             if (value.length < 50) return "Job Description must be at least 50 characters";
