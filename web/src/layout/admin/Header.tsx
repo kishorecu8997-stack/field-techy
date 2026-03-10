@@ -1,9 +1,9 @@
 import { assetsConfig } from "@/assets";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { BsTextLeft } from "react-icons/bs";
 import { FaRegBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { notifications, type NavbarProps } from "./types";
+import { type NavbarProps } from "./types";
 import { absoluteUrls } from "@/config/urls";
 import NotificationDropdown from "@/shared/components/NotitficationPopover";
 import SelectMenu from "@/shared/components/SelectMenu";
@@ -13,6 +13,12 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useAdminProfile } from "@/shared/store/useAdminProfileStore";
 import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
+
+import {
+  useAppMarkAllNotificationsAsRead,
+  useAppMarkNotificationAsRead,
+  useAppNotifications,
+} from "@/shared/apiServices/notifications/notificationOpenApiService";
 
 /**
  * Header
@@ -38,6 +44,16 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
 
   const adminProfile = useAdminProfile();
   const { data: adminLookupData } = useAppGetLookupData(LookupTable.Regions);
+
+  const { notifications } = useAppNotifications();
+  const markAsRead = useAppMarkNotificationAsRead();
+  const markAllAsRead = useAppMarkAllNotificationsAsRead();
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const recentNotifications = useMemo(() => {
+    return notifications.slice(0, 5);
+  }, [notifications]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -83,7 +99,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
       }}
     >
       <div className="flex items-center space-x-4">
-        <Link to="/admin/dashboard" className="">
+        <Link to="/admin/dashboard">
           <img
             src={assetsConfig.logos.ftLogoWhite}
             alt="FT Logo"
@@ -111,13 +127,17 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
         />
 
         <div
-          className="text-xl cursor-pointer"
+          className="text-xl cursor-pointer relative"
           ref={bellRef}
           onClick={toggleNotifications}
         >
           <FaRegBell />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center font-medium">
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
+          )}
         </div>
-
         <Link to={absoluteUrls.admin.home.profile}>
           <div className="flex items-center space-x-2 cursor-pointer">
             <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
@@ -129,7 +149,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
-                  (adminProfile?.fullName?.charAt(0) || "A").toLocaleUpperCase()
+                  (adminProfile?.fullName?.charAt(0) || "A").toUpperCase()
                 )}
               </span>
             </div>
@@ -153,22 +173,56 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
         <NotificationDropdown
           ref={dropdownRef}
           title="Recent Alerts"
-          seeAllLink={`${absoluteUrls.admin.home.received_notification}`}
+          seeAllLink={absoluteUrls.admin.home.received_notification}
           onClose={() => setIsNotificationOpen(false)}
         >
-          {notifications.map((n) => (
-            <div className="flex items-start px-4 py-3 cursor-pointer">
+          {notifications.some((n) => !n.read) && (
+            <div className="px-4 pt-3 pb-2 flex justify-end">
+              <button
+                type="button"
+                className="text-sm text-blue-600 hover:underline disabled:opacity-50"
+                disabled={markAllAsRead.isPending}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  await markAllAsRead.mutateAsync({});
+                }}
+              >
+                Mark all as read
+              </button>
+            </div>
+          )}
+
+          {recentNotifications.length === 0 && (
+            <div className="px-4 py-3 text-sm text-gray-500">
+              No notifications
+            </div>
+          )}
+
+          {recentNotifications.map((n) => (
+            <div
+              key={n.id}
+              className="flex items-start px-4 py-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+              onClick={async () => {
+                if (!n.read) {
+                  await markAsRead.mutateAsync({ body: { id: Number(n.id) } });
+                }
+              }}
+            >
               <div className="w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full flex-shrink-0 mr-3"></div>
+
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="font-medium text-gray-900 dark:text-white">
-                      {n.name}
+                      {n.title}
                     </span>
+
                     <p className="text-sm text-gray-600 mt-1">{n.message}</p>
                   </div>
+
                   <span className="text-xs text-gray-500 ml-2 whitespace-nowrap">
-                    {n.timestamp}
+                    {new Date(n.createdAt).toLocaleString()}
                   </span>
                 </div>
               </div>

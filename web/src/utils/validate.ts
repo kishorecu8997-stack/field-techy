@@ -804,8 +804,8 @@ export const validateNotificationMessage = (value: string) => {
   }
 
   // Length check
-  if (raw.length < 10) {
-    return "Message must be at least 10 characters";
+  if (raw.length < 120) {
+    return "Message must be at least 120 characters";
   }
   if (raw.length > 500) {
     return "Message must not exceed 500 characters";
@@ -872,12 +872,15 @@ export const validateNotificationTitle = (value: string) => {
   if (raw.length < 5) return "Title must be at least 5 characters";
   if (raw.length > 100) return "Title must not exceed 100 characters";
 
-  // Disallow any digits (0-9)
-  if (/\d/.test(raw)) return "Title must not contain numbers";
+  // Must contain at least one letter (prevents numbers-only)
+  if (!/[A-Za-z]/.test(raw)) {
+    return "Title must contain at least one letter";
+  }
+  // Allowed characters
+  const allowedPattern = /^[A-Za-z0-9 /(),.#-]+$/;
 
-  // Allow only letters and spaces (no emojis, no symbols, no punctuation)
-  if (!/^[A-Za-z ]+$/.test(raw)) {
-    return "Title must contain only letters and spaces";
+  if (!allowedPattern.test(raw)) {
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . - # are allowed.";
   }
   return true;
 };
