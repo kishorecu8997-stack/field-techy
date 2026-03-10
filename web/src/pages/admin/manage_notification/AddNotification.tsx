@@ -21,6 +21,7 @@ import {
   LookupTable,
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 
 interface AddNotificationProps {
   title: string;
@@ -46,6 +47,7 @@ interface AddNotificationProps {
 export default function AddNotification() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+  const { regionId } = useAdminCountryStore();
 
   const methods = useForm<AddNotificationProps>({
     defaultValues: {
@@ -64,7 +66,13 @@ export default function AddNotification() {
   const countryId = watch("countryId");
   const stateId = watch("stateId");
 
-  const { data: countriesLookup } = useAppGetLookupData(LookupTable.Countries);
+  const { data: countriesLookup } = useAppGetLookupData(
+    LookupTable.Countries,
+    Number(regionId),
+    {
+      enabled: !!regionId,
+    },
+  );
 
   const { data: statesLookup } = useAppGetLookupData(
     LookupTable.States,
@@ -81,6 +89,11 @@ export default function AddNotification() {
       enabled: !!stateId,
     },
   );
+  useEffect(() => {
+    setValue("countryId", "");
+    setValue("stateId", "");
+    setValue("cityId", "");
+  }, [regionId]);
 
   useEffect(() => {
     setValue("stateId", "");
@@ -231,6 +244,7 @@ export default function AddNotification() {
               placeholder="Select Country"
               options={countryOptions}
               required
+              disabled={!regionId}
             />
 
             <SelectField
