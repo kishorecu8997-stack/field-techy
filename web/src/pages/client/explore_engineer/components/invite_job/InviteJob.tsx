@@ -48,7 +48,7 @@ const InviteJob: React.FC = () => {
   const { data: states } = useStates();
   const { data: cities } = useCities();
 
-  const { data: jobsData } = useClientGetJobs("Posted");
+  const { data: jobsData } = useClientGetJobs();
 
   const { mutateAsync: inviteEngineer } = useClientInviteEngineer({});
 
@@ -98,7 +98,9 @@ const InviteJob: React.FC = () => {
   const itemsPerPage = 6;
   // only show jobs that are currently in posted status
   const postedJobs = (jobsData || []).filter(
-    (j) => j.status?.toLowerCase() === "posted",
+    (j) =>
+      (j.status?.toLowerCase() === "posted" || j.status?.toLowerCase() === "in progress") &&
+      (j.assignedEngineerCount ?? 0) !== (j.vacancies ?? 0)
   );
   const totalPages = Math.ceil(postedJobs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
