@@ -319,27 +319,35 @@ const Dashboard: React.FC = () => {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">In-Progress Jobs</h2>
-                <NavLink
-                  to={`${absoluteUrls.client.home.my_jobs}?filter=In-Progress`}
-                  onClick={() => scrollToTop()}
-                  className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
-                >
-                  <Button
-                    variant="link"
-                    className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
+                {inProgressJobsData.length > 0 && (
+                  <NavLink
+                    to={`${absoluteUrls.client.home.my_jobs}?filter=In-Progress`}
+                    onClick={() => scrollToTop()}
+                    className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                   >
-                    View all
-                  </Button>
-                </NavLink>
+                    <Button
+                      variant="link"
+                      className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
+                    >
+                      View all
+                    </Button>
+                  </NavLink>
+                )}
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">
-                {inProgressJobsData.map((job: Job) => (
-                  <InProgressJobCard
-                    key={job.id}
-                    job={job}
-                    navigateToJob={`${absoluteUrls.client.home.my_jobs}/${job.id}`}
-                  />
-                ))}
+                {inProgressJobsData.length > 0 ? (
+                  inProgressJobsData.map((job: Job) => (
+                    <InProgressJobCard
+                      key={job.id}
+                      job={job}
+                      navigateToJob={`${absoluteUrls.client.home.my_jobs}/${job.id}`}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 text-gray-400 p-20 rounded-lg">
+                    No In-Progress jobs.
+                  </div>
+                )}
               </div>
             </div>
           </div>
