@@ -160,6 +160,7 @@ import { apiClient } from "../apiClient";
 import { useAdminCountryStore } from "../../store/useAdminCountryStore";
 import { AdminAdapter } from "./adminAdapter";
 import type { CreateRateCardParams, CreateRateCardResponse } from "@/pages/admin/rate_card/types";
+import type { RateCardsResponse, RateCardParams } from "@/pages/admin/rate_card/types";
 
 export const LookupTable = {
   Countries: "countries",
@@ -1572,5 +1573,17 @@ export function useAdminCreateRateCard(options?: {
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+}
+
+// Rate Card - Get All
+export function useGetRateCards(
+  params?: RateCardParams,
+  options?: { enabled?: boolean },
+) {
+  return useQuery<RateCardsResponse>({
+    queryKey: ["admin", "rateCards", params],
+    queryFn: () => AdminAdapter.getRateCards(params),
+    enabled: options?.enabled ?? true,
   });
 }

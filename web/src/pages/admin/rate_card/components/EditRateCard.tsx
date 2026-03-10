@@ -10,8 +10,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useCreateRateCard} from "@/shared/apiServices/admin/adminService";
-import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
+import { useAdminCreateRateCard, useGetRateCards } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * EditRateCard Component
@@ -191,7 +190,7 @@ const EditRateCard = () => {
     }
   }, [rateCardsResponse, serviceCategoryId, methods]);
 
-  const createRateCardMutation = useCreateRateCard({
+  const createRateCardMutation = useAdminCreateRateCard({
     onSuccess: () => {
       toast.success("Rate card updated successfully!");
       navigate(absoluteUrls.admin.home.manage_rate_card);

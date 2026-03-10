@@ -83,3 +83,35 @@ export interface CreateRateCardResponse {
   message: string;
   id?: number;
 }
+
+export interface RateCardParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
+export interface RateCardRate {
+  modelName: string;
+  rate: string;
+  engagementModelId: number;
+}
+
+export interface RateCardDataItem {
+  id: number;
+  serviceCategory: string;
+  region: string;
+  country: string;
+  experienceLevels: string[];
+  rates: RateCardRate[];
+  createdDate: string;
+  serviceCategoryId: number;
+  countryId: number;
+  experienceLevelId: number;
+}
+
+export interface RateCardsResponse {
+  data: RateCardDataItem[];
+  total: number;
+  page: number;
+  limit: number;
+}
