@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { absoluteUrls } from "@/config/urls";
-import { useCreateRateCard } from "@/shared/apiServices/admin/adminService";
-import type { CreateRateCardParams, CreateRateCardResponse } from "@/shared/apiServices/admin/adminTypes";
+import { useAdminCreateRateCard } from "@/shared/apiServices/admin/adminOpenApiService";
+import type { CreateRateCardParams } from "@/shared/apiServices/admin/adminTypes";
 import type { PricingFormValues } from "../types";
 
 /**
@@ -34,8 +34,8 @@ const AddRateCard = () => {
   });
   const { showPopup } = usePopupStore();
 
-  const createRateCardMutation = useCreateRateCard({
-    onSuccess: (_data: CreateRateCardResponse) => {
+  const { mutateAsync: createRateCard, isPending: isCreatingRateCard } = useAdminCreateRateCard({
+    onSuccess: () => {
       toast.success("Rate card created successfully!");
       navigate(absoluteUrls.admin.home.manage_rate_card);
       methods.reset();
@@ -86,7 +86,7 @@ const AddRateCard = () => {
 
         // Check if we already have an entry for this level
         const existingIndex = experienceLevels.findIndex(
-          (exp) => exp.levelOrder === levelOrder
+          (exp: CreateRateCardParams["experienceLevels"][number]) => exp.levelOrder === levelOrder
         );
 
         // Build rates object with engagementModelId as keys
@@ -113,7 +113,7 @@ const AddRateCard = () => {
     });
 
     // Sort by level order
-    experienceLevels.sort((a, b) => a.levelOrder - b.levelOrder);
+    experienceLevels.sort((a: CreateRateCardParams["experienceLevels"][number], b: CreateRateCardParams["experienceLevels"][number]) => a.levelOrder - b.levelOrder);
 
     return {
       countryId,
@@ -137,8 +137,9 @@ const AddRateCard = () => {
           value: "save",
           variant: "primary",
           action: async (close) => {
+            if (isCreatingRateCard) return;
             const apiData = transformFormDataToApi(data);
-            createRateCardMutation.mutate(apiData);
+            await createRateCard(apiData);
             close(true);
           },
         },

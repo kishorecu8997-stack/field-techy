@@ -158,6 +158,8 @@ import {
 import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 import { useAdminCountryStore } from "../../store/useAdminCountryStore";
+import { AdminAdapter } from "./adminAdapter";
+import type { CreateRateCardParams, CreateRateCardResponse } from "./adminTypes";
 
 export const LookupTable = {
   Countries: "countries",
@@ -1556,3 +1558,19 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
 //     onError: options?.onError,
 //   });
 // }
+
+// Rate Card - Create
+export function useAdminCreateRateCard(options?: {
+  onSuccess?: (data: CreateRateCardResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateRateCardParams) => AdminAdapter.createRateCard(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
