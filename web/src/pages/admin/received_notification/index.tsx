@@ -12,6 +12,7 @@ import {
   useAppMarkAllNotificationsAsRead,
 } from "@/shared/apiServices/notifications/notificationOpenApiService";
 import { formatApiDate } from "@/utils/timelineUtils";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 interface ReceivedNotificationProps {
   id: number;
@@ -48,6 +49,10 @@ const ReceivedNotification: React.FC = () => {
     onSuccess: () => toast.success("All notifications marked as read"),
     onError: () => toast.error("Failed to mark all notifications as read"),
   });
+
+  const hasUnread = useMemo(() => {
+    return notifications.some((n) => !n.read);
+  }, [notifications]);
 
   const handleMarkAsRead = async (id: number) => {
     try {
@@ -129,13 +134,11 @@ const ReceivedNotification: React.FC = () => {
             <span className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0" />
           )}
           <span
-            className={`
-              ${
-                row.read
-                  ? "text-gray-600 dark:text-gray-300"
-                  : "font-semibold text-gray-900 dark:text-gray-100"
-              }
-            `}
+            className={`${
+              row.read
+                ? "text-gray-600 dark:text-gray-300"
+                : "font-semibold text-gray-900 dark:text-gray-100"
+            }`}
           >
             {row.name}
           </span>
@@ -147,17 +150,16 @@ const ReceivedNotification: React.FC = () => {
       label: "Message",
       renderCell: (row) => (
         <span
-          className={`
-            max-w-xs truncate
-            ${
-              row.read
-                ? "text-gray-600 dark:text-gray-300"
-                : "font-semibold text-gray-900 dark:text-gray-100"
-            }
-          `}
+          className={`max-w-full break-words whitespace-pre-line ${
+            row.read
+              ? "text-gray-600 dark:text-gray-300"
+              : "font-semibold text-gray-900 dark:text-gray-100"
+          }`}
           title={row.message}
         >
-          {row.message}
+          {row.message.length > 70
+            ? row.message.slice(0, 70) + "..."
+            : row.message}
         </span>
       ),
     },
@@ -216,19 +218,26 @@ const ReceivedNotification: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
       <h1 className="font-semibold">Manage Received Notifications</h1>
+
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex justify-between items-center">
           <SearchInput
             value={search}
             onChange={(value: string) => setSearch(value)}
           />
-          <button
-            onClick={handleMarkAll}
-            className="text-sm text-blue-600 hover:underline dark:text-blue-400"
-          >
-            Mark all as read
-          </button>
+
+          {hasUnread && (
+            <Button
+              variant="no_style"
+              onClick={handleMarkAll}
+              disabled={markAllAsRead.isPending}
+              className="text-sm text-blue-600 hover:underline dark:text-blue-400 disabled:opacity-50"
+            >
+              Mark all as read
+            </Button>
+          )}
         </div>
+
         <div className="h-full flex-1 overflow-y-auto">
           <CustomTable<ReceivedNotificationProps>
             columns={columns}

@@ -19,6 +19,7 @@ import {
   useAppMarkNotificationAsRead,
   useAppNotifications,
 } from "@/shared/apiServices/notifications/notificationOpenApiService";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * Header
@@ -178,8 +179,8 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
         >
           {notifications.some((n) => !n.read) && (
             <div className="px-4 pt-3 pb-2 flex justify-end">
-              <button
-                type="button"
+              <Button
+                variant="no_style"
                 className="text-sm text-blue-600 hover:underline disabled:opacity-50"
                 disabled={markAllAsRead.isPending}
                 onClick={async (e) => {
@@ -189,7 +190,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                 }}
               >
                 Mark all as read
-              </button>
+              </Button>
             </div>
           )}
 
