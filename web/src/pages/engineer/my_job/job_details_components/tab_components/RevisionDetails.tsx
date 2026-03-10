@@ -49,14 +49,33 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                       </p>
                       {revision.clientAttachmentUrl && (
                         <div className="mt-2">
-                          <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
+                          <a
+                            href={revision.clientAttachmentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+                          >
+                            <svg
+                              className="h-4 w-4 text-gray-500"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                              />
+                            </svg>
                             {decodeURIComponent(
                               revision.clientAttachmentUrl
                                 .split("/")
                                 .pop()
                                 ?.split("?")[0] || "",
                             )}
-                          </span>
+                          </a>
                         </div>
                       )}
                     </div>
@@ -76,9 +95,10 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                             )
                           : update.timestamp}
                       </span>
-                      {/* Show button only if no engineer response exists (neither from API nor local state) */}
+                      {/* Show button only if no engineer response exists (neither content nor attachment) */}
                       {!revisionUpdateEntry &&
                         !revision.content &&
+                        !revision.attachmentUrl &&
                         index === 0 && (
                           <Button
                             type="button"
@@ -92,8 +112,8 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                   </div>
                 </div>
 
-                {/* Engineer Revision Update - if exists */}
-                {revision.content && (
+                {/* Engineer Revision Update - if exists (content and/or attachment) */}
+                {(revision.content || revision.attachmentUrl) && (
                   <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50/70 p-3 w-full">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
@@ -105,14 +125,32 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                         </p>
                         {revision.attachmentUrl && (
                           <div className="mt-2">
-                            <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
+                            <a
+                              href={revision.attachmentUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+                            >
+                              <svg
+                                className="h-4 w-4 text-gray-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                                />
+                              </svg>
                               {decodeURIComponent(
                                 revision.attachmentUrl
                                   .split("/")
                                   .pop()
                                   ?.split("?")[0] || "",
                               )}
-                            </span>
+                            </a>
                           </div>
                         )}
                       </div>

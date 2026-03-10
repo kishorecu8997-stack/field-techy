@@ -51,7 +51,6 @@ export interface MyJobsHeaderProps {
   onSortChange?: (sort: SortOption) => void;
   isShowBreadcrumb?: boolean;
   description?: string;
-  isReport?: boolean;
   isShowSort?: boolean;
   action?: React.ReactNode;
   isShowButton?: boolean;
@@ -100,6 +99,8 @@ export interface ClientInfoCardProps {
   verifications: string[];
   onOpenReview?: () => void;
   onClose?: () => void;
+  phoneNumber?: string;
+  email?: string;
 }
 
 export interface JobHeaderCardProps {
@@ -119,6 +120,7 @@ export interface JobHeaderCardProps {
   >;
   OfferJobStatus?: AssignmentStatus | OfferedJobStatusType | undefined;
   hideBreakDetails?: boolean;
+  hideChats?: boolean;
   jobLocation?: string;
   numberOfVacancy?: number;
   numberOfApplicants?: number;
@@ -130,10 +132,13 @@ export interface JobHeaderCardProps {
   onOpenFinalStatement?: () => void;
   isFinalStatementSubmitted?: boolean;
   isFinalStatementApproved?: boolean;
+  isFinalStatementRejected?: boolean;
   onOpenGiveClientFeedback?: () => void;
   onOpenViewClientFeedback?: () => void;
   allCardsApproved?: boolean;
   assignmentId?: number;
+  allAssignmentIds?: number[]; // For client side - multiple engineers
+  engineerNames?: string[]; // Engineer names corresponding to assignment IDs
   progressUpdates?: ProgressUpdate[];
   jobId: string;
   jobStartDate?: string;
@@ -210,6 +215,7 @@ export interface ProgressUpdate {
   startDate?: string;
   endDate?: string;
   duration?: string;
+  breakType?: "short_term" | "long_term";
   reason?: string;
   requestType?: string;
   // Log ID from the original API log (used for revision updates)

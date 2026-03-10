@@ -3,16 +3,16 @@ import {
   useClientTransactions,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import { useThemeHook } from "@/shared/hooks/useThemeHook";
-import type { Transaction } from "../types";
 import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
+import type { Transaction } from "../types";
+import AddFundComponent from "./AddFundComponent";
 
 interface WalletComponentProps {
   onMenuItemClick: (key: string) => void;
 }
 
 const WALLET_COMPONENTS = {
-  ADD_FUND: "clientAddFund",
   RECENT_TRANSACTIONS: "recentTransactions",
 };
 
@@ -156,7 +156,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                       Number(balance.balance),
                       balance.currencyCode,
                     )
-                  : "--"
+                  : "0.00"
                 : "******"}
             </p>
             {!showBalance ? (
@@ -189,18 +189,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
               />
             )}
           </div>
-          <div className="flex justify-end">
-            <button
-              onClick={() => onMenuItemClick(WALLET_COMPONENTS.ADD_FUND)}
-              className={`mt-4 px-6 py-2 rounded-full font-medium transition-colors cursor-pointer ${
-                isDarkMode
-                  ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                  : "bg-emerald-700 hover:bg-emerald-800 text-white"
-              }`}
-            >
-              Add Fund
-            </button>
-          </div>
+          <AddFundComponent />
         </div>
       </div>
 

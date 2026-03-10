@@ -14,9 +14,15 @@ import { useNavigate, useParams } from "react-router-dom";
 const ClientActions = ({
   activeTab,
   allCardsApproved = false,
+  jobStatus,
+  numberOfVacancy,
+  numberOfApprovedProposals,
 }: {
   activeTab?: string;
   allCardsApproved?: boolean;
+  jobStatus?: string;
+  numberOfVacancy?: number;
+  numberOfApprovedProposals?: number;
 }) => {
   const navigate = useNavigate();
   const { id, jobId } = useParams();
@@ -29,7 +35,6 @@ const ClientActions = ({
     setActiveKey("engineerFromFeedback");
     setISOpenSidebar(true);
   };
-
   // Show "View Feedback From Engineers" button only on Timeline tab when all cards are approved
   const showFeedbackButton =
     activeTab === JOB_TAB_LABELS.timeline && allCardsApproved;
@@ -52,14 +57,17 @@ const ClientActions = ({
             <span>View Feedback From Engineers</span>
           </Button>
         ) : (
-          <Button
-            variant="primary"
-            onClick={() => {
-              navigate(URl);
-            }}
-          >
-            Invite to Job
-          </Button>
+          jobStatus === "Posted" &&
+          numberOfVacancy !== numberOfApprovedProposals && (
+            <Button
+              variant="primary"
+              onClick={() => {
+                navigate(URl);
+              }}
+            >
+              Invite to Job
+            </Button>
+          )
         )}
       </div>
     </>

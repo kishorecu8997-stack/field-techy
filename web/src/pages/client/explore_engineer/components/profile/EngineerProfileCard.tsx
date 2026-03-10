@@ -23,8 +23,7 @@ const EngineerProfileCard: React.FC<ProfileCardProps> = ({
         {/* Avatar */}
         <div className="flex-shrink-0">
           <img
-            // src={engineer.imageUrl}
-            src={assetsConfig.images.users.user}
+            src={profile.imageUrl || assetsConfig.images.users.user}
             alt={profile.name}
             className="w-24 h-24 rounded-xl object-cover border-2 border-emerald-100/20"
           />

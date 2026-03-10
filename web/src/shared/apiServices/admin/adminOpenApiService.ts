@@ -30,6 +30,11 @@ import {
   type AdminGetJobDetailsResponse,
   type AdminGetJobGraphData,
   type AdminGetJobGraphResponse,
+  type AdminGetUserGraphData,
+  type AdminGetUserGraphResponse,
+  type AdminGetDashboardJobGraphData,
+  type AdminGetDashboardJobGraphResponse,
+  type GetDashboardStatsResponse,
   type AdminGetSubAdminsData,
   type AdminGetSubAdminsResponse,
   type AdminGetEngineersForManagementData,
@@ -91,6 +96,9 @@ import {
   type AdminGetWalletOverviewData,
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
+  type AdminGetPendingPaymentsData,
+  type AdminGetPendingPaymentsResponse,
+  type AdminApprovePaymentResponses,
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
@@ -133,6 +141,9 @@ import {
   adminCreateSubAdminMutation,
   adminUpdateSubAdminMutation,
   adminGetJobGraphOptions,
+  adminGetUserGraphOptions,
+  adminGetDashboardJobGraphOptions,
+  getDashboardStatsOptions,
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
   adminGetReportsOptions,
@@ -144,7 +155,12 @@ import {
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
   adminUpdateTransactionRequestStatusMutation,
+  adminGetPendingPaymentsOptions,
+  adminGetPendingPaymentsQueryKey,
+  adminApprovePaymentMutation,
 } from "@/api/@tanstack/react-query.gen";
+
+export { adminGetPendingPaymentsQueryKey };
 import {
   useMutation,
   useQuery,
@@ -676,25 +692,17 @@ export function useGetCmsContent(
       const response = await getCmsContent({
         client: apiClient,
         query: { key },
+        throwOnError: true,
       });
-      return response.data;
+      return response.data ?? null;
     },
 
     enabled: options?.enabled ?? true,
 
-    staleTime: 0,
-    refetchOnWindowFocus: true,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
     refetchIntervalInBackground: false,
-
-    refetchInterval:
-      options?.enabled === false
-        ? false
-        : (options?.refetchInterval ??
-          (() =>
-            typeof document !== "undefined" &&
-            document.visibilityState === "visible"
-              ? 15000
-              : false)),
+    refetchInterval: false,
   });
 }
 export function useCreateFaq(options?: {
@@ -794,11 +802,11 @@ export function useAdminGetJobDetails(
 
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
     ? {
-        ...query,
-        regionId:
-          query?.regionId ??
-          (selectedRegionId ? Number(selectedRegionId) : undefined),
-      }
+      ...query,
+      regionId:
+        query?.regionId ??
+        (selectedRegionId ? Number(selectedRegionId) : undefined),
+    }
     : { jobId: 0 };
 
   return useQuery({
@@ -1013,11 +1021,11 @@ export function useAdminGetJobLogs(
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
-        ...query,
-        regionId:
-          query?.regionId ??
-          (selectedRegionId ? Number(selectedRegionId) : undefined),
-      }
+      ...query,
+      regionId:
+        query?.regionId ??
+        (selectedRegionId ? Number(selectedRegionId) : undefined),
+    }
     : { jobId: 0 };
 
   return useQuery({
@@ -1123,7 +1131,90 @@ export function useAdminGetJobGraph(
   });
 }
 
-  
+// ─── Dashboard Stats ──────────────────────────────────────────────────────────
+
+export function useAdminGetDashboardStats(options?: {
+  enabled?: boolean;
+  onSuccess?: (data: GetDashboardStatsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useQuery({
+    ...getDashboardStatsOptions({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
+    ...options,
+  });
+}
+
+// ─── Dashboard Job Graph ──────────────────────────────────────────────────────
+
+export type AdminGetDashboardJobGraphQuery = NonNullable<
+  AdminGetDashboardJobGraphData["query"]
+>;
+
+export function useAdminGetDashboardJobGraph(
+  query: AdminGetDashboardJobGraphQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetDashboardJobGraphResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetDashboardJobGraphQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetDashboardJobGraphOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+// ─── User Graph ───────────────────────────────────────────────────────────────
+
+export type AdminGetUserGraphQuery = NonNullable<
+  AdminGetUserGraphData["query"]
+>;
+
+export function useAdminGetUserGraph(
+  query: AdminGetUserGraphQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetUserGraphResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetUserGraphQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetUserGraphOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
 export type AdminUpdateReportBody = AdminUpdateReportData["body"];
 
 export function useAdminResolveReport(options?: {
@@ -1536,10 +1627,77 @@ export function useAdminCreateRateCard(options?: {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
       options?.onSuccess?.(data);
-    },
-    onError: options?.onError,
+          },
+          onError: options?.onError,
+        });
+      } 
+export function useAdminGetPendingPayments(
+  query?: AdminGetPendingPaymentsData["query"] & { regionId?: number },
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetPendingPaymentsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    // @ts-ignore - regionId may not be in types yet
+    ...adminGetPendingPaymentsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
   });
 }
+
+export function useAdminApprovePayment(options?: {
+  onSuccess?: (data: AdminApprovePaymentResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminApprovePaymentMutation({ client: apiClient }),
+    mutationFn: (variables, context) => {
+      return adminApprovePaymentMutation({ client: apiClient }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+          } as any,
+        },
+        context,
+      );
+    },
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) => {
+          const firstKeyItem = query.queryKey?.[0];
+          if (!firstKeyItem || typeof firstKeyItem !== "object") {
+            return false;
+          }
+          return (
+            (firstKeyItem as { _id?: string })._id === "adminGetPendingPayments"
+          );
+        },
+        type: "all",
+      });
+      options?.onSuccess?.(data);
+          },
+          onError: options?.onError,
+        });
+      }
+      
 
 // Rate Card - Get All
 export function useGetRateCards(

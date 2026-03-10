@@ -9,12 +9,13 @@ import { absoluteUrls } from "@/config/urls";
 import type { JobItem } from "@/pages/admin/jobs/types";
 import GeneralChart from "@/shared/components/AdminChart";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { days } from "@/dummy_data/adminDashboard";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { useAdminGetJobGraph } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useSearchParams } from "react-router-dom";
 import { formatDate } from "@/utils/formatDate";
 import type { AdminGetJobGraphQuery } from "@/shared/apiServices/admin/adminOpenApiService";
+import { days } from "@/pages/admin/dashboard/types";
+import { statusLabels } from "@/pages/admin/client/types";
 
 interface ClientJobByCategoryProps {
   data: JobItem[];
@@ -109,14 +110,18 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
   );
 
   const chartData = useMemo(() => {
-    if (graphResponse?.data) {
-      return graphResponse.data.map((item) => ({
-        name: dayjs(item.label).format("DD/MM/YYYY"),
-        jobs: item.completed || 0,
-      }));
+    if (graphResponse?.data && status) {
+      return graphResponse.data.map((item) => {
+        // Access the count using the status key provided from props
+        const count = (item as Record<string, unknown>)[status];
+        return {
+          name: dayjs(item.label).format("DD/MM/YYYY"),
+          jobs: typeof count === "number" ? count : 0,
+        };
+      });
     }
     return [];
-  }, [graphResponse]);
+  }, [graphResponse, status]);
 
   const columns: Column<JobItem>[] = useMemo(
     () => [
@@ -187,7 +192,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
       <div className="flex flex-wrap gap-4 items-center">
         <SearchInput value={search} onChange={setSearch} />
       </div>
-      <div className="h-full flex-1 overflow-y-auto mt-4">
+      <div className="h-full flex-1 mt-4">
         <CustomTable<JobItem>
           columns={columns}
           data={filteredData}
@@ -204,7 +209,7 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-                Total Jobs Completed
+                Total Jobs {status ? statusLabels[status] : ""}
               </h3>
               <SelectMenu
                 placeholder="Select Filter"
@@ -219,12 +224,14 @@ const ClientJobByCategory: React.FC<ClientJobByCategoryProps> = ({
               data={chartData}
               chartType="line"
               xAxisDataKey="name"
+              yAxisDomain={[0, "auto"]}
               aspectRatio={2}
+              cursor={{ fill: "#9ca3af", fillOpacity: 0.05 }}
               series={[
                 {
                   dataKey: "jobs",
                   name: "Jobs",
-                  fill: "#0f766e",
+                  fill: "#6b7280",
                 },
               ]}
               customTooltip={CustomTooltip}

@@ -58,6 +58,7 @@ const GeneralChart = <T extends Record<string, unknown>>({
   legend,
   isLoading,
   error,
+  cursor = true,
 }: GeneralChartProps<T>) => {
   if (isLoading) {
     return (
@@ -121,13 +122,25 @@ const GeneralChart = <T extends Record<string, unknown>>({
 
         <XAxis dataKey={xAxisDataKey as string} tick={{ fontSize: 12 }} />
 
-        <YAxis domain={yAxisDomain} tick={{ fontSize: 12 }} />
+        <YAxis
+          domain={yAxisDomain}
+          tick={{ fontSize: 12 }}
+          allowDecimals={false}
+          tickFormatter={(value) =>
+            typeof value === "number" ? Math.round(value).toString() : value
+          }
+        />
 
         {showTooltip &&
           (CustomTooltip ? (
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip cursor={cursor} content={<CustomTooltip />} />
           ) : (
-            <Tooltip />
+            <Tooltip
+              cursor={cursor}
+              formatter={(value: number | string | undefined) =>
+                typeof value === "number" ? Math.round(value) : value
+              }
+            />
           ))}
 
         {showLegend && (

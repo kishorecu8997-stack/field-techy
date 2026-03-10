@@ -1,13 +1,4 @@
-import type {
-  JobOverview,
-  ServiceCategory,
-  InProgressJob,
-} from "@/pages/client/dashboard/type";
-
-// Local image assets from src/assets/category
-import categoryCloud from "@/assets/category/category_cloud.jpg";
-import categoryNetworks from "@/assets/category/category_networks.jpg";
-import categorySupport from "@/assets/category/category_support.jpg";
+import type { JobOverview, InProgressJob } from "@/pages/client/dashboard/type";
 
 // Dummy data
 
@@ -30,39 +21,6 @@ export const jobOverviewData: JobOverview[] = [
     title: "Jobs Cancelled",
     count: 2,
     status: "cancelled",
-  },
-];
-
-export const serviceCategoriesData: ServiceCategory[] = [
-  {
-    id: 1,
-    name: "Networks",
-    engineers: "20+ Engineers",
-    image: categoryNetworks,
-  },
-  {
-    id: 2,
-    name: "Support",
-    engineers: "50+ Engineers",
-    image: categorySupport,
-  },
-  {
-    id: 3,
-    name: "Cloud",
-    engineers: "26+ Engineers",
-    image: categoryCloud,
-  },
-  {
-    id: 4,
-    name: "Networks",
-    engineers: "20+ Engineers",
-    image: categoryNetworks,
-  },
-  {
-    id: 5,
-    name: "Support",
-    engineers: "50+ Engineers",
-    image: categorySupport,
   },
 ];
 

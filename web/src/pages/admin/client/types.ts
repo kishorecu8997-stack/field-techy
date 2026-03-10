@@ -59,6 +59,10 @@ export interface ManageClientProps {
     name: string;
     state_id: number;
   };
+  state?: {
+    id: number;
+    name: string;
+  };
   country?: {
     id: number;
     name: string;
@@ -131,6 +135,16 @@ export const statusGroupToGraphStatus: Record<
   declined: "declined",
   hold: "hold",
   flagged: "flagged",
+};
+
+export const statusLabels: Record<string, string> = {
+  posted: "Posted",
+  inProgress: "In Progress",
+  completed: "Completed",
+  hold: "On Hold",
+  flagged: "Flagged",
+  declined: "Declined",
+  invited: "Invited",
 };
 
 export type BlockClientForm = {

@@ -11,7 +11,7 @@ import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { icons } from "@/config/icons";
+// import { icons } from "@/config/icons";
 import {
   calculateTimeDuration,
   validateStartDate,
@@ -285,12 +285,12 @@ const BreakRequestForm = ({
   };
 
   return (
-    <div className="flex flex-col p-2 w-full max-w-2xl mx-auto -mb-3">
-      <div className="relative mb-2">
-        <h2 className="text-lg font-semibold text-gray-900">
+    <div className="flex flex-col p-6 gap-4 w-full max-w-2xl mx-auto">
+      <div className="relative">
+        <h2 className="text-xl font-semibold text-black dark:text-white">
           {BREAK_REQUEST_LABELS.title}
         </h2>
-        <Button
+        {/* <Button
           type="button"
           variant="headerClose"
           className="absolute right-0 top-0"
@@ -298,7 +298,7 @@ const BreakRequestForm = ({
           aria-label="Close"
         >
           <icons.close className="w-5 h-5" />
-        </Button>
+        </Button> */}
       </div>
 
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
@@ -375,11 +375,10 @@ const BreakRequestForm = ({
             name="reason"
             required
             placeholder={BREAK_REQUEST_LABELS.reasonPlaceholder}
-            maxLength={50}
             rules={{
               maxLength: {
-                value: 50,
-                message: "Reason must be 50 characters or less",
+                value: 200,
+                message: "Reason must be 200 characters or less",
               },
             }}
           />

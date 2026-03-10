@@ -6,6 +6,8 @@ import {
   type AppLoginResponse,
   type AppMarkProfileFileUploadedResponse,
   type AppRegisterEngineerResponse,
+  type ConnectStripeAccountError,
+  type ConnectStripeAccountResponse,
   type EngineerAddEducationResponse,
   type EngineerAddExperienceResponse,
   type EngineerAddWorkLogResponse,
@@ -30,8 +32,11 @@ import {
   type GetEngineerTransactionsData,
   type GetEngineerTransactionsError,
   type GetEngineerTransactionsResponse,
+  type GetOnboardingLinkResponse,
+  type GetOnboardingLinkError,
   type GetUserReportsData,
   type GetUserReportsResponses,
+  type MarkWorkLogFileUploadedResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -39,6 +44,7 @@ import {
   appLoginMutation,
   appMarkProfileFileUploadedMutation,
   appRegisterEngineerMutation,
+  connectStripeAccountMutation,
   engineerAddEducationMutation,
   engineerAddExperienceMutation,
   engineerAddWorkLogMutation,
@@ -65,11 +71,13 @@ import {
   getJobLogsOptions,
   engineerGetProfileCompletionOptions,
   engineerGetMyDocumentsOptions,
+  getOnboardingLinkMutation,
   engineerGetSavedJobsOptions,
   engineerToggleSaveJobMutation,
   getEngineerEarningsOptions,
   submitReportMutation,
   getUserReportsOptions,
+  markWorkLogFileUploadedMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
@@ -90,6 +98,8 @@ export {
   useResetPassword,
   useSendOtp,
   useVerifyOtp,
+  useAppSendLoginOtp,
+  useAppVerifyLoginOtp,
 } from "../commonOpenApiService";
 
 /**
@@ -150,7 +160,7 @@ export function useEngineerUpdatePersonalInfo(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetPersonalInfo",
+          "engineerGetPersonalInfo",
       });
 
       const updateData: Partial<EngineerData> = {};
@@ -193,7 +203,7 @@ export function useEngineerAddEducation(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetEducation",
+          "engineerGetEducation",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -231,7 +241,7 @@ export function useEngineerDeleteEducation(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetEducation",
+          "engineerGetEducation",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -255,7 +265,7 @@ export function useEngineerUpdateEducation(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetEducation",
+          "engineerGetEducation",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -286,7 +296,7 @@ export function useEngineerAddExperience(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetExperience",
+          "engineerGetExperience",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -310,7 +320,7 @@ export function useEngineerDeleteExperience(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetExperience",
+          "engineerGetExperience",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -334,7 +344,7 @@ export function useEngineerUpdateExperience(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetExperience",
+          "engineerGetExperience",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -365,7 +375,7 @@ export function useEngineerUpdateSkillsAndTools(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetSkillsAndTools",
+          "engineerGetSkillsAndTools",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -396,7 +406,7 @@ export function useEngineerUpdateWorkPreference(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "engineerGetWorkPreference",
+          "engineerGetWorkPreference",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -601,6 +611,26 @@ export function useEngineerSubmitRevision(options?: {
   });
 }
 
+/**
+ * Hook to mark worklog related files as uploaded
+ * Used for worklog, revision, client_revision, and signoff attachments
+ */
+export function useMarkWorkLogFileUploaded(options?: {
+  onSuccess?: (data: MarkWorkLogFileUploadedResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...markWorkLogFileUploadedMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
 export function useEngineerRequestBreak(options?: {
   onSuccess?: (data: EngineerRequestBreakResponse) => void;
   onError?: (error: unknown) => void;
@@ -754,6 +784,44 @@ export function useEngineerEarnings(enabled: boolean = true) {
       client: apiClient,
     }),
     enabled,
+  });
+}
+
+/**
+ * Connect Stripe Account for bank details integration
+ * Called when engineer clicks "Add Bank" to initiate Stripe account connection
+ */
+export function useConnectStripeAccount(options?: {
+  onSuccess?: (data: ConnectStripeAccountResponse) => void;
+  onError?: (error: ConnectStripeAccountError | unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...connectStripeAccountMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * Request Stripe onboarding link after account connection.
+ * Called immediately after connectStripeAccount succeeds.
+ */
+export function useGetOnboardingLink(options?: {
+  onSuccess?: (data: GetOnboardingLinkResponse) => void;
+  onError?: (error: GetOnboardingLinkError | unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...getOnboardingLinkMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
   });
 }
 

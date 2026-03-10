@@ -99,6 +99,13 @@ export interface Job {
  * Filter options interface
  */
 export interface Filters {
+  q: string;
+  country: string;
+  state: string;
+  city: string;
+  countryId: string | number | null;
+  stateId: string | number | null;
+  cityId: string | number | null;
   location: string[];
   category: string[];
   rating: number[];

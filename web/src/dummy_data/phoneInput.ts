@@ -20,4 +20,16 @@ export const PHONE_COUNTRIES: Country[] = [
     flag: "https://flagcdn.com/w40/gb.png",
     validationKey: "uk",
   },
+  {
+    code: "+94",
+    name: "Sri Lanka",
+    flag: "https://flagcdn.com/w40/lk.png",
+    validationKey: "srilanka",
+  },
+  {
+    code: "+81",
+    name: "Japan",
+    flag: "https://flagcdn.com/w40/jp.png",
+    validationKey: "japan",
+  },
 ];
