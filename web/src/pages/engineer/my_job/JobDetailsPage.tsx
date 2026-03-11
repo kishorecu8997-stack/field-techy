@@ -16,6 +16,7 @@ import type { JobOverviewProps } from "@/shared/components/types";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { getDurationString } from "@/utils";
+import { getAttachmentFileName } from "@/shared/libs/utils";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -177,9 +178,7 @@ const mapJobToJobOverview = (
   const attachments: Array<{ name: string; url: string }> = [];
   if (job.attachmentUrl) {
     attachments.push({
-      name: decodeURIComponent(
-        job.attachmentUrl.split("/").pop()?.split("?")[0] || "Attachment",
-      ),
+      name: getAttachmentFileName({ url: job.attachmentUrl }),
       url: job.attachmentUrl,
     });
   }
@@ -300,11 +299,7 @@ const JobDetailsPage = () => {
         // Get original engineer's content
         const originalContent =
           log.details || "Engineer submitted a progress update";
-        const originalAttachment = log.attachment?.url
-          ? decodeURIComponent(
-              log.attachment?.url.split("/").pop()?.split("?")[0] || "",
-            )
-          : undefined;
+        const originalAttachment = getAttachmentFileName(log.attachment);
         const originalAttachmentUrl = log.attachment?.url;
 
         // Determine statusText based on log status OR latest revision status
@@ -365,6 +360,7 @@ const JobDetailsPage = () => {
               content: rev.content ?? null,
               attachmentId: rev.attachmentId ?? null,
               attachmentUrl: rev.attachment?.url ?? null,
+              attachmentName: rev.attachment?.filename ?? null,
               status: rev.status,
               clientComment: rev.clientComment ?? null,
               clientAttachmentId: rev.clientAttachmentId ?? null,
@@ -376,6 +372,7 @@ const JobDetailsPage = () => {
                     url: rev.clientAttachment.url ?? "",
                   }
                 : undefined,
+              clientAttachmentName: rev.clientAttachment?.filename ?? null,
               createdAt: rev.createdAt ?? null,
               updatedAt: rev.updatedAt ?? null,
             };

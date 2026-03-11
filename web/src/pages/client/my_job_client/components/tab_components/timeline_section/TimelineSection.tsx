@@ -31,6 +31,7 @@ import {
   formatTimeOnly,
   transformLogsToTimelineItems,
 } from "@/utils/timelineUtils";
+import { getAttachmentFileName } from "@/shared/libs/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -434,17 +435,17 @@ const TimelineSection: React.FC<{
 
       const startedDate = formatApiDate(rawStartedDate) || acceptedDate;
 
-      if (status === "submitted") {
-        allItems.push({
-          title: "Work Submitted",
-          timestamp: appliedDate,
-          statusText: "Submitted",
-          statusColor: "#22c55e",
-          accentColor: "#22c55e",
-          details: "",
-          sortOrder: 100,
-        });
-      }
+      // if (status === "submitted") {
+      //   allItems.push({
+      //     title: "Work Submitted",
+      //     timestamp: appliedDate,
+      //     statusText: "Submitted",
+      //     statusColor: "#22c55e",
+      //     accentColor: "#22c55e",
+      //     details: "",
+      //     sortOrder: 100,
+      //   });
+      // }
 
       if (status === "started" || status === "submitted") {
         allItems.push({
@@ -516,10 +517,7 @@ const TimelineSection: React.FC<{
       const attachments = progressLog.attachment?.url
         ? [
             {
-              name: decodeURIComponent(
-                progressLog.attachment.url.split("/").pop()?.split("?")[0] ||
-                  "Attachment",
-              ),
+              name: getAttachmentFileName(progressLog.attachment),
               url: progressLog.attachment.url,
             },
           ]
@@ -571,8 +569,10 @@ const TimelineSection: React.FC<{
           logId: log.id,
           content: rev.content,
           attachmentUrl: rev.attachment?.url,
+          attachmentName: getAttachmentFileName(rev.attachment),
           clientComment: rev.clientComment,
           clientAttachmentUrl: rev.clientAttachment?.url,
+          clientAttachmentName: getAttachmentFileName(rev.clientAttachment),
           createdAt: rev.createdAt,
           updatedAt: rev.updatedAt,
           status: rev.status,
@@ -622,13 +622,8 @@ const TimelineSection: React.FC<{
       attachments: latestRevision?.attachment?.url
         ? [
             {
-              name: decodeURIComponent(
-                latestRevision.attachment?.url
-                  .split("/")
-                  .pop()
-                  ?.split("?")[0] || "Attachment",
-              ),
-              url: latestRevision.attachment?.url,
+              name: getAttachmentFileName(latestRevision.attachment),
+              url: latestRevision.attachment.url,
             },
           ]
         : undefined,
@@ -696,18 +691,13 @@ const TimelineSection: React.FC<{
     const attachments: Array<{ name: string; url: string }> = [];
     if (signOff.attachment?.url) {
       attachments.push({
-        name: decodeURIComponent(
-          signOff.attachment?.url.split("/").pop()?.split("?")[0] ||
-            "Attachment",
-        ),
+        name: getAttachmentFileName(signOff.attachment),
         url: signOff.attachment?.url,
       });
     }
     if (signOff.signature?.url) {
       attachments.push({
-        name: decodeURIComponent(
-          signOff.signature.url.split("/").pop()?.split("?")[0] || "Attachment",
-        ),
+        name: getAttachmentFileName(signOff.signature),
         url: signOff.signature.url,
       });
     }
@@ -1917,8 +1907,10 @@ const TimelineSection: React.FC<{
                                     logId: revisionData.logId,
                                     content: r.content,
                                     attachmentUrl: r.attachmentUrl,
+                                    attachmentName: r.attachmentName,
                                     clientComment: r.clientComment,
                                     clientAttachmentUrl: r.clientAttachmentUrl,
+                                    clientAttachmentName: r.clientAttachmentName,
                                     createdAt: r.createdAt,
                                     updatedAt: r.updatedAt,
                                     status: r.status,
