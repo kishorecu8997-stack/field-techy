@@ -17,6 +17,7 @@ import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { useAdminLogin } from "@/shared/apiServices/admin/adminOpenApiService";
 import { AxiosError } from "axios";
+import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 import { decodeJwtPayload, type JwtClientPayload } from "@/utils/jwtUtils";
 
 /**
@@ -45,6 +46,7 @@ export default function AdminLogin() {
 
   const navigate = useNavigate();
   const setUserSession = useUserSessionStore((s) => s.setSession);
+  const setRegion = useAdminCountryStore((s) => s.setRegion);
 
   const { mutateAsync: loginMutation, isPending: isLoggingIn } = useAdminLogin({
     onSuccess: async (resp) => {
@@ -52,6 +54,10 @@ export default function AdminLogin() {
       // persisted session store to support consumers outside Zustand
       if (resp.token) {
         localStorage.setItem("auth_token", resp.token);
+      }
+
+      if (resp?.regionId) {
+        setRegion(resp.regionId.toString(), null);
       }
 
       const payload = decodeJwtPayload<JwtClientPayload>(resp.token);
@@ -64,10 +70,10 @@ export default function AdminLogin() {
 
       setUserSession({
         accessToken: resp.token,
-        userId: payload.userId ? String(payload.userId) : "uuid-123",
+        userId: payload.userId ? String(payload.userId) : "uuid-123", // TODO: Get actual user ID from token or profile response
+        regionId: resp?.regionId ? Number(resp.regionId) : undefined,
         role: UserRole.ADMIN,
         initiatedAt: Date.now(),
-        regionId: payload.regionId,
       });
 
       navigate(absoluteUrls.admin.home.dashboard);
