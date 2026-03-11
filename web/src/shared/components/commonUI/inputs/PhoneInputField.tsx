@@ -175,8 +175,9 @@ export const PhoneInputField = ({
                     field.onChange(`${countryCode} ${trimmed}`);
                   }}
                   placeholder={placeholder}
-                  className={`flex-1 px-5 py-3 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none ${inputClassName || ""
-                    }`}
+                  className={`flex-1 px-5 py-3 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none ${
+                    inputClassName || ""
+                  }`}
                 />
               </div>
 

@@ -1,23 +1,23 @@
 import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
 
+import { absoluteUrls } from "@/config/urls";
 import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
 import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
+import ReportPage from "@/pages/client/report";
 import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
+import { useReportCount } from "@/shared/hooks/useReportCount";
 import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
+import { IoIosWarning } from "react-icons/io";
 import { IoChatbubble, IoEllipsisVerticalOutline } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import ReportPage from "@/pages/client/report";
-import { IoIosWarning } from "react-icons/io";
-import { absoluteUrls } from "@/config/urls";
-import { useReportCount } from "@/shared/hooks/useReportCount";
 import { useClientCancelJob } from "@/shared/apiServices/client/clientOpenApiService";
 import { toast } from "react-toastify";
 /**
@@ -64,6 +64,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   jobStartDate,
   jobEndDate,
   onToggleChat,
+  clientRegionId,
 }) => {
   const params = useParams();
   const location = useLocation();
@@ -344,6 +345,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             numberOfApprovedProposals={numberOfApprovedProposals}
             jobStartDate={jobStartDate}
             jobEndDate={jobEndDate}
+            clientRegionId={clientRegionId}
           />
         )}
       </div>

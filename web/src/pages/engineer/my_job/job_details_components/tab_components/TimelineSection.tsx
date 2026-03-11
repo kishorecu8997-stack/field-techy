@@ -227,7 +227,7 @@ const TimelineSection: React.FC<{
   const apiRevisionUpdateDataList = useMemo(() => {
     if (!jobLogs?.logs?.length) return [];
 
-    const revisionDataList: any[] = [];
+    const revisionDataList = [];
 
     for (const log of jobLogs.logs) {
       if (
@@ -239,9 +239,9 @@ const TimelineSection: React.FC<{
           revisionId: rev.revisionId,
           logId: log.id,
           content: rev.content,
-          attachmentUrl: rev.attachmentUrl,
+          attachmentUrl: rev.attachment?.url,
           clientComment: rev.clientComment,
-          clientAttachmentUrl: rev.clientAttachmentUrl,
+          clientAttachmentUrl: rev.clientAttachment?.url,
           createdAt: rev.createdAt,
           updatedAt: rev.updatedAt,
           status: rev.status,
@@ -256,6 +256,7 @@ const TimelineSection: React.FC<{
           description: revisions[0]?.clientComment || "",
           timestamp: formatApiDate(revisions[0]?.createdAt),
           revisions: revisions,
+          status: revisions[0]?.status,
         });
       }
     }

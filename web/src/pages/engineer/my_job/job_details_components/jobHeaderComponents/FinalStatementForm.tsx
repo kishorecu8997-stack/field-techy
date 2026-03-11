@@ -21,6 +21,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { ProgressUpdate } from "../../types.d";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 interface FinalStatementFields {
   notes: string;
@@ -64,6 +65,7 @@ const FinalStatementForm = ({
 }) => {
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
+  const regionId = useUserSessionStore.getState().session?.regionId;
 
   const refetchTimeline = async () => {
     if (!assignmentId) return;
@@ -71,10 +73,12 @@ const FinalStatementForm = ({
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
+        query: { regionId },
       });
 
       const exactQueryKey = getJobLogsQueryKey({
         path: { assignmentId },
+        query: { regionId },
       });
 
       queryClient.setQueryData(exactQueryKey, response.data);
@@ -106,6 +110,7 @@ const FinalStatementForm = ({
       const logsResponse = await getJobLogs({
         client: apiClient,
         path: { assignmentId: assignmentIdValue },
+        query: { regionId },
       });
       const signOffSheets = logsResponse.data?.signOffSheets || [];
       if (!signOffSheets.length) return undefined;
@@ -195,6 +200,7 @@ const FinalStatementForm = ({
               const response = await submitSignOff({
                 body: {
                   assignmentId: Number(assignmentId),
+                  regionId,
                   workAttachment: workAttachment || {
                     filename: "",
                     size: 0,

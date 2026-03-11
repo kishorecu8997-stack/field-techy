@@ -22,6 +22,7 @@ import {
   getJobLogsQueryKey,
 } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Maps AssignmentStatus to OfferedJobStatusType for UI compatibility
@@ -109,31 +110,12 @@ const EngineersActions = ({
   numberOfApprovedProposals?: number;
   jobStartDate?: string;
   jobEndDate?: string;
+  clientRegionId?: number;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
   const queryClient = useQueryClient();
-
-  // Check if there's a pending progress update
-  // const hasPendingProgressUpdate = progressUpdates?.some((update) => {
-  //   // Check if there's a revision with pending status
-  //   if (update.revisions?.some((rev) => rev.status === "pending")) {
-  //     return true;
-  //   }
-  //   // Check for revision_requested status
-  //   if (update.statusText === "revision_requested") {
-  //     return true;
-  //   }
-  //   // Check for Pending status (capitalized)
-  //   if (update.statusText === "Pending") {
-  //     return true;
-  //   }
-  //   // Check for pending status (lowercase) in statusText
-  //   if (update.statusText === "pending") {
-  //     return true;
-  //   }
-  //   return false;
-  // });
+  const regionId = useUserSessionStore((state) => state.session?.regionId);
 
   // Hook for requesting to start a job
   const { mutateAsync: requestStartJob, isPending: isStartingJob } =
@@ -230,7 +212,7 @@ const EngineersActions = ({
           action: async (close) => {
             try {
               if (assignmentId) {
-                await requestStartJob({ body: { assignmentId } });
+                await requestStartJob({ body: { assignmentId, regionId } });
               } else {
                 toast.error(
                   "No assignment found. Please apply to the job first.",

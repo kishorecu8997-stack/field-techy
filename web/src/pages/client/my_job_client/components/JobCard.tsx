@@ -91,9 +91,15 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const isHybrid = type === WORKING_TYPES.hybrid;
   const isDummyNetworkEngineer = isDummyNetworkEngineerJob(id);
 
+  const regionId = Number(job.regionId);
+
+  const url = Number.isFinite(regionId)
+    ? `${absoluteUrls.client.home.my_jobs}/${id}?regionId=${job.regionId}`
+    : `${absoluteUrls.client.home.my_jobs}/${id}`;
+
   return (
     <Link
-      to={`${absoluteUrls.client.home.my_jobs}/${id}`}
+      to={url}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
       <div className="flex justify-between items-start mb-3 min-w-0">
@@ -117,7 +123,9 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
             <IoMdTime className="w-4 h-4 mr-2 flex-shrink-0" />
             <span className="truncate">{startDate}</span>
           </div>
-          <span className={`text-xs font-medium flex-shrink-0 ${getStatusColor(status)}`}>
+          <span
+            className={`text-xs font-medium flex-shrink-0 ${getStatusColor(status)}`}
+          >
             {status.toLowerCase() === "inprogress"
               ? "In-Progress"
               : status.charAt(0).toUpperCase() + status.slice(1)}
