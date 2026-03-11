@@ -209,22 +209,10 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
           </div>
         </div>
       ),
-    },
-    // {
-    //   key: "jobDetails",
-    //   label: "Job Details",
-    //   renderCell: (row: TransactionRequest) => (
-    //     <div className="flex flex-col">
-    //       <span className="font-semibold">{row.jobCode || "—"}</span>
-    //       <span className="text-sm text-neutral-500 dark:text-neutral-400">
-    //         {row.jobTitle || "—"}
-    //       </span>
-    //     </div>
-    //   ),
-    // },
+    },     
     {
       key: "date&time",
-      label: "Date",
+      label: "Requested Date",
       renderCell: (row: TransactionRequest) => (
         <div className="flex flex-col">
           <span className="font-semibold">{row.requestedAt || "—"}</span>
@@ -245,7 +233,6 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         );
       },
     },
-
     {
       key: "status",
       label: "Status",
