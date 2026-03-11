@@ -330,7 +330,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   const parsedJobId = jobID ? Number(jobID) : undefined;
   const validJobId =
     parsedJobId && !isNaN(parsedJobId) ? parsedJobId : undefined;
-  const { data: assignmentsData, isLoading: isLoadingAssignments } =
+  const { data: assignmentsData, isLoading: isLoadingAssignments, refetch: refetchAssignments } =
     useClientGetAssignmentDetails(
       { jobId: validJobId, regionId },
       Boolean(validJobId && regionId),
@@ -546,6 +546,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
                           hasProposals={false}
                           assignments={[assignment]}
                           regionId={Number(job?.regionId)}
+                          refetchAssignments={refetchAssignments}
                         />
                       </div>
                     )});
