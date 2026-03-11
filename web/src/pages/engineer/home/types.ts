@@ -52,6 +52,10 @@ export interface JobItem {
   // Additional assignment fields from API
   assignmentId?: number | null;
   assignmentType?: "invitation" | "application" | null;
+
+  // Timestamp fields for job start
+  startRequestedAt?: string | null;
+  startedAt?: string | null;
 }
 
 export interface Client {

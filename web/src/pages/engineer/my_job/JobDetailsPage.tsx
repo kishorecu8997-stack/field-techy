@@ -120,7 +120,7 @@ const mapJobToJobOverview = (
       })
     : [];
 
-  // Extract tools - convert IDs to labels using toolMap
+  // Extract tools - handle both new structure (with toolId, toolName, budget, imageUrl) and old structure (Array<number>)
   const tools = Array.isArray(job.tools)
     ? job.tools.map((tool) => {
         const toolId = String(tool.toolId);

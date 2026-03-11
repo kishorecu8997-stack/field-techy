@@ -15,7 +15,7 @@ import {
   type AppVerifyLoginOtpResponse,
   type AppVerifyOtpResponse,
   type CreateRateAndReviewAssignmentResponse,
-  type MarkJobRelatedFilesUploadedResponse
+  type MarkJobRelatedFilesUploadedResponse,
 } from "@/api";
 import {
   appCheckExistenceOptions,
