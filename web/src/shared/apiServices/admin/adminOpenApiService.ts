@@ -102,6 +102,8 @@ import {
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
+  type AdminMarkFileAsUploadedResponse,
+  type AdminMarkFileAsUploadedError,
   type BulkCreateRateCardsResponse,
   type BulkCreateRateCardsData,
 } from "@/api";
@@ -158,6 +160,7 @@ import {
   adminGetPendingPaymentsOptions,
   adminGetPendingPaymentsQueryKey,
   adminApprovePaymentMutation,
+  adminMarkFileAsUploadedMutation,
 } from "@/api/@tanstack/react-query.gen";
 
 export { adminGetPendingPaymentsQueryKey };
@@ -835,7 +838,7 @@ export function useAdminAddClient(options?: {
       },
     }),
     onSuccess: (data: AdminAddClientResponse) => {
-      queryClient.invalidateQueries({
+      queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
@@ -894,6 +897,37 @@ export function useAdminGetClientByUserId(
     }),
     enabled: isValidId ? options?.enabled : false,
     ...options,
+  });
+}
+
+export function useAdminMarkFileAsUploaded(options?: {
+  onSuccess?: (data: AdminMarkFileAsUploadedResponse) => void;
+  onError?: (error: AdminMarkFileAsUploadedError) => void;
+}) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+  return useMutation({
+    ...adminMarkFileAsUploadedMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
+    mutationFn: (variables, context) => {
+      return adminMarkFileAsUploadedMutation({
+        client: apiClient,
+      }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId:
+              variables.query?.regionId ??
+              (selectedRegionId ? Number(selectedRegionId) : undefined),
+          },
+        },
+        context,
+      );
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
   });
 }
 
