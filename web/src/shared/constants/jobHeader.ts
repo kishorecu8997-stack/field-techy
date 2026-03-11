@@ -6,4 +6,5 @@ export const JOB_HEADER_COPY = {
   clockIcon: "🕒",
   clientLabel: "Client:",
   breakDetails: "Break Details",
+  statusLabel: "Status:",
 };
