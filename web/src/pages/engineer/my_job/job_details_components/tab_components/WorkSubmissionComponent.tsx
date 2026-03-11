@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { scrollToTop } from "@/utils";
 import { useEngineerSubmitSignOff } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Form data structure for work submission component.
@@ -61,6 +62,9 @@ const WorkSubmissionComponent: React.FC<{
     rating,
     reviewComment,
   } = workSubmissions;
+
+  const regionId = useUserSessionStore.getState().session?.regionId;
+
   const { showPopup } = usePopupStore();
   const { mutateAsync: submitSignOff } = useEngineerSubmitSignOff({
     assignmentId,
@@ -133,6 +137,7 @@ const WorkSubmissionComponent: React.FC<{
               await submitSignOff({
                 body: {
                   assignmentId: Number(assignmentId),
+                  regionId,
                   workAttachment: attachmentMeta
                     ? {
                         filename: attachmentMeta.filename,

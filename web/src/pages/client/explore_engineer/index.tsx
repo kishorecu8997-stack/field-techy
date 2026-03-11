@@ -32,7 +32,9 @@ const ExploreEngineer = () => {
     state: searchParams.get("state") || "",
     city: searchParams.get("city") || "",
     location: null,
-    category: searchParams.get("category") ? parseInt(searchParams.get("category")!, 10) : null,
+    category: searchParams.get("category")
+      ? parseInt(searchParams.get("category")!, 10)
+      : null,
     rating: null,
     experience: 0,
     skills: new Set(),
@@ -48,7 +50,9 @@ const ExploreEngineer = () => {
       country: searchParams.get("country") || "",
       state: searchParams.get("state") || "",
       city: searchParams.get("city") || "",
-      category: searchParams.get("category") ? parseInt(searchParams.get("category")!, 10) : null,
+      category: searchParams.get("category")
+        ? parseInt(searchParams.get("category")!, 10)
+        : null,
     }));
   }, [searchParams]);
 
@@ -61,7 +65,8 @@ const ExploreEngineer = () => {
       if (updatedFilters.q) newParams.set("q", updatedFilters.q);
       else newParams.delete("q");
 
-      if (updatedFilters.country) newParams.set("country", updatedFilters.country);
+      if (updatedFilters.country)
+        newParams.set("country", updatedFilters.country);
       else newParams.delete("country");
 
       if (updatedFilters.state) newParams.set("state", updatedFilters.state);
@@ -70,7 +75,8 @@ const ExploreEngineer = () => {
       if (updatedFilters.city) newParams.set("city", updatedFilters.city);
       else newParams.delete("city");
 
-      if (updatedFilters.category !== null) newParams.set("category", String(updatedFilters.category));
+      if (updatedFilters.category !== null)
+        newParams.set("category", String(updatedFilters.category));
       else newParams.delete("category");
 
       setSearchParams(newParams, { replace: true });

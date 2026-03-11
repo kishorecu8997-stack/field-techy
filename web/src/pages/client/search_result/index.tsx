@@ -122,7 +122,7 @@ const SearchResult = () => {
           title="Search Result"
           isShowBreadcrumb={false}
           isShowSort={false}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
           currentSort={SORT_OPTIONS.NEWEST}
           description={`${filteredJobs.length} jobs found`}
         />

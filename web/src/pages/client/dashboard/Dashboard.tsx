@@ -95,7 +95,10 @@ const Dashboard: React.FC = () => {
   ];
 
   // Fetch in-progress jobs from API with server-side filtering
-  const { data: clientJobs, isLoading: isLoadingJobs } = useClientGetJobs("In Progress");
+  const { data: clientJobs, isLoading: isLoadingJobs } = useClientGetJobs({
+    jobStatus: "In Progress",
+    enabled: true,
+  });
   const { data: serviceCategories } = useServiceCategories();
 
   // Get in-progress job IDs for fetching assignments
