@@ -133,7 +133,7 @@ const MyEarning = () => {
     return (
       <div>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Current Balance
+          Wallet Balance
         </p>
         <div className="flex justify-between items-center">
           <p className="text-2xl md:text-3xl items-center font-extrabold text-gray-900 dark:text-white">
@@ -236,7 +236,6 @@ const MyEarning = () => {
         </div>
       </div>
 
-      // Withdraw Popup
       
       {showWithdrawPopup && balance && (
         <Popup open={showWithdrawPopup} onClose={() => setShowWithdrawPopup(false)}>

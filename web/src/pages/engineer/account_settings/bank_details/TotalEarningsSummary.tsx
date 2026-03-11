@@ -37,6 +37,7 @@ const TotalEarningsSummary: React.FC = () => {
   }
   const thisMonthEarnings = data ? Number(data.monthlyEarnings) : 0;
   const totalWithdrawn = data ? Number(data.withdrawn) : 0;
+  console.log("Earnings data:", data?.withdrawn);
   const availableBalance = totalEarnings - totalWithdrawn;
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">

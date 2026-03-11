@@ -88,8 +88,8 @@ import {
   type AdminGetWalletOverviewData,
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
-  type AdminGetPendingPaymentsData,
-  type AdminGetPendingPaymentsResponse,
+  type AdminGetWithdrawalRequestsData,
+  type AdminGetWithdrawalRequestsResponse,
   type AdminApprovePaymentResponses,
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
@@ -143,16 +143,14 @@ import {
   adminGetSubAdminsQueryKey,
   adminGetManageTransactionsOptions,
   adminGetTransactionRequestsOptions,
+  adminGetWithdrawalRequestsOptions,
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
   adminUpdateTransactionRequestStatusMutation,
-  adminGetPendingPaymentsOptions,
-  adminGetPendingPaymentsQueryKey,
   adminApprovePaymentMutation,
   adminWithdrawalActionMutation,
 } from "@/api/@tanstack/react-query.gen";
 
-export { adminGetPendingPaymentsQueryKey };
 import {
   useMutation,
   useQuery,
@@ -244,7 +242,7 @@ export function useAdminCreateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -269,7 +267,7 @@ export function useAdminUpdateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -294,7 +292,7 @@ export function useAdminDeleteServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -793,11 +791,11 @@ export function useAdminGetJobDetails(
 
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
     ? {
-      ...query,
-      regionId:
-        query?.regionId ??
-        (selectedRegionId ? Number(selectedRegionId) : undefined),
-    }
+        ...query,
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
+      }
     : { jobId: 0 };
 
   return useQuery({
@@ -1012,11 +1010,11 @@ export function useAdminGetJobLogs(
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
-      ...query,
-      regionId:
-        query?.regionId ??
-        (selectedRegionId ? Number(selectedRegionId) : undefined),
-    }
+        ...query,
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
+      }
     : { jobId: 0 };
 
   return useQuery({
@@ -1331,6 +1329,38 @@ export function useAdminGetTransactionRequests(
   });
 }
 
+// ─── Withdrawal Requests ─────────────────────────────────────────────────────
+
+export type AdminGetWithdrawalRequestsQuery = NonNullable<
+  AdminGetWithdrawalRequestsData["query"]
+>;
+
+export function useAdminGetWithdrawalRequests(
+  query?: AdminGetWithdrawalRequestsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetWithdrawalRequestsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetWithdrawalRequestsQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetWithdrawalRequestsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
 // ─── Wallet Overview ──────────────────────────────────────────────────────────
 
 export type AdminGetWalletOverviewQuery = NonNullable<
@@ -1541,33 +1571,6 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
   });
 }
 
-export function useAdminGetPendingPayments(
-  query?: AdminGetPendingPaymentsData["query"] & { regionId?: number },
-  options?: {
-    enabled?: boolean;
-    onSuccess?: (data: AdminGetPendingPaymentsResponse) => void;
-    onError?: (error: unknown) => void;
-  },
-) {
-  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
-
-  const mergedQuery = {
-    ...query,
-    regionId:
-      query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
-  };
-
-  return useQuery({
-    // @ts-ignore - regionId may not be in types yet
-    ...adminGetPendingPaymentsOptions({
-      client: apiClient,
-      query: mergedQuery,
-    }),
-    ...options,
-  });
-}
-
 export function useAdminApprovePayment(options?: {
   onSuccess?: (data: AdminApprovePaymentResponses[200]) => void;
   onError?: (error: unknown) => void;
@@ -1584,7 +1587,7 @@ export function useAdminApprovePayment(options?: {
           query: {
             ...(variables.query ?? {}),
             regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
-          } as any,
+          },
         },
         context,
       );
@@ -1597,7 +1600,8 @@ export function useAdminApprovePayment(options?: {
             return false;
           }
           return (
-            (firstKeyItem as { _id?: string })._id === "adminGetPendingPayments"
+            (firstKeyItem as { _id?: string })._id ===
+            "adminGetWithdrawalRequests"
           );
         },
         type: "all",
@@ -1607,8 +1611,6 @@ export function useAdminApprovePayment(options?: {
     onError: options?.onError,
   });
 }
-
-
 
 export function useAdminWithdrawalAction(options?: {
   onSuccess?: (data: AdminWithdrawalActionResponses[200]) => void;
@@ -1626,7 +1628,7 @@ export function useAdminWithdrawalAction(options?: {
           query: {
             ...(variables.query ?? {}),
             regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
-          } as any,
+          },
         },
         context,
       );
@@ -1639,7 +1641,8 @@ export function useAdminWithdrawalAction(options?: {
             return false;
           }
           return (
-            (firstKeyItem as { _id?: string })._id === "adminGetPendingPayments"
+            (firstKeyItem as { _id?: string })._id ===
+            "adminGetWithdrawalRequests"
           );
         },
         type: "all",
