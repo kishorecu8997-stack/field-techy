@@ -17,15 +17,16 @@ import {
   useAdminAddClient,
   useAdminUpdateClient,
   useAdminGetClientByUserId,
+  useAdminMarkFileAsUploaded,
 } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useAppMarkProfileFileUploaded } from "@/shared/apiServices/commonOpenApiService";
 import { extractErrorMessage } from "@/shared/libs/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 import type {
   AdminUpdateClientData,
   AdminCreateClientData,
-  AppMarkProfileFileUploadedData,
+  AdminMarkFileAsUploadedData,
+  AdminCreateClientResponse,
 } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
@@ -111,7 +112,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
 
   const { mutateAsync: addClient } = useAdminAddClient();
   const { mutateAsync: updateClient } = useAdminUpdateClient();
-  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
+  const { mutateAsync: markFileUploaded } = useAdminMarkFileAsUploaded();
 
   useEffect(() => {
     if (clientDetail)
@@ -238,9 +239,13 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                     ).ok
                   ) {
                     await markFileUploaded({
+                      path: {
+                        userId: isEdit
+                          ? Number(userIdFromUrl)!
+                          : (res as AdminCreateClientResponse).userId!,
+                      },
                       body: { fileId },
-                      headers: { authorization: "" },
-                    } as AppMarkProfileFileUploadedData);
+                    });
                   }
                 }
               }
