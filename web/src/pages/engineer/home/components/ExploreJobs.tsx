@@ -121,8 +121,9 @@ const ExploreJobs: React.FC = () => {
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">
         <MyJobsHeader
           title="Explore Jobs"
-          description={`${apiJobs.length} job${apiJobs.length !== 1 ? "s" : ""
-            } found`}
+          description={`${apiJobs.length} job${
+            apiJobs.length !== 1 ? "s" : ""
+          } found`}
           isShowBreadcrumb={false}
           isShowSort={false}
           currentSort={sortBy}

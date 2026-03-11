@@ -4,17 +4,21 @@ import { HiCheckCircle, HiClock, HiXCircle } from "react-icons/hi";
 
 // Proper type for revision data from API
 export interface RevisionData {
-  revisionId: number;
+  id: string;
   logId: number;
-  content: string | null;
-  attachmentUrl?: string | null;
+  revisionId: number;
+  type: "revisionRequestUpdate";
+  title: string;
   status: string;
+  description: string;
+  timestamp: string;
   revisions?: Array<{
     revisionId: number;
+    logId: number;
     content: string | null;
+    attachmentUrl?: string | null;
     clientComment: string | null;
     clientAttachmentUrl?: string | null;
-    attachmentUrl?: string | null;
     createdAt: string | null;
     updatedAt: string | null;
     status: string;

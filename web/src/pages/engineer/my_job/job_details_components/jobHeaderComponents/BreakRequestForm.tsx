@@ -29,6 +29,7 @@ import {
   BREAK_REQUEST_MESSAGES,
 } from "@/dummy_data/breakRequestDummy";
 import { useEngineerRequestBreak } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 // import { queryKeys } from "@/shared/apiServices/queryKeys";
 
 /**
@@ -56,6 +57,7 @@ const BreakRequestForm = ({
   const formCtx = useForm<BreakRequestFormFields>({
     defaultValues: BREAK_REQUEST_DEFAULTS,
   });
+  const regionId = useUserSessionStore.getState().session?.regionId;
 
   const { watch, setValue, setError, clearErrors } = formCtx;
   const startTime = watch("startTime");
@@ -80,10 +82,14 @@ const BreakRequestForm = ({
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
+            query: { regionId },
           });
 
           // Update the query cache with the new data using exact key from getJobLogsQueryKey
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId },
+            query: { regionId },
+          });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Failed to refetch timeline:", error);
@@ -229,6 +235,7 @@ const BreakRequestForm = ({
           reason: data.reason || "",
           startAt,
           endAt,
+          regionId,
         },
       });
 

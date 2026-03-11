@@ -48,7 +48,9 @@ const InviteJob: React.FC = () => {
   const { data: states } = useStates();
   const { data: cities } = useCities();
 
-  const { data: jobsData } = useClientGetJobs();
+  const { data: jobsData, isLoading } = useClientGetJobs({
+    enabled: true,
+  });
 
   const { mutateAsync: inviteEngineer } = useClientInviteEngineer({});
 
@@ -99,8 +101,9 @@ const InviteJob: React.FC = () => {
   // only show jobs that are currently in posted status
   const postedJobs = (jobsData || []).filter(
     (j) =>
-      (j.status?.toLowerCase() === "posted" || j.status?.toLowerCase() === "in progress") &&
-      (j.assignedEngineerCount ?? 0) !== (j.vacancies ?? 0)
+      (j.status?.toLowerCase() === "posted" ||
+        j.status?.toLowerCase() === "in progress") &&
+      (j.assignedEngineerCount ?? 0) !== (j.vacancies ?? 0),
   );
   const totalPages = Math.ceil(postedJobs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -218,7 +221,11 @@ const InviteJob: React.FC = () => {
                         </p>
                       )}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {mappedJobs.length > 0 ? (
+                        {isLoading ? (
+                          <p className="col-span-full text-center text-gray-500 dark:text-gray-400">
+                            Loading jobs...
+                          </p>
+                        ) : mappedJobs.length > 0 ? (
                           mappedJobs.map((job) => (
                             <JobInviteCard
                               key={job.id}
