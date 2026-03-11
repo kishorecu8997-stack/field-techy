@@ -284,7 +284,7 @@ const EditRateCard = () => {
   const isView = path.includes("/view");
 
   return (
-    <div className="bg-white dark:bg-neutral-700 w-full h-full flex flex-col overflow-y-auto p-4">
+    <div className="bg-white dark:bg-gray-700 w-full h-full flex flex-col overflow-y-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-bold text-gray-900">
           {isEdit
