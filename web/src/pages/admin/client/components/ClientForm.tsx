@@ -25,7 +25,6 @@ import { queryKeys } from "@/shared/apiServices/queryKeys";
 import type {
   AdminUpdateClientData,
   AdminCreateClientData,
-  AdminMarkFileAsUploadedData,
   AdminCreateClientResponse,
 } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
