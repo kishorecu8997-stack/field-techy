@@ -3,8 +3,9 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
-import { NavLink, useNavigate } from "react-router-dom";
-import { JobSearchBar } from "./JobSearchBar";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { UserRole } from "@/shared/enums/users";
+import { JobSearchBar } from "./JobSearchBar/index";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
@@ -40,6 +41,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { setActiveKey } = useDrawerStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { notifications } = useAppNotifications();
   const notificationCount = notifications.filter((n) => !n.read).length;
@@ -65,6 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   };
 
   const engineerProfile = useEngineerProfile();
+  const isLoadingProfile = useEngineerStore((state) => state.loading);
 
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
@@ -83,7 +86,11 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           <Tooltip text="View your applied and active jobs">
             <NavLink
               to={absoluteUrls.engineer.home.my_jobs}
-              className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer dark:text-gray-400 "
+              className={`${
+                location.pathname.startsWith(absoluteUrls.engineer.home.my_jobs)
+                  ? "text-teal-800 font-semibold"
+                  : ""
+              } hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer dark:text-gray-400`}
               aria-label="View your applied and active jobs"
             >
               My Jobs
@@ -107,9 +114,9 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
       </div>
 
       {/* Middle Section: Search Bar - Flexible but not greedy */}
-      <div className="flex-1 mx-4 max-w-[500px]">
+      <div className="flex-1 mx-4 w-full">
         {/* <Link to={absoluteUrls.engineer.home.search_result}> */}
-        <JobSearchBar />
+        <JobSearchBar userType={UserRole.ENGINEER} />
         {/* </Link> */}
       </div>
 
@@ -173,8 +180,8 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                   </div>
 
                   {notificationCount > 0 && (
-                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {notificationCount}
+                    <span className="ml-auto bg-red-500 text-white text-[11px] font-medium leading-none rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
+                      {notificationCount > 99 ? "99+" : notificationCount}
                     </span>
                   )}
                 </div>
@@ -192,7 +199,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                     Messages
                   </div>
 
-                  <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="ml-auto bg-red-500 text-white text-[11px] font-medium leading-none rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
                     3
                   </span>
                 </div>
@@ -212,7 +219,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             className="text-gray-600 dark:text-gray-300 hover:text-teal-800 dark:hover:text-teal-800"
             size={20}
           />
-          <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-sm">
             3
           </span>
         </div>
@@ -228,8 +235,8 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             size={20}
           />
           {notificationCount > 0 && (
-            <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-              {notificationCount}
+            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-sm">
+              {notificationCount > 99 ? "99+" : notificationCount}
             </span>
           )}
         </div>
@@ -242,13 +249,26 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         >
           <TbAlignLeft className="h-5 w-5" />
           <span className="max-w-[6rem] truncate text-left">
-            Hi, {engineerProfile?.fullName}
+            {isLoadingProfile
+              ? "Loading..."
+              : `Hi, ${engineerProfile?.fullName || "User"}`}
           </span>
-          <img
-            src={profileImageUrl || assetsConfig.images.users.user}
-            alt="User"
-            className="h-8 w-8 rounded-full bg-white"
-          />
+          {isLoadingProfile ? (
+            <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
+              <div className="h-4 w-4 border-2 border-teal-800 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            <img
+              src={profileImageUrl || assetsConfig.images.users.user}
+              alt={engineerProfile?.fullName || "User"}
+              className="h-8 w-8 rounded-full bg-white object-cover"
+              onError={(e) => {
+                // Fallback to default image if profile picture fails to load
+                (e.target as HTMLImageElement).src =
+                  assetsConfig.images.users.user;
+              }}
+            />
+          )}
         </div>
       </div>
 

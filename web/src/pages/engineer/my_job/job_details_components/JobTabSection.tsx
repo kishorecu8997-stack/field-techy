@@ -26,104 +26,13 @@ import {
   useEngineerGetMyJobs,
   useEngineerMarkProposalFileUploaded,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
-// import type { EngineerSearchJobsResponse } from "@/api";
 import { engineerGetMyJobs } from "@/api";
 import { engineerGetMyJobsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { toast } from "react-toastify";
 import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
-
-/**
- * Maps API job data to JobOverviewProps format for the Job Overview tab
- * Uses the existing JobOverviewSection component for comprehensive job details display
- * Similar to the client-side implementation
- */
-// const mapEngineerJobToJobOverview = (
-//   job: EngineerSearchJobsResponse[number],
-// ): JobOverviewProps => {
-//   // Helper to safely cast job properties
-//   const getJobValue = <T,>(key: string): T | null | undefined => {
-//     return (job as Record<string, unknown>)?.[key] as T | null | undefined;
-//   };
-
-//   // Extract basic job info
-//   const jobTitle = job?.jobTitle || "";
-//   const jobDescription = job?.jobDescription || "";
-
-//   // Extract skills - convert numbers to strings (engineer API returns numbers)
-//   const rawSkills = getJobValue<number[]>("skills");
-//   let skills: string[] = [];
-//   if (Array.isArray(rawSkills)) {
-//     skills = rawSkills.map((skill) => String(skill));
-//   }
-
-//   // Extract tools - convert numbers to strings (engineer API returns numbers)
-//   const rawTools = getJobValue<number[]>("tools");
-//   let tools: Array<{ name: string; price: string; image?: string }> = [];
-//   if (Array.isArray(rawTools)) {
-//     tools = rawTools.map((tool) => ({
-//       name: String(tool),
-//       price: "",
-//       image: undefined,
-//     }));
-//   }
-
-//   // Extract duration from startDate and endDate
-//   const startDate = getJobValue<string>("startDate");
-//   const endDate = getJobValue<string>("endDate");
-//   let duration: string | undefined;
-//   if (startDate && endDate) {
-//     const start = new Date(startDate);
-//     const end = new Date(endDate);
-//     duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
-//   } else if (startDate) {
-//     duration = `Starts: ${new Date(startDate).toLocaleDateString()}`;
-//   }
-
-//   // Extract work details
-//   const engagementModel = getJobValue<string>("jobType") || undefined;
-//   const experienceLevel = getJobValue<number>("experienceLevelId")?.toString() || undefined;
-//   const numberOfVacancies = job?.vacancies ?? undefined;
-
-//   // Extract earnings info - engineers see totalPrice as total payment
-//   const totalPrice = getJobValue<string>("totalPrice");
-//   const currencySymbol = getJobValue<string>("currencySymbol") || "$";
-
-//   // Format total payment
-//   let totalPayment: string | undefined;
-//   if (totalPrice) {
-//     totalPayment = `${currencySymbol}${totalPrice}`;
-//   }
-
-//   // Extract additional details
-//   const rawAdditionalDetails = getJobValue<string>("additionalDetails");
-//   let additionalDetails: string[] = [];
-//   if (rawAdditionalDetails) {
-//     additionalDetails = [rawAdditionalDetails];
-//   }
-
-//   // Extract attachments - show as "View Document" with the URL
-//   const attachments: Array<{ name: string; url: string }> = [];
-//   const attachmentUrl = getJobValue<string | null>("attachmentUrl");
-//   if (attachmentUrl) {
-//     attachments.push({ name: "View Document", url: attachmentUrl });
-//   }
-
-//   return {
-//     jobTitle,
-//     jobDescription,
-//     skills,
-//     tools,
-//     duration,
-//     engagementModel,
-//     experienceLevel,
-//     numberOfVacancies,
-//     totalPayment,
-//     additionalDetails,
-//     attachments,
-//   };
-// };
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Engineer Job Tab Section with simplified 3-tab layout:
@@ -173,6 +82,7 @@ const JobTabSection = ({
   // isWorkSubmitted is used for prop interface compatibility with other components
   // Currently kept for future implementation of work submission tracking
   const queryClient = useQueryClient();
+  const regionId = useUserSessionStore.getState().session?.regionId;
 
   const { mutateAsync: applyJob } = useEngineerApplyJob({
     onSuccess: async () => {
@@ -198,8 +108,16 @@ const JobTabSection = ({
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
+            query: {
+              regionId,
+            },
           });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId },
+            query: {
+              regionId,
+            },
+          });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Error refetching timeline:", error);
@@ -230,9 +148,6 @@ const JobTabSection = ({
     useState<ProposalFormData | null>(null);
   // Track if engineer has applied to show Proposal Info tab
   const [hasApplied, setHasApplied] = useState(false);
-  const [selectedTab, setSelectedTab] = useState<string>(
-    activeTab || JOB_TAB_LABELS.timeline,
-  );
 
   useEffect(() => {
     document.body.style.overflow =
@@ -241,13 +156,6 @@ const JobTabSection = ({
       document.body.style.overflow = "unset";
     };
   }, [showSuccess, showReview]);
-
-  // Sync local selectedTab to parent's activeTab
-  useEffect(() => {
-    if (selectedTab !== activeTab) {
-      setActiveTab?.(selectedTab);
-    }
-  }, [selectedTab, activeTab, setActiveTab]);
 
   // Determine if engineer has applied based on OfferJobStatus from API (persists after refresh)
   // This is the primary source of truth - local hasApplied state only works within session
@@ -261,6 +169,37 @@ const JobTabSection = ({
     OfferJobStatus === "submit_pending_approval" ||
     OfferJobStatus === "submitted" ||
     OfferJobStatus === "rejected";
+
+  const showTimelineTab =
+    hasAppliedFromApi || !!hasApplied || !!submittedProposal;
+  const defaultTabLabel = showTimelineTab
+    ? JOB_TAB_LABELS.timeline
+    : JOB_TAB_LABELS.jobOverview;
+  const initialTab =
+    activeTab && (showTimelineTab || activeTab !== JOB_TAB_LABELS.timeline)
+      ? activeTab
+      : defaultTabLabel;
+
+  const [selectedTab, setSelectedTab] = useState<string>(initialTab);
+
+  useEffect(() => {
+    // Keep selected tab valid when timeline is hidden before proposal.
+    if (!showTimelineTab && selectedTab === JOB_TAB_LABELS.timeline) {
+      setSelectedTab(JOB_TAB_LABELS.jobOverview);
+      return;
+    }
+
+    if (!activeTab && selectedTab !== defaultTabLabel) {
+      setSelectedTab(defaultTabLabel);
+    }
+  }, [showTimelineTab, selectedTab, activeTab, defaultTabLabel]);
+
+  // Sync local selectedTab to parent's activeTab
+  useEffect(() => {
+    if (selectedTab !== activeTab) {
+      setActiveTab?.(selectedTab);
+    }
+  }, [selectedTab, activeTab, setActiveTab]);
 
   // Show "Job Applied" status instead of "Send Proposal" after submission
   // Priority: API status (persists) > local state (session only)
@@ -297,6 +236,7 @@ const JobTabSection = ({
           jobId: Number(jobId),
           proposalDetail: data.proposalDescription || "",
           proposalAttachment: proposalAttachmentMeta,
+          regionId,
         },
       });
 
@@ -361,7 +301,12 @@ const JobTabSection = ({
             client: apiClient,
             path: { assignmentId },
           });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId },
+            query: {
+              regionId,
+            },
+          });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Error refetching timeline:", error);
@@ -382,18 +327,24 @@ const JobTabSection = ({
 
   // 3 tabs only: Timeline, Job Overview, Work Location
   const tabs = [
-    {
-      label: JOB_TAB_LABELS.timeline,
-      content: (
-        <TimelineSection
-          progressUpdates={progressUpdates}
-          onAddProgressUpdate={onAddProgressUpdate}
-          assignmentId={assignmentId}
-          jobId={jobId}
-          hasApplied={hasAppliedFromApi || !!hasApplied || !!submittedProposal}
-        />
-      ),
-    },
+    ...(showTimelineTab
+      ? [
+          {
+            label: JOB_TAB_LABELS.timeline,
+            content: (
+              <TimelineSection
+                progressUpdates={progressUpdates}
+                onAddProgressUpdate={onAddProgressUpdate}
+                assignmentId={assignmentId}
+                jobId={jobId}
+                hasApplied={
+                  hasAppliedFromApi || !!hasApplied || !!submittedProposal
+                }
+              />
+            ),
+          },
+        ]
+      : []),
     {
       label: JOB_TAB_LABELS.jobOverview,
       content: jobOverview ? (
@@ -446,7 +397,7 @@ const JobTabSection = ({
       {!isSendProposal ? (
         <TabComponent
           tabs={tabs}
-          defaultActiveTab={activeTab || JOB_TAB_LABELS.timeline}
+          defaultActiveTab={selectedTab}
           onTabChange={(tabLabel) => {
             setSelectedTab(tabLabel);
             setActiveTab?.(tabLabel);

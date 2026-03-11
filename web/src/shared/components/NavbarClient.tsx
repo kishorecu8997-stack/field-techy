@@ -1,19 +1,20 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
+import {
+  useClientDisplayName,
+  useClientProfile,
+  useClientStore,
+} from "@/shared/store/useClientStore";
+import { scrollToTop } from "@/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useDrawerStore from "../store/useDrawerStore";
+import { UserRole } from "@/shared/enums/users";
+import { JobSearchBar } from "./JobSearchBar/index";
 import Drawer from "./drawer/Drawer";
 import IconWithTheme from "./IconWithTheme";
-import { JobSearchBarClient } from "./jobSearchBarClient";
-import { scrollToTop } from "@/utils";
-import {
-  useClientStore,
-  useClientProfile,
-  useClientDisplayName,
-} from "@/shared/store/useClientStore";
 
 import { useAppNotifications } from "@/shared/apiServices/notifications/notificationOpenApiService";
 
@@ -127,8 +128,12 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 mx-4 max-w-[500px]">
-        <JobSearchBarClient />
+      <div className="flex-1 mx-4 w-full">
+        <JobSearchBar
+          userType={UserRole.CLIENT}
+          navto={absoluteUrls.client.home.client_Explore_engineers}
+          showDropdowns={false}
+        />
       </div>
 
       <div className="flex items-center space-x-4 md:hidden">
@@ -177,8 +182,8 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
                   <FaBell className="mr-3" size={18} />
                   <span>Notifications</span>
                   {notificationCount > 0 && (
-                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {notificationCount}
+                    <span className="ml-auto bg-red-500 text-white text-[11px] font-medium leading-none rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
+                      {notificationCount > 99 ? "99+" : notificationCount}
                     </span>
                   )}
                 </div>
@@ -187,7 +192,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
                 <div className="flex items-center space-x-3">
                   <FaComment className="mr-3" size={18} />
                   <span>Messages</span>
-                  <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="ml-auto bg-red-500 text-white text-[11px] font-medium leading-none rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
                     3
                   </span>
                 </div>
@@ -207,7 +212,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           }}
         >
           <FaComment size={20} />
-          <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-sm">
             3
           </span>
         </div>
@@ -220,8 +225,8 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         >
           <FaBell size={20} />
           {notificationCount > 0 && (
-            <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-              {notificationCount}
+            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center leading-none shadow-sm">
+              {notificationCount > 99 ? "99+" : notificationCount}
             </span>
           )}
         </div>

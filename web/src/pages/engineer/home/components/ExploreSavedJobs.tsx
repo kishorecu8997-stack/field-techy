@@ -26,6 +26,13 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 const ExploreSavedJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<Filters>({
+    q: "",
+    country: "",
+    state: "",
+    city: "",
+    countryId: null,
+    stateId: null,
+    cityId: null,
     location: [],
     category: [],
     rating: [],
@@ -97,9 +104,9 @@ const ExploreSavedJobs = () => {
           }) ?? null,
 
         tools:
-          job.tools?.map((toolId: number) => {
-            const found = toolsData?.find((s) => s.id === toolId);
-            return found?.name ?? String(toolId);
+          job.tools?.map((tool) => {
+            const found = toolsData?.find((s) => s.id === tool.toolId);
+            return found?.name ?? String(tool.toolId);
           }) ?? null,
         postedTime: job.createdAt ?? "",
         jobDuration: "",
@@ -155,6 +162,13 @@ const ExploreSavedJobs = () => {
 
   const handleClearAllFilters = () => {
     setFilters({
+      q: "",
+      country: "",
+      state: "",
+      city: "",
+      countryId: null,
+      stateId: null,
+      cityId: null,
       location: [],
       category: [],
       rating: [],

@@ -1,13 +1,16 @@
-import { formatCurrency } from "@/shared/libs/utils";
+import {
+  useEngineerEarnings,
+  useEngineerGetPersonalInfo,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { formatAmount } from "@/utils/currency";
 import React, { useState } from "react";
 import {
-  BiTrendingUp,
-  BiTrendingDown,
   BiCalendar,
   BiChevronDown,
   BiChevronUp,
+  BiTrendingDown,
+  BiTrendingUp,
 } from "react-icons/bi";
-import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * MonthlyComparison Component
@@ -19,8 +22,13 @@ import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenA
  * */
 const MonthlyComparison: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { data: personalInfo } = useEngineerGetPersonalInfo();
+  const hasCompletedOnboarding =
+    personalInfo?.stripeOnboardingStatus?.toLowerCase() === "completed";
   const now = new Date();
-  const { data, isLoading, isError } = useEngineerEarnings();
+  const { data, isLoading, isError } = useEngineerEarnings(
+    hasCompletedOnboarding,
+  );
   if (isLoading) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden p-6 text-center text-gray-500">
@@ -29,7 +37,7 @@ const MonthlyComparison: React.FC = () => {
     );
   }
 
-  if (isError || !data?.monthlyComparison) {
+  if (isError) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden p-6 text-center text-rose-500">
         Failed to load monthly comparison
@@ -67,7 +75,7 @@ const MonthlyComparison: React.FC = () => {
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(currentMonthAmount, currencyCode ?? "USD")}
+                {formatAmount(currentMonthAmount, data?.currencySymbol ?? "")}
               </span>{" "}
               this month ({thisMonthName}) — {changeText}
             </p>
@@ -104,7 +112,7 @@ const MonthlyComparison: React.FC = () => {
                 {lastMonthName}
               </p>
               <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                {formatCurrency(lastMonthAmount, currencyCode ?? "USD")}
+                {formatAmount(lastMonthAmount, currencyCode ?? "")}
               </p>
             </div>
 
@@ -159,7 +167,7 @@ const MonthlyComparison: React.FC = () => {
                 {thisMonthName}
               </p>
               <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(currentMonthAmount, currencyCode ?? "USD")}
+                {formatAmount(currentMonthAmount, data?.currencySymbol ?? "")}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-500 mt-3">
                 {now.getDate()} days in

@@ -1,4 +1,4 @@
-import { useLookupData } from "@/shared/apiServices/client/clientOpenApiService";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import { useMemo } from "react";
 
 interface LocationDisplayProps {

@@ -70,6 +70,7 @@ export interface Job {
   numberOfApplicants?: number;
   currencySymbol?: string;
   vacancies?: number;
+  regionId?: number;
 }
 
 /**

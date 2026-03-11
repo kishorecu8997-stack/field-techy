@@ -6,6 +6,7 @@ import { scrollToTop } from "@/utils";
 import { useEffect, useState } from "react";
 import type { JobFilter } from "../search_result/types";
 import { JOB_FILTERS, SORT_OPTIONS } from "../search_result/types";
+import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
 
@@ -21,13 +22,13 @@ const MyJobsPage = () => {
   const jobStatus = (() => {
     switch (activeFilter) {
       case JOB_FILTERS.APPLIED:
-        return "Posted";
+        return "applied";
       case JOB_FILTERS.IN_PROGRESS:
-        return "In Progress";
+        return "assigned";
       case JOB_FILTERS.COMPLETED:
-        return "Closed";
+        return "submitted";
       case JOB_FILTERS.CANCELLED:
-        return "Cancelled";
+        return "rejected";
       default:
         return undefined;
     }
@@ -51,7 +52,7 @@ const MyJobsPage = () => {
     isLoading,
     isError,
     refetch,
-  } = useEngineerGetJobs(jobStatus, jobType);
+  } = useEngineerGetJobs({ jobStatus, jobType, options: { enabled: true } });
 
   const jobFilters = [
     JOB_FILTERS.ALL_JOBS,
@@ -63,9 +64,23 @@ const MyJobsPage = () => {
     JOB_FILTERS.REMOTE,
     JOB_FILTERS.HYBRID,
   ];
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
   useEffect(() => {
     scrollToTop();
-  }, []);
+  }, [currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [activeFilter]);
+
+  const allJobs = jobs || [];
+  const totalPages = Math.ceil(allJobs.length / itemsPerPage);
+  const currentJobs = allJobs.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -91,12 +106,23 @@ const MyJobsPage = () => {
           onFilterChange={setActiveFilter as (filter: string) => void}
         /> */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <JobList
-            jobs={jobs || []}
-            isLoading={isLoading}
-            isError={isError}
-            refetch={refetch}
-          />
+          <div className="lg:col-span-2">
+            <JobList
+              jobs={currentJobs}
+              isLoading={isLoading}
+              isError={isError}
+              refetch={refetch}
+            />
+            {totalPages > 1 && (
+              <div className="mt-8 flex justify-center">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
+          </div>
           <div className="lg:col-span-1">
             <div className="sticky top-6">
               <SidebarProfile />

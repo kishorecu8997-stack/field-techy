@@ -35,6 +35,7 @@ import type {
   OfferedJobStatusType,
   ProgressUpdate,
 } from "./types.d";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -121,12 +122,12 @@ const mapJobToJobOverview = (
   // Extract tools - convert IDs to labels using toolMap
   const tools = Array.isArray(job.tools)
     ? job.tools.map((tool) => {
-        const toolId = String(tool);
+        const toolId = String(tool.toolId);
         const toolLabel = toolMap.get(toolId);
         return {
-          name: toolLabel || String(tool),
-          price: "",
-          image: undefined,
+          name: toolLabel || tool.toolName || toolId,
+          price: tool.budget || "",
+          image: tool.imageUrl || undefined,
         };
       })
     : [];
@@ -299,12 +300,12 @@ const JobDetailsPage = () => {
         // Get original engineer's content
         const originalContent =
           log.details || "Engineer submitted a progress update";
-        const originalAttachment = log.attachmentUrl
+        const originalAttachment = log.attachment?.url
           ? decodeURIComponent(
-              log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
+              log.attachment?.url.split("/").pop()?.split("?")[0] || "",
             )
           : undefined;
-        const originalAttachmentUrl = log.attachmentUrl;
+        const originalAttachmentUrl = log.attachment?.url;
 
         // Determine statusText based on log status OR latest revision status
         // If there's a pending revision, show "Revision Requested"
@@ -356,10 +357,27 @@ const JobDetailsPage = () => {
           logId: log.id,
           // Map revisions to include jobLogId as required by type
           revisions: (log.revisions || []).map((rev) => {
-            const revision = rev as typeof rev & { jobLogId?: number };
             return {
-              ...revision,
-              jobLogId: revision.jobLogId || log.id,
+              revisionId: rev.revisionId,
+              // prefer jobLogId from rev, otherwise use current log id
+              jobLogId: rev.jobLogId ?? log.id,
+              logId: rev.jobLogId || log.id,
+              content: rev.content ?? null,
+              attachmentId: rev.attachmentId ?? null,
+              attachmentUrl: rev.attachment?.url ?? null,
+              status: rev.status,
+              clientComment: rev.clientComment ?? null,
+              clientAttachmentId: rev.clientAttachmentId ?? null,
+              clientAttachment: rev.clientAttachment
+                ? {
+                    filename: rev.clientAttachment.filename ?? "",
+                    id: rev.clientAttachment.id,
+                    size: rev.clientAttachment.size ?? 0,
+                    url: rev.clientAttachment.url ?? "",
+                  }
+                : undefined,
+              createdAt: rev.createdAt ?? null,
+              updatedAt: rev.updatedAt ?? null,
             };
           }),
         });
@@ -426,7 +444,7 @@ const JobDetailsPage = () => {
   };
 
   const { data: reviewsData } = useGetUserRatingAndReviews(true, assignmentId);
-
+  const regionId = useUserSessionStore((state) => state.session?.regionId);
   const handleOpenGiveClientFeedback = () => {
     showPopup({
       body: (
@@ -439,6 +457,7 @@ const JobDetailsPage = () => {
           targetRole={job?.clientDetails?.clientType || "client"}
           placeholder="Share your feedback about your experience with the client..."
           assignmentId={job?.assignmentId || undefined}
+          regionId={regionId || undefined}
         />
       ),
     });

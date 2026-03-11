@@ -15,7 +15,7 @@ interface WalletTabProps {
 // Define the transaction structure based on API response expectations
 type WalletTransaction = {
   id: number;
-  createdAt: string;
+  transactionTime: string;
   transactionType: string;
   amount: string;
   status: string;
@@ -47,8 +47,10 @@ const WalletTab: React.FC<WalletTabProps> = ({ userId }) => {
         txn.transactionType?.toLowerCase().includes(query) ||
         txn.amount?.toLowerCase().includes(query) ||
         txn.status?.toLowerCase().includes(query) ||
-        (txn.createdAt &&
-          dayjs(txn.createdAt).format("DD-MM-YYYY HH:mm:ss").includes(query)),
+        (txn.transactionTime &&
+          dayjs(txn.transactionTime)
+            .format("DD-MM-YYYY HH:mm:ss")
+            .includes(query)),
     );
   }, [allTransactions, search]);
 
@@ -58,11 +60,11 @@ const WalletTab: React.FC<WalletTabProps> = ({ userId }) => {
       renderCell: (_, index) => (page - 1) * limit + index + 1,
     },
     {
-      key: "createdAt",
+      key: "transactionTime",
       label: "Date & Time",
       renderCell: (row) =>
-        row.createdAt
-          ? dayjs(row.createdAt).format("DD-MM-YYYY HH:mm:ss")
+        row.transactionTime
+          ? dayjs(row.transactionTime).format("DD-MM-YYYY HH:mm:ss")
           : "N/A",
     },
     { key: "transactionType", label: "Transaction Type" },
@@ -75,7 +77,19 @@ const WalletTab: React.FC<WalletTabProps> = ({ userId }) => {
       key: "status",
       label: "Status",
       renderCell: (row) => (
-        <span className="capitalize">{row.status || "N/A"}</span>
+        <span
+          className={`capitalize text-sm font-medium ${
+            row.status === "approved"
+              ? "text-green-600"
+              : row.status === "rejected"
+                ? "text-red-600"
+                : row.status === "pending"
+                  ? "text-yellow-600"
+                  : "text-gray-600"
+          }`}
+        >
+          {row.status || "N/A"}
+        </span>
       ),
     },
   ];

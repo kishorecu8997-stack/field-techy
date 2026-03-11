@@ -5,6 +5,7 @@ import { UserRole } from "@/shared/enums/users";
 import { withSuspense } from "../WithSuspense";
 import ProtectedRoute from "@/layout/ProtectedRoute";
 import AuthRedirect from "@/layout/AuthRedirect";
+import SubAdminGuard from "@/layout/SubAdminGuard";
 import type { RouteStrategy } from "../types/routeTypes";
 import * as Components from "../utils/lazyComponents";
 
@@ -156,15 +157,27 @@ export class AdminRouteStrategy implements RouteStrategy {
           },
           {
             path: urls.admin.home.manage_sub_admin,
-            element: withSuspense(Components.ManageSubAdmin),
+            element: React.createElement(
+              SubAdminGuard,
+              null,
+              withSuspense(Components.ManageSubAdmin),
+            ),
           },
           {
             path: urls.admin.home.manage_sub_admin_add,
-            element: withSuspense(Components.AddSubAdmin),
+            element: React.createElement(
+              SubAdminGuard,
+              null,
+              withSuspense(Components.AddSubAdmin),
+            ),
           },
           {
             path: `${urls.admin.home.manage_sub_admin_edit}/:id?`,
-            element: withSuspense(Components.EditSubAdmin),
+            element: React.createElement(
+              SubAdminGuard,
+              null,
+              withSuspense(Components.EditSubAdmin),
+            ),
           },
           {
             path: urls.admin.home.manage_cms,
