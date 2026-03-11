@@ -722,27 +722,18 @@ export const validatePricingModel = (
       // }
       return true;
     }
-    
 
     case "daily": {
-      if (hourly == null)
-        return "Please enter hourly rate first";
+      if (hourly == null) return "Please enter hourly rate first";
 
       const minHourly = hourly * 8;
       if (num < minHourly) return `Daily rate must be at least ${minHourly}`;
 
-
       return true;
     }
 
-    
-
     case "monthly": {
-      if (
-        hourly == null ||
-        daily == null ||
-        monthly == null
-      )
+      if (hourly == null || daily == null || monthly == null)
         return "Please complete previous fields first";
 
       const minHourly = hourly * 3;
@@ -750,7 +741,6 @@ export const validatePricingModel = (
 
       const minFull = daily * 20;
       if (num < minFull) return `Monthly must be at least ${minFull}`;
-
 
       return true;
     }

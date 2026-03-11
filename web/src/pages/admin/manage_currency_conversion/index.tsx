@@ -41,12 +41,10 @@ const ManageCurrencyConversion: React.FC = () => {
       label: "Exchange Rates (Base: INR)",
       renderCell: (row: CurrencyConversionRow) => {
         const parsedRate = Number(row.rate);
-        const displayRate = Number.isFinite(parsedRate) ? parsedRate.toFixed(4) : "-";
-        return (
-          <div className="whitespace-nowrap">
-            {displayRate}
-          </div>
-        );
+        const displayRate = Number.isFinite(parsedRate)
+          ? parsedRate.toFixed(4)
+          : "-";
+        return <div className="whitespace-nowrap">{displayRate}</div>;
       },
     },
     {
@@ -54,7 +52,9 @@ const ManageCurrencyConversion: React.FC = () => {
       label: "Last Updated",
       renderCell: (row: CurrencyConversionRow) => (
         <div className="whitespace-nowrap">
-          {row.lastUpdated ? new Date(row.lastUpdated).toLocaleDateString() : "-"}
+          {row.lastUpdated
+            ? new Date(row.lastUpdated).toLocaleDateString()
+            : "-"}
         </div>
       ),
     },

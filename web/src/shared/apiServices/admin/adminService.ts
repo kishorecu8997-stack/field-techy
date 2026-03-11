@@ -259,9 +259,12 @@ export function useCreateRateCard(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateRateCardParams) => AdminAdapter.createRateCard(data),
+    mutationFn: (data: CreateRateCardParams) =>
+      AdminAdapter.createRateCard(data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.rateCards.all,
+      });
       options?.onSuccess?.(data);
     },
     onError: (error) => {
@@ -280,7 +283,9 @@ export function useUpdateRateCard(options?: {
     mutationFn: ({ id, data }: { id: number; data: UpdateRateCardParams }) =>
       AdminAdapter.updateRateCard(id, data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.rateCards.all,
+      });
       options?.onSuccess?.(data);
     },
     onError: (error) => {
@@ -296,9 +301,12 @@ export function useDeleteRateCard(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (serviceCategoryId: number) => AdminAdapter.deleteRateCard(serviceCategoryId),
+    mutationFn: (serviceCategoryId: number) =>
+      AdminAdapter.deleteRateCard(serviceCategoryId),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.rateCards.all,
+      });
       options?.onSuccess?.(data);
     },
     onError: (error) => {
@@ -308,9 +316,7 @@ export function useDeleteRateCard(options?: {
 }
 
 /** Hook to get all service categories */
-export function useGetServiceCategories(
-  options?: { enabled?: boolean },
-) {
+export function useGetServiceCategories(options?: { enabled?: boolean }) {
   return useQuery<ServiceCategoriesResponse>({
     queryKey: [...queryKeys.admin.serviceCategories.all],
     queryFn: () => AdminAdapter.getServiceCategories({ limit: 100 }),
