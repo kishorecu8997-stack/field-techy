@@ -8,8 +8,10 @@ export const Accordion: React.FC<{
   title: string;
   children: React.ReactNode;
   remove?: () => void;
-}> = ({ title, children, remove }) => {
-  const [open, setOpen] = useState(false);
+  defaultOpen?: boolean;
+  showRemove?: boolean;
+}> = ({ title, children, remove, defaultOpen = true, showRemove = true }) => {
+  const [open, setOpen] = useState(defaultOpen);
 
   return (
     <div className="border-b border-gray-300 dark:border-gray-600">
@@ -19,14 +21,16 @@ export const Accordion: React.FC<{
       >
         {title}
         <div className="flex items-center space-x-2">
-          <RiDeleteBin6Fill
-            className=" text-red-400 cursor-pointer hover:text-red-500 "
-            size={20}
-            onClick={(e) => {
-              remove?.();
-              e.stopPropagation();
-            }}
-          />
+          {showRemove && (
+            <RiDeleteBin6Fill
+              className=" text-red-400 cursor-pointer hover:text-red-500 "
+              size={20}
+              onClick={(e) => {
+                remove?.();
+                e.stopPropagation();
+              }}
+            />
+          )}
           <span className="cursor-pointer">{open ? "▾" : "▸"}</span>
         </div>
       </div>

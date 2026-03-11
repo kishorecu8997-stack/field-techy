@@ -14,14 +14,11 @@ const PricingTable: React.FC<{
   editable: boolean;
 }> = ({ control, index, tiers, editable }) => {
   const headers = [
-    "Experience Level",
     "Hourly",
-    "Half-Day (4h)",
-    "Full-Day (8h)",
-    "Weekly (5d)",
+    "Daily",
     "Monthly",
   ];
-  const fields = ["hourly", "halfDay", "fullDay", "weekly", "monthly"];
+  const fields = ["hourly", "daily", "monthly"];
 
   const rowValues = useWatch({
     control,
@@ -33,8 +30,9 @@ const PricingTable: React.FC<{
       <table className="w-full text-sm text-left border-collapse">
         <thead className="bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
           <tr>
+            <th className="px-4 py-2 font-semibold text-center">Experience Level</th>
             {headers.map((h) => (
-              <th key={h} className="px-4 py-2 font-semibold">
+              <th key={h} className="px-4 py-2 font-semibold text-center">
                 {h}
               </th>
             ))}
@@ -48,8 +46,8 @@ const PricingTable: React.FC<{
                 key={tier.level}
                 className="border-t border-gray-200 dark:border-gray-700"
               >
-                <td className="px-4 py-1 font-medium dark:text-gray-200">
-                  {tier.level} – {tier.description}
+                <td className="px-4 py-2 font-medium text-center text-gray-900 dark:text-gray-100">
+                  {tier.level} - {tier.description}
                 </td>
                 {fields.map((field) => (
                   <td key={field} className="px-4 py-2">
@@ -61,9 +59,7 @@ const PricingTable: React.FC<{
                           validate: (v: string) =>
                             validatePricingModel(v, field as PricingField, {
                               hourly: Number(relatedValues.hourly),
-                              halfDay: Number(relatedValues.halfDay),
-                              fullDay: Number(relatedValues.fullDay),
-                              weekly: Number(relatedValues.weekly),
+                              daily: Number(relatedValues.daily),
                               monthly: Number(relatedValues.monthly),
                             }),
                         }}
