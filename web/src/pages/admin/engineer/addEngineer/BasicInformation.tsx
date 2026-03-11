@@ -5,7 +5,7 @@ import PhoneInputWithValidation from "@/shared/components/commonUI/inputs/PhoneI
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import {
-  validateAddress,
+  // validateAddress,
   validateName,
   validatePortfolioLink,
   validatePricePerHour,
@@ -17,6 +17,7 @@ import {
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { EngineerFormData } from "../types";
+
 
 /**
  * BasicInformation component handles the first step of the engineer registration form.
@@ -51,12 +52,27 @@ import type { EngineerFormData } from "../types";
 export default function BasicInformation() {
   const { watch, setValue } = useFormContext<EngineerFormData>();
   const serviceCategoryValue = watch("serviceCategory");
+  const selectedCountry = watch("Country");
+  const selectedState = watch("State");
 
   const { data: skills } = useAppGetLookupData(LookupTable.Skills);
   const { data: serviceCategories } = useAppGetLookupData(
     LookupTable.ServiceCategories,
   );
-
+  
+    const { data: countries } = useAppGetLookupData(LookupTable.Countries);
+    const { data: states } = useAppGetLookupData(
+      LookupTable.States,
+      selectedCountry,
+      { enabled: !!selectedCountry },
+    );
+    const { data: cities } = useAppGetLookupData(
+      LookupTable.Cities,
+      selectedState,
+      {
+        enabled: !!selectedState,
+      },
+    );
   const serviceCategoryOptions = useMemo(() => {
     return (
       serviceCategories?.map((item) => ({
@@ -107,69 +123,130 @@ export default function BasicInformation() {
     />
   );
 
-  return (
-    <div>
-      <div className="mb-6 mt-2 w-fit">
-        <ImageUploaderField label="Profile Image" name="profileImage" />
-      </div>
-      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="space-y-2">
-          <InputField
-            name="name"
-            label="Full Name"
-            type="text"
-            placeholder="Enter Name"
-            required
-            rules={{ validate: (v: string) => validateName(v) }}
-          />
-          <PhoneInputWithValidation name="phoneNumber" label="Mobile Number" />
-          <TagSelectField
-            name="skills"
-            label="Skills"
-            placeholder="Add your skills"
-            required
-            options={
-              skills?.map((item) => ({
-                value: item.id,
-                label: item.name,
-              })) ?? []
-            }
-            maxTags={15}
-          />
-          {priceField}
-        </div>
+return (
+  <div>
+    <div className="mb-6 mt-2 w-fit">
+      <ImageUploaderField label="Profile Image" name="profileImage" />
+    </div>
 
-        <div className="space-y-2">
-          <InputField
-            name="email"
-            label="Email Address"
-            type="text"
-            required
-            rules={validateEmailRules}
-          />
-          <InputField
-            name="address"
-            label="Address"
-            type="text"
-            required
-            rules={{ validate: (v: string) => validateAddress(v) }}
-          />
-          <SelectField
-            name="serviceCategory"
-            label="Service Category"
-            placeholder="Select Category"
-            options={serviceCategoryOptions}
-            required
-          />
-          <InputField
-            name="portfolio"
-            label="Portfolio Link"
-            type="text"
-            placeholder="Portfolio Link"
-            rules={{ validate: (v: string) => validatePortfolioLink(v) }}
-          />
-        </div>
+    <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+      {/* Left Column */}
+      <div className="space-y-2">
+        <InputField
+          name="name"
+          label="Full Name"
+          type="text"
+          placeholder="Enter Name"
+          required
+          rules={{ validate: (v: string) => validateName(v) }}
+        />
+
+        <PhoneInputWithValidation
+          name="phoneNumber"
+          label="Mobile Number"
+        />
+
+        {/* Location */}
+        <SelectField
+          label="Country"
+          name="Country"
+          placeholder="Select Country"
+          options={
+            countries?.map((item) => ({
+              value: item.id,
+              label: item.name,
+            })) ?? []
+          }
+          required
+          onChange={() => {
+            setValue("State", "");
+            setValue("City", "");
+          }}
+        />
+
+        <SelectField
+          label="State"
+          name="State"
+          placeholder="Select State"
+          options={
+            states?.map((item) => ({
+              value: item.id,
+              label: item.name,
+            })) ?? []
+          }
+          required
+          disabled={!selectedCountry}
+          onChange={() => {
+            setValue("City", "");
+          }}
+        />
+
+        <SelectField
+          label="City"
+          name="City"
+          placeholder="Select City"
+          options={
+            cities?.map((item) => ({
+              value: item.id,
+              label: item.name,
+            })) ?? []
+          }
+          required
+          disabled={!selectedState}
+        />
+
+        {/* <InputField
+          name="address"
+          label="Address"
+          type="text"
+          required
+          rules={{ validate: (v: string) => validateAddress(v) }}
+        /> */}
+      </div>
+
+      {/* Right Column */}
+      <div className="space-y-2">
+        <InputField
+          name="email"
+          label="Email Address"
+          type="text"
+          required
+          rules={validateEmailRules}
+        />
+
+        <TagSelectField
+          name="skills"
+          label="Skills"
+          placeholder="Add your skills"
+          required
+          options={
+            skills?.map((item) => ({
+              value: item.id,
+              label: item.name,
+            })) ?? []
+          }
+          maxTags={15}
+        />
+
+        {priceField}
+
+        <SelectField
+          name="serviceCategory"
+          label="Service Category"
+          placeholder="Select Category"
+          options={serviceCategoryOptions}
+          required
+        />
+
+        <InputField
+          name="portfolio"
+          label="Portfolio Link"
+          type="text"
+          placeholder="Portfolio Link"
+          rules={{ validate: (v: string) => validatePortfolioLink(v) }}
+        />
       </div>
     </div>
-  );
+  </div>
+);
 }

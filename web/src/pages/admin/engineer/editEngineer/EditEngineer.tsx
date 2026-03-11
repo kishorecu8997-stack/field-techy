@@ -24,38 +24,37 @@ import type { EngineerFormData } from "../types";
 const toOptionalString = (value: unknown) =>
   value === null || value === undefined ? "" : String(value);
 
-const mapEngineerToFormData = (
-  engineerData: AdminGetEngineerResponse,
-): EngineerFormData => {
-  const skills = engineerData.skills?.map((s) => String(s.id)) ?? [];
+const mapEngineerToFormData = (engineer: AdminGetEngineerResponse): EngineerFormData => {
+  const skills = engineer.skills?.map((s) => String(s.id)) ?? [];
 
   return {
-    name: engineerData.name ?? "",
-    email: engineerData.email ?? "",
-    phoneNumber: engineerData.phoneNumber ?? "",
-    profileImage: engineerData.documents?.profileImage?.url ?? null,
-    address: engineerData.address ?? "",
+    // Basic Information
+    name: engineer.name ?? "",
+    email: engineer.email ?? "",
+    phoneNumber: engineer.phoneNumber ?? "",
+    profileImage: engineer.documents?.profileImage?.url ?? null,
+    address: engineer.address ?? "",
     skills,
-    price: toOptionalString(engineerData.pricePerHour),
-    serviceCategory: engineerData.serviceCategory
-      ? String(engineerData.serviceCategory)
-      : "",
-    portfolio: engineerData.portfolioLink ?? "",
-    designation: engineerData.currentDesignation ?? "",
-    location: engineerData.location?.city ?? engineerData.city?.name ?? "",
-    employer: engineerData.employer ?? "",
-    experience: toOptionalString(engineerData.totalExperience),
-    resume: engineerData.documents?.resume?.url ?? null,
-    governmentId: engineerData.documents?.governmentId?.url ?? null,
-    certificate: engineerData.documents?.qualificationCertificate?.url ?? null,
+    price: toOptionalString(engineer.pricePerHour),
+    serviceCategory: engineer.serviceCategory ? String(engineer.serviceCategory) : "",
+    portfolio: engineer.portfolioLink ?? "",
+    Country: engineer.country?.id ? String(engineer.country?.id) : "",
+    State: engineer.state?.id ? String(engineer.state?.id) : "",
+    City: engineer.city?.id ? String(engineer.city?.id) : "",
+
+    // Experience Details
+    designation: engineer.currentDesignation ?? "",
+    location: engineer.location?.city ?? engineer.city?.name ?? "",
+    employer: engineer.employer ?? "",
+    experience: toOptionalString(engineer.totalExperience),
+    resume: engineer.documents?.resume?.url ?? null,
+
+    // Documents
+    governmentId: engineer.documents?.governmentId?.url ?? null,
+    certificate: engineer.documents?.qualificationCertificate?.url ?? null,
   };
 };
 
-/**
- * EditEngineer component for editing an existing engineer.
- * - GET: fetches engineer data (including document URLs) and hydrates the form
- * - PUT: submits updated fields, optionally returning presigned upload URLs for files
- */
 export default function EditEngineer() {
   const [activeTab, setActiveTab] = useState("Basic Information");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,11 +70,8 @@ export default function EditEngineer() {
   const engineerId = Number(id);
   const hasValidEngineerId = Number.isFinite(engineerId) && engineerId > 0;
 
-  const {
-    data: engineerData,
-    isLoading,
-    error,
-  } = useAdminGetEngineerById(engineerId, hasValidEngineerId);
+  const { data: engineerData, isLoading, error } =
+    useAdminGetEngineerById(engineerId, hasValidEngineerId);
 
   const methods = useForm<EngineerFormData>({
     defaultValues: {
@@ -95,6 +91,9 @@ export default function EditEngineer() {
       resume: null,
       governmentId: null,
       certificate: null,
+      Country: "",
+      State: "",
+      City: "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -103,15 +102,7 @@ export default function EditEngineer() {
   const { trigger, getValues, reset } = methods;
 
   const validateBasicInformation = () =>
-    trigger([
-      "name",
-      "email",
-      "phoneNumber",
-      "address",
-      "skills",
-      "price",
-      "serviceCategory",
-    ]);
+    trigger(["name", "email", "phoneNumber", "address", "skills", "price", "serviceCategory", "Country", "State", "City"]);
 
   const validateExperienceDetails = () =>
     trigger(["designation", "location", "resume", "employer", "experience"]);
@@ -120,19 +111,13 @@ export default function EditEngineer() {
 
   useEffect(() => {
     if (!engineerData) return;
-    methods.reset(mapEngineerToFormData(engineerData));
-  }, [engineerData, methods]);
+    reset(mapEngineerToFormData(engineerData));
+  }, [engineerData, reset]);
 
-  type UploadKey =
-    | "profilePicture"
-    | "govIdDoc"
-    | "certificateDoc"
-    | "resumeFile";
+  type UploadKey = "profilePicture" | "govIdDoc" | "certificateDoc" | "resumeFile";
 
   const extractFile = (value: unknown) =>
-    value instanceof File
-      ? value
-      : (value instanceof FileList && value[0]) || null;
+    value instanceof File ? value : (value instanceof FileList && value[0]) || null;
 
   const buildPayload = (data: EngineerFormData) => {
     const files: Record<UploadKey, File | null> = {
@@ -151,51 +136,40 @@ export default function EditEngineer() {
       name: data.name,
       email: data.email,
       phoneNumber: data.phoneNumber,
-
       address: data.address || undefined,
-      serviceCategoryId: data.serviceCategory
-        ? Number(data.serviceCategory)
-        : undefined,
-
-      hourlyRate:
-        data.price !== null && data.price !== ""
-          ? Number(data.price)
-          : undefined,
-
+      serviceCategoryId: data.serviceCategory ? Number(data.serviceCategory) : undefined,
+      hourlyRate: data.price ? Number(data.price) : undefined,
       portfolioLink: data.portfolio || "",
       employer: data.employer || undefined,
       currentDesignation: data.designation || undefined,
-
       experienceYears: data.experience ? Number(data.experience) : null,
-
+      countryId: data.Country ? Number(data.Country) : undefined,
+      stateId: data.State ? Number(data.State) : undefined,
+      cityId: data.City ? Number(data.City) : undefined,
       skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
     };
 
-    (Object.entries(files) as [UploadKey, File | null][]).forEach(
-      ([key, file]) => {
-        if (!file) return;
-        body[key] = {
-          filename: file.name,
-          size: file.size,
-          mimeType: file.type,
-        };
-      },
-    );
+    (Object.entries(files) as [UploadKey, File | null][]).forEach(([key, file]) => {
+      if (!file) return;
+      body[key] = {
+        filename: file.name,
+        size: file.size,
+        mimeType: file.type,
+      };
+    });
 
     return { body, files };
   };
 
   const handleNext = async () => {
-    let isValid = false;
     if (activeTab === "Basic Information") {
-      isValid = await validateBasicInformation();
-      if (isValid) setActiveTab("Experience Details");
+      const ok = await validateBasicInformation();
+      if (ok) setActiveTab("Experience Details");
       return;
     }
-
     if (activeTab === "Experience Details") {
-      isValid = await validateExperienceDetails();
-      if (isValid) setActiveTab("Documents");
+      const ok = await validateExperienceDetails();
+      if (ok) setActiveTab("Documents");
     }
   };
 
@@ -224,14 +198,9 @@ export default function EditEngineer() {
               } as AdminUpdateEngineerData);
 
               if (res && "uploadUrls" in res && res.uploadUrls) {
-                const uploadUrls = res.uploadUrls as Record<
-                  string,
-                  { uploadUrl: string; fileId: number }
-                >;
+                const uploadUrls = res.uploadUrls as Record<string, { uploadUrl: string; fileId: number }>;
 
-                for (const [key, { uploadUrl, fileId }] of Object.entries(
-                  uploadUrls,
-                )) {
+                for (const [key, { uploadUrl, fileId }] of Object.entries(uploadUrls)) {
                   const file = files[key as keyof typeof files];
                   if (!file) continue;
 
@@ -242,24 +211,13 @@ export default function EditEngineer() {
                   });
 
                   if (upload.ok) {
-                    await markFileUploaded({
-                      path: {
-                        userId: engineerId,
-                      },
-                      body: { fileId },
-                    });
+                    await markFileUploaded({ path: { userId: engineerId }, body: { fileId } });
                   }
                 }
               }
 
-              await queryClient.invalidateQueries({
-                queryKey: queryKeys.admin.manageEngineers,
-                exact: false,
-              });
-
-              await queryClient.invalidateQueries({
-                queryKey: queryKeys.engineer.adminById(engineerId),
-              });
+              await queryClient.invalidateQueries({ queryKey: queryKeys.admin.manageEngineers, exact: false });
+              await queryClient.invalidateQueries({ queryKey: queryKeys.engineer.adminById(engineerId) });
 
               toast.success("Engineer updated successfully!");
               reset();
@@ -281,14 +239,15 @@ export default function EditEngineer() {
       toast.error("Invalid engineer id");
       return;
     }
-    const isValidBasic = await validateBasicInformation();
-    if (!isValidBasic) return;
 
-    const isValidExperience = await validateExperienceDetails();
-    if (!isValidExperience) return;
+    const okBasic = await validateBasicInformation();
+    if (!okBasic) return;
 
-    const isValidDocs = await validateDocuments();
-    if (!isValidDocs) return;
+    const okExp = await validateExperienceDetails();
+    if (!okExp) return;
+
+    const okDocs = await validateDocuments();
+    if (!okDocs) return;
 
     setIsSubmitting(true);
     try {
@@ -300,11 +259,7 @@ export default function EditEngineer() {
 
   const tabs = [
     { label: "Basic Information", content: <BasicInformation />, hide: false },
-    {
-      label: "Experience Details",
-      content: <ExperienceDetails />,
-      hide: false,
-    },
+    { label: "Experience Details", content: <ExperienceDetails />, hide: false },
     { label: "Documents", content: <Documents />, hide: false },
   ];
 
@@ -312,33 +267,29 @@ export default function EditEngineer() {
 
   const handleTabChange = async (nextTab: string) => {
     if (nextTab === activeTab) return;
-
     const order = ["Basic Information", "Experience Details", "Documents"];
     const currentIndex = order.indexOf(activeTab);
     const nextIndex = order.indexOf(nextTab);
-
     if (nextIndex === -1) return;
+
     if (nextIndex <= currentIndex) {
       setActiveTab(nextTab);
       return;
     }
-
     if (currentIndex < 1 && nextIndex >= 1) {
       const ok = await validateBasicInformation();
       if (!ok) return;
     }
-
     if (currentIndex < 2 && nextIndex >= 2) {
       const ok = await validateExperienceDetails();
       if (!ok) return;
     }
-
     setActiveTab(nextTab);
   };
 
   if (isLoading) return <LoaderComponent />;
 
-  if (!hasValidEngineerId) {
+  if (!hasValidEngineerId)
     return (
       <div className="w-full px-4 h-full mt-6">
         <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
@@ -346,9 +297,8 @@ export default function EditEngineer() {
         </div>
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <div className="w-full px-4 h-full mt-6">
         <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
@@ -356,9 +306,8 @@ export default function EditEngineer() {
         </div>
       </div>
     );
-  }
 
-  if (!engineerData) {
+  if (!engineerData)
     return (
       <div className="w-full px-4 h-full mt-6">
         <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
@@ -366,42 +315,24 @@ export default function EditEngineer() {
         </div>
       </div>
     );
-  }
 
   return (
     <div className="w-full px-4 h-full mt-6">
       <div className="flex py-3 justify-between gap-4">
         <h2 className="mt-2 mb-4 font-semibold">Edit Engineer</h2>
-        <Button variant="solid" onClick={() => navigate(-1)}>
-          Back
-        </Button>
+        <Button variant="solid" onClick={() => navigate(-1)}>Back</Button>
       </div>
 
       <FormContainer methods={methods}>
         <div className="bg-white dark:bg-gray-700 rounded-lg px-4 py-1 mx-auto">
-          <AdminTabComponent
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
-          />
-
+          <AdminTabComponent tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
           <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">
             {activeTab !== "Basic Information" && (
-              <Button
-                type="button"
-                onClick={handlePrevious}
-                className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
-              >
+              <Button type="button" onClick={handlePrevious} className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90">
                 Back
               </Button>
             )}
-
-            <Button
-              type="button"
-              onClick={isLastTab ? handleSave : handleNext}
-              disabled={isSubmitting}
-              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 disabled:opacity-50"
-            >
+            <Button type="button" onClick={isLastTab ? handleSave : handleNext} disabled={isSubmitting} className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 disabled:opacity-50">
               {isSubmitting ? "Saving..." : isLastTab ? "Save" : "Next"}
             </Button>
           </div>

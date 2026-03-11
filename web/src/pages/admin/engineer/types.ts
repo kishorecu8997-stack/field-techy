@@ -8,6 +8,9 @@ export interface BasicInformation {
   price: string | number | null;
   serviceCategory: string;
   portfolio: string;
+  Country: string;
+  State: string;
+  City: string;
 }
 
 export interface ExperienceDetails {

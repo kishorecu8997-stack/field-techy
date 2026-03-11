@@ -71,6 +71,9 @@ export default function AddEngineer() {
       experience: "",
       governmentId: "",
       certificate: "",
+      Country: "",
+      State: "",
+      City: "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -120,6 +123,9 @@ export default function AddEngineer() {
       "skills",
       "price",
       "serviceCategory",
+      "Country",
+      "State",
+      "City",
     ]);
 
   const validateExperienceDetails = () =>
@@ -164,6 +170,10 @@ export default function AddEngineer() {
       experienceYears: data.experience ? Number(data.experience) : null,
 
       skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
+      countryId: data.Country ? Number(data.Country) : undefined,
+      stateId: data.State ? Number(data.State) : undefined,
+      cityId: data.City ? Number(data.City) : undefined,
+      location: data.location || undefined,
     };
 
     (Object.entries(files) as [keyof typeof files, File | null][]).forEach(
