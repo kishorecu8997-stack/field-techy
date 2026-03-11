@@ -12,6 +12,7 @@ import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { JobItem } from "../types";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Renders a circular progress ring for the match score.
@@ -115,6 +116,7 @@ const FeatureJobCard: React.FC<
   const { data: engagementModels } = useLookupData("engagementModels");
   // Fetch service categories from API
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
+  const regionId = useUserSessionStore.getState().session?.regionId;
 
   const { refetch } = useGetEngineerSavedJobs({
     limit: 10,
@@ -152,6 +154,7 @@ const FeatureJobCard: React.FC<
     toggleSaveMutation({
       body: {
         jobId: Number(job.id),
+        regionId,
       },
     });
   };

@@ -1,45 +1,44 @@
 import {
+  createRateAndReviewAssignment,
+  type AppCheckExistenceData,
+  type AppDownloadProfileFileData,
+  type AppForgotPasswordError,
+  type AppForgotPasswordResponse,
   type AppGetLookupDataData,
+  type AppMarkProfileFileUploadedError,
+  type AppMarkProfileFileUploadedResponse,
+  type AppResetPasswordError,
+  type AppResetPasswordResponse,
+  type AppSendLoginOtpResponse,
   type AppSendOtpResponse,
   type AppUploadProfileFileResponse,
-  type AppVerifyOtpResponse,
-  type AppForgotPasswordResponse,
-  type AppForgotPasswordError,
-  type AppResetPasswordResponse,
-  type AppResetPasswordError,
-  type AppDownloadProfileFileData,
-  type AppMarkProfileFileUploadedResponse,
-  type AppMarkProfileFileUploadedError,
-  type CreateRateAndReviewAssignmentResponse,
-  type AppCheckExistenceData,
-  createRateAndReviewAssignment,
-  type AppSendLoginOtpResponse,
   type AppVerifyLoginOtpResponse,
+  type AppVerifyOtpResponse,
+  type CreateRateAndReviewAssignmentResponse,
 } from "@/api";
 import {
+  appCheckExistenceOptions,
   appDownloadProfileFileOptions,
+  appForgotPasswordMutation,
   appGetLookupDataOptions,
+  appMarkProfileFileUploadedMutation,
+  appResetPasswordMutation,
+  appResolveSignupRegionOptions,
+  appSendLoginOtpMutation,
   appSendOtpMutation,
   appUploadProfileFileMutation,
+  appVerifyLoginOtpMutation,
   appVerifyOtpMutation,
-  appForgotPasswordMutation,
-  appResetPasswordMutation,
-  appMarkProfileFileUploadedMutation,
   createRateAndReviewAssignmentMutation,
   getUserRatingAndReviewsOptions,
   getUserRatingAndReviewsQueryKey,
-  appCheckExistenceOptions,
-  appResolveSignupRegionOptions,
-  appSendLoginOtpMutation,
-  appVerifyLoginOtpMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
-  appDownloadProfileFile as appDownloadProfileFileSdk,
   appCheckExistence,
+  appDownloadProfileFile as appDownloadProfileFileSdk,
 } from "@/api/sdk.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
 
@@ -238,15 +237,10 @@ export function useCreateRateAndReviewAssignment(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useUserSessionStore((s) => s.session?.regionId);
   return useMutation({
     ...createRateAndReviewAssignmentMutation({ client: apiClient }),
     mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
+      const body = fnOptions?.body as (typeof fnOptions)["body"];
       const { data } = await createRateAndReviewAssignment({
         client: apiClient,
         ...fnOptions,

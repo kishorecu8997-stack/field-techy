@@ -86,10 +86,11 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           <Tooltip text="View your applied and active jobs">
             <NavLink
               to={absoluteUrls.engineer.home.my_jobs}
-              className={`${location.pathname.startsWith(absoluteUrls.engineer.home.my_jobs)
-                ? "text-teal-800 font-semibold"
-                : ""
-                } hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer dark:text-gray-400`}
+              className={`${
+                location.pathname.startsWith(absoluteUrls.engineer.home.my_jobs)
+                  ? "text-teal-800 font-semibold"
+                  : ""
+              } hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer dark:text-gray-400`}
               aria-label="View your applied and active jobs"
             >
               My Jobs
@@ -248,7 +249,9 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         >
           <TbAlignLeft className="h-5 w-5" />
           <span className="max-w-[6rem] truncate text-left">
-            {isLoadingProfile ? "Loading..." : `Hi, ${engineerProfile?.fullName || "User"}`}
+            {isLoadingProfile
+              ? "Loading..."
+              : `Hi, ${engineerProfile?.fullName || "User"}`}
           </span>
           {isLoadingProfile ? (
             <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">

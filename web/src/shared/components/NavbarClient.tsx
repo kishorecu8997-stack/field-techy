@@ -109,10 +109,11 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         <NavLink
           onClick={scrollToTop}
           to={absoluteUrls.client.home.my_jobs}
-          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
-            ? "text-teal-800 font-semibold"
-            : ""
-            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
+          className={`${
+            location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
+              ? "text-teal-800 font-semibold"
+              : ""
+          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Jobs
         </NavLink>
@@ -128,7 +129,11 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
       </div>
 
       <div className="flex-1 mx-4 w-full">
-        <JobSearchBar userType={UserRole.CLIENT} navto={absoluteUrls.client.home.client_Explore_engineers} showDropdowns={false} />
+        <JobSearchBar
+          userType={UserRole.CLIENT}
+          navto={absoluteUrls.client.home.client_Explore_engineers}
+          showDropdowns={false}
+        />
       </div>
 
       <div className="flex items-center space-x-4 md:hidden">
