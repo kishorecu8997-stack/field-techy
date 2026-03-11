@@ -211,18 +211,28 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                   body[k] = null;
               });
 
+              const editUserId = toNum(userIdFromUrl);
               const res = isEdit
                 ? await updateClient({
-                    path: { userId: toNum(userIdFromUrl)! },
+                    path: { userId: editUserId! },
                     body: body as AdminUpdateClientData["body"],
                   })
                 : await addClient({ body } as AdminCreateClientData);
 
-              if (res && "uploadUrls" in res && res.uploadUrls) {
+              const responseUserId = (res as AdminCreateClientResponse)?.userId;
+              const resolvedUserId = isEdit ? editUserId : responseUserId;
+
+              if (
+                res &&
+                "uploadUrls" in res &&
+                res.uploadUrls &&
+                resolvedUserId
+              ) {
                 const uploadUrls = res.uploadUrls as Record<
                   string,
                   { uploadUrl: string; fileId: number }
                 >;
+
                 for (const [key, { uploadUrl, fileId }] of Object.entries(
                   uploadUrls,
                 )) {
@@ -239,14 +249,19 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                   ) {
                     await markFileUploaded({
                       path: {
-                        userId: isEdit
-                          ? Number(userIdFromUrl)!
-                          : (res as AdminCreateClientResponse).userId!,
+                        userId: resolvedUserId,
                       },
                       body: { fileId },
                     });
                   }
                 }
+              } else if (
+                res &&
+                "uploadUrls" in res &&
+                res.uploadUrls &&
+                !resolvedUserId
+              ) {
+                throw new Error("User ID is required for marking as uploaded.");
               }
               await queryClient.invalidateQueries({
                 queryKey: queryKeys.admin.manageClients,

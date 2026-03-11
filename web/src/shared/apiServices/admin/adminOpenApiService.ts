@@ -918,7 +918,9 @@ export function useAdminMarkFileAsUploaded(options?: {
           ...variables,
           query: {
             ...(variables.query ?? {}),
-            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+            regionId:
+              variables.query?.regionId ??
+              (selectedRegionId ? Number(selectedRegionId) : undefined),
           },
         },
         context,

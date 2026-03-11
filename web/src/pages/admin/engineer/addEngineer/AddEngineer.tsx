@@ -17,10 +17,7 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
-import type {
-  AdminCreateEngineerData,
-  AdminCreateEngineerResponse,
-} from "@/api";
+import type { AdminCreateEngineerData } from "@/api";
 import { useCheckUserExistence } from "@/shared/apiServices/commonOpenApiService";
 
 /**
@@ -219,7 +216,15 @@ export default function AddEngineer() {
               const res = await addEngineer({
                 body,
               } as AdminCreateEngineerData);
-              if (res && "uploadUrls" in res && res.uploadUrls) {
+
+              const createdUserId = res?.userId;
+
+              if (
+                res &&
+                "uploadUrls" in res &&
+                res.uploadUrls &&
+                createdUserId
+              ) {
                 const uploadUrls = res.uploadUrls as Record<
                   string,
                   { uploadUrl: string; fileId: number }
@@ -238,7 +243,7 @@ export default function AddEngineer() {
                   if (upload.ok) {
                     await markFileUploaded({
                       path: {
-                        userId: (res as AdminCreateEngineerResponse).userId!,
+                        userId: createdUserId,
                       },
                       body: { fileId },
                     });
