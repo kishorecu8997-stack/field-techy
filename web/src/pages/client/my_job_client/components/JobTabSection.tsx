@@ -534,7 +534,8 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
                       );
                     }
 
-                    return uniqueEngineerAssignments.map((assignment) => (
+                    return uniqueEngineerAssignments.map((assignment) => {
+                      return (
                       <div
                         key={`${assignment.engineer?.id}-${assignment.assignmentId}`}
                         className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800"
@@ -547,7 +548,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
                           regionId={Number(job?.regionId)}
                         />
                       </div>
-                    ));
+                    )});
                   })()
                 )}
               </div>

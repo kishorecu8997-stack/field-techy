@@ -18,9 +18,8 @@ import {
   useClientActionOnAssignment,
   useClientActionOnBreak,
   useClientActionOnWorkLog,
-  useClientGetAssignmentDetails,
   useGetJobLogs,
-  useMarkWorkLogFileUploaded,
+  useMarkWorkLogFileUploaded
 } from "@/shared/apiServices/client/clientOpenApiService";
 import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
 import { formatDateTime } from "@/utils/formatDateTime";
@@ -75,7 +74,7 @@ const TimelineSection: React.FC<{
   hasProposals?: boolean;
   assignments?: ClientGetAssignmentDetailsResponse;
   regionId?: number;
-}> = ({ assignmentId, jobId, hasProposals = false, assignments }) => {
+}> = ({ assignmentId,  hasProposals = false, assignments }) => {
   const [searchParams] = useSearchParams();
   const regionIdfromParam = searchParams.get("regionId");
 
@@ -176,23 +175,13 @@ const TimelineSection: React.FC<{
   // Fetch assignment details - pass both jobId and assignmentId to API
   // API accepts both parameters, so we can use either one or both
   // Ensure jobId is valid (not NaN) before passing
-  const validJobId = jobId && !isNaN(jobId) ? jobId : undefined;
   const fetchedAssignmentsProp = useMemo(() => assignments, [assignments]);
 
-  // Always fetch from API when we have jobId or assignmentId to ensure we can refetch after actions
-  // The prop takes precedence but API data allows for refetching after mutations
-  const {
-    data: fetchedAssignmentDetailsFromApi,
-    refetch: refetchAssignmentDetails,
-  } = useClientGetAssignmentDetails(
-    { jobId: validJobId, regionId: regionIdParam },
-    !!(validJobId || regionIdParam),
-  );
+
 
   // Use API data when available (after refetch), otherwise use prop
   // This ensures we get updated data after mutations
-  const assignmentDetails =
-    fetchedAssignmentDetailsFromApi || fetchedAssignmentsProp || [];
+  const assignmentDetails = fetchedAssignmentsProp || [];
   const effectiveAssignmentId =
     assignmentId || (assignmentDetails?.[0]?.assignmentId ?? 0);
   const shouldFetchLogs = effectiveAssignmentId > 0;
@@ -209,7 +198,6 @@ const TimelineSection: React.FC<{
   const { mutate: actionOnAssignment } = useClientActionOnAssignment({
     onSuccess: async () => {
       // Refetch assignment details to update hasPendingStartRequest
-      refetchAssignmentDetails();
       // Also refetch job logs
       if (effectiveAssignmentId) {
         try {
@@ -241,7 +229,6 @@ const TimelineSection: React.FC<{
   const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
     onSuccess: async () => {
       // Refetch job logs after file is marked as uploaded
-      refetchAssignmentDetails();
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
@@ -1008,11 +995,14 @@ const TimelineSection: React.FC<{
   // Using type casting as the API response includes startRequestedAt but the generated type doesn't
   const pendingStartRequestTimestamp = useMemo(() => {
     if (!assignmentDetails || assignmentDetails.length === 0) return null;
-    const pendingAssignment = (assignmentDetails as Array<{
-      assignmentStatus: string;
-      startRequestedAt?: string | null;
-    }>).find(
-      (a) => a.assignmentStatus === "start_pending_approval" && a.startRequestedAt,
+    const pendingAssignment = (
+      assignmentDetails as Array<{
+        assignmentStatus: string;
+        startRequestedAt?: string | null;
+      }>
+    ).find(
+      (a) =>
+        a.assignmentStatus === "start_pending_approval" && a.startRequestedAt,
     );
     return pendingAssignment?.startRequestedAt || null;
   }, [assignmentDetails]);
@@ -2025,10 +2015,6 @@ const TimelineSection: React.FC<{
                     />
                   )}
 
-                {/* Show JobStartedCard when:
-                 * 1. apiJobStartedData exists (normal case), OR
-                 * 2. hasPendingStartRequest is true but no JOB_STARTED log yet (engineer requested to start)
-                 */}
                 {(showJobStartedCard && apiJobStartedData) ||
                 (hasPendingStartRequest && !apiJobStartedData) ? (
                   <JobStartedCard
