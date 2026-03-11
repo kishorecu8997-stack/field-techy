@@ -52,7 +52,7 @@ export const WalletCard: React.FC = () => {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })
-                : "--"
+                : "0.00"
               : "******"}
           </p>
 

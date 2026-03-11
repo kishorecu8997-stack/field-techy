@@ -17,15 +17,15 @@ import {
   useAdminAddClient,
   useAdminUpdateClient,
   useAdminGetClientByUserId,
+  useAdminMarkFileAsUploaded,
 } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useAppMarkProfileFileUploaded } from "@/shared/apiServices/commonOpenApiService";
 import { extractErrorMessage } from "@/shared/libs/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 import type {
   AdminUpdateClientData,
   AdminCreateClientData,
-  AppMarkProfileFileUploadedData,
+  AdminCreateClientResponse,
 } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
@@ -111,7 +111,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
 
   const { mutateAsync: addClient } = useAdminAddClient();
   const { mutateAsync: updateClient } = useAdminUpdateClient();
-  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
+  const { mutateAsync: markFileUploaded } = useAdminMarkFileAsUploaded();
 
   useEffect(() => {
     if (clientDetail)
@@ -211,18 +211,28 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                   body[k] = null;
               });
 
+              const editUserId = toNum(userIdFromUrl);
               const res = isEdit
                 ? await updateClient({
-                    path: { userId: toNum(userIdFromUrl)! },
+                    path: { userId: editUserId! },
                     body: body as AdminUpdateClientData["body"],
                   })
                 : await addClient({ body } as AdminCreateClientData);
 
-              if (res && "uploadUrls" in res && res.uploadUrls) {
+              const responseUserId = (res as AdminCreateClientResponse)?.userId;
+              const resolvedUserId = isEdit ? editUserId : responseUserId;
+
+              if (
+                res &&
+                "uploadUrls" in res &&
+                res.uploadUrls &&
+                resolvedUserId
+              ) {
                 const uploadUrls = res.uploadUrls as Record<
                   string,
                   { uploadUrl: string; fileId: number }
                 >;
+
                 for (const [key, { uploadUrl, fileId }] of Object.entries(
                   uploadUrls,
                 )) {
@@ -238,14 +248,24 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                     ).ok
                   ) {
                     await markFileUploaded({
+                      path: {
+                        userId: resolvedUserId,
+                      },
                       body: { fileId },
-                      headers: { authorization: "" },
-                    } as AppMarkProfileFileUploadedData);
+                    });
                   }
                 }
+              } else if (
+                res &&
+                "uploadUrls" in res &&
+                res.uploadUrls &&
+                !resolvedUserId
+              ) {
+                throw new Error("User ID is required for marking as uploaded.");
               }
               await queryClient.invalidateQueries({
                 queryKey: queryKeys.admin.manageClients,
+                exact: false,
               });
               await queryClient.invalidateQueries({
                 queryKey: queryKeys.admin.adminGetClient,

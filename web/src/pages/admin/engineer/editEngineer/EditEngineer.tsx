@@ -3,9 +3,9 @@ import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import {
   useAdminGetEngineerById,
   useAdminUpdateEngineer,
+  useAdminMarkFileAsUploaded,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
-import { useAppMarkProfileFileUploaded } from "@/shared/apiServices/commonOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -15,11 +15,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import type {
-  AdminGetEngineerResponse,
-  AdminUpdateEngineerData,
-  AppMarkProfileFileUploadedData,
-} from "@/api";
+import type { AdminGetEngineerResponse, AdminUpdateEngineerData } from "@/api";
 import BasicInformation from "../addEngineer/BasicInformation";
 import ExperienceDetails from "../addEngineer/ExperienceDetails";
 import Documents from "../userDetails/Documents";
@@ -70,7 +66,7 @@ export default function EditEngineer() {
   const queryClient = useQueryClient();
 
   const { mutateAsync: updateEngineer } = useAdminUpdateEngineer();
-  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
+  const { mutateAsync: markFileUploaded } = useAdminMarkFileAsUploaded();
 
   const engineerId = Number(id);
   const hasValidEngineerId = Number.isFinite(engineerId) && engineerId > 0;
@@ -247,14 +243,18 @@ export default function EditEngineer() {
 
                   if (upload.ok) {
                     await markFileUploaded({
+                      path: {
+                        userId: engineerId,
+                      },
                       body: { fileId },
-                    } as AppMarkProfileFileUploadedData);
+                    });
                   }
                 }
               }
 
               await queryClient.invalidateQueries({
                 queryKey: queryKeys.admin.manageEngineers,
+                exact: false,
               });
 
               await queryClient.invalidateQueries({

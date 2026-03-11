@@ -156,7 +156,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                       Number(balance.balance),
                       balance.currencyCode,
                     )
-                  : "--"
+                  : "0.00"
                 : "******"}
             </p>
             {!showBalance ? (

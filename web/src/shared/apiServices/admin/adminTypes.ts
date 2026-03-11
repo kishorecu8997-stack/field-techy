@@ -82,3 +82,115 @@ export interface UploadFile {
     percentage?: number;
   }) => void;
 }
+
+export interface RateCardItem {
+  id: number;
+  skillSet: string;
+  region: string;
+  location: string;
+  rate: string;
+  rateType: string;
+  createdAt: string;
+  lastUpdated: string | null;
+  lastUpdatedBy: string | null;
+  countryId: number;
+  serviceCategoryId: number;
+  experienceLevelId: number;
+  engagementModelId: number;
+}
+
+// New API response types
+export interface RateCardRate {
+  modelName: string;
+  rate: string;
+  engagementModelId: number;
+}
+
+export interface RateCardDataItem {
+  id: number;
+  serviceCategory: string;
+  region: string;
+  country: string;
+  experienceLevels: string[];
+  rates: RateCardRate[];
+  createdDate: string;
+  serviceCategoryId: number;
+  countryId: number;
+  experienceLevelId: number;
+}
+
+export interface RateCardsResponse {
+  data: RateCardDataItem[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface RateCardParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
+export interface RateCardSkill {
+  serviceCategoryId: number;
+  experienceLevelId: number;
+  rate: number;
+}
+
+// New API structure types
+export interface ExperienceLevelRate {
+  // Using index signature to allow dynamic keys based on engagementModelId
+  // e.g., "1": hourly, "2": daily, "3": monthly
+  [key: string]: number;
+}
+
+export interface ExperienceLevel {
+  levelOrder: number;
+  label: string;
+  rates: ExperienceLevelRate;
+}
+
+export interface CreateRateCardParams {
+  countryId: number;
+  serviceCategoryId: number;
+  experienceLevels: ExperienceLevel[];
+}
+
+// Old API structure (kept for backward compatibility)
+export interface CreateRateCardParamsLegacy {
+  countryId: number;
+  engagementModelId: number;
+  skills: RateCardSkill[];
+}
+
+export interface CreateRateCardResponse {
+  message: string;
+  id?: number;
+}
+
+export interface UpdateRateCardParams {
+  countryId: number;
+  experienceLevels: ExperienceLevel[];
+}
+
+export interface UpdateRateCardResponse {
+  message: string;
+}
+
+export interface DeleteRateCardResponse {
+  message: string;
+}
+
+// Service Categories Types
+export interface ServiceCategoryItem {
+  id: number;
+  name: string;
+}
+
+export interface ServiceCategoriesResponse {
+  data: ServiceCategoryItem[];
+  total: number;
+  page: number;
+  limit: number;
+}
