@@ -13,7 +13,7 @@ import Pagination from "../../search_result/components/Pagination";
 
 const RecentTransactionsList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const transactionsPerPage = 10;
+  const transactionsPerPage = 5;
   const today = new Date();
   const startDate = new Date(today);
   startDate.setMonth(today.getMonth() - 3);
@@ -122,7 +122,9 @@ const RecentTransactionsList: React.FC = () => {
       ? "text-emerald-600 dark:text-emerald-400"
       : "text-red-600 dark:text-red-400";
   };
-  const totalPages = Math.ceil(123 / transactionsPerPage);
+  const totalPages = Math.ceil(
+    (transactionsRaw?.count ?? 0) / transactionsPerPage,
+  );
 
   return (
     <div className="max-w-md mx-auto p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm">
