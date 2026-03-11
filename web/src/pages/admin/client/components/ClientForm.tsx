@@ -251,6 +251,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
               }
               await queryClient.invalidateQueries({
                 queryKey: queryKeys.admin.manageClients,
+                exact: false,
               });
               await queryClient.invalidateQueries({
                 queryKey: queryKeys.admin.adminGetClient,

@@ -829,7 +829,7 @@ export function useAdminAddClient(options?: {
       },
     }),
     onSuccess: (data: AdminAddClientResponse) => {
-      queryClient.invalidateQueries({
+      queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });

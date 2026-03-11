@@ -11,13 +11,15 @@ import BasicInformation from "./BasicInformation";
 import Documents from "./Documents";
 import ExperienceDetails from "./ExperienceDetails";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminAddEngineer } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useAppMarkProfileFileUploaded } from "@/shared/apiServices/commonOpenApiService";
+import {
+  useAdminAddEngineer,
+  useAdminMarkFileAsUploaded,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 import type {
   AdminCreateEngineerData,
-  AppMarkProfileFileUploadedData,
+  AdminCreateEngineerResponse,
 } from "@/api";
 import { useCheckUserExistence } from "@/shared/apiServices/commonOpenApiService";
 
@@ -53,7 +55,7 @@ export default function AddEngineer() {
   const queryClient = useQueryClient();
   const { showPopup } = usePopupStore();
   const { mutateAsync: addEngineer } = useAdminAddEngineer();
-  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
+  const { mutateAsync: markFileUploaded } = useAdminMarkFileAsUploaded();
   const methods = useForm<EngineerFormData>({
     defaultValues: {
       name: "",
@@ -235,8 +237,11 @@ export default function AddEngineer() {
                   });
                   if (upload.ok) {
                     await markFileUploaded({
+                      path: {
+                        userId: (res as AdminCreateEngineerResponse).userId!,
+                      },
                       body: { fileId },
-                    } as AppMarkProfileFileUploadedData);
+                    });
                   }
                 }
               }
