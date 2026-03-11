@@ -25,6 +25,7 @@ import { formatAmount } from "@/utils/currency";
  */
 
 type TransactionRequest = {
+  transactionId: number;
   assignmentId: number;
   jobId: number;
   jobCode: string;
