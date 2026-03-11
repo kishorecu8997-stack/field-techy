@@ -8,7 +8,7 @@ import {
   useClientActionOnAssignment,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 /**
  * `ManageProposal` is the main page component for clients to view and manage job proposals.
@@ -19,9 +19,13 @@ import { useNavigate, useParams } from "react-router-dom";
 const ManageExploreEngineer = () => {
   const params = useParams();
 
-  const { data: assignments } = useClientGetAssignmentDetails({
-    assignmentId: Number(params.id),
-  });
+  const [searchParams] = useSearchParams();
+  const regionIdParam = searchParams.get("regionId");
+
+  const { data: assignments } = useClientGetAssignmentDetails(
+    { jobId: Number(params.id), regionId: Number(regionIdParam) },
+    !!(params.id && regionIdParam),
+  );
 
   const getProposal = () => {
     // return ProposalsList.find((proposal) => proposal.id === Number(params.id));

@@ -148,7 +148,7 @@ export const transformLogsToTimelineItems = (
       }
 
       // Generate proper title based on logType
-      let title = log.title || log.logType;
+      let title = log.logType;
       let details = log.details;
       let detailsType: string | undefined;
       let statusText: string | undefined;
@@ -196,7 +196,7 @@ export const transformLogsToTimelineItems = (
         title = "Job Completed";
         details = details || "Job has been completed";
       } else if (log.logType === "progress_update") {
-        title = log.title || "Progress Update";
+        title = "Progress Update";
         // Keep original progress update content - don't overwrite with revision comments
         const originalDetails =
           log.details ||
@@ -234,9 +234,9 @@ export const transformLogsToTimelineItems = (
             : "#f59e0b");
 
       // Extract attachment name from URL if available
-      const attachmentName = log.attachmentUrl
+      const attachmentName = log.attachment?.url
         ? decodeURIComponent(
-            log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
+            log.attachment.url.split("/").pop()?.split("?")[0] || "",
           )
         : undefined;
 
@@ -250,7 +250,7 @@ export const transformLogsToTimelineItems = (
         description: details ?? null,
         details: details ?? null,
         detailsType,
-        attachmentUrl: log.attachmentUrl,
+        attachmentUrl: log.attachment?.url,
         attachmentName,
         revisions: log.revisions || [],
         logId: log.id,
@@ -398,22 +398,21 @@ export const transformSignOffsToItems = (
     // Build attachments array with proper labels for work submission and signature
     const attachments: Array<{ name: string; url: string }> = [];
 
-    if (so.attachmentUrl) {
+    if (so.attachment?.url) {
       attachments.push({
         name: decodeURIComponent(
-          so.attachmentUrl.split("/").pop()?.split("?")[0] || "Attachment",
+          so.attachment.url.split("/").pop()?.split("?")[0] || "Attachment",
         ),
-        url: so.attachmentUrl,
+        url: so.attachment.url,
       });
     }
 
-    if (so.signatureAttachmentUrl) {
+    if (so.signature?.url) {
       attachments.push({
         name: decodeURIComponent(
-          so.signatureAttachmentUrl.split("/").pop()?.split("?")[0] ||
-            "Attachment",
+          so.signature.url.split("/").pop()?.split("?")[0] || "Attachment",
         ),
-        url: so.signatureAttachmentUrl,
+        url: so.signature.url,
       });
     }
 

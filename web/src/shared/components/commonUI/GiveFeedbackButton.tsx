@@ -1,7 +1,7 @@
+import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
+import { usePopupStore } from "@/shared/store/popupStore";
 import React from "react";
 import { HiStar } from "react-icons/hi";
-import { usePopupStore } from "@/shared/store/popupStore";
-import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import { Button } from "./Buttons";
 
 interface GiveFeedbackButtonProps {
@@ -14,6 +14,7 @@ interface GiveFeedbackButtonProps {
   stopPropagation?: boolean;
   bodyClassName?: string;
   assignmentId?: number;
+  regionId?: number;
 }
 
 /**
@@ -30,6 +31,7 @@ const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
   stopPropagation = false,
   bodyClassName,
   assignmentId,
+  regionId,
 }) => {
   const { showPopup } = usePopupStore();
 
@@ -45,6 +47,7 @@ const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
           targetRole={targetRole}
           placeholder={placeholder}
           assignmentId={assignmentId}
+          regionId={regionId}
         />
       ),
       bodyClassName,

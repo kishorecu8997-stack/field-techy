@@ -6,6 +6,14 @@ import type {
   UpdateNotificationParams,
   PagedNotificationsParams,
   AdminByIdResponse,
+  RateCardsResponse,
+  RateCardParams,
+  CreateRateCardParams,
+  CreateRateCardResponse,
+  UpdateRateCardParams,
+  UpdateRateCardResponse,
+  DeleteRateCardResponse,
+  ServiceCategoriesResponse,
 } from "./adminTypes";
 import { queryKeys } from "../queryKeys";
 import type { FileDownloadResponse } from "../client/clientTypes";
@@ -229,5 +237,83 @@ export function useAdminFileStream(
     queryFn: () => AdminAdapter.downloadFileStream(fileKey!),
     enabled: !!fileKey && (options?.enabled ?? true),
     staleTime: Infinity,
+  });
+}
+
+/** Hook to get all rate cards */
+export function useGetRateCards(
+  params?: RateCardParams,
+  options?: { enabled?: boolean },
+) {
+  return useQuery<RateCardsResponse>({
+    queryKey: [...queryKeys.admin.rateCards.all, params],
+    queryFn: () => AdminAdapter.getRateCards(params),
+    enabled: options?.enabled ?? true,
+  });
+}
+
+/** Hook to create a rate card */
+export function useCreateRateCard(options?: {
+  onSuccess?: (data: CreateRateCardResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateRateCardParams) => AdminAdapter.createRateCard(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
+      options?.onSuccess?.(data);
+    },
+    onError: (error) => {
+      options?.onError?.(error);
+    },
+  });
+}
+
+/** Hook to update a rate card */
+export function useUpdateRateCard(options?: {
+  onSuccess?: (data: UpdateRateCardResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateRateCardParams }) =>
+      AdminAdapter.updateRateCard(id, data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
+      options?.onSuccess?.(data);
+    },
+    onError: (error) => {
+      options?.onError?.(error);
+    },
+  });
+}
+
+/** Hook to delete a rate card */
+export function useDeleteRateCard(options?: {
+  onSuccess?: (data: DeleteRateCardResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (serviceCategoryId: number) => AdminAdapter.deleteRateCard(serviceCategoryId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.rateCards.all });
+      options?.onSuccess?.(data);
+    },
+    onError: (error) => {
+      options?.onError?.(error);
+    },
+  });
+}
+
+/** Hook to get all service categories */
+export function useGetServiceCategories(
+  options?: { enabled?: boolean },
+) {
+  return useQuery<ServiceCategoriesResponse>({
+    queryKey: [...queryKeys.admin.serviceCategories.all],
+    queryFn: () => AdminAdapter.getServiceCategories({ limit: 100 }),
+    enabled: options?.enabled ?? true,
   });
 }

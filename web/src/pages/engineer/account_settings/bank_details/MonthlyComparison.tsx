@@ -1,4 +1,7 @@
-import { useEngineerEarnings, useEngineerGetPersonalInfo } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useEngineerEarnings,
+  useEngineerGetPersonalInfo,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { formatAmount } from "@/utils/currency";
 import React, { useState } from "react";
 import {
@@ -23,7 +26,9 @@ const MonthlyComparison: React.FC = () => {
   const hasCompletedOnboarding =
     personalInfo?.stripeOnboardingStatus?.toLowerCase() === "completed";
   const now = new Date();
-  const { data, isLoading, isError } = useEngineerEarnings(hasCompletedOnboarding);
+  const { data, isLoading, isError } = useEngineerEarnings(
+    hasCompletedOnboarding,
+  );
   if (isLoading) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden p-6 text-center text-gray-500">
@@ -78,8 +83,9 @@ const MonthlyComparison: React.FC = () => {
         </div>
 
         <div
-          className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""
-            }`}
+          className={`transition-transform duration-300 ${
+            isExpanded ? "rotate-180" : ""
+          }`}
         >
           {isExpanded ? (
             <BiChevronUp className="w-6 h-6 text-gray-500" />
@@ -91,8 +97,9 @@ const MonthlyComparison: React.FC = () => {
 
       {/* Expandable Full Details */}
       <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${
+          isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
       >
         <div className="px-6 pb-8 pt-4 bg-gray-50 dark:bg-gray-900/50">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -120,10 +127,11 @@ const MonthlyComparison: React.FC = () => {
               ) : (
                 <>
                   <div
-                    className={`w-[4.5rem] h-[4.5rem] rounded-full flex items-center justify-center shadow-xl ${isIncrease
-                      ? "bg-emerald-100 dark:bg-emerald-900/40"
-                      : "bg-rose-100 dark:bg-rose-900/40"
-                      }`}
+                    className={`w-[4.5rem] h-[4.5rem] rounded-full flex items-center justify-center shadow-xl ${
+                      isIncrease
+                        ? "bg-emerald-100 dark:bg-emerald-900/40"
+                        : "bg-rose-100 dark:bg-rose-900/40"
+                    }`}
                   >
                     {isIncrease ? (
                       <BiTrendingUp className="w-14 h-14 text-emerald-600 dark:text-emerald-400" />
@@ -133,10 +141,11 @@ const MonthlyComparison: React.FC = () => {
                   </div>
                   <div>
                     <p
-                      className={`text-2xl font-bold ${isIncrease
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-rose-600 dark:text-rose-400"
-                        }`}
+                      className={`text-2xl font-bold ${
+                        isIncrease
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-rose-600 dark:text-rose-400"
+                      }`}
                     >
                       {isIncrease ? "+" : ""}
                       {Math.abs(percentageChange).toFixed(0)}%
