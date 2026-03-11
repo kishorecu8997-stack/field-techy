@@ -230,6 +230,7 @@ export interface ProgressUpdate {
     content: string | null;
     attachmentId: number | null;
     attachmentUrl?: string | null;
+    attachmentName?: string | null;
     status: string;
     clientComment: string | null;
     clientAttachmentId: number | null;
@@ -239,6 +240,7 @@ export interface ProgressUpdate {
       size: number;
       url: string;
     };
+    clientAttachmentName?: string | null;
     createdAt: string | null;
     updatedAt: string | null;
   }>;

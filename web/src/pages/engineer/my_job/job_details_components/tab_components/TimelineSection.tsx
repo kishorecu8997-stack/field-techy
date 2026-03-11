@@ -7,6 +7,7 @@ import {
   transformBreakRequestsToItems,
   transformSignOffsToItems,
 } from "@/utils/timelineUtils";
+import { getAttachmentFileName } from "@/shared/libs/utils";
 import type { ProgressUpdate } from "../../types.d";
 import Popup from "@/shared/components/Popup";
 import RevisionRequestUpdateForm from "../jobHeaderComponents/RevisionRequestUpdateForm";
@@ -59,7 +60,7 @@ const transformProposalToTimelineItems = (
       }
     }
 
-    if (job.assignmentStatus === "started") {
+    if (job.assignmentStatus === "started" || job.assignmentStatus === "submitted") {
       const startedTimestamp = job.assignedAt || job.respondedAt;
       if (startedTimestamp) {
         allItems.push({
@@ -235,8 +236,10 @@ const TimelineSection: React.FC<{
           logId: log.id,
           content: rev.content,
           attachmentUrl: rev.attachment?.url,
+          attachmentName: getAttachmentFileName(rev.attachment),
           clientComment: rev.clientComment,
           clientAttachmentUrl: rev.clientAttachment?.url,
+          clientAttachmentName: getAttachmentFileName(rev.clientAttachment),
           createdAt: rev.createdAt,
           updatedAt: rev.updatedAt,
           status: rev.status,
