@@ -20,7 +20,9 @@ import type { ClientGetJobsResponse } from "@/api";
 import { useServiceCategories } from "@/shared/hooks/useLookup";
 
 // Map the UI filter label → API jobStatus query param
-type ApiJobStatus = NonNullable<Parameters<typeof useClientGetJobs>[0]>;
+type ApiJobStatus = NonNullable<
+  Parameters<typeof useClientGetJobs>[0]
+>["jobStatus"];
 const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
   [jobFilters[0]]: undefined, // "All Jobs"    → no filter
   [jobFilters[1]]: API_JOB_STATUSES.inProgress, // "In-Progress" → "In Progress"
@@ -60,7 +62,10 @@ const MyJobsClient: React.FC = () => {
   }, [filterParam]);
 
   const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
-  const { data: jobsData, isLoading } = useClientGetJobs(apiJobStatus);
+  const { data: jobsData, isLoading } = useClientGetJobs({
+    jobStatus: apiJobStatus,
+    enabled: true,
+  });
   const { data: serviceCategories } = useServiceCategories();
 
   // Create a memoized map of service category ID to name
@@ -127,6 +132,7 @@ const MyJobsClient: React.FC = () => {
     description: apiJob.jobDescription || undefined,
     postedTime: apiJob.createdAt || undefined,
     currencySymbol: apiJob.currencySymbol || "$",
+    regionId: apiJob.regionId,
   });
 
   // allJobs is already filtered by the API — no client-side filtering needed

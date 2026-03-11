@@ -48,7 +48,9 @@ const WalletTab: React.FC<WalletTabProps> = ({ userId }) => {
         txn.amount?.toLowerCase().includes(query) ||
         txn.status?.toLowerCase().includes(query) ||
         (txn.transactionTime &&
-          dayjs(txn.transactionTime).format("DD-MM-YYYY HH:mm:ss").includes(query)),
+          dayjs(txn.transactionTime)
+            .format("DD-MM-YYYY HH:mm:ss")
+            .includes(query)),
     );
   }, [allTransactions, search]);
 
@@ -76,14 +78,15 @@ const WalletTab: React.FC<WalletTabProps> = ({ userId }) => {
       label: "Status",
       renderCell: (row) => (
         <span
-          className={`capitalize text-sm font-medium ${row.status === "approved"
-            ? "text-green-600"
-            : row.status === "rejected"
-              ? "text-red-600"
-              : row.status === "pending"
-                ? "text-yellow-600"
-                : "text-gray-600"
-            }`}
+          className={`capitalize text-sm font-medium ${
+            row.status === "approved"
+              ? "text-green-600"
+              : row.status === "rejected"
+                ? "text-red-600"
+                : row.status === "pending"
+                  ? "text-yellow-600"
+                  : "text-gray-600"
+          }`}
         >
           {row.status || "N/A"}
         </span>
