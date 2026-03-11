@@ -5,7 +5,7 @@ import PhoneInputWithValidation from "@/shared/components/commonUI/inputs/PhoneI
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import {
-  // validateAddress,
+  validateAddress,
   validateName,
   validatePortfolioLink,
   validatePricePerHour,
@@ -17,7 +17,6 @@ import {
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { EngineerFormData } from "../types";
-
 
 /**
  * BasicInformation component handles the first step of the engineer registration form.
@@ -112,6 +111,18 @@ export default function BasicInformation() {
     }
   }, [serviceCategoryOptions, serviceCategoryValue, setValue]);
 
+  const countryOptions = useMemo(() => {
+    return countries?.map(c => ({ value: String(c.id), label: c.name })) ?? [];
+  }, [countries]);
+
+  const stateOptions = useMemo(() => {
+    return states?.map(s => ({ value: String(s.id), label: s.name })) ?? [];
+  }, [states]);
+
+  const cityOptions = useMemo(() => {
+    return cities?.map(c => ({ value: String(c.id), label: c.name })) ?? [];
+  }, [cities]);
+
   const priceField = (
     <InputField
       name="price"
@@ -141,22 +152,14 @@ return (
           rules={{ validate: (v: string) => validateName(v) }}
         />
 
-        <PhoneInputWithValidation
-          name="phoneNumber"
-          label="Mobile Number"
-        />
+        <PhoneInputWithValidation name="phoneNumber" label="Mobile Number" />
 
         {/* Location */}
         <SelectField
           label="Country"
           name="Country"
           placeholder="Select Country"
-          options={
-            countries?.map((item) => ({
-              value: item.id,
-              label: item.name,
-            })) ?? []
-          }
+          options={countryOptions}
           required
           onChange={() => {
             setValue("State", "");
@@ -168,12 +171,7 @@ return (
           label="State"
           name="State"
           placeholder="Select State"
-          options={
-            states?.map((item) => ({
-              value: item.id,
-              label: item.name,
-            })) ?? []
-          }
+          options={stateOptions}
           required
           disabled={!selectedCountry}
           onChange={() => {
@@ -185,23 +183,10 @@ return (
           label="City"
           name="City"
           placeholder="Select City"
-          options={
-            cities?.map((item) => ({
-              value: item.id,
-              label: item.name,
-            })) ?? []
-          }
+          options={cityOptions}
           required
           disabled={!selectedState}
         />
-
-        {/* <InputField
-          name="address"
-          label="Address"
-          type="text"
-          required
-          rules={{ validate: (v: string) => validateAddress(v) }}
-        /> */}
       </div>
 
       {/* Right Column */}
@@ -212,6 +197,14 @@ return (
           type="text"
           required
           rules={validateEmailRules}
+        />
+
+        <InputField
+          name="address"
+          label="Address"
+          type="text"
+          required
+          rules={{ validate: (v: string) => validateAddress(v) }}
         />
 
         <TagSelectField

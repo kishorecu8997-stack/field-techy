@@ -161,17 +161,19 @@ export default function EditEngineer() {
     return { body, files };
   };
 
-  const handleNext = async () => {
-    if (activeTab === "Basic Information") {
-      const ok = await validateBasicInformation();
-      if (ok) setActiveTab("Experience Details");
-      return;
-    }
-    if (activeTab === "Experience Details") {
-      const ok = await validateExperienceDetails();
-      if (ok) setActiveTab("Documents");
-    }
-  };
+const handleNext = async () => {
+  let ok = false;
+
+  if (activeTab === "Basic Information") {
+    ok = await validateBasicInformation();
+    if (!ok) return;
+    setActiveTab("Experience Details");
+  } else if (activeTab === "Experience Details") {
+    ok = await validateExperienceDetails();
+    if (!ok) return;
+    setActiveTab("Documents");
+  }
+};
 
   const handlePrevious = () => {
     if (activeTab === "Experience Details") setActiveTab("Basic Information");
@@ -265,27 +267,22 @@ export default function EditEngineer() {
 
   const isLastTab = activeTab === "Documents";
 
-  const handleTabChange = async (nextTab: string) => {
-    if (nextTab === activeTab) return;
-    const order = ["Basic Information", "Experience Details", "Documents"];
-    const currentIndex = order.indexOf(activeTab);
-    const nextIndex = order.indexOf(nextTab);
-    if (nextIndex === -1) return;
+const handleTabChange = async (nextTab: string) => {
+  if (nextTab === activeTab) return;
 
-    if (nextIndex <= currentIndex) {
-      setActiveTab(nextTab);
-      return;
-    }
-    if (currentIndex < 1 && nextIndex >= 1) {
-      const ok = await validateBasicInformation();
-      if (!ok) return;
-    }
-    if (currentIndex < 2 && nextIndex >= 2) {
-      const ok = await validateExperienceDetails();
-      if (!ok) return;
-    }
-    setActiveTab(nextTab);
-  };
+  if (nextTab === "Experience Details") {
+    const ok = await validateBasicInformation();
+    if (!ok) return;
+  }
+
+  if (nextTab === "Documents") {
+    const okBasic = await validateBasicInformation();
+    const okExp = await validateExperienceDetails();
+    if (!okBasic || !okExp) return;
+  }
+
+  setActiveTab(nextTab);
+};
 
   if (isLoading) return <LoaderComponent />;
 
