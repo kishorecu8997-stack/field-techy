@@ -16,7 +16,16 @@ import type {
   FileDownloadResponse,
   FileUploadResponse,
 } from "../client/clientTypes";
-import type { RateCardsResponse, RateCardParams, CreateRateCardParams, CreateRateCardResponse, UpdateRateCardParams, UpdateRateCardResponse, DeleteRateCardResponse, ServiceCategoriesResponse } from "./adminTypes";
+import type {
+  RateCardsResponse,
+  RateCardParams,
+  CreateRateCardParams,
+  CreateRateCardResponse,
+  UpdateRateCardParams,
+  UpdateRateCardResponse,
+  DeleteRateCardResponse,
+  ServiceCategoriesResponse,
+} from "./adminTypes";
 
 /*
  * AdminAdapter
@@ -368,7 +377,12 @@ export class AdminAdapter {
       const response = await axiosInstance.post(
         ADMIN_ROUTER_PATHS.CREATE_RATE_CARD,
         { experienceLevels: data.experienceLevels },
-        { params: { countryId: data.countryId, serviceCategoryId: data.serviceCategoryId } }
+        {
+          params: {
+            countryId: data.countryId,
+            serviceCategoryId: data.serviceCategoryId,
+          },
+        },
       );
       return response.data;
     } catch (error) {
@@ -408,7 +422,10 @@ export class AdminAdapter {
   }
 
   /** Get Service Categories */
-  static async getServiceCategories(params?: { page?: number; limit?: number }): Promise<ServiceCategoriesResponse> {
+  static async getServiceCategories(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<ServiceCategoriesResponse> {
     try {
       const response = await axiosInstance.get(
         ADMIN_ROUTER_PATHS.GET_SERVICE_CATEGORIES,

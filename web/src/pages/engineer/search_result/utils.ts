@@ -67,9 +67,9 @@ export function mapFiltersToApiQuery(
   }
 
   // Map experience level ID
-if (filters.experience > 0) {
-  query.experienceLevelId = filters.experience;  // or whatever the API field name is
-}
+  if (filters.experience > 0) {
+    query.experienceLevelId = filters.experience; // or whatever the API field name is
+  }
 
   // Map skill IDs
   if (filters.skills.length > 0) {

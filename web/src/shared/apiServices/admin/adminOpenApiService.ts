@@ -171,7 +171,6 @@ import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 import { useAdminCountryStore } from "../../store/useAdminCountryStore";
 
-
 export const LookupTable = {
   Countries: "countries",
   Industries: "industries",
@@ -1476,7 +1475,6 @@ export function useAdminAddEngineer(options?: {
   });
 }
 
-
 export type UpdateExchangeRateBody = NonNullable<
   UpdateExchangeRateData["body"]
 >;
@@ -1506,7 +1504,7 @@ export function useUpdateExchangeRate(options?: {
     onError: options?.onError,
   });
 }
-      
+
 export type AdminUpdateEngineerBody = AdminUpdateEngineerData["body"];
 
 export function useAdminUpdateEngineer(options?: {
@@ -1615,7 +1613,10 @@ export function useAdminCreateRateCard(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { body: BulkCreateRateCardsData["body"]; query: BulkCreateRateCardsData["query"] }) => {
+    mutationFn: async (data: {
+      body: BulkCreateRateCardsData["body"];
+      query: BulkCreateRateCardsData["query"];
+    }) => {
       const response = await bulkCreateRateCards({
         client: apiClient,
         body: data.body,
@@ -1627,10 +1628,10 @@ export function useAdminCreateRateCard(options?: {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
       options?.onSuccess?.(data);
-          },
-          onError: options?.onError,
-        });
-      } 
+    },
+    onError: options?.onError,
+  });
+}
 export function useAdminGetPendingPayments(
   query?: AdminGetPendingPaymentsData["query"] & { regionId?: number },
   options?: {
@@ -1693,15 +1694,20 @@ export function useAdminApprovePayment(options?: {
         type: "all",
       });
       options?.onSuccess?.(data);
-          },
-          onError: options?.onError,
-        });
-      }
-      
+    },
+    onError: options?.onError,
+  });
+}
 
 // Rate Card - Get All
 export function useGetRateCards(
-  params?: { page?: number; limit?: number; search?: string; countryId?: number; serviceCategoryId?: number },
+  params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    countryId?: number;
+    serviceCategoryId?: number;
+  },
   options?: { enabled?: boolean },
 ) {
   return useQuery({

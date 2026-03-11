@@ -13,11 +13,7 @@ const PricingTable: React.FC<{
   tiers: PricingTier[];
   editable: boolean;
 }> = ({ control, index, tiers, editable }) => {
-  const headers = [
-    "Hourly",
-    "Daily",
-    "Monthly",
-  ];
+  const headers = ["Hourly", "Daily", "Monthly"];
   const fields = ["hourly", "daily", "monthly"];
 
   const rowValues = useWatch({
@@ -30,7 +26,9 @@ const PricingTable: React.FC<{
       <table className="w-full text-sm text-left border-collapse">
         <thead className="bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
           <tr>
-            <th className="px-4 py-2 font-semibold text-center">Experience Level</th>
+            <th className="px-4 py-2 font-semibold text-center">
+              Experience Level
+            </th>
             {headers.map((h) => (
               <th key={h} className="px-4 py-2 font-semibold text-center">
                 {h}
