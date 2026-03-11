@@ -370,11 +370,10 @@ const PostJobPage = () => {
       throw new Error("Attachment is required");
     }
 
-    const tools = (data.toolsData || []).map((t) => {
-      if (!t.images || t.images.length === 0 || !t.images[0].file) {
-        throw new Error(`Image is required for tool: ${t.name}`);
-      }
-      return {
+    // Tools are optional - only include tools that have complete data (name, image, cost)
+    const tools = (data.toolsData || [])
+      .filter((t) => t.images && t.images.length > 0 && t.images[0].file)
+      .map((t) => ({
         toolId: Number(t.id) || 0,
         budget: Number(t.budget.replace(/[^0-9.]/g, "")) || 0,
         image: {
@@ -382,8 +381,7 @@ const PostJobPage = () => {
           size: t.images[0].file.size,
           mimeType: t.images[0].file.type,
         },
-      };
-    });
+      }));
 
     return {
       jobTitle: data.jobTitle,
@@ -485,9 +483,6 @@ const PostJobPage = () => {
           }
           // Fallback to scroll to top if no error element found
           scrollToTop();
-          if (errors.toolEntriesCount) {
-            toast.error("Please add a tool details");
-          }
         }}
       >
         <MyJobsHeader

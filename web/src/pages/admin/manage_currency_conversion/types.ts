@@ -1,9 +1,11 @@
 export interface CurrencyConversionRow {
-  id: string;
-  country: string;
+  id: number | null;
+  countryName: string;
+  currencyId: number;
+  currencyCode: string;
+  currencySymbol: string | null;
   currencyPair: string;
-  baseCurrency: "INR";
-  exchangeRate: number;
-  lastUpdated: string;
-  lastUpdatedBy: string;
+  rate: string | null;
+  lastUpdated: string | null;
+  lastUpdatedBy: string | null;
 }
