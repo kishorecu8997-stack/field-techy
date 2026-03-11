@@ -142,12 +142,14 @@ export const BillSummary = ({
             {data.numberOfVacancy}
           </span>
         </div>
-        <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-          <span className="font-medium">Tools Cost</span>
-          <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-            {formatAmount(data.toolBudgetTotal, currencySymbol)}
-          </span>
-        </div>
+        {(data.toolBudgetTotal ?? 0) > 0 && (
+          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
+            <span className="font-medium">Tools Cost</span>
+            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
+              {formatAmount(data.toolBudgetTotal, currencySymbol)}
+            </span>
+          </div>
+        )}
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
           <span className="font-medium">Service Charge</span>
           <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">

@@ -60,7 +60,10 @@ const transformProposalToTimelineItems = (
     }
 
     if (job.assignmentStatus === "started") {
-      const startedTimestamp = job.assignedAt || job.respondedAt;
+      const startedTimestamp =
+        (job as { startedAt?: string | null }).startedAt ||
+        job.assignedAt ||
+        job.respondedAt;
       if (startedTimestamp) {
         allItems.push({
           title: "Job Started",
@@ -75,7 +78,9 @@ const transformProposalToTimelineItems = (
     }
 
     if (job.assignmentStatus === "start_pending_approval") {
-      const startPendingTimestamp = job.respondedAt;
+      const startPendingTimestamp =
+        (job as { startRequestedAt?: string | null }).startRequestedAt ||
+        job.respondedAt;
       if (startPendingTimestamp) {
         allItems.push({
           title: "Job Started",

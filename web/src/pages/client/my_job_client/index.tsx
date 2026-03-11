@@ -29,6 +29,7 @@ const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
   [jobFilters[2]]: API_JOB_STATUSES.closed, // "Completed"   → "Closed"
   [jobFilters[3]]: API_JOB_STATUSES.posted, // "Posted"      → "Posted"
   [jobFilters[4]]: API_JOB_STATUSES.hold, // "Hold"        → "Hold"
+  [jobFilters[5]]: API_JOB_STATUSES.cancelled,
 };
 
 /**
