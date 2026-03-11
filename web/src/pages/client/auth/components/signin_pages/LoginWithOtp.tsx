@@ -11,9 +11,9 @@ import { toast } from "react-toastify";
 import { AuthLoginWithOtp } from "@/shared/components/auth/AuthLoginWithOtp";
 
 /*
-* This component is used to login with OTP
-* @param {setIsOtpLogin} - Function to set the OTP login state
-*/
+ * This component is used to login with OTP
+ * @param {setIsOtpLogin} - Function to set the OTP login state
+ */
 const LoginWithOtp = ({
   setIsOtpLogin,
 }: {
@@ -25,10 +25,17 @@ const LoginWithOtp = ({
   const { mutateAsync: sendOtp, isPending: isSending } = useAppSendLoginOtp();
   const { mutateAsync: verifyOtp } = useAppVerifyLoginOtp();
 
-  const handleSendOtp = async (type: "email" | "phoneNumber", value: string) => {
+  const handleSendOtp = async (
+    type: "email" | "phoneNumber",
+    value: string,
+  ) => {
     try {
       await sendOtp({
-        body: { type: type === "email" ? "email" : "phone", email: value, userRole: "client" }
+        body: {
+          type: type === "email" ? "email" : "phone",
+          email: value,
+          userRole: "client",
+        },
       });
       toast.success("OTP Requested, kindly check your phone or email for OTP");
     } catch (error) {
@@ -39,7 +46,11 @@ const LoginWithOtp = ({
     }
   };
 
-  const handleVerifyOtp = async (type: "email" | "phoneNumber", value: string, otp: string) => {
+  const handleVerifyOtp = async (
+    type: "email" | "phoneNumber",
+    value: string,
+    otp: string,
+  ) => {
     try {
       const resp = await verifyOtp({
         body: {
@@ -47,7 +58,7 @@ const LoginWithOtp = ({
           email: value,
           userRole: "client",
           code: otp,
-        }
+        },
       });
 
       if (resp?.token) {
@@ -55,7 +66,9 @@ const LoginWithOtp = ({
 
         const payload = decodeJwtPayload<JwtClientPayload>(resp.token);
         if (!payload?.userId) {
-          toast.error("Login failed: unable to verify session. Please try again.");
+          toast.error(
+            "Login failed: unable to verify session. Please try again.",
+          );
           return;
         }
 
