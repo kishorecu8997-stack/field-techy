@@ -1,7 +1,4 @@
-import {
-  countryList,
-  rateCardTypes,
-} from "@/dummy_data/admin";
+import { countryList, rateCardTypes } from "@/dummy_data/admin";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { useFormContext } from "react-hook-form";
 import { useEffect } from "react";
@@ -17,17 +14,20 @@ import { useGetServiceCategories } from "@/shared/apiServices/admin/adminService
  * @param {boolean} readOnly - If true, renders fields in read-only mode (disabled)
  * @returns {JSX.Element} The rendered rate card form.
  */
-const RateCardForm: React.FC<{ readOnly?: boolean }> = ({ readOnly = false }) => {
+const RateCardForm: React.FC<{ readOnly?: boolean }> = ({
+  readOnly = false,
+}) => {
   const ctx = useFormContext();
 
   // Fetch service categories from API
   const { data: serviceCategoriesData, isLoading } = useGetServiceCategories();
 
   // Transform API data to SelectField options format
-  const serviceCategoryOptions = serviceCategoriesData?.data?.map((category) => ({
-    label: category.name,
-    value: `serviceCategory${category.id}`,
-  })) || [];
+  const serviceCategoryOptions =
+    serviceCategoriesData?.data?.map((category) => ({
+      label: category.name,
+      value: `serviceCategory${category.id}`,
+    })) || [];
 
   // Set default value for rateType to Master Rate Card on component mount
   useEffect(() => {

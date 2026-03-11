@@ -51,7 +51,9 @@ const EditCurrencyRates: React.FC = () => {
   const isValidCurrencyId = currencyId > 0 && !isNaN(currencyId);
   React.useEffect(() => {
     if (!isValidCurrencyId && !stateRow) {
-      toast.error("Invalid currency ID. Please select a currency from the list.");
+      toast.error(
+        "Invalid currency ID. Please select a currency from the list.",
+      );
       navigate(absoluteUrls.admin.home.manage_currency_conversion);
     }
   }, [isValidCurrencyId, stateRow, navigate]);
@@ -82,7 +84,7 @@ const EditCurrencyRates: React.FC = () => {
       toast.error("Invalid currency ID. Please try again from the list.");
       return;
     }
-    
+
     await showPopup({
       title: "Exchange Rate",
       body: "Are you sure you want to save this exchange rate?",

@@ -10,7 +10,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminCreateRateCard, useGetRateCards } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminCreateRateCard,
+  useGetRateCards,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import { useQueryClient } from "@tanstack/react-query";
 
 /**
@@ -36,13 +39,13 @@ const EditRateCard = () => {
   const { showPopup } = usePopupStore();
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
-  
+
   // Parse serviceCategoryId from URL param
   const serviceCategoryId = id ? parseInt(id, 10) : 0;
-  
+
   // Store countryId from API response for use in mutation
   const countryIdRef = useRef<number>(1);
-  
+
   console.log("Service Category ID:", serviceCategoryId, "from param:", id);
 
   const methods = useForm({
@@ -94,7 +97,7 @@ const EditRateCard = () => {
   // Fetch rate cards using the same API as index table
   const { data: rateCardsResponse } = useGetRateCards(
     { page: 1, limit: 100 },
-    { enabled: !!serviceCategoryId && serviceCategoryId > 0 }
+    { enabled: !!serviceCategoryId && serviceCategoryId > 0 },
   );
 
   // Filter rate cards by serviceCategoryId and populate form
@@ -102,39 +105,43 @@ const EditRateCard = () => {
     if (rateCardsResponse?.data) {
       // Filter by serviceCategoryId
       const filteredData = rateCardsResponse.data.filter(
-        (item) => item.serviceCategoryId === serviceCategoryId
+        (item) => item.serviceCategoryId === serviceCategoryId,
       );
-      
+
       console.log("Filtered rate cards:", filteredData);
-      
+
       if (filteredData.length > 0) {
         // Get the first item to get country info
         const firstItem = filteredData[0];
-        
+
         // Store countryId for use in mutation
         countryIdRef.current = firstItem.countryId || 1;
-        
+
         // Map country name to country value (e.g., "India" -> "country1")
         const countryValueMap: Record<string, string> = {
-          "India": "country1",
+          India: "country1",
           "United Kingdom": "country2",
         };
-        const countryValue = countryValueMap[firstItem.country] || firstItem.country;
-        
+        const countryValue =
+          countryValueMap[firstItem.country] || firstItem.country;
+
         // Transform API data to form format
         // Group by experience level
-        const levelRatesMap: Record<number, { hourly: number; daily: number; monthly: number }> = {};
-        
+        const levelRatesMap: Record<
+          number,
+          { hourly: number; daily: number; monthly: number }
+        > = {};
+
         filteredData.forEach((item) => {
           const levelId = item.experienceLevelId || 1;
-          
+
           // Parse the rates array
           if (item.rates && Array.isArray(item.rates)) {
             item.rates.forEach((rate) => {
               if (!levelRatesMap[levelId]) {
                 levelRatesMap[levelId] = { hourly: 0, daily: 0, monthly: 0 };
               }
-              
+
               // Map engagementModelId to rate type
               // 1: Hourly, 2: Daily, 3: Monthly
               if (rate.engagementModelId === 1) {
@@ -147,7 +154,7 @@ const EditRateCard = () => {
             });
           }
         });
-        
+
         // Build tiers array from the mapped data
         const tiers = [
           {
@@ -208,13 +215,15 @@ const EditRateCard = () => {
 
   const handleSaveConfirmation = async (data: any) => {
     console.log("handleSaveConfirmation called with data:", data);
-    
+
     // Validate service category ID
     if (!serviceCategoryId || serviceCategoryId === 0) {
-      toast.error("Invalid service category ID. Please try again from the list.");
+      toast.error(
+        "Invalid service category ID. Please try again from the list.",
+      );
       return;
     }
-    
+
     await showPopup({
       title: "Update Rate Card",
       body: "Are you sure you want to update this rate card?",
@@ -233,40 +242,47 @@ const EditRateCard = () => {
             // The API expects: { experienceLevels: [{ levelOrder, label, rates: { "1": hourly, "2": daily, "3": monthly } }] }
             const firstSkill = data.skills?.[0];
             const tiers = firstSkill?.tiers || [];
-            
+
             // Map rate type to engagementModelId
             // 1: Hourly, 2: Daily, 3: Monthly
             const experienceLevels = tiers.map((tier: any) => {
               // Convert level string (L1, L2, L3) to levelOrder number
-              const levelOrder = tier.level === "L1" ? 1 : tier.level === "L2" ? 2 : tier.level === "L3" ? 3 : 0;
-              
+              const levelOrder =
+                tier.level === "L1"
+                  ? 1
+                  : tier.level === "L2"
+                    ? 2
+                    : tier.level === "L3"
+                      ? 3
+                      : 0;
+
               // Build rates object with engagementModelId as keys
               const rates: Record<string, number> = {};
               const hourly = parseFloat(tier.hourly) || 0;
               const daily = parseFloat(tier.daily) || 0;
               const monthly = parseFloat(tier.monthly) || 0;
-              
+
               if (hourly > 0) rates["1"] = hourly;
               if (daily > 0) rates["2"] = daily;
               if (monthly > 0) rates["3"] = monthly;
-              
+
               return {
                 levelOrder,
                 label: tier.description || "",
                 rates,
               };
             });
-            
+
             // Get countryId from API response
             const finalCountryId = countryIdRef.current;
-            
+
             // Use POST API for update as well
             createRateCardMutation.mutate({
               body: { experienceLevels },
-              query: { 
+              query: {
                 countryId: finalCountryId,
-                serviceCategoryId: serviceCategoryId 
-              }
+                serviceCategoryId: serviceCategoryId,
+              },
             });
             close(true);
           },
@@ -306,7 +322,11 @@ const EditRateCard = () => {
         onSubmit={onSubmit}
         className="w-full h-full flex-1 overflow-y-auto"
       >
-        {isEdit || isView ? <RateCardForm readOnly={isView} /> : <RateCardDetails />}
+        {isEdit || isView ? (
+          <RateCardForm readOnly={isView} />
+        ) : (
+          <RateCardDetails />
+        )}
         <PricingModel />
 
         {isEdit && (

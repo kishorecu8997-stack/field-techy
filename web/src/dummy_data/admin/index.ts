@@ -1,7 +1,10 @@
 import type { ServerCategoryProps } from "@/pages/admin/job_category";
 import type { PaymentProps } from "@/pages/admin/payment/types";
 // import type { RateCardProps } from "@/pages/admin/rate_card/types";
-import { MANAGE_NOTIFICATION_TYPE, type NotificationProps } from "./manageNotification";
+import {
+  MANAGE_NOTIFICATION_TYPE,
+  type NotificationProps,
+} from "./manageNotification";
 import type {
   EngineerPage,
   TransactionRequest,
@@ -257,7 +260,7 @@ export const notifications: NotificationProps[] = [
 ];
 
 export const rateCardTypes = [
-  { label: "Master Rate Card", value: "masterRateCard" }
+  { label: "Master Rate Card", value: "masterRateCard" },
 ];
 
 export const ClientNameList = [

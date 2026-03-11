@@ -47,7 +47,7 @@ export default function ManageJobs() {
     { label: "All Jobs", status: undefined },
     { label: "In Progress", status: "In Progress" },
     { label: "Completed", status: "Closed" },
-    { label: "Declined", status: "Cancelled" },
+    { label: "Cancelled", status: "Cancelled" },
     { label: "Hold Jobs", status: "Hold" },
     { label: "Flagged Jobs", status: "Flagged" },
   ];
