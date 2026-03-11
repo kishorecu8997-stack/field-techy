@@ -65,7 +65,7 @@ const ClientActions = ({
             <span>View Feedback From Engineers</span>
           </Button>
         ) : (
-          jobStatus === "Posted" &&
+          (jobStatus === "Posted" || jobStatus === "In Progress") &&
           numberOfVacancy !== numberOfApprovedProposals && (
             <Button
               variant="primary"

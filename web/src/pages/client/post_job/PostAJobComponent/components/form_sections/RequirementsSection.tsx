@@ -102,7 +102,7 @@ const RequirementsSection = ({
       !!toolId ||
       (!!budget && Number(budget) > 0) ||
       (files && files.length > 0);
-    
+
     // If no content at all, show toast message and return
     if (!hasAnyField) {
       toast.error("Please fill Tools Details to add Tool Entry");
