@@ -34,17 +34,20 @@ const ManageRateCards: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch rate cards from API
-  const { data: rateCardsResponse, isLoading, isError, refetch } = useGetRateCards({
+  const {
+    data: rateCardsResponse,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetRateCards({
     page: 1,
     limit: 100,
   });
 
-
-
   // Transform API data to match table format with grouped experience levels
   const tableData: RateCardProps[] = useMemo(() => {
     if (!rateCardsResponse?.data) return [];
-    
+
     // Group by serviceCategoryId
     const groupedData = new Map<number, RateCardProps>();
 
@@ -93,8 +96,10 @@ const ManageRateCards: React.FC = () => {
           item.rates.forEach((rate: { modelName: string; rate: string }) => {
             // Map modelName to our internal format
             if (rate.modelName === "Hourly") ratesMap.hourly = rate.rate || "-";
-            else if (rate.modelName === "Daily") ratesMap.daily = rate.rate || "-";
-            else if (rate.modelName === "Monthly") ratesMap.monthly = rate.rate || "-";
+            else if (rate.modelName === "Daily")
+              ratesMap.daily = rate.rate || "-";
+            else if (rate.modelName === "Monthly")
+              ratesMap.monthly = rate.rate || "-";
           });
         }
 
@@ -122,7 +127,7 @@ const ManageRateCards: React.FC = () => {
         item.experienceLevel.toLowerCase().includes(search) ||
         item.hourly.toLowerCase().includes(search) ||
         item.daily.toLowerCase().includes(search) ||
-        item.monthly.toLowerCase().includes(search)
+        item.monthly.toLowerCase().includes(search),
     );
   }, [tableData, searchTerm]);
 
@@ -143,17 +148,23 @@ const ManageRateCards: React.FC = () => {
         <div className="whitespace-nowrap">{index + 1}</div>
       ),
     },
-    { key: "skillSet", label: "Service category",
+    {
+      key: "skillSet",
+      label: "Service category",
       renderCell: (row: RateCardProps) => (
         <div className="whitespace-nowrap">{row.skillSet}</div>
       ),
     },
-    { key: "region", label: "Region",
+    {
+      key: "region",
+      label: "Region",
       renderCell: (row: RateCardProps) => (
         <div className="whitespace-nowrap">{row.region}</div>
       ),
     },
-    { key: "location", label: "Country",
+    {
+      key: "location",
+      label: "Country",
       renderCell: (row: RateCardProps) => (
         <div className="whitespace-nowrap">{row.location}</div>
       ),
@@ -169,30 +180,54 @@ const ManageRateCards: React.FC = () => {
         </div>
       ),
     },
-    { key: "hourly", label: "Hourly",
+    {
+      key: "hourly",
+      label: "Hourly",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.experienceLevelRates?.L1.hourly || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L2.hourly || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L3.hourly || "-"}</div>
+          <div className="text-sm">
+            {row.experienceLevelRates?.L1.hourly || "-"}
+          </div>
+          <div className="text-sm">
+            {row.experienceLevelRates?.L2.hourly || "-"}
+          </div>
+          <div className="text-sm">
+            {row.experienceLevelRates?.L3.hourly || "-"}
+          </div>
         </div>
       ),
     },
-    { key: "fullDay", label: "Daily",
+    {
+      key: "fullDay",
+      label: "Daily",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.experienceLevelRates?.L1.daily || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L2.daily || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L3.daily || "-"}</div>
+          <div className="text-sm">
+            {row.experienceLevelRates?.L1.daily || "-"}
+          </div>
+          <div className="text-sm">
+            {row.experienceLevelRates?.L2.daily || "-"}
+          </div>
+          <div className="text-sm">
+            {row.experienceLevelRates?.L3.daily || "-"}
+          </div>
         </div>
       ),
     },
-    { key: "monthly", label: "Monthly",
+    {
+      key: "monthly",
+      label: "Monthly",
       renderCell: (row: RateCardProps) => (
         <div className="flex flex-col gap-1">
-          <div className="text-sm">{row.experienceLevelRates?.L1.monthly || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L2.monthly || "-"}</div>
-          <div className="text-sm">{row.experienceLevelRates?.L3.monthly || "-"}</div>
+          <div className="text-sm">
+            {row.experienceLevelRates?.L1.monthly || "-"}
+          </div>
+          <div className="text-sm">
+            {row.experienceLevelRates?.L2.monthly || "-"}
+          </div>
+          <div className="text-sm">
+            {row.experienceLevelRates?.L3.monthly || "-"}
+          </div>
         </div>
       ),
     },
@@ -223,13 +258,27 @@ const ManageRateCards: React.FC = () => {
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
-            onClick={() => navigate(absoluteUrls.admin.home.view_rate_card.replace(":id", String(row.serviceCategoryId)))}
+            onClick={() =>
+              navigate(
+                absoluteUrls.admin.home.view_rate_card.replace(
+                  ":id",
+                  String(row.serviceCategoryId),
+                ),
+              )
+            }
           >
             <FiEye className="text-yellow-600 " />
           </div>
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
-            onClick={() => navigate(absoluteUrls.admin.home.edit_rate_card.replace(":id", String(row.serviceCategoryId)))}
+            onClick={() =>
+              navigate(
+                absoluteUrls.admin.home.edit_rate_card.replace(
+                  ":id",
+                  String(row.serviceCategoryId),
+                ),
+              )
+            }
           >
             <CiEdit className="text-blue-600" />
           </div>
@@ -261,9 +310,7 @@ const ManageRateCards: React.FC = () => {
           ) : isError ? (
             <div className="flex flex-col items-center justify-center h-full gap-4">
               <p className="text-red-500">Failed to load rate cards</p>
-              <Button onClick={() => refetch()}>
-                Retry
-              </Button>
+              <Button onClick={() => refetch()}>Retry</Button>
             </div>
           ) : filteredData.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4">

@@ -35,29 +35,33 @@ const AddRateCard = () => {
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
 
-  const { mutateAsync: createRateCard, isPending: isCreatingRateCard } = useAdminCreateRateCard({
-    onSuccess: async () => {
-      // Refetch the rate cards to ensure the index table has latest data
-      await queryClient.refetchQueries({ queryKey: ["admin", "rateCards"] });
-      toast.success("Rate card created successfully!");
-      navigate(absoluteUrls.admin.home.manage_rate_card);
-      methods.reset();
-    },
-    onError: (error: unknown) => {
-      console.error("Failed to create rate card:", error);
-      toast.error("Failed to create rate card. Please try again.");
-    },
-  });
+  const { mutateAsync: createRateCard, isPending: isCreatingRateCard } =
+    useAdminCreateRateCard({
+      onSuccess: async () => {
+        // Refetch the rate cards to ensure the index table has latest data
+        await queryClient.refetchQueries({ queryKey: ["admin", "rateCards"] });
+        toast.success("Rate card created successfully!");
+        navigate(absoluteUrls.admin.home.manage_rate_card);
+        methods.reset();
+      },
+      onError: (error: unknown) => {
+        console.error("Failed to create rate card:", error);
+        toast.error("Failed to create rate card. Please try again.");
+      },
+    });
 
   // Transform form data to new API format
-  const transformFormDataToApi = (formData: PricingFormValues): CreateRateCardParams => {
+  const transformFormDataToApi = (
+    formData: PricingFormValues,
+  ): CreateRateCardParams => {
     // Extract countryId from country field (e.g., "country1" -> 1)
     const countryValue = formData.country || "";
     const countryId = parseInt(countryValue.replace(/\D/g, "")) || 1;
-    
+
     // Extract serviceCategoryId from serviceCategory field
     const serviceCategoryValue = formData.serviceCategory || "";
-    const serviceCategoryId = parseInt(serviceCategoryValue.replace(/\D/g, "")) || 1;
+    const serviceCategoryId =
+      parseInt(serviceCategoryValue.replace(/\D/g, "")) || 1;
 
     // Transform skills/tiers to experienceLevels format
     const experienceLevels: CreateRateCardParams["experienceLevels"] = [];
@@ -89,14 +93,16 @@ const AddRateCard = () => {
 
         // Check if we already have an entry for this level
         const existingIndex = experienceLevels.findIndex(
-          (exp: CreateRateCardParams["experienceLevels"][number]) => exp.levelOrder === levelOrder
+          (exp: CreateRateCardParams["experienceLevels"][number]) =>
+            exp.levelOrder === levelOrder,
         );
 
         // Build rates object with engagementModelId as keys
         const rates: Record<string, number> = {};
         if (hourly > 0) rates[String(rateTypeToEngagementId.hourly)] = hourly;
         if (daily > 0) rates[String(rateTypeToEngagementId.daily)] = daily;
-        if (monthly > 0) rates[String(rateTypeToEngagementId.monthly)] = monthly;
+        if (monthly > 0)
+          rates[String(rateTypeToEngagementId.monthly)] = monthly;
 
         if (existingIndex >= 0) {
           // Update existing entry with new rates
@@ -116,7 +122,12 @@ const AddRateCard = () => {
     });
 
     // Sort by level order
-    experienceLevels.sort((a: CreateRateCardParams["experienceLevels"][number], b: CreateRateCardParams["experienceLevels"][number]) => a.levelOrder - b.levelOrder);
+    experienceLevels.sort(
+      (
+        a: CreateRateCardParams["experienceLevels"][number],
+        b: CreateRateCardParams["experienceLevels"][number],
+      ) => a.levelOrder - b.levelOrder,
+    );
 
     return {
       countryId,
@@ -145,7 +156,10 @@ const AddRateCard = () => {
             // Transform to the format expected by the API
             await createRateCard({
               body: { experienceLevels: apiData.experienceLevels },
-              query: { countryId: apiData.countryId, serviceCategoryId: apiData.serviceCategoryId }
+              query: {
+                countryId: apiData.countryId,
+                serviceCategoryId: apiData.serviceCategoryId,
+              },
             });
             close(true);
           },
