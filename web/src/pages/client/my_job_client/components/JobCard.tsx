@@ -120,7 +120,9 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
             <IoMdTime className="w-4 h-4 mr-2 flex-shrink-0" />
             <span className="truncate">{startDate}</span>
           </div>
-          <span className={`text-xs font-medium flex-shrink-0 ${getStatusColor(status)}`}>
+          <span
+            className={`text-xs font-medium flex-shrink-0 ${getStatusColor(status)}`}
+          >
             {status.toLowerCase() === "inprogress"
               ? "In-Progress"
               : status.charAt(0).toUpperCase() + status.slice(1)}

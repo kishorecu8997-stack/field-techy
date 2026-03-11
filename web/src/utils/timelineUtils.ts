@@ -222,7 +222,7 @@ export const transformLogsToTimelineItems = (
       const finalStatusText =
         statusText ||
         log.status.charAt(0).toUpperCase() +
-        log.status.slice(1).replace(/_/g, " ");
+          log.status.slice(1).replace(/_/g, " ");
 
       // Use custom statusColor if set, otherwise determine from log.status
       const finalStatusColor =
@@ -236,8 +236,8 @@ export const transformLogsToTimelineItems = (
       // Extract attachment name from URL if available
       const attachmentName = log.attachment?.url
         ? decodeURIComponent(
-          log.attachment.url.split("/").pop()?.split("?")[0] || "",
-        )
+            log.attachment.url.split("/").pop()?.split("?")[0] || "",
+          )
         : undefined;
 
       return {
@@ -410,8 +410,7 @@ export const transformSignOffsToItems = (
     if (so.signature?.url) {
       attachments.push({
         name: decodeURIComponent(
-          so.signature.url.split("/").pop()?.split("?")[0] ||
-          "Attachment",
+          so.signature.url.split("/").pop()?.split("?")[0] || "Attachment",
         ),
         url: so.signature.url,
       });

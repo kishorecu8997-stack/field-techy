@@ -20,7 +20,7 @@ import {
   useClientActionOnWorkLog,
   useClientGetAssignmentDetails,
   useGetJobLogs,
-  useMarkWorkLogFileUploaded
+  useMarkWorkLogFileUploaded,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
 import { formatDateTime } from "@/utils/formatDateTime";
@@ -76,11 +76,12 @@ const TimelineSection: React.FC<{
   assignments?: ClientGetAssignmentDetailsResponse;
   regionId?: number;
 }> = ({ assignmentId, jobId, hasProposals = false, assignments }) => {
-
   const [searchParams] = useSearchParams();
   const regionIdfromParam = searchParams.get("regionId");
 
-  const regionIdParam = regionIdfromParam ? Number(regionIdfromParam) : undefined;
+  const regionIdParam = regionIdfromParam
+    ? Number(regionIdfromParam)
+    : undefined;
 
   const queryClient = useQueryClient();
   const [_isProgressCollapsed, setIsProgressCollapsed] = useState(false);
@@ -202,9 +203,8 @@ const TimelineSection: React.FC<{
   const { data: jobLogs, isLoading: isLoadingLogs } = useGetJobLogs(
     effectiveAssignmentId,
     shouldFetchLogs,
-    regionIdParam
+    regionIdParam,
   );
-
 
   const { mutate: actionOnAssignment } = useClientActionOnAssignment({
     onSuccess: async () => {
@@ -241,7 +241,7 @@ const TimelineSection: React.FC<{
   const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
     onSuccess: async () => {
       // Refetch job logs after file is marked as uploaded
-      refetchAssignmentDetails()
+      refetchAssignmentDetails();
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
@@ -500,14 +500,14 @@ const TimelineSection: React.FC<{
     return progressLogs.map((progressLog) => {
       const attachments = progressLog.attachment?.url
         ? [
-          {
-            name: decodeURIComponent(
-              progressLog.attachment.url.split("/").pop()?.split("?")[0] ||
-              "Attachment",
-            ),
-            url: progressLog.attachment.url,
-          },
-        ]
+            {
+              name: decodeURIComponent(
+                progressLog.attachment.url.split("/").pop()?.split("?")[0] ||
+                  "Attachment",
+              ),
+              url: progressLog.attachment.url,
+            },
+          ]
         : undefined;
 
       let title = progressLog.logType || "Progress Update";
@@ -569,8 +569,11 @@ const TimelineSection: React.FC<{
           type: "revisionRequestUpdate" as const,
           title: "Revision Request",
           status: revisions[0]?.status || "pending",
-          description: revisions[0]?.clientComment || revisions[0]?.content || "",
-          timestamp: formatApiDate(revisions[0]?.createdAt) || formatApiDate(log.timestamp),
+          description:
+            revisions[0]?.clientComment || revisions[0]?.content || "",
+          timestamp:
+            formatApiDate(revisions[0]?.createdAt) ||
+            formatApiDate(log.timestamp),
           revisions: revisions,
         });
       }
@@ -603,14 +606,16 @@ const TimelineSection: React.FC<{
       ),
       attachments: latestRevision?.attachment?.url
         ? [
-          {
-            name: decodeURIComponent(
-              latestRevision.attachment?.url.split("/").pop()?.split("?")[0] ||
-              "Attachment",
-            ),
-            url: latestRevision.attachment?.url,
-          },
-        ]
+            {
+              name: decodeURIComponent(
+                latestRevision.attachment?.url
+                  .split("/")
+                  .pop()
+                  ?.split("?")[0] || "Attachment",
+              ),
+              url: latestRevision.attachment?.url,
+            },
+          ]
         : undefined,
       accentColor: TIMELINE_CARD_COLORS.orange,
       buttons: ["reject", "requestRevision", "approve"] as CardButtonType[],
@@ -677,7 +682,8 @@ const TimelineSection: React.FC<{
     if (signOff.attachment?.url) {
       attachments.push({
         name: decodeURIComponent(
-          signOff.attachment?.url.split("/").pop()?.split("?")[0] || "Attachment",
+          signOff.attachment?.url.split("/").pop()?.split("?")[0] ||
+            "Attachment",
         ),
         url: signOff.attachment?.url,
       });
@@ -685,8 +691,7 @@ const TimelineSection: React.FC<{
     if (signOff.signature?.url) {
       attachments.push({
         name: decodeURIComponent(
-          signOff.signature.url.split("/").pop()?.split("?")[0] ||
-          "Attachment",
+          signOff.signature.url.split("/").pop()?.split("?")[0] || "Attachment",
         ),
         url: signOff.signature.url,
       });
@@ -1163,10 +1168,10 @@ const TimelineSection: React.FC<{
             regionId: regionIdParam,
             clientAttachment: attachment?.[0]
               ? {
-                filename: attachment[0].name,
-                size: attachment[0].size,
-                mimeType: attachment[0].type,
-              }
+                  filename: attachment[0].name,
+                  size: attachment[0].size,
+                  mimeType: attachment[0].type,
+                }
               : undefined,
           },
         });
@@ -1185,7 +1190,7 @@ const TimelineSection: React.FC<{
               target: "client_revision",
               logId: currentRevisionLogId,
               revisionId: response?.revisionId,
-              regionId: regionIdParam
+              regionId: regionIdParam,
             },
           });
         }
@@ -1209,10 +1214,10 @@ const TimelineSection: React.FC<{
               regionId: regionIdParam,
               clientAttachment: attachment?.[0]
                 ? {
-                  filename: attachment[0].name,
-                  size: attachment[0].size,
-                  mimeType: attachment[0].type,
-                }
+                    filename: attachment[0].name,
+                    size: attachment[0].size,
+                    mimeType: attachment[0].type,
+                  }
                 : undefined,
             },
           });
@@ -1231,7 +1236,7 @@ const TimelineSection: React.FC<{
                 target: "client_revision",
                 logId,
                 revisionId: response?.revisionId || revisionId,
-                regionId: regionIdParam
+                regionId: regionIdParam,
               },
             });
           }
@@ -1480,7 +1485,7 @@ const TimelineSection: React.FC<{
             assignmentId: effectiveAssignmentId,
             logId: targetLogId,
             action: "reject",
-            regionId: regionIdParam
+            regionId: regionIdParam,
           },
         });
       }
@@ -1508,7 +1513,7 @@ const TimelineSection: React.FC<{
             assignmentId: effectiveAssignmentId,
             logId: targetLogId,
             action: "approve",
-            regionId: regionIdParam
+            regionId: regionIdParam,
           },
         });
       }
@@ -1548,7 +1553,7 @@ const TimelineSection: React.FC<{
             logId: lgId,
             revisionId: revId,
             action: "reject",
-            regionId: regionIdParam
+            regionId: regionIdParam,
           },
         });
       }
@@ -1584,7 +1589,7 @@ const TimelineSection: React.FC<{
             logId: lgId,
             revisionId: revId,
             action: "approve",
-            regionId: regionIdParam
+            regionId: regionIdParam,
           },
         });
       }
@@ -1743,10 +1748,10 @@ const TimelineSection: React.FC<{
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="space-y-6">
         {engineerData ||
-          hasPendingProposal ||
-          apiTimelineItems.length > 0 ||
-          (hasFinalStatementData &&
-            finalStatementStatus === TIMELINE_STATUS.pending) ? (
+        hasPendingProposal ||
+        apiTimelineItems.length > 0 ||
+        (hasFinalStatementData &&
+          finalStatementStatus === TIMELINE_STATUS.pending) ? (
           <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/50">
               {engineerData ? (
@@ -1811,8 +1816,9 @@ const TimelineSection: React.FC<{
                   }
                 >
                   <HiChevronDown
-                    className={`h-5 w-5 text-gray-500 transition-transform ${isSectionCollapsed ? "" : "rotate-180"
-                      }`}
+                    className={`h-5 w-5 text-gray-500 transition-transform ${
+                      isSectionCollapsed ? "" : "rotate-180"
+                    }`}
                   />
                 </button>
               </div>
@@ -1863,44 +1869,44 @@ const TimelineSection: React.FC<{
                         revisionUpdateCardData={
                           revisionData
                             ? {
-                              id: `revision-${revisionData.logId}`,
-                              type: "revisionRequestUpdate" as const,
-                              title: "Revision Request",
-                              description:
-                                revisionData.revisions?.[0]?.clientComment ||
-                                "",
-                              timestamp:
-                                revisionData.revisions?.[0]?.createdAt || "",
-                              accentColor: TIMELINE_CARD_COLORS.orange,
-                              buttons: [
-                                "reject",
-                                "requestRevision",
-                                "approve",
-                              ] as CardButtonType[],
-                              revisions: (revisionData.revisions?.map(
-                                (r) => ({
-                                  revisionId: r.revisionId,
-                                  logId: revisionData.logId,
-                                  content: r.content,
-                                  attachmentUrl: r.attachmentUrl,
-                                  clientComment: r.clientComment,
-                                  clientAttachmentUrl: r.clientAttachmentUrl,
-                                  createdAt: r.createdAt,
-                                  updatedAt: r.updatedAt,
-                                  status: r.status,
-                                }),
-                              ) || []) as TimelineRevisionData[],
-                            }
+                                id: `revision-${revisionData.logId}`,
+                                type: "revisionRequestUpdate" as const,
+                                title: "Revision Request",
+                                description:
+                                  revisionData.revisions?.[0]?.clientComment ||
+                                  "",
+                                timestamp:
+                                  revisionData.revisions?.[0]?.createdAt || "",
+                                accentColor: TIMELINE_CARD_COLORS.orange,
+                                buttons: [
+                                  "reject",
+                                  "requestRevision",
+                                  "approve",
+                                ] as CardButtonType[],
+                                revisions: (revisionData.revisions?.map(
+                                  (r) => ({
+                                    revisionId: r.revisionId,
+                                    logId: revisionData.logId,
+                                    content: r.content,
+                                    attachmentUrl: r.attachmentUrl,
+                                    clientComment: r.clientComment,
+                                    clientAttachmentUrl: r.clientAttachmentUrl,
+                                    createdAt: r.createdAt,
+                                    updatedAt: r.updatedAt,
+                                    status: r.status,
+                                  }),
+                                ) || []) as TimelineRevisionData[],
+                              }
                             : {
-                              id: "no-revision",
-                              type: "revisionRequestUpdate" as const,
-                              title: "",
-                              description: "",
-                              timestamp: "",
-                              accentColor: TIMELINE_CARD_COLORS.orange,
-                              buttons: [],
-                              revisions: [],
-                            }
+                                id: "no-revision",
+                                type: "revisionRequestUpdate" as const,
+                                title: "",
+                                description: "",
+                                timestamp: "",
+                                accentColor: TIMELINE_CARD_COLORS.orange,
+                                buttons: [],
+                                revisions: [],
+                              }
                         }
                         revisionRequestUpdateCardData={
                           apiRevisionRequestData || {
@@ -1996,7 +2002,7 @@ const TimelineSection: React.FC<{
                  * 2. hasPendingStartRequest is true but no JOB_STARTED log yet (engineer requested to start)
                  */}
                 {(showJobStartedCard && apiJobStartedData) ||
-                  (hasPendingStartRequest && !apiJobStartedData) ? (
+                (hasPendingStartRequest && !apiJobStartedData) ? (
                   <JobStartedCard
                     isCollapsed={isJobCollapsed}
                     cardData={

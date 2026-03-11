@@ -7,15 +7,16 @@ import { useEngineerLogin } from "@/shared/apiServices/engineer/engineerOpenApiS
 import TwoFASetup from "@/shared/components/TwoFASetup";
 import { UserRole } from "@/shared/enums/users";
 import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
-import {
-  useUserSessionStore,
-} from "@/shared/store/useUserSessionStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { getTwoFaStorage } from "@/utils/TwoFAStorage";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { AuthLogin } from "@/shared/components/auth/AuthLogin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginEmailFormData } from "../../validations/LoginEmail";
+import {
+  loginSchema,
+  type LoginEmailFormData,
+} from "../../validations/LoginEmail";
 import { decodeJwtPayload, type JwtClientPayload } from "@/utils/jwtUtils";
 
 /**
@@ -48,7 +49,9 @@ const Login = ({
 
         const payload = decodeJwtPayload<JwtClientPayload>(resp.token);
         if (!payload) {
-          toast.error("Login failed: unable to verify session. Please try again.");
+          toast.error(
+            "Login failed: unable to verify session. Please try again.",
+          );
           return;
         }
 

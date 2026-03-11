@@ -68,7 +68,6 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   const isClientPath = location.pathname.includes("/client");
   const formattedPay = formatAmount(totalPrice, currencySymbol);
 
-
   // Only call this API if we are in the client module to avoid permission errors
   const { data: client } = useClientGetCompanyInfo(
     isClientPath && !!props.clientId,
@@ -153,8 +152,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
 
       <div className="mt-3">
         <JobStatusBadge status={status as any} />
-        <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
-        </div>
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2"></div>
       </div>
     </Link>
   );

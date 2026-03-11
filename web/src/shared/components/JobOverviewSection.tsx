@@ -129,74 +129,73 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
         engagementModel ||
         experienceLevel ||
         numberOfVacancies) && (
-          <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Work Details
-            </h3>
+        <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Work Details
+          </h3>
 
-            <div className="space-y-4">
-              {duration && (
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    Duration
-                  </p>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {duration}
-                  </p>
-                </div>
-              )}
-
-              {engagementModel && (
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    Engagement Model
-                  </p>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {engagementModel}
-                  </p>
-                </div>
-              )}
-
-              {experienceLevel && (
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    Engineer Experience Level
-                  </p>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {experienceLevel}
-                  </p>
-                </div>
-              )}
-
-              {numberOfVacancies && (
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    Number of Vacancies
-                  </p>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {numberOfVacancies} Engineers
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-      {userType === "engineer" &&
-        (totalPayment) && (
-          <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-            {totalPayment && (
-              <div className="pt-4">
+          <div className="space-y-4">
+            {duration && (
+              <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                  Total Amount
+                  Duration
                 </p>
-                <p className="text-sm font-bold text-gray-900 dark:text-white">
-                  {totalPayment}
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {duration}
+                </p>
+              </div>
+            )}
+
+            {engagementModel && (
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  Engagement Model
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {engagementModel}
+                </p>
+              </div>
+            )}
+
+            {experienceLevel && (
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  Engineer Experience Level
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {experienceLevel}
+                </p>
+              </div>
+            )}
+
+            {numberOfVacancies && (
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  Number of Vacancies
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {numberOfVacancies} Engineers
                 </p>
               </div>
             )}
           </div>
-        )}
+        </div>
+      )}
+
+      {userType === "engineer" && totalPayment && (
+        <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+          {totalPayment && (
+            <div className="pt-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                Total Amount
+              </p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white">
+                {totalPayment}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Total Cost Section - Only show for clients */}
       {userType === "client" && totalPayment && (

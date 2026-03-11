@@ -46,16 +46,18 @@ const UpdateLogForm = ({
   const queryClient = useQueryClient();
   const regionId = useUserSessionStore.getState().session?.regionId;
 
-
   const refetchTimeline = async () => {
     if (!assignmentId) return;
     try {
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
-        query: { regionId }
+        query: { regionId },
       });
-      const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId }, query: { regionId } });
+      const exactQueryKey = getJobLogsQueryKey({
+        path: { assignmentId },
+        query: { regionId },
+      });
       queryClient.setQueryData(exactQueryKey, response.data);
     } catch (error) {
       console.error("Failed to refetch timeline:", error);
@@ -101,10 +103,10 @@ const UpdateLogForm = ({
               // Prepare attachment metadata if file exists
               const attachmentMeta = attachment
                 ? {
-                  filename: attachment.name,
-                  size: attachment.size,
-                  mimeType: attachment.type,
-                }
+                    filename: attachment.name,
+                    size: attachment.size,
+                    mimeType: attachment.type,
+                  }
                 : undefined;
 
               // Prepare request body - only include attachment if file exists
@@ -115,14 +117,13 @@ const UpdateLogForm = ({
                 logType: "progress_update",
                 title: data.title,
                 details: data.notes,
-                regionId
+                regionId,
               };
 
               // Only add attachment if file exists
               if (attachmentMeta) {
                 requestBody.attachment = attachmentMeta;
               }
-
 
               // Call the API to submit work log and get response with upload URL
               const response = await addWorkLog({

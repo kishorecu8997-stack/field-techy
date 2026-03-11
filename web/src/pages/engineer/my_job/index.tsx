@@ -90,7 +90,7 @@ const MyJobsPage = () => {
           currentSort={SORT_OPTIONS.NEWEST}
           isShowSort={false}
           // todo: implement sort functionality later
-          onSortChange={() => { }}
+          onSortChange={() => {}}
         />
         <div className="flex items-center justify-between mt-4">
           <FilterButton

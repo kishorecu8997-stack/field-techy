@@ -73,7 +73,12 @@ import {
 } from "@/api/@tanstack/react-query.gen";
 import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 import { useEffect } from "react";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
@@ -438,7 +443,6 @@ export function useClientGetAssignmentDetails(
   query: ClientGetAssignmentDetailsData["query"] = {},
   enabled: boolean = true,
 ) {
-
   return useQuery({
     ...clientGetAssignmentDetailsOptions({
       client: apiClient,
@@ -660,11 +664,15 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => { },
+    refetch: () => {},
   };
 }
 
-export function useGetJobLogs(assignmentId: number, enabled: boolean = true, regionId?: number) {
+export function useGetJobLogs(
+  assignmentId: number,
+  enabled: boolean = true,
+  regionId?: number,
+) {
   return useQuery({
     ...getJobLogsOptions({
       client: apiClient,

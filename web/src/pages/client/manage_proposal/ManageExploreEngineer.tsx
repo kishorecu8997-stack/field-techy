@@ -208,7 +208,7 @@ const ManageExploreEngineer = () => {
                 </p>
                 <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 pt-2">
                   {getProposal()?.portfolioDoc &&
-                    getProposal()?.portfolioDoc !== "No attachment provided" ? (
+                  getProposal()?.portfolioDoc !== "No attachment provided" ? (
                     <a
                       href={getProposal()?.portfolioDoc}
                       target="_blank"

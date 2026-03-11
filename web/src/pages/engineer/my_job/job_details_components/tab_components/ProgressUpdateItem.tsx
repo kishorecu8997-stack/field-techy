@@ -33,7 +33,6 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
   revisionUpdateEntry,
   STATUS,
 }) => {
-
   const updateKey = `${update.title || "update"}-${index}`;
   const isApproved = update.statusText
     ?.toLowerCase()

@@ -13,9 +13,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import type { LoginFormData } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
-import {
-  useUserSessionStore,
-} from "@/shared/store/useUserSessionStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { useAdminLogin } from "@/shared/apiServices/admin/adminOpenApiService";
 import { AxiosError } from "axios";
@@ -58,7 +56,9 @@ export default function AdminLogin() {
 
       const payload = decodeJwtPayload<JwtClientPayload>(resp.token);
       if (!payload) {
-        toast.error("Login failed: unable to verify session. Please try again.");
+        toast.error(
+          "Login failed: unable to verify session. Please try again.",
+        );
         return;
       }
 

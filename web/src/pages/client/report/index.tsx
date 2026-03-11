@@ -70,10 +70,10 @@ const ReportPage = ({
 
             const attachmentData = selectedFile
               ? {
-                filename: selectedFile.name,
-                size: selectedFile.size,
-                mimeType: selectedFile.type,
-              }
+                  filename: selectedFile.name,
+                  size: selectedFile.size,
+                  mimeType: selectedFile.type,
+                }
               : undefined;
 
             const reportPayload = {

@@ -81,16 +81,16 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                         <span className="text-xs text-gray-500 leading-4">
                           {revision.createdAt
                             ? new Date(revision.createdAt).toLocaleString(
-                              "en-US",
-                              {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true,
-                              },
-                            )
+                                "en-US",
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                },
+                              )
                             : update.timestamp}
                         </span>
                         {/* Show button only if no engineer response exists (neither content nor attachment) */}
@@ -156,16 +156,16 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                           <span className="text-xs text-gray-500 leading-4">
                             {revision.updatedAt
                               ? new Date(revision.updatedAt).toLocaleString(
-                                "en-US",
-                                {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: true,
-                                },
-                              )
+                                  "en-US",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                  },
+                                )
                               : update.timestamp}
                           </span>
                         </div>
@@ -174,7 +174,7 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
                   )}
                 </div>
               </div>
-            )
+            );
           })}
         </>
       ) : (

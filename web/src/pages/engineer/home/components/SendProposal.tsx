@@ -1,7 +1,7 @@
 import { absoluteUrls } from "@/config/urls";
 import {
   useEngineerApplyJob,
-  useEngineerMarkProposalFileUploaded
+  useEngineerMarkProposalFileUploaded,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
@@ -113,10 +113,10 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
               const file = data.attachment?.[0];
               const proposalAttachmentMeta = file
                 ? {
-                  filename: file.name,
-                  size: file.size,
-                  mimeType: file.type,
-                }
+                    filename: file.name,
+                    size: file.size,
+                    mimeType: file.type,
+                  }
                 : undefined;
 
               // Append extra fields to description as they are not in new API
@@ -127,7 +127,7 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
                   jobId: Number(jobId),
                   proposalDetail: fullDescription,
                   proposalAttachment: proposalAttachmentMeta,
-                  regionId
+                  regionId,
                 },
               });
 

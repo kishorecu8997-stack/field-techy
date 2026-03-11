@@ -154,7 +154,7 @@ const FeatureJobCard: React.FC<
     toggleSaveMutation({
       body: {
         jobId: Number(job.id),
-        regionId
+        regionId,
       },
     });
   };

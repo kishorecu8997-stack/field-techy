@@ -50,16 +50,18 @@ const RevisionRequestUpdateForm = ({
   const queryClient = useQueryClient();
   const regionId = useUserSessionStore.getState().session?.regionId;
 
-
   const refetchTimeline = async () => {
     if (!assignmentId) return;
     try {
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
-        query: { regionId }
+        query: { regionId },
       });
-      const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId }, query: { regionId } });
+      const exactQueryKey = getJobLogsQueryKey({
+        path: { assignmentId },
+        query: { regionId },
+      });
       queryClient.setQueryData(exactQueryKey, response.data);
     } catch (error) {
       console.error("Failed to refetch timeline:", error);
@@ -116,10 +118,10 @@ const RevisionRequestUpdateForm = ({
                     regionId,
                     attachment: attachment
                       ? {
-                        filename: attachment.name,
-                        size: attachment.size,
-                        mimeType: attachment.type,
-                      }
+                          filename: attachment.name,
+                          size: attachment.size,
+                          mimeType: attachment.type,
+                        }
                       : undefined,
                   },
                 });

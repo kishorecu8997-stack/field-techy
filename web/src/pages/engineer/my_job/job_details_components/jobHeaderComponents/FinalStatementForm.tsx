@@ -73,12 +73,12 @@ const FinalStatementForm = ({
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
-        query: { regionId }
+        query: { regionId },
       });
 
       const exactQueryKey = getJobLogsQueryKey({
         path: { assignmentId },
-        query: { regionId }
+        query: { regionId },
       });
 
       queryClient.setQueryData(exactQueryKey, response.data);
@@ -110,7 +110,7 @@ const FinalStatementForm = ({
       const logsResponse = await getJobLogs({
         client: apiClient,
         path: { assignmentId: assignmentIdValue },
-        query: { regionId }
+        query: { regionId },
       });
       const signOffSheets = logsResponse.data?.signOffSheets || [];
       if (!signOffSheets.length) return undefined;
@@ -121,7 +121,7 @@ const FinalStatementForm = ({
             sheet.attachmentId === submitResponse.workAttachmentId) ||
           (submitResponse.signatureAttachmentId &&
             sheet.signatureAttachmentId ===
-            submitResponse.signatureAttachmentId),
+              submitResponse.signatureAttachmentId),
       );
 
       return matched?.id || signOffSheets[0]?.id;
@@ -183,18 +183,18 @@ const FinalStatementForm = ({
 
               const workAttachment = taskFile
                 ? {
-                  filename: taskFile.name,
-                  size: taskFile.size,
-                  mimeType: taskFile.type,
-                }
+                    filename: taskFile.name,
+                    size: taskFile.size,
+                    mimeType: taskFile.type,
+                  }
                 : undefined;
 
               const signatureAttachment = signatureFile
                 ? {
-                  filename: signatureFile.name,
-                  size: signatureFile.size,
-                  mimeType: signatureFile.type,
-                }
+                    filename: signatureFile.name,
+                    size: signatureFile.size,
+                    mimeType: signatureFile.type,
+                  }
                 : undefined;
 
               const response = await submitSignOff({

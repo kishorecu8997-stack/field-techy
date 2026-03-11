@@ -41,7 +41,7 @@ import {
   type GetUserReportsResponses,
   type MarkWorkLogFileUploadedData,
   type MarkWorkLogFileUploadedResponse,
-  type Options
+  type Options,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -97,11 +97,15 @@ import { type EngineerData } from "./engineerTypes";
  */
 export {
   getDownloadUrl,
-  useAppDownloadProfileFile, useAppSendLoginOtp, useAppUploadProfileFile, useAppVerifyLoginOtp, useForgotPassword,
+  useAppDownloadProfileFile,
+  useAppSendLoginOtp,
+  useAppUploadProfileFile,
+  useAppVerifyLoginOtp,
+  useForgotPassword,
   useLookupData,
   useResetPassword,
   useSendOtp,
-  useVerifyOtp
+  useVerifyOtp,
 } from "../commonOpenApiService";
 
 /**
@@ -162,7 +166,7 @@ export function useEngineerUpdatePersonalInfo(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "engineerGetPersonalInfo",
+            "engineerGetPersonalInfo",
       });
 
       const updateData: Partial<EngineerData> = {};
@@ -205,7 +209,7 @@ export function useEngineerAddEducation(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "engineerGetEducation",
+            "engineerGetEducation",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -243,7 +247,7 @@ export function useEngineerDeleteEducation(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "engineerGetEducation",
+            "engineerGetEducation",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -267,7 +271,7 @@ export function useEngineerUpdateEducation(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "engineerGetEducation",
+            "engineerGetEducation",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -298,7 +302,7 @@ export function useEngineerAddExperience(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "engineerGetExperience",
+            "engineerGetExperience",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -322,7 +326,7 @@ export function useEngineerDeleteExperience(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "engineerGetExperience",
+            "engineerGetExperience",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -346,7 +350,7 @@ export function useEngineerUpdateExperience(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "engineerGetExperience",
+            "engineerGetExperience",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -377,7 +381,7 @@ export function useEngineerUpdateSkillsAndTools(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "engineerGetSkillsAndTools",
+            "engineerGetSkillsAndTools",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -408,7 +412,7 @@ export function useEngineerUpdateWorkPreference(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "engineerGetWorkPreference",
+            "engineerGetWorkPreference",
       });
       await refetchProfileCompletion(queryClient);
       await useEngineerStore.getState().refetchProfile();
@@ -437,9 +441,9 @@ export function useEngineerGetJobs({
   jobType,
   options,
 }: {
-  jobStatus?: NonNullable<EngineerGetMyJobsData["query"]>["assignmentStatus"],
-  jobType?: NonNullable<EngineerGetMyJobsData["query"]>["jobType"],
-  options?: { enabled?: boolean },
+  jobStatus?: NonNullable<EngineerGetMyJobsData["query"]>["assignmentStatus"];
+  jobType?: NonNullable<EngineerGetMyJobsData["query"]>["jobType"];
+  options?: { enabled?: boolean };
 }) {
   const regionId = useUserSessionStore.getState().session?.regionId;
   return useQuery({
@@ -516,7 +520,6 @@ export function useEngineerApplyJob(options?: {
   });
 }
 
-
 export function useEngineerMarkProposalFileUploaded(options?: {
   onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
@@ -525,7 +528,9 @@ export function useEngineerMarkProposalFileUploaded(options?: {
 
   return useMutation({
     ...base,
-    mutationFn: async (fnOptions: Options<EngineerMarkProposalFileUploadedData>) => {
+    mutationFn: async (
+      fnOptions: Options<EngineerMarkProposalFileUploadedData>,
+    ) => {
       const regionId = useUserSessionStore.getState().session?.regionId;
 
       const body = {
@@ -542,8 +547,15 @@ export function useEngineerMarkProposalFileUploaded(options?: {
         body,
       };
 
-      const { data } = await engineerMarkProposalFileUploaded({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from engineerMarkProposalFileUploaded");
+      const { data } = await engineerMarkProposalFileUploaded({
+        client: apiClient,
+        ...mergedOptions,
+        throwOnError: true,
+      });
+      if (!data)
+        throw new Error(
+          "No data returned from engineerMarkProposalFileUploaded",
+        );
       return data;
     },
     onSuccess: options?.onSuccess,
@@ -573,7 +585,6 @@ export function useEngineerRequestStart(options?: {
     onError: options?.onError,
   });
 }
-
 
 export function useEngineerSubmitSignOff(options?: {
   onSuccess?: (data: EngineerSubmitSignOffResponse) => void;
@@ -672,8 +683,13 @@ export function useMarkWorkLogFileUploaded(options?: {
         body,
       };
 
-      const { data } = await markWorkLogFileUploaded({ client: apiClient, ...mergedOptions, throwOnError: true });
-      if (!data) throw new Error("No data returned from markWorkLogFileUploaded");
+      const { data } = await markWorkLogFileUploaded({
+        client: apiClient,
+        ...mergedOptions,
+        throwOnError: true,
+      });
+      if (!data)
+        throw new Error("No data returned from markWorkLogFileUploaded");
       return data;
     },
     onSuccess: (data) => {
@@ -712,7 +728,6 @@ export function useEngineerRequestBreak(options?: {
   });
 }
 
-
 export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
   return useQuery({
     ...getJobLogsOptions({
@@ -740,7 +755,6 @@ export function useStoreEngineerSaveJobs(options?: {
     onError: options?.onError,
   });
 }
-
 
 export function useGetEngineerSavedJobs(
   query: EngineerGetSavedJobsData["query"] = {},

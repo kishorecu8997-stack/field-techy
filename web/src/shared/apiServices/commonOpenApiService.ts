@@ -268,9 +268,9 @@ export function useGetUserRatingAndReviews(
     refetchOnMount: true,
     select: assignmentId
       ? (data) =>
-        Array.isArray(data)
-          ? data.filter((r) => r.jobAssignmentId === assignmentId)
-          : data
+          Array.isArray(data)
+            ? data.filter((r) => r.jobAssignmentId === assignmentId)
+            : data
       : undefined,
   });
 }

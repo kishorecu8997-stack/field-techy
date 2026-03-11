@@ -59,10 +59,10 @@ const ClientJobDetails = () => {
   };
 
   const job = (jobsArray as ExtendedJob[]).find((j) => Number(j.id) === jobId);
-  const {
-    data: assignmentData,
-    isLoading,
-  } = useClientGetAssignmentDetails({ jobId, regionId: job?.regionId });
+  const { data: assignmentData, isLoading } = useClientGetAssignmentDetails({
+    jobId,
+    regionId: job?.regionId,
+  });
 
   const assignments = Array.isArray(assignmentData) ? assignmentData : [];
   const approvedStatuses = [

@@ -39,7 +39,6 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
   assignmentId,
   regionId,
 }) => {
-
   const { mutate: submitFeedback, isPending } =
     useCreateRateAndReviewAssignment({
       onSuccess: () => {

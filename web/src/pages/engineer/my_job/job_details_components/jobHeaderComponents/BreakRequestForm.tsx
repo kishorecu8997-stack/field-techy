@@ -59,7 +59,6 @@ const BreakRequestForm = ({
   });
   const regionId = useUserSessionStore.getState().session?.regionId;
 
-
   const { watch, setValue, setError, clearErrors } = formCtx;
   const startTime = watch("startTime");
   const endTime = watch("endTime");
@@ -83,11 +82,14 @@ const BreakRequestForm = ({
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
-            query: { regionId }
+            query: { regionId },
           });
 
           // Update the query cache with the new data using exact key from getJobLogsQueryKey
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId }, query: { regionId } });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId },
+            query: { regionId },
+          });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
           console.error("Failed to refetch timeline:", error);
@@ -168,11 +170,11 @@ const BreakRequestForm = ({
 
   const minEndDate = startDate
     ? (() => {
-      const d = new Date(startDate);
-      d.setDate(d.getDate() + 1);
-      d.setHours(0, 0, 0, 0);
-      return d;
-    })()
+        const d = new Date(startDate);
+        d.setDate(d.getDate() + 1);
+        d.setHours(0, 0, 0, 0);
+        return d;
+      })()
     : undefined;
 
   const formatDateToMMDDYYYY = (dateString: string) => {
@@ -233,7 +235,7 @@ const BreakRequestForm = ({
           reason: data.reason || "",
           startAt,
           endAt,
-          regionId
+          regionId,
         },
       });
 

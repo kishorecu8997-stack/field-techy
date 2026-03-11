@@ -353,16 +353,16 @@ export interface ProposalApiData {
  */
 export type ProposalInfoTabProps = {
   submittedProposal:
-  | {
-    proposalDescription: string;
-    attachments?: never;
-    attachmentUrl?: string | null;
-  }
-  | {
-    proposalDescription: string;
-    attachments: FileList | null;
-    attachmentUrl?: never;
-  };
+    | {
+        proposalDescription: string;
+        attachments?: never;
+        attachmentUrl?: string | null;
+      }
+    | {
+        proposalDescription: string;
+        attachments: FileList | null;
+        attachmentUrl?: never;
+      };
   proposalAppliedDate?: string | null;
 };
 
