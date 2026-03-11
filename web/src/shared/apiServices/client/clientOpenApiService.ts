@@ -328,7 +328,6 @@ export function useClientPostJob(options?: {
 
 export function useClientGetJobs({
   jobId,
-  regionId,
   jobStatus,
   enabled,
 }: {
