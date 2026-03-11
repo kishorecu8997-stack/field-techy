@@ -176,6 +176,7 @@ export function useAppDownloadProfileFile(
     }),
     enabled: enabled && !!fileType,
     staleTime: 0,
+    refetchOnMount: true,
   });
 }
 
