@@ -47,8 +47,11 @@ export function mapFiltersToApiQuery(
   // Map job type - API only supports single jobType parameter
   // When multiple job types are selected, send the first one to API
   // and filter the rest client-side in the search results page
-  const jobTypeSource =
-    filters.locationType.length > 0 ? filters.locationType : filters.location;
+  const jobTypeSource = filters.jobTypeEnum
+    ? [filters.jobTypeEnum] // ← FilterPanel uses this
+    : filters.locationType.length > 0
+      ? filters.locationType
+      : filters.location;
 
   if (jobTypeSource.length > 0) {
     const normalized = normalizeJobType(jobTypeSource[0]);
@@ -64,12 +67,8 @@ export function mapFiltersToApiQuery(
   }
 
   // Map experience level ID
-  if (filters.experienceLevel.length > 0) {
-    // Take the first experience level if multiple are selected
-    const experienceLevelId = Number(filters.experienceLevel[0]);
-    if (!isNaN(experienceLevelId)) {
-      query.experienceLevelId = experienceLevelId;
-    }
+  if (filters.experience > 0) {
+    query.experienceLevelId = filters.experience; // or whatever the API field name is
   }
 
   // Map skill IDs

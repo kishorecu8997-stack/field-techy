@@ -1,45 +1,48 @@
 import {
+  createRateAndReviewAssignment,
+  type AppCheckExistenceData,
+  type AppDownloadProfileFileData,
+  type AppForgotPasswordError,
+  type AppForgotPasswordResponse,
   type AppGetLookupDataData,
+  type AppMarkProfileFileUploadedError,
+  type AppMarkProfileFileUploadedResponse,
+  type AppResetPasswordError,
+  type AppResetPasswordResponse,
+  type AppSendLoginOtpResponse,
   type AppSendOtpResponse,
   type AppUploadProfileFileResponse,
-  type AppVerifyOtpResponse,
-  type AppForgotPasswordResponse,
-  type AppForgotPasswordError,
-  type AppResetPasswordResponse,
-  type AppResetPasswordError,
-  type AppDownloadProfileFileData,
-  type AppMarkProfileFileUploadedResponse,
-  type AppMarkProfileFileUploadedError,
-  type CreateRateAndReviewAssignmentResponse,
-  type AppCheckExistenceData,
-  createRateAndReviewAssignment,
-  type AppSendLoginOtpResponse,
   type AppVerifyLoginOtpResponse,
+  type AppVerifyOtpResponse,
+  type CreateRateAndReviewAssignmentResponse,
+  type MarkJobRelatedFilesUploadedResponse
 } from "@/api";
 import {
+  appCheckExistenceOptions,
   appDownloadProfileFileOptions,
+  appForgotPasswordMutation,
   appGetLookupDataOptions,
+  appMarkProfileFileUploadedMutation,
+  appResetPasswordMutation,
+  appResolveSignupRegionOptions,
+  appSendLoginOtpMutation,
   appSendOtpMutation,
   appUploadProfileFileMutation,
+  appVerifyLoginOtpMutation,
   appVerifyOtpMutation,
-  appForgotPasswordMutation,
-  appResetPasswordMutation,
-  appMarkProfileFileUploadedMutation,
   createRateAndReviewAssignmentMutation,
   getUserRatingAndReviewsOptions,
   getUserRatingAndReviewsQueryKey,
-  appCheckExistenceOptions,
-  appResolveSignupRegionOptions,
-  appSendLoginOtpMutation,
-  appVerifyLoginOtpMutation,
+  markJobRelatedFilesUploadedMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
-  appDownloadProfileFile as appDownloadProfileFileSdk,
   appCheckExistence,
+  appDownloadProfileFile as appDownloadProfileFileSdk,
+  markJobRelatedFilesUploaded,
 } from "@/api/sdk.gen";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
 
@@ -177,6 +180,7 @@ export function useAppDownloadProfileFile(
     }),
     enabled: enabled && !!fileType,
     staleTime: 0,
+    refetchOnMount: true,
   });
 }
 
@@ -232,20 +236,44 @@ export function useAppMarkProfileFileUploaded(options?: {
   });
 }
 
-export function useCreateRateAndReviewAssignment(options?: {
-  onSuccess?: (data: CreateRateAndReviewAssignmentResponse) => void;
+export function useMarkCommonFileUploaded(options?: {
+  onSuccess?: (data: MarkJobRelatedFilesUploadedResponse) => void;
   onError?: (error: unknown) => void;
 }) {
-  const queryClient = useQueryClient();
   const regionId = useUserSessionStore((s) => s.session?.regionId);
+
   return useMutation({
-    ...createRateAndReviewAssignmentMutation({ client: apiClient }),
+    ...markJobRelatedFilesUploadedMutation({ client: apiClient }),
     mutationFn: async (fnOptions) => {
       const body = (
         regionId !== undefined
           ? { ...fnOptions?.body, regionId }
           : fnOptions?.body
       ) as (typeof fnOptions)["body"];
+
+      const { data } = await markJobRelatedFilesUploaded({
+        client: apiClient,
+        ...fnOptions,
+        body,
+        throwOnError: true,
+      });
+
+      return data!;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useCreateRateAndReviewAssignment(options?: {
+  onSuccess?: (data: CreateRateAndReviewAssignmentResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...createRateAndReviewAssignmentMutation({ client: apiClient }),
+    mutationFn: async (fnOptions) => {
+      const body = fnOptions?.body as (typeof fnOptions)["body"];
       const { data } = await createRateAndReviewAssignment({
         client: apiClient,
         ...fnOptions,
@@ -274,9 +302,9 @@ export function useGetUserRatingAndReviews(
     refetchOnMount: true,
     select: assignmentId
       ? (data) =>
-        Array.isArray(data)
-          ? data.filter((r) => r.jobAssignmentId === assignmentId)
-          : data
+          Array.isArray(data)
+            ? data.filter((r) => r.jobAssignmentId === assignmentId)
+            : data
       : undefined,
   });
 }
