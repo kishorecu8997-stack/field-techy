@@ -340,7 +340,7 @@ export function useClientGetJobs({
   return useQuery({
     ...clientGetJobsOptions({
       client: apiClient,
-      query: { jobId, jobStatus, regionId },
+      query: { jobId, jobStatus },
     }),
     enabled: enabled,
     staleTime: 0,
@@ -664,7 +664,7 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => {},
+    refetch: () => { },
   };
 }
 
