@@ -37,7 +37,9 @@ import { toast } from "react-toastify";
  */
 
 type StatusKind = "Hold" | "Flagged" | "Cancelled" | "Unknown";
-const getCurrentStatusKind = (status: string | null | undefined): StatusKind => {
+const getCurrentStatusKind = (
+  status: string | null | undefined,
+): StatusKind => {
   const s = (status ?? "").trim().toLowerCase();
   if (s === "cancel" || s === "cancelled") return "Cancelled";
   if (s === "flag" || s === "flagged") return "Flagged";
@@ -46,7 +48,7 @@ const getCurrentStatusKind = (status: string | null | undefined): StatusKind => 
 };
 
 const normalizeStatus = (
-  status: string
+  status: string,
 ): AdminUpdateJobStatusBody["status"] => {
   const normalized = status.toLowerCase();
   if (normalized === "cancel" || normalized === "cancelled") {
@@ -104,7 +106,10 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
     const previousStatus = current;
     const nextStatus = normalizeStatus(status);
 
-    if (normalizeStatus(current) === "Cancelled" && nextStatus !== "Cancelled") {
+    if (
+      normalizeStatus(current) === "Cancelled" &&
+      nextStatus !== "Cancelled"
+    ) {
       toast.error("Cannot update status of a Cancelled job");
       return;
     }
@@ -143,8 +148,8 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
                 error instanceof Error
                   ? error.message
                   : typeof error === "string"
-                  ? error
-                  : "Failed to update job status"
+                    ? error
+                    : "Failed to update job status",
               );
               close(false);
             }
@@ -237,41 +242,39 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
           const rawCurrent = rowStatuses[row.id] ?? row.status ?? "";
           const currentKind = getCurrentStatusKind(rawCurrent);
 
-          const statusOptions = AllJobStatus
-            .filter((option) => {
-              if (option.value === "Unhold" && currentKind !== "Hold") {
-                return false;
-              }
-              return true;
-            })
-            .map((option) => {
-              if (currentKind === "Cancelled") {
-                return {
-                  ...option,
-                  disabled: option.value !== "Cancelled",
-                };
-              }
+          const statusOptions = AllJobStatus.filter((option) => {
+            if (option.value === "Unhold" && currentKind !== "Hold") {
+              return false;
+            }
+            return true;
+          }).map((option) => {
+            if (currentKind === "Cancelled") {
+              return {
+                ...option,
+                disabled: option.value !== "Cancelled",
+              };
+            }
 
-              if (
-                option.value !== "Unhold" &&
-                currentKind !== "Unknown" &&
-                normalizeStatus(option.value) === currentKind
-              ) {
-                return {
-                  ...option,
-                  disabled: true,
-                };
-              }
+            if (
+              option.value !== "Unhold" &&
+              currentKind !== "Unknown" &&
+              normalizeStatus(option.value) === currentKind
+            ) {
+              return {
+                ...option,
+                disabled: true,
+              };
+            }
 
-              if (option.value === "Unhold") {
-                return {
-                  ...option,
-                  disabled: currentKind !== "Hold",
-                };
-              }
+            if (option.value === "Unhold") {
+              return {
+                ...option,
+                disabled: currentKind !== "Hold",
+              };
+            }
 
-              return option;
-            });
+            return option;
+          });
 
           return (
             <SelectMenu
@@ -298,7 +301,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
             className="p-2 bg-yellow-100 rounded-md cursor-pointer hover:bg-yellow-200 transition-colors"
             onClick={() =>
               navigate(
-                `${absoluteUrls.admin.home.manage_jobs_view}?jobId=${row.id}`
+                `${absoluteUrls.admin.home.manage_jobs_view}?jobId=${row.id}`,
               )
             }
             aria-label={`View job details for job ${row.id}`}
@@ -349,9 +352,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
               placeholder="Category"
               className="z-30"
               value={serviceCategoryId ? String(serviceCategoryId) : null}
-              onChange={(val) =>
-                setServiceCategoryId(val ? Number(val) : null)
-              }
+              onChange={(val) => setServiceCategoryId(val ? Number(val) : null)}
               options={categoryOptions}
             />
 
@@ -369,7 +370,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
                 value={filterType || null}
                 onChange={(val) =>
                   setFilterType(
-                    (val as AdminGetJobsQuery["jobType"]) || undefined
+                    (val as AdminGetJobsQuery["jobType"]) || undefined,
                   )
                 }
                 options={AllJobType}
