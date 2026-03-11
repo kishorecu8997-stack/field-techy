@@ -48,7 +48,10 @@ const InviteJob: React.FC = () => {
   const { data: states } = useStates();
   const { data: cities } = useCities();
 
-  const { data: jobsData } = useClientGetJobs("Posted");
+  const { data: jobsData } = useClientGetJobs({
+    jobStatus: "Posted",
+    enabled: true,
+  });
 
   const { mutateAsync: inviteEngineer } = useClientInviteEngineer({});
 

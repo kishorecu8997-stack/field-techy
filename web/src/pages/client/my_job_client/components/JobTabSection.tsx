@@ -1,15 +1,16 @@
 import { useClientGetAssignmentDetails } from "@/shared/apiServices/client/clientOpenApiService";
+import JobOverviewSection from "@/shared/components/JobOverviewSection";
 import TabComponent from "@/shared/components/TabComponent";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
-import JobOverviewSection from "@/shared/components/JobOverviewSection";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { JobTabSectionProps } from "../types";
 // import JobInfoSection from "./tab_components/JobInfoSection";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
+import type { JobOverviewProps } from "@/shared/components/types";
+import { useSearchParams } from "react-router-dom";
 import LocationMap from "./tab_components/LocationMap";
 import ManageProposalsTab from "./tab_components/ManageProposalsTab";
 import TimelineSection from "./tab_components/timeline_section/TimelineSection";
-import type { JobOverviewProps } from "@/shared/components/types";
-import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 
 //future use
 // // Helper function to get skill name from ID
@@ -311,6 +312,12 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   jobID,
   numberOfVacancy,
 }) => {
+  const [searchParams] = useSearchParams();
+  const regionIdParam = searchParams.get("regionId");
+
+  const parsedRegionId = Number(regionIdParam);
+  const regionId = Number.isFinite(parsedRegionId) ? parsedRegionId : undefined;
+
   const initialTab =
     activeTab && activeTab !== JOB_TAB_LABELS.timeline
       ? activeTab
@@ -325,8 +332,8 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     parsedJobId && !isNaN(parsedJobId) ? parsedJobId : undefined;
   const { data: assignmentsData, isLoading: isLoadingAssignments } =
     useClientGetAssignmentDetails(
-      { jobId: validJobId, assignmentId },
-      !!(validJobId || assignmentId),
+      { jobId: validJobId, regionId },
+      Boolean(validJobId && regionId),
     );
 
   // Fetch skills, tools, experience levels and engagement models from the lookup API
@@ -537,6 +544,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
                           jobId={validJobId}
                           hasProposals={false}
                           assignments={[assignment]}
+                          regionId={Number(job?.regionId)}
                         />
                       </div>
                     ));
@@ -593,6 +601,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
                 assignments={assignmentsData}
                 isLoading={isLoadingAssignments}
                 jobId={Number(jobID)}
+                regionId={job?.regionId ? Number(job.regionId) : undefined}
                 numberOfVacancy={numberOfVacancy ?? job?.vacancies ?? undefined}
               />
             ),
