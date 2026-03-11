@@ -502,7 +502,7 @@ export function useEngineerSearchJobs(
       query: { ...query, regionId: sessionRegionId },
     }),
     enabled: enabled,
-    refetchOnMount:"always"
+    refetchOnMount: "always",
   });
 }
 
