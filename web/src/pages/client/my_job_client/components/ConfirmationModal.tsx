@@ -28,7 +28,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   const descriptions = {
     hold: "This will temporarily pause the job until you decide to resume it",
     clone: "This will create a duplicate of the current item.",
-    cancel: "This action will remove or cancel the item permanently.",
+    cancel: "This action will remove or cancel the job permanently.",
   };
 
   const buttonTexts = {
