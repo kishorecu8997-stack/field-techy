@@ -17,6 +17,7 @@ import type { JobItem } from "../../home/types";
 import { getExperienceLevel, JOB_STATUSES } from "../types";
 import { Badge } from "./BadgeVariant";
 import { formatAmount } from "@/utils/currency";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 dayjs.extend(relativeTime);
 
@@ -169,268 +170,270 @@ const JobCard: React.FC<{
   userSkills = [],
   userTools = [],
 }) => {
-    const [showWhyPopover, setShowWhyPopover] = useState(false);
+  const [showWhyPopover, setShowWhyPopover] = useState(false);
+  const regionId = useUserSessionStore.getState().session?.regionId;
 
-    const { refetch } = useGetEngineerSavedJobs({
-      limit: 10,
-      page: 1,
-    });
+  const { refetch } = useGetEngineerSavedJobs({
+    limit: 10,
+    page: 1,
+  });
 
-    const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
-      onSuccess: (response) => {
-        onBookmarkChange?.();
-        refetch();
-        toast.success(
-          response?.status === "saved"
-            ? "Job saved successfully"
-            : "Job removed from saved",
-        );
-      },
-      onError: () => {
-        toast.error("Failed to update job status. Please try again.");
-      },
-    });
-
-    const jobData = useMemo(() => {
-      const jobRecord = job as unknown as Record<string, unknown>;
-
-      const getString = (key: string): string | undefined => {
-        const value = jobRecord[key];
-        return typeof value === "string" ? value : undefined;
-      };
-
-      const clientName = job.client?.contactPersonName || "-";
-
-      return {
-        id: job.id,
-        title: job.jobTitle || getString("title") || "",
-        clientName,
-        salary: job.salary,
-        status: job.status,
-        skills: job.skills,
-        tools: job.tools,
-        currencySymbol: job.currencySymbol,
-        isSaved: job.isSaved,
-        description: job.jobDescription || getString("description") || "",
-        postedTime: job.postedTime ? dayjs(job.postedTime).fromNow() : "Just now",
-        experience: job.experience,
-        duration: job.jobDuration || getString("duration"),
-        startDate: job.startDate || getString("startDate") || "",
-      };
-    }, [job]);
-
-    const matchScore = useMemo(() => {
-      return calculateMatchScore(
-        [...(jobData.skills || []), ...(jobData.tools || [])],
-        [...userSkills, ...userTools].map(String),
+  const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
+    onSuccess: (response) => {
+      onBookmarkChange?.();
+      refetch();
+      toast.success(
+        response?.status === "saved"
+          ? "Job saved successfully"
+          : "Job removed from saved",
       );
-    }, [jobData.skills, jobData.tools, userSkills, userTools]);
+    },
+    onError: () => {
+      toast.error("Failed to update job status. Please try again.");
+    },
+  });
 
-    const handleBookmarkClick = (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+  const jobData = useMemo(() => {
+    const jobRecord = job as unknown as Record<string, unknown>;
 
-      if (!job.id || isPending) return;
-
-      toggleSaveMutation({
-        body: {
-          jobId: Number(job.id),
-        },
-      });
+    const getString = (key: string): string | undefined => {
+      const value = jobRecord[key];
+      return typeof value === "string" ? value : undefined;
     };
-    const STATUS_VARIANT_MAP = {
-      new: "green",
-      offer: "blue",
-      applied: "yellow",
-      inprogress: "teal",
-      completed: "gray",
-      notified: "purple",
-      unallocated: "yellow",
-      partiallyAssigned: "amber",
-      assigned: "teal",
-      selected: "blue",
-      hold: "red",
-      draft: "gray",
-      canceled: "rose",
-      escalationInProgress: "pink",
-      workInProgress: "teal",
-      closed: "gray",
-    } as const;
 
-    const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
-    const statusKey = (
-      statusKeyRaw in STATUS_VARIANT_MAP ? statusKeyRaw : undefined
-    ) as keyof typeof STATUS_VARIANT_MAP | undefined;
-    const statusLabel = statusKey
-      ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
-      : job.status;
+    const clientName = job.client?.contactPersonName || "-";
 
-    const hasSalary = Boolean(jobData.salary) && jobData.salary !== "-";
+    return {
+      id: job.id,
+      title: job.jobTitle || getString("title") || "",
+      clientName,
+      salary: job.salary,
+      status: job.status,
+      skills: job.skills,
+      tools: job.tools,
+      currencySymbol: job.currencySymbol,
+      isSaved: job.isSaved,
+      description: job.jobDescription || getString("description") || "",
+      postedTime: job.postedTime ? dayjs(job.postedTime).fromNow() : "Just now",
+      experience: job.experience,
+      duration: job.jobDuration || getString("duration"),
+      startDate: job.startDate || getString("startDate") || "",
+    };
+  }, [job]);
 
-    return (
-      <>
-        <Link
-          id="recommendedJobs"
-          to={navigateToJob}
-          onClick={scrollToTop}
-          className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm mb-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
-        >
-          {/* HEADER */}
-          <div className="flex justify-between items-start gap-3 mb-3">
-            <div className="min-w-0 flex-1">
-              {/* Job title */}
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
-                  {jobData.title}
-                </h3>
+  const matchScore = useMemo(() => {
+    return calculateMatchScore(
+      [...(jobData.skills || []), ...(jobData.tools || [])],
+      [...userSkills, ...userTools].map(String),
+    );
+  }, [jobData.skills, jobData.tools, userSkills, userTools]);
 
-                {/* Job metadata */}
-                <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
-                  {jobData.status && (
-                    <>
-                      <Badge
-                        variant={
-                          statusKey ? STATUS_VARIANT_MAP[statusKey] : "gray"
-                        }
-                      >
-                        {statusLabel ?? job.status}
-                      </Badge>
-                    </>
-                  )}
-                  {jobData.duration && <span>| {jobData.duration}</span>}
-                  {/* Right-aligned: Match score & help button */}
-                  <div className="flex items-center gap-2">
-                    {matchScore > 0 && <MatchScoreRing score={matchScore} />}
-                    {matchScore > 0 && (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setShowWhyPopover(true);
-                        }}
-                        className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                        aria-label="Why is this job recommended?"
-                      >
-                        <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!job.id || isPending) return;
+
+    toggleSaveMutation({
+      body: {
+        jobId: Number(job.id),
+        regionId,
+      },
+    });
+  };
+  const STATUS_VARIANT_MAP = {
+    new: "green",
+    offer: "blue",
+    applied: "yellow",
+    inprogress: "teal",
+    completed: "gray",
+    notified: "purple",
+    unallocated: "yellow",
+    partiallyAssigned: "amber",
+    assigned: "teal",
+    selected: "blue",
+    hold: "red",
+    draft: "gray",
+    canceled: "rose",
+    escalationInProgress: "pink",
+    workInProgress: "teal",
+    closed: "gray",
+  } as const;
+
+  const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
+  const statusKey = (
+    statusKeyRaw in STATUS_VARIANT_MAP ? statusKeyRaw : undefined
+  ) as keyof typeof STATUS_VARIANT_MAP | undefined;
+  const statusLabel = statusKey
+    ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
+    : job.status;
+
+  const hasSalary = Boolean(jobData.salary) && jobData.salary !== "-";
+
+  return (
+    <>
+      <Link
+        id="recommendedJobs"
+        to={navigateToJob}
+        onClick={scrollToTop}
+        className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm mb-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
+      >
+        {/* HEADER */}
+        <div className="flex justify-between items-start gap-3 mb-3">
+          <div className="min-w-0 flex-1">
+            {/* Job title */}
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
+                {jobData.title}
+              </h3>
 
               {/* Job metadata */}
               <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
-                {jobData.clientName && (
-                  <span>
-                    Client:{" "}
-                    <strong className="text-gray-900 dark:text-white">
-                      {jobData.clientName}
-                    </strong>
-                  </span>
+                {jobData.status && (
+                  <>
+                    <Badge
+                      variant={
+                        statusKey ? STATUS_VARIANT_MAP[statusKey] : "gray"
+                      }
+                    >
+                      {statusLabel ?? job.status}
+                    </Badge>
+                  </>
                 )}
+                {jobData.duration && <span>| {jobData.duration}</span>}
+                {/* Right-aligned: Match score & help button */}
+                <div className="flex items-center gap-2">
+                  {matchScore > 0 && <MatchScoreRing score={matchScore} />}
+                  {matchScore > 0 && (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowWhyPopover(true);
+                      }}
+                      className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                      aria-label="Why is this job recommended?"
+                    >
+                      <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
+                    </button>
+                  )}
+                </div>
               </div>
+            </div>
+
+            {/* Job metadata */}
+            <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
+              {jobData.clientName && (
+                <span>
+                  Client:{" "}
+                  <strong className="text-gray-900 dark:text-white">
+                    {jobData.clientName}
+                  </strong>
+                </span>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* DESCRIPTION */}
-          <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
-            {jobData.description}
-          </p>
+        {/* DESCRIPTION */}
+        <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
+          {jobData.description}
+        </p>
 
-          {/* SKILLS & TOOLS */}
-          {job.skills?.length || job.tools?.length ? (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {jobData.skills?.slice(0, 5).map((skill, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 text-xs rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400"
-                >
-                  {skill}
-                </span>
-              ))}
-              {jobData.tools?.slice(0, 3).map((tool, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 text-xs rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400"
-                >
-                  {tool}
-                </span>
-              ))}
-            </div>
-          ) : null}
-
-          {hasSalary ? (
-            <div className="flex items-center gap-1.5 pb-2">
-              <span className="text-gray-500 font-bold dark:text-gray-200">
-                {formatAmount(jobData.salary, job.currencySymbol)}
+        {/* SKILLS & TOOLS */}
+        {job.skills?.length || job.tools?.length ? (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {jobData.skills?.slice(0, 5).map((skill, i) => (
+              <span
+                key={i}
+                className="px-3 py-1 text-xs rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400"
+              >
+                {skill}
               </span>
-            </div>
-          ) : null}
-          {/* FOOTER BAR */}
-          <div className="flex flex-wrap items-center justify-between bg-gray-100 dark:bg-gray-700/50 rounded-md p-3">
-            <div className="flex flex-wrap items-center gap-5">
-              <div className="flex items-start gap-1.5 min-w-0">
-                <IoLocationSharp className="h-4 w-4 mt-0.5 flex-shrink-0 text-gray-500" />
-                <div className="text-gray-800 dark:text-gray-200 break-words">
-                  <LocationDisplay
-                    countryId={job.countryId as number | undefined}
-                    stateId={job.stateId as number | undefined}
-                    cityId={job.cityId as number | undefined}
-                    workLocationName={job.location}
-                    fallback="-"
-                  />
-                </div>
+            ))}
+            {jobData.tools?.slice(0, 3).map((tool, i) => (
+              <span
+                key={i}
+                className="px-3 py-1 text-xs rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400"
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        {hasSalary ? (
+          <div className="flex items-center gap-1.5 pb-2">
+            <span className="text-gray-500 font-bold dark:text-gray-200">
+              {formatAmount(jobData.salary, job.currencySymbol)}
+            </span>
+          </div>
+        ) : null}
+        {/* FOOTER BAR */}
+        <div className="flex flex-wrap items-center justify-between bg-gray-100 dark:bg-gray-700/50 rounded-md p-3">
+          <div className="flex flex-wrap items-center gap-5">
+            <div className="flex items-start gap-1.5 min-w-0">
+              <IoLocationSharp className="h-4 w-4 mt-0.5 flex-shrink-0 text-gray-500" />
+              <div className="text-gray-800 dark:text-gray-200 break-words">
+                <LocationDisplay
+                  countryId={job.countryId as number | undefined}
+                  stateId={job.stateId as number | undefined}
+                  cityId={job.cityId as number | undefined}
+                  workLocationName={job.location}
+                  fallback="-"
+                />
               </div>
+            </div>
 
-              {job.slaLevel && (
-                <div className="flex items-center gap-1.5">
-                  <icons.active className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-                  <span className="text-gray-800 dark:text-gray-200">
-                    {job.slaLevel}
-                  </span>
-                </div>
-              )}
-
-              <div className="flex items-center gap-2">
-                <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                <span className="font-medium text-gray-800 dark:text-gray-200">
-                  {getExperienceLevel(
-                    jobData.experience ? Number(jobData.experience) : 0,
-                  )}
+            {job.slaLevel && (
+              <div className="flex items-center gap-1.5">
+                <icons.active className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                <span className="text-gray-800 dark:text-gray-200">
+                  {job.slaLevel}
                 </span>
-              </div>
-            </div>
-
-            {/* BOOKMARK */}
-            {showBookmark && (
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <div
-                  onClick={handleBookmarkClick}
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                  aria-label={
-                    jobData.isSaved ? "Remove bookmark" : "Add bookmark"
-                  }
-                >
-                  {jobData?.isSaved ? (
-                    <icons.bookmarkFilled className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  ) : (
-                    <icons.bookmark className="w-4 h-4" />
-                  )}
-                </div>
-                <span>{jobData.postedTime || "Just now"}</span>
               </div>
             )}
-          </div>
-        </Link>
 
-        {showWhyPopover && (
-          <WhyRecommendedPopover
-            score={matchScore}
-            onClose={() => setShowWhyPopover(false)}
-          />
-        )}
-      </>
-    );
-  };
+            <div className="flex items-center gap-2">
+              <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+              <span className="font-medium text-gray-800 dark:text-gray-200">
+                {getExperienceLevel(
+                  jobData.experience ? Number(jobData.experience) : 0,
+                )}
+              </span>
+            </div>
+          </div>
+
+          {/* BOOKMARK */}
+          {showBookmark && (
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div
+                onClick={handleBookmarkClick}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label={
+                  jobData.isSaved ? "Remove bookmark" : "Add bookmark"
+                }
+              >
+                {jobData?.isSaved ? (
+                  <icons.bookmarkFilled className="w-4 h-4 text-green-600 dark:text-green-400" />
+                ) : (
+                  <icons.bookmark className="w-4 h-4" />
+                )}
+              </div>
+              <span>{jobData.postedTime || "Just now"}</span>
+            </div>
+          )}
+        </div>
+      </Link>
+
+      {showWhyPopover && (
+        <WhyRecommendedPopover
+          score={matchScore}
+          onClose={() => setShowWhyPopover(false)}
+        />
+      )}
+    </>
+  );
+};
 
 export default JobCard;

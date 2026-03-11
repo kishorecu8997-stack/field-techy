@@ -9,7 +9,10 @@ import { toast } from "react-toastify";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils";
 import { AuthLogin } from "@/shared/components/auth/AuthLogin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginEmailFormData } from "../../validations/LoginEmail";
+import {
+  loginSchema,
+  type LoginEmailFormData,
+} from "../../validations/LoginEmail";
 
 /**
  * Login component

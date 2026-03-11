@@ -4,6 +4,10 @@ import {
   adminUpdateJobStatus,
   getCmsContent,
   adminGetClientsForManagement,
+  getExchangeRates,
+  updateExchangeRate,
+  getRateCards,
+  bulkCreateRateCards,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -76,6 +80,10 @@ import {
   type AdminGetJobLogsResponse,
   type AdminGetJobTransactionsData,
   type AdminGetJobTransactionsResponses,
+  type GetExchangeRatesData,
+  type GetExchangeRatesResponse,
+  type UpdateExchangeRateData,
+  type UpdateExchangeRateResponse,
   type AdminGetReportsResponse,
   type AdminGetReportsData,
   type AdminUpdateReportResponse,
@@ -94,6 +102,8 @@ import {
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
+  type BulkCreateRateCardsResponse,
+  type BulkCreateRateCardsData,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -160,6 +170,7 @@ import {
 import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
 import { useAdminCountryStore } from "../../store/useAdminCountryStore";
+
 
 export const LookupTable = {
   Countries: "countries",
@@ -242,7 +253,7 @@ export function useAdminCreateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -267,7 +278,7 @@ export function useAdminUpdateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -292,7 +303,7 @@ export function useAdminDeleteServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -791,11 +802,11 @@ export function useAdminGetJobDetails(
 
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
     ? {
-      ...query,
-      regionId:
-        query?.regionId ??
-        (selectedRegionId ? Number(selectedRegionId) : undefined),
-    }
+        ...query,
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
+      }
     : { jobId: 0 };
 
   return useQuery({
@@ -1010,11 +1021,11 @@ export function useAdminGetJobLogs(
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
-      ...query,
-      regionId:
-        query?.regionId ??
-        (selectedRegionId ? Number(selectedRegionId) : undefined),
-    }
+        ...query,
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
+      }
     : { jobId: 0 };
 
   return useQuery({
@@ -1410,6 +1421,33 @@ export function useAdminDeleteClientMutation(options?: {
   });
 }
 
+export type AdminExchangeRatesQuery = NonNullable<
+  GetExchangeRatesData["query"]
+>;
+
+export function useAdminExchangeRates(
+  query?: AdminExchangeRatesQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: GetExchangeRatesResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: [...queryKeys.admin.exchangeRates, query],
+    queryFn: async ({ signal }) => {
+      const { data } = await getExchangeRates({
+        client: apiClient,
+        query,
+        signal,
+        throwOnError: true,
+      });
+      return data as GetExchangeRatesResponse;
+    },
+    ...options,
+  });
+}
+
 export type AdminAddEngineerResponse = AdminCreateEngineerResponse;
 export type AdminAddEngineerBody = AdminCreateEngineerData["body"];
 
@@ -1438,6 +1476,37 @@ export function useAdminAddEngineer(options?: {
   });
 }
 
+
+export type UpdateExchangeRateBody = NonNullable<
+  UpdateExchangeRateData["body"]
+>;
+
+export function useUpdateExchangeRate(options?: {
+  onSuccess?: (data: UpdateExchangeRateResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: { currencyId: number; rate: string }) => {
+      const { data } = await updateExchangeRate({
+        client: apiClient,
+        path: { currencyId: params.currencyId },
+        body: { rate: params.rate },
+        throwOnError: true,
+      });
+      return data as UpdateExchangeRateResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.exchangeRates,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+      
 export type AdminUpdateEngineerBody = AdminUpdateEngineerData["body"];
 
 export function useAdminUpdateEngineer(options?: {
@@ -1539,6 +1608,29 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
   });
 }
 
+// Rate Card - Create
+export function useAdminCreateRateCard(options?: {
+  onSuccess?: (data: BulkCreateRateCardsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: { body: BulkCreateRateCardsData["body"]; query: BulkCreateRateCardsData["query"] }) => {
+      const response = await bulkCreateRateCards({
+        client: apiClient,
+        body: data.body,
+        query: data.query,
+        throwOnError: true,
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
+      options?.onSuccess?.(data);
+          },
+          onError: options?.onError,
+        });
+      } 
 export function useAdminGetPendingPayments(
   query?: AdminGetPendingPaymentsData["query"] & { regionId?: number },
   options?: {
@@ -1601,7 +1693,28 @@ export function useAdminApprovePayment(options?: {
         type: "all",
       });
       options?.onSuccess?.(data);
+          },
+          onError: options?.onError,
+        });
+      }
+      
+
+// Rate Card - Get All
+export function useGetRateCards(
+  params?: { page?: number; limit?: number; search?: string; countryId?: number; serviceCategoryId?: number },
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: ["admin", "rateCards", params],
+    queryFn: async ({ signal }) => {
+      const { data } = await getRateCards({
+        client: apiClient,
+        query: params,
+        signal,
+        throwOnError: true,
+      });
+      return data;
     },
-    onError: options?.onError,
+    enabled: options?.enabled ?? true,
   });
 }
