@@ -15,6 +15,7 @@ import {
   type AppVerifyLoginOtpResponse,
   type AppVerifyOtpResponse,
   type CreateRateAndReviewAssignmentResponse,
+  type MarkJobRelatedFilesUploadedResponse
 } from "@/api";
 import {
   appCheckExistenceOptions,
@@ -32,11 +33,14 @@ import {
   createRateAndReviewAssignmentMutation,
   getUserRatingAndReviewsOptions,
   getUserRatingAndReviewsQueryKey,
+  markJobRelatedFilesUploadedMutation,
 } from "@/api/@tanstack/react-query.gen";
 import {
   appCheckExistence,
   appDownloadProfileFile as appDownloadProfileFileSdk,
+  markJobRelatedFilesUploaded,
 } from "@/api/sdk.gen";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
 
@@ -176,6 +180,7 @@ export function useAppDownloadProfileFile(
     }),
     enabled: enabled && !!fileType,
     staleTime: 0,
+    refetchOnMount: true,
   });
 }
 
@@ -226,6 +231,35 @@ export function useAppMarkProfileFileUploaded(options?: {
       client: apiClient,
       headers: { authorization: "" },
     }),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useMarkCommonFileUploaded(options?: {
+  onSuccess?: (data: MarkJobRelatedFilesUploadedResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const regionId = useUserSessionStore((s) => s.session?.regionId);
+
+  return useMutation({
+    ...markJobRelatedFilesUploadedMutation({ client: apiClient }),
+    mutationFn: async (fnOptions) => {
+      const body = (
+        regionId !== undefined
+          ? { ...fnOptions?.body, regionId }
+          : fnOptions?.body
+      ) as (typeof fnOptions)["body"];
+
+      const { data } = await markJobRelatedFilesUploaded({
+        client: apiClient,
+        ...fnOptions,
+        body,
+        throwOnError: true,
+      });
+
+      return data!;
+    },
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });

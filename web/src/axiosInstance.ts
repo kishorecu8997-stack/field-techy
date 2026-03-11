@@ -19,7 +19,7 @@ const axiosInstance = axios.create({
 
 export async function addAuthTokenIfExists(cfg: InternalAxiosRequestConfig) {
   // Read token at request time so we always use the latest auth token
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("auth_token");
   if (token) {
     cfg.headers = cfg.headers || {};
     (cfg.headers as any).Authorization = `Bearer ${token}`;
