@@ -9,6 +9,7 @@ import {
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import SectionHeader from "../../SectionHeader";
 import { icons } from "@/config/icons";
+import { toast } from "react-toastify";
 
 // Helper to check if a file is a PDF
 const isPdfFile = (file: File): boolean => {
@@ -61,13 +62,9 @@ const RequirementsSection = ({
   const toolDetailsSectionRef = useRef<HTMLDivElement>(null);
   const toolEntriesListRef = useRef<HTMLDivElement>(null);
 
+  // Tool section is completely optional - no validation required for toolEntriesCount
   useEffect(() => {
-    register("toolEntriesCount", {
-      validate: (val) => {
-        if (Number(val) > 0) return true;
-        return "Add at least one tool entry before submitting";
-      },
-    });
+    register("toolEntriesCount");
   }, [register]);
 
   useEffect(() => {
@@ -105,12 +102,16 @@ const RequirementsSection = ({
       !!toolId ||
       (!!budget && Number(budget) > 0) ||
       (files && files.length > 0);
+
+    // If no content at all, show toast message and return
     if (!hasAnyField) {
+      toast.error("Please fill Tools Details to add Tool Entry");
       return;
     }
 
     let hasError = false;
 
+    // If user has partial content, validate all required fields
     if (!toolId) {
       setError("tools", { type: "manual", message: "Tool Name is required" });
       hasError = true;
@@ -275,9 +276,8 @@ const RequirementsSection = ({
           label="Skills"
           options={skillOptions}
         />
-        <SectionHeader title="Tool Details" />
+        <SectionHeader title="Tool Details (Optional)" />
         <SelectField
-          required={toolEntries.length === 0 || hasToolContent}
           name="tools"
           label="Tool Name"
           placeholder="Select Tool"
@@ -291,7 +291,6 @@ const RequirementsSection = ({
           placeholder="Upload tool files"
           disabled={isDisable}
           key={toolImageInputKey}
-          required={toolEntries.length === 0 || hasToolContent}
         />
       </div>
       <InputField
@@ -318,7 +317,6 @@ const RequirementsSection = ({
             return true;
           },
         }}
-        required={toolEntries.length === 0 || hasToolContent}
         disabled={isDisable}
       />
       <div className="flex justify-end gap-2">

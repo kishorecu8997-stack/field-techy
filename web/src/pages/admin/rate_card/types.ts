@@ -2,9 +2,7 @@ export interface PricingTier {
   level: string;
   description: string;
   hourly: number | "";
-  halfDay: number | "";
-  fullDay: number | "";
-  weekly: number | "";
+  daily: number | "";
   monthly: number | "";
 }
 
@@ -31,23 +29,89 @@ export interface RateCardProps {
   skillSet: string;
   region: string;
   location: string;
-  rate: string;
-  rateType: string;
+  experienceLevel: string;
+  hourly: string;
+  daily: string;
+  monthly: string;
   project: string;
   createdDate: string;
   status: boolean;
+  experienceLevels?: string[];
+  country?: string;
+  serviceCategoryId?: number;
+  countryId?: number;
+  experienceLevelRates?: {
+    L1: { hourly: string; daily: string; monthly: string };
+    L2: { hourly: string; daily: string; monthly: string };
+    L3: { hourly: string; daily: string; monthly: string };
+  };
 }
 
 export interface PricingFormValues {
+  rateType?: string;
+  country?: string;
+  serviceCategory?: string;
   skills: SkillPricing[];
 }
 
 export type PricingRelations = {
   hourly?: number;
-  halfDay?: number;
-  fullDay?: number;
-  weekly?: number;
+  daily?: number;
   monthly?: number;
 };
 
 export type PricingField = keyof PricingRelations;
+
+// API Request/Response types
+export interface CreateRateCardRate {
+  [key: string]: number;
+}
+
+export interface CreateRateCardExperienceLevel {
+  levelOrder: number;
+  label: string;
+  rates: CreateRateCardRate;
+}
+
+export interface CreateRateCardParams {
+  countryId: number;
+  serviceCategoryId: number;
+  experienceLevels: CreateRateCardExperienceLevel[];
+}
+
+export interface CreateRateCardResponse {
+  message: string;
+  id?: number;
+}
+
+export interface RateCardParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
+export interface RateCardRate {
+  modelName: string;
+  rate: string;
+  engagementModelId: number;
+}
+
+export interface RateCardDataItem {
+  id: number;
+  serviceCategory: string;
+  region: string;
+  country: string;
+  experienceLevels: string[];
+  rates: RateCardRate[];
+  createdDate: string;
+  serviceCategoryId: number;
+  countryId: number;
+  experienceLevelId: number;
+}
+
+export interface RateCardsResponse {
+  data: RateCardDataItem[];
+  total: number;
+  page: number;
+  limit: number;
+}

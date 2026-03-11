@@ -13,6 +13,7 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useAdminProfile } from "@/shared/store/useAdminProfileStore";
 import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Header
@@ -35,6 +36,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const subRegionId = useUserSessionStore((s) => s.session?.regionId);
 
   const adminProfile = useAdminProfile();
   const { data: adminLookupData } = useAppGetLookupData(LookupTable.Regions);
@@ -97,19 +99,20 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
       </div>
 
       <div className="flex items-center space-x-4 sm:space-x-6">
-        <SelectMenu
-          placeholder="Select Region"
-          className="w-36"
-          options={
-            adminLookupData?.map((item) => ({
-              value: item.id.toString(),
-              label: item.name ?? "",
-            })) ?? []
-          }
-          value={regionId ?? adminLookupData?.[0]?.id.toString() ?? null}
-          onChange={handleRegionChange}
-        />
-
+        {!subRegionId && (
+          <SelectMenu
+            placeholder="Select Region"
+            className="w-36"
+            options={
+              adminLookupData?.map((item) => ({
+                value: item.id.toString(),
+                label: item.name ?? "",
+              })) ?? []
+            }
+            value={regionId ?? adminLookupData?.[0]?.id.toString() ?? null}
+            onChange={handleRegionChange}
+          />
+        )}
         <div
           className="text-xl cursor-pointer"
           ref={bellRef}

@@ -183,8 +183,10 @@ export interface TimelineRevisionData {
   logId: number;
   content: string | null;
   attachmentUrl: string | null | undefined;
+  attachmentName: string | null | undefined;
   clientComment: string | null;
   clientAttachmentUrl: string | null | undefined;
+  clientAttachmentName: string | null | undefined;
   createdAt: string | null;
   updatedAt: string | null;
   status: string;

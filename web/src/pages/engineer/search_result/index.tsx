@@ -45,6 +45,8 @@ const parseFiltersFromUrl = (
   const rating = searchParams.get("rating");
   if (rating) filters.rating = rating.split(",").map(Number);
 
+  filters.jobTypeEnum = searchParams.get("jobTypeEnum") || "";
+
   // Parse single value fields
   const experience = searchParams.get("experience");
   if (experience) filters.experience = Number(experience);
@@ -88,6 +90,9 @@ const filtersToSearchParams = (filters: Filters): URLSearchParams => {
   }
   if (filters.skills.length > 0) {
     params.set("skills", filters.skills.join(","));
+  }
+  if (filters.jobTypeEnum) {
+    params.set("jobTypeEnum", filters.jobTypeEnum);
   }
   if (filters.rating.length > 0) {
     params.set("rating", filters.rating.join(","));
@@ -149,6 +154,7 @@ const SearchResult = () => {
       tools: [],
       experienceLevel: [],
       jobType: [],
+      jobTypeEnum: "",
       locationType: urlFilters.locationType || [],
       locationRadius: 0,
       budgetRange: urlFilters.budgetRange || { min: 0, max: 10000 },
@@ -163,7 +169,7 @@ const SearchResult = () => {
   useEffect(() => {
     isUpdatingFromUrl.current = true;
     const urlFilters = parseFiltersFromUrl(searchParams);
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       q: urlFilters.q ?? "",
       country: urlFilters.country ?? "",
@@ -178,6 +184,7 @@ const SearchResult = () => {
       experience: urlFilters.experience ?? 0,
       budgetType: urlFilters.budgetType ?? null,
       skills: urlFilters.skills ?? [],
+      jobTypeEnum: urlFilters.jobTypeEnum ?? "",
       locationType: urlFilters.locationType ?? [],
       budgetRange: urlFilters.budgetRange ?? { min: 0, max: 10000 },
     }));
@@ -202,15 +209,19 @@ const SearchResult = () => {
 
   // ── Location ID Resolution ──────────────────────────────────────────────
   const { data: countryData = [] } = useCountries();
-  const { data: stateData = [] } = useStates(filters.countryId, { enabled: !!filters.countryId });
-  const { data: cityData = [] } = useCities(filters.stateId, { enabled: !!filters.stateId });
+  const { data: stateData = [] } = useStates(filters.countryId, {
+    enabled: !!filters.countryId,
+  });
+  const { data: cityData = [] } = useCities(filters.stateId, {
+    enabled: !!filters.stateId,
+  });
 
   // Resolve Country ID from name
   useEffect(() => {
     if (countryData.length > 0 && filters.country && !filters.countryId) {
-      const found = countryData.find(c => c.name === filters.country);
+      const found = countryData.find((c) => c.name === filters.country);
       if (found) {
-        setFilters(prev => ({ ...prev, countryId: found.id }));
+        setFilters((prev) => ({ ...prev, countryId: found.id }));
       }
     }
   }, [countryData, filters.country]);
@@ -218,9 +229,9 @@ const SearchResult = () => {
   // Resolve State ID from name
   useEffect(() => {
     if (stateData.length > 0 && filters.state && !filters.stateId) {
-      const found = stateData.find(s => s.name === filters.state);
+      const found = stateData.find((s) => s.name === filters.state);
       if (found) {
-        setFilters(prev => ({ ...prev, stateId: found.id }));
+        setFilters((prev) => ({ ...prev, stateId: found.id }));
       }
     }
   }, [stateData, filters.state]);
@@ -228,9 +239,9 @@ const SearchResult = () => {
   // Resolve City ID from name
   useEffect(() => {
     if (cityData.length > 0 && filters.city && !filters.cityId) {
-      const found = cityData.find(c => c.name === filters.city);
+      const found = cityData.find((c) => c.name === filters.city);
       if (found) {
-        setFilters(prev => ({ ...prev, cityId: found.id }));
+        setFilters((prev) => ({ ...prev, cityId: found.id }));
       }
     }
   }, [cityData, filters.city]);
@@ -318,11 +329,11 @@ const SearchResult = () => {
     const saved = localStorage.getItem("searchHistory");
     return saved
       ? JSON.parse(saved).map(
-        (item: { id: string; filters: Filters; timestamp: string }) => ({
-          ...item,
-          timestamp: new Date(item.timestamp),
-        }),
-      )
+          (item: { id: string; filters: Filters; timestamp: string }) => ({
+            ...item,
+            timestamp: new Date(item.timestamp),
+          }),
+        )
       : [];
   });
 
@@ -364,6 +375,7 @@ const SearchResult = () => {
       tools: [],
       experienceLevel: [],
       jobType: [],
+      jobTypeEnum: "",
       locationType: [],
       locationRadius: 0,
       budgetRange: { min: 0, max: 10000 },
@@ -443,12 +455,13 @@ const SearchResult = () => {
           onClearHistory={handleClearHistory}
         />
 
-        <div className="mb-4">
+        <div className="mb-4 hidden">
           <Button
             leftIcon={
               <svg
-                className={`w-4 h-4 transition-transform ${showAdvancedSearch ? "rotate-180" : ""
-                  }`}
+                className={`w-4 h-4 transition-transform ${
+                  showAdvancedSearch ? "rotate-180" : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
