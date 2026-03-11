@@ -32,6 +32,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const navigate = useNavigate();
   const logout = useUserSessionStore((s) => s.logout);
+  const subRegionId = useUserSessionStore((s) => s.session?.regionId);
 
   const { showPopup } = usePopupStore();
 
@@ -64,13 +65,19 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   // Auto-expand if any child is active
   useEffect(() => {
     const newOpen = { ...openMenus };
-    menuItems.forEach((item) => {
-      if (item.children?.some((child) => child.path === location.pathname)) {
-        newOpen[item.name] = true;
-      }
-    });
+    menuItems
+      .filter((item) => !(item.name === "Sub Admins" && subRegionId))
+      .forEach((item) => {
+        if (
+          item.children
+            ?.filter((child) => !(child.name === "Sub Admins" && subRegionId))
+            .some((child) => child.path === location.pathname)
+        ) {
+          newOpen[item.name] = true;
+        }
+      });
     setOpenMenus(newOpen);
-  }, [location.pathname]);
+  }, [location.pathname, subRegionId]);
 
   const toggle = (name: string) => {
     setOpenMenus((prev) => ({
@@ -89,91 +96,98 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
       {/* menu items */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
         <div className="p-3 space-y-1">
-          {menuItems.map((item) => {
-            const hasChildren = !!item.children;
-            const isExpanded = openMenus[item.name];
+          {menuItems
+            .filter((item) => !(item.name === "Sub Admins" && subRegionId))
+            .map((item) => {
+              const hasChildren = !!item.children;
+              const isExpanded = openMenus[item.name];
 
-            if (hasChildren) {
-              return (
-                <div key={item.name} className="w-full relative">
-                  <SidebarTooltip text={item.name} active={isCollapsed}>
-                    <div
-                      onClick={() => toggle(item.name)}
-                      className={`flex group relative items-center cursor-pointer w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
-                        isCollapsed
-                          ? "justify-center px-1 gap-2"
-                          : "justify-between px-3"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span>{item.icon}</span>
-                        {!isCollapsed && <span>{item.name}</span>}
+              if (hasChildren) {
+                return (
+                  <div key={item.name} className="w-full relative">
+                    <SidebarTooltip text={item.name} active={isCollapsed}>
+                      <div
+                        onClick={() => toggle(item.name)}
+                        className={`flex group relative items-center cursor-pointer w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
+                          isCollapsed
+                            ? "justify-center px-1 gap-2"
+                            : "justify-between px-3"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span>{item.icon}</span>
+                          {!isCollapsed && <span>{item.name}</span>}
+                        </div>
+                        <HiChevronDown
+                          className={`transition-transform ${
+                            isCollapsed ? "text-xs" : "text-xl"
+                          } ${isExpanded ? "rotate-180" : ""}`}
+                        />
                       </div>
-                      <HiChevronDown
-                        className={`transition-transform ${
-                          isCollapsed ? "text-xs" : "text-xl"
-                        } ${isExpanded ? "rotate-180" : ""}`}
-                      />
-                    </div>
-                  </SidebarTooltip>
+                    </SidebarTooltip>
 
-                  {/* Submenu Items */}
-                  {isExpanded && (
-                    <div
-                      className={`mt-1 space-y-1 ${
-                        isCollapsed ? "ml-3" : "ml-6"
-                      }`}
-                    >
-                      {item.children?.map((child) => (
-                        <SidebarTooltip
-                          key={child.path}
-                          text={child.name}
-                          active={isCollapsed}
-                        >
-                          <NavLink
-                            to={child.path!}
-                            className={({ isActive }) =>
-                              `flex group relative items-center gap-3 py-2 rounded-lg w-full ${
-                                isActive
-                                  ? "bg-[#ffffff] text-gray-800 font-medium"
-                                  : "text-white hover:bg-white/10"
-                              } ${isCollapsed ? "justify-center px-2" : "px-3"}`
-                            }
-                          >
-                            <span>{child.icon}</span>
-                            {!isCollapsed && <span>{child.name}</span>}
-                          </NavLink>
-                        </SidebarTooltip>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            }
+                    {/* Submenu Items */}
+                    {isExpanded && (
+                      <div
+                        className={`mt-1 space-y-1 ${
+                          isCollapsed ? "ml-3" : "ml-6"
+                        }`}
+                      >
+                        {item.children
+                          ?.filter(
+                            (child) =>
+                              !(child.name === "Sub Admins" && subRegionId),
+                          )
+                          .map((child) => (
+                            <SidebarTooltip
+                              key={child.path}
+                              text={child.name}
+                              active={isCollapsed}
+                            >
+                              <NavLink
+                                to={child.path!}
+                                className={({ isActive }) =>
+                                  `flex group relative items-center gap-3 py-2 rounded-lg w-full ${
+                                    isActive
+                                      ? "bg-[#ffffff] text-gray-800 font-medium"
+                                      : "text-white hover:bg-white/10"
+                                  } ${isCollapsed ? "justify-center px-2" : "px-3"}`
+                                }
+                              >
+                                <span>{child.icon}</span>
+                                {!isCollapsed && <span>{child.name}</span>}
+                              </NavLink>
+                            </SidebarTooltip>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
 
-            // Regular item (no children)
-            return (
-              <SidebarTooltip
-                key={item.path}
-                text={item.name}
-                active={isCollapsed}
-              >
-                <NavLink
-                  to={item.path!}
-                  className={({ isActive }) =>
-                    `flex items-center group relative gap-3 py-2 rounded-lg w-full ${
-                      isActive
-                        ? "bg-white text-gray-800 font-medium"
-                        : "text-white hover:bg-white/10"
-                    } ${isCollapsed ? "justify-center px-2" : "px-3"}`
-                  }
+              // Regular item (no children)
+              return (
+                <SidebarTooltip
+                  key={item.path}
+                  text={item.name}
+                  active={isCollapsed}
                 >
-                  <span>{item.icon}</span>
-                  {!isCollapsed && <span>{item.name}</span>}
-                </NavLink>
-              </SidebarTooltip>
-            );
-          })}
+                  <NavLink
+                    to={item.path!}
+                    className={({ isActive }) =>
+                      `flex items-center group relative gap-3 py-2 rounded-lg w-full ${
+                        isActive
+                          ? "bg-white text-gray-800 font-medium"
+                          : "text-white hover:bg-white/10"
+                      } ${isCollapsed ? "justify-center px-2" : "px-3"}`
+                    }
+                  >
+                    <span>{item.icon}</span>
+                    {!isCollapsed && <span>{item.name}</span>}
+                  </NavLink>
+                </SidebarTooltip>
+              );
+            })}
         </div>
       </div>
 

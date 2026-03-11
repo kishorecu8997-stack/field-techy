@@ -115,6 +115,12 @@ export const AllJobStatus = [
     icon: icons.hold,
   },
   {
+    value: "Unhold",
+    label: "Unhold",
+    bg: "bg-green-100 text-green-700",
+    icon: icons.hold,
+  },
+  {
     value: "Flagged",
     label: "Flag",
     bg: "bg-orange-100 text-orange-700",

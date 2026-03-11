@@ -87,7 +87,11 @@ const SkillAccordion: React.FC<{
   };
 
   return (
-    <Accordion title={skill.name} remove={() => handleRemove(skill)}>
+    <Accordion
+      title={skill.name}
+      remove={() => handleRemove(skill)}
+      showRemove={!isView}
+    >
       <PricingTable
         control={control}
         index={index}

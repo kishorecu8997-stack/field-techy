@@ -45,6 +45,8 @@ const parseFiltersFromUrl = (
   const rating = searchParams.get("rating");
   if (rating) filters.rating = rating.split(",").map(Number);
 
+  filters.jobTypeEnum = searchParams.get("jobTypeEnum") || "";
+
   // Parse single value fields
   const experience = searchParams.get("experience");
   if (experience) filters.experience = Number(experience);
@@ -88,6 +90,9 @@ const filtersToSearchParams = (filters: Filters): URLSearchParams => {
   }
   if (filters.skills.length > 0) {
     params.set("skills", filters.skills.join(","));
+  }
+  if (filters.jobTypeEnum) {
+    params.set("jobTypeEnum", filters.jobTypeEnum);
   }
   if (filters.rating.length > 0) {
     params.set("rating", filters.rating.join(","));
@@ -149,6 +154,7 @@ const SearchResult = () => {
       tools: [],
       experienceLevel: [],
       jobType: [],
+      jobTypeEnum: "",
       locationType: urlFilters.locationType || [],
       locationRadius: 0,
       budgetRange: urlFilters.budgetRange || { min: 0, max: 10000 },
@@ -178,6 +184,7 @@ const SearchResult = () => {
       experience: urlFilters.experience ?? 0,
       budgetType: urlFilters.budgetType ?? null,
       skills: urlFilters.skills ?? [],
+      jobTypeEnum: urlFilters.jobTypeEnum ?? "",
       locationType: urlFilters.locationType ?? [],
       budgetRange: urlFilters.budgetRange ?? { min: 0, max: 10000 },
     }));
@@ -368,6 +375,7 @@ const SearchResult = () => {
       tools: [],
       experienceLevel: [],
       jobType: [],
+      jobTypeEnum: "",
       locationType: [],
       locationRadius: 0,
       budgetRange: { min: 0, max: 10000 },
@@ -447,7 +455,7 @@ const SearchResult = () => {
           onClearHistory={handleClearHistory}
         />
 
-        <div className="mb-4">
+        <div className="mb-4 hidden">
           <Button
             leftIcon={
               <svg
