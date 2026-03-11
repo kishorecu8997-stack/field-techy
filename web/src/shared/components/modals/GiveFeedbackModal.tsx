@@ -40,9 +40,6 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
   regionId,
 }) => {
 
-  // const [searchParams] = useSearchParams();
-  // const regionId = searchParams.get("regionId");
-
   const { mutate: submitFeedback, isPending } =
     useCreateRateAndReviewAssignment({
       onSuccess: () => {

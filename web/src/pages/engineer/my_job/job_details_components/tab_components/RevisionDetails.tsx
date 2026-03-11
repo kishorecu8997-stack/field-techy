@@ -23,8 +23,6 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
   // Get revisions from the update object
   const revisions = update.revisions || [];
 
-  console.log("revisionUpdateEntry", revisionUpdateEntry, update)
-
   return (
     <div className="mt-3 pl-4 border-l border-gray-200">
       {/* Show revision count if there are multiple revisions */}

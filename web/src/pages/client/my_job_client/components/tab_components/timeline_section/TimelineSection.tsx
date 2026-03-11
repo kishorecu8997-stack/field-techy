@@ -78,7 +78,9 @@ const TimelineSection: React.FC<{
 }> = ({ assignmentId, jobId, hasProposals = false, assignments }) => {
 
   const [searchParams] = useSearchParams();
-  const regionIdParam = searchParams.get("regionId");
+  const regionIdfromParam = searchParams.get("regionId");
+
+  const regionIdParam = regionIdfromParam ? Number(regionIdfromParam) : undefined;
 
   const queryClient = useQueryClient();
   const [_isProgressCollapsed, setIsProgressCollapsed] = useState(false);
@@ -182,7 +184,7 @@ const TimelineSection: React.FC<{
     data: fetchedAssignmentDetailsFromApi,
     refetch: refetchAssignmentDetails,
   } = useClientGetAssignmentDetails(
-    { jobId: validJobId, regionId: Number(regionIdParam) },
+    { jobId: validJobId, regionId: regionIdParam },
     !!(validJobId || regionIdParam),
   );
 
@@ -200,7 +202,7 @@ const TimelineSection: React.FC<{
   const { data: jobLogs, isLoading: isLoadingLogs } = useGetJobLogs(
     effectiveAssignmentId,
     shouldFetchLogs,
-    Number(regionIdParam)
+    regionIdParam
   );
 
 
@@ -214,11 +216,11 @@ const TimelineSection: React.FC<{
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
-            query: { regionId: Number(regionIdParam) },
+            query: { regionId: regionIdParam },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId: effectiveAssignmentId },
-            query: { regionId: Number(regionIdParam) },
+            query: { regionId: regionIdParam },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
@@ -245,11 +247,11 @@ const TimelineSection: React.FC<{
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
-            query: { regionId: Number(regionIdParam) },
+            query: { regionId: regionIdParam },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId: effectiveAssignmentId },
-            query: { regionId: Number(regionIdParam) },
+            query: { regionId: regionIdParam },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
@@ -270,11 +272,11 @@ const TimelineSection: React.FC<{
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
-            query: { regionId: Number(regionIdParam) },
+            query: { regionId: regionIdParam },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId: effectiveAssignmentId },
-            query: { regionId: Number(regionIdParam) },
+            query: { regionId: regionIdParam },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
@@ -298,11 +300,11 @@ const TimelineSection: React.FC<{
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
-            query: { regionId: Number(regionIdParam) },
+            query: { regionId: regionIdParam },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId: effectiveAssignmentId },
-            query: { regionId: Number(regionIdParam) },
+            query: { regionId: regionIdParam },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
@@ -518,7 +520,7 @@ const TimelineSection: React.FC<{
         progressLog.logType === "progress_update" &&
         logStatus === "revision_requested"
       ) {
-        title = progressLog.logType || "Revision Requested";
+        title = "Revision Requested";
       }
 
       return {
@@ -1158,7 +1160,7 @@ const TimelineSection: React.FC<{
             logId: currentRevisionLogId,
             action: "request_revision",
             clientComment: notes,
-            regionId: Number(regionIdParam),
+            regionId: regionIdParam,
             clientAttachment: attachment?.[0]
               ? {
                 filename: attachment[0].name,
@@ -1183,7 +1185,7 @@ const TimelineSection: React.FC<{
               target: "client_revision",
               logId: currentRevisionLogId,
               revisionId: response?.revisionId,
-              regionId: Number(regionIdParam)
+              regionId: regionIdParam
             },
           });
         }
@@ -1204,7 +1206,7 @@ const TimelineSection: React.FC<{
               revisionId: revisionId,
               action: "request_revision",
               clientComment: notes,
-              regionId: Number(regionIdParam),
+              regionId: regionIdParam,
               clientAttachment: attachment?.[0]
                 ? {
                   filename: attachment[0].name,
@@ -1229,7 +1231,7 @@ const TimelineSection: React.FC<{
                 target: "client_revision",
                 logId,
                 revisionId: response?.revisionId || revisionId,
-                regionId: Number(regionIdParam)
+                regionId: regionIdParam
               },
             });
           }
@@ -1310,7 +1312,7 @@ const TimelineSection: React.FC<{
           requestId: currentBreakRequestId,
           action: "approve",
           approverComment: shortBreakNotes,
-          regionId: Number(regionIdParam),
+          regionId: regionIdParam,
         },
       });
       setShortBreakStatuses((prev) => ({
@@ -1343,7 +1345,7 @@ const TimelineSection: React.FC<{
           requestId: currentBreakRequestId,
           action: "reject",
           approverComment: shortBreakRejectNotes,
-          regionId: Number(regionIdParam),
+          regionId: regionIdParam,
         },
       });
       setShortBreakStatuses((prev) => ({
@@ -1374,7 +1376,7 @@ const TimelineSection: React.FC<{
           assignmentId: effectiveAssignmentId,
           pendingApproval: "submission",
           action: "approve",
-          regionId: Number(regionIdParam),
+          regionId: regionIdParam,
         },
       });
     }
@@ -1397,7 +1399,7 @@ const TimelineSection: React.FC<{
           assignmentId: effectiveAssignmentId,
           pendingApproval: "submission",
           action: "reject",
-          regionId: Number(regionIdParam),
+          regionId: regionIdParam,
         },
       });
     }
@@ -1429,7 +1431,7 @@ const TimelineSection: React.FC<{
           assignmentId: effectiveAssignmentId,
           pendingApproval: "start",
           action: "approve",
-          regionId: Number(regionIdParam),
+          regionId: regionIdParam,
         },
       });
     }
@@ -1450,7 +1452,7 @@ const TimelineSection: React.FC<{
           assignmentId: effectiveAssignmentId,
           pendingApproval: "start",
           action: "reject",
-          regionId: Number(regionIdParam),
+          regionId: regionIdParam,
         },
       });
     }
@@ -1478,7 +1480,7 @@ const TimelineSection: React.FC<{
             assignmentId: effectiveAssignmentId,
             logId: targetLogId,
             action: "reject",
-            regionId: Number(regionIdParam)
+            regionId: regionIdParam
           },
         });
       }
@@ -1506,7 +1508,7 @@ const TimelineSection: React.FC<{
             assignmentId: effectiveAssignmentId,
             logId: targetLogId,
             action: "approve",
-            regionId: Number(regionIdParam)
+            regionId: regionIdParam
           },
         });
       }
@@ -1546,7 +1548,7 @@ const TimelineSection: React.FC<{
             logId: lgId,
             revisionId: revId,
             action: "reject",
-            regionId: Number(regionIdParam)
+            regionId: regionIdParam
           },
         });
       }
@@ -1582,7 +1584,7 @@ const TimelineSection: React.FC<{
             logId: lgId,
             revisionId: revId,
             action: "approve",
-            regionId: Number(regionIdParam)
+            regionId: regionIdParam
           },
         });
       }
@@ -1797,7 +1799,7 @@ const TimelineSection: React.FC<{
                     }
                     stopPropagation
                     textClassName="cursor-pointer font-medium text-amber-600 dark:text-amber-500"
-                    regionId={Number(regionIdParam)}
+                    regionId={regionIdParam}
                   />
                 )}
                 <button

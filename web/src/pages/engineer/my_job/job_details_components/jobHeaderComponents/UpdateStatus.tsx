@@ -125,10 +125,6 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
 
               // Handle File Upload if present
               let attachmentMetadata = undefined;
-              if (data.workScreenShot && data.workScreenShot.length > 0) {
-                const file = data.workScreenShot[0];
-                console.log(file);
-              }
 
               // Handle Status Update
               if (data.status === "in-progress") {

@@ -129,8 +129,6 @@ const UpdateLogForm = ({
                 body: requestBody,
               });
 
-              console.log("Response", response);
-
               // Upload file to S3 if URL is provided in response
               if (attachment && response.uploadUrl) {
                 await fetch(response.uploadUrl, {
@@ -141,7 +139,6 @@ const UpdateLogForm = ({
 
                 // Mark file as uploaded in the database
                 if (response.id && assignmentId) {
-                  console.log("Marking file as uploaded", response.id, assignmentId);
                   await markFileUploaded({
                     body: {
                       assignmentId,
