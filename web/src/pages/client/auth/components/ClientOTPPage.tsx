@@ -83,9 +83,15 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
       });
       handleNavigate?.(data.otp);
     } catch (error: unknown) {
+      const errorObj = GlobalApiErrorHandler.handle(error);
+      // Replace technical JWT error message with user-friendly message
+      const message =
+        errorObj.message === "Invalid or missing JWT token"
+          ? "Invalid OTP."
+          : errorObj.message;
       method.setError("otp", {
         type: "manual",
-        message: GlobalApiErrorHandler.handle(error).message,
+        message,
       });
     }
   };

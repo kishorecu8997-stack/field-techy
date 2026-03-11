@@ -151,6 +151,14 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
               verificationType="email"
               contact={methods.getValues("email")}
               handleNavigate={handleOtpSubmit}
+              onResendOTP={() =>
+                forgotPassword({
+                  body: {
+                    email: methods.getValues("email"),
+                    userRole: role,
+                  },
+                })
+              }
             />
           ) : (
             <EngineerOTPPage
@@ -160,6 +168,14 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
               verificationType="email"
               contact={methods.getValues("email")}
               handleNavigate={handleOtpSubmit}
+              onResendOTP={() =>
+                forgotPassword({
+                  body: {
+                    email: methods.getValues("email"),
+                    userRole: role,
+                  },
+                })
+              }
             />
           )}
         </Popup>
