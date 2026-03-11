@@ -144,7 +144,7 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
               </div>
               {/* Action buttons below the details */}
               {progressStatus === TIMELINE_STATUS.pending && (
-                <div className="flex gap-3 mt-4">
+                <div className="absolute right-4 top-4 flex gap-3 mt-7">
                   <Button
                     variant="no_style"
                     onClick={() => onProgressReject()}
