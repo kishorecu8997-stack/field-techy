@@ -40,7 +40,7 @@ const FreelancerCard: React.FC<FreelancerCardProps> = ({
         <img
           src={imageUrl}
           alt={name}
-          className="w-30 h-30 rounded-lg object-cover"
+          className="w-24 h-24 sm:w-30 sm:h-30 rounded-lg object-cover"
         />
       ) : (
         <div className="h-full w-30 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">

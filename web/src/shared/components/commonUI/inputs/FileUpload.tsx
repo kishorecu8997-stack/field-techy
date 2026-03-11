@@ -446,8 +446,7 @@ export const FileUpload = ({
                       {placeholder}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      Format: {formatAllowedTypes()} • Max{" "}
-                      {maxSize / 1024} KB
+                      Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
                       {validatePDF &&
                         accept.toLowerCase().includes("pdf") &&
                         ` • ${minPages}–${maxPages} pages`}

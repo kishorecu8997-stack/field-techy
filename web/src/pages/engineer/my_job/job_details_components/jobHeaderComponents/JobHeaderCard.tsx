@@ -18,6 +18,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
+import { useClientCancelJob } from "@/shared/apiServices/client/clientOpenApiService";
+import { toast } from "react-toastify";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -81,6 +83,26 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     status: "pending",
   });
 
+  // Cancel job mutation
+  const { mutate: cancelJob } = useClientCancelJob({
+    onSuccess: () => {
+      console.log("Job cancelled successfully");
+      toast.success("Job cancelled successfully!");
+      // Delay navigation to show the cancelled badge and toast
+      setTimeout(() => {
+        if (isClient) {
+          navigate(absoluteUrls.client.home.my_jobs);
+        } else {
+          navigate(absoluteUrls.engineer.home.my_jobs);
+        }
+      }, 2000);
+    },
+    onError: (error) => {
+      console.error("Failed to cancel job:", error);
+      toast.error("Failed to cancel job. Please try again.");
+    },
+  });
+
   const handleMenuAction = (action: string) => {
     let type: "hold" | "clone" | "cancel";
 
@@ -104,6 +126,21 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   };
 
   const handleConfirmAction = () => {
+    if (actionType === "cancel" && jobId) {
+      // Trigger the cancel job API
+      const jobIdNumber = Number(jobId);
+      if (isNaN(jobIdNumber)) {
+        console.error("Invalid job ID:", jobId);
+        setIsConfirmOpen(false);
+        return;
+      }
+      cancelJob({
+        body: {
+          jobId: jobIdNumber,
+          status: "Cancelled" as const,
+        },
+      });
+    }
     setIsConfirmOpen(false);
   };
 

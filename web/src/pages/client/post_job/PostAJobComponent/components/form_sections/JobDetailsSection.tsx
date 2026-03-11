@@ -29,8 +29,10 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
             if (/\s{2,}/.test(value)) {
               return "Job Title must not have consecutive spaces";
             }
-            if (value.length < 5) return "Job Title must be at least 5 characters";
-            if (value.length > 100) return "Job Title must not exceed 100 characters";
+            if (value.length < 5)
+              return "Job Title must be at least 5 characters";
+            if (value.length > 100)
+              return "Job Title must not exceed 100 characters";
             return true;
           },
         }}
@@ -53,8 +55,10 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
             if (/[^\S\r\n]{2,}/.test(value)) {
               return "Job Description must not have consecutive spaces";
             }
-            if (value.length < 50) return "Job Description must be at least 50 characters";
-            if (value.length > 2000) return "Job Description must not exceed 2000 characters";
+            if (value.length < 50)
+              return "Job Description must be at least 50 characters";
+            if (value.length > 2000)
+              return "Job Description must not exceed 2000 characters";
             // Allow letters, numbers, spaces, and special characters / ( ) , . - #
             if (!/^[A-Za-z0-9\s\/(),.\-#]+$/.test(value)) {
               return "Only letters, numbers, spaces, and special characters / ( ) , . - # are allowed";
@@ -67,4 +71,3 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
   );
 };
 export default JobDetailsSection;
-

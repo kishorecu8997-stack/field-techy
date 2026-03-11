@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import EngineerCard from "./EngineerCard";
 import Pagination from "../../search_result/components/Pagination";
 import { scrollToTop } from "@/utils";
-import { useClientExploreEngineers } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useClientBalance,
+  useClientExploreEngineers,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import type { FiltersType } from "../index";
 
 interface EngineerListPageProps {
@@ -63,6 +66,8 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
     },
     true,
   );
+  const { data: balanceArr } = useClientBalance();
+  const CurrencySymbol = balanceArr?.[0]?.currencySymbol || "$";
   const engineers = data?.data ?? [];
   const totalPages = Math.ceil((data?.total ?? 0) / itemsPerPage);
 
@@ -80,7 +85,9 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
     reviewCount: engineer.reviewCount,
     title: engineer.serviceCategoryName ?? "Engineer",
     imageUrl: engineer.profilePictureUrl ?? "",
-    pay_type: engineer.hourlyRate ? `$${engineer.hourlyRate}/hr` : "N/A",
+    pay_type: engineer.hourlyRate
+      ? `${CurrencySymbol} ${engineer.hourlyRate}/hr`
+      : "N/A",
     availability: engineer.isEmployed ? "Busy" : "Available",
   }));
 
