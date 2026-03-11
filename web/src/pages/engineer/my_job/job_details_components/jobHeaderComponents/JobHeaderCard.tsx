@@ -65,6 +65,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   jobEndDate,
   onToggleChat,
   clientRegionId,
+  viewReviewComment = false,
 }) => {
   const params = useParams();
   const location = useLocation();
@@ -323,6 +324,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         ) : (
           <EngineersActions
             OfferJobStatus={OfferJobStatus}
+            viewReviewComment={viewReviewComment}
             isSendProposal={isSendProposal}
             setActiveTab={setActiveTab}
             setIsWorkSubmitted={setIsWorkSubmitted}
