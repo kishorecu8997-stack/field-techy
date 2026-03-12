@@ -129,6 +129,7 @@ const mapJobToJobOverview = (
           name: toolLabel || tool.toolName || toolId,
           price: tool.budget || "",
           image: tool.imageUrl || undefined,
+          unit: job.currencySymbol || "$",
         };
       })
     : [];

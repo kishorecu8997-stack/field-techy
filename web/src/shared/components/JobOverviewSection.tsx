@@ -12,6 +12,49 @@ const isPdfFile = (url: string): boolean => {
 };
 
 /**
+ * Formats a price string with comma separators while preserving the currency symbol/unit
+ * @param price - The price string (e.g., "₹1000", "$500", "1000")
+ * @param unit - Optional unit/currency to display (e.g., "INR", "USD")
+ * @returns Formatted price with comma separators (e.g., "₹ 1,000", "$ 5,000", "INR 1,000")
+ */
+const formatPriceWithComma = (price: string | undefined, unit?: string): string => {
+  if (!price) return "";
+  
+  // If unit is provided separately, use it - place currency symbol first
+  if (unit) {
+    // Extract numeric part from price
+    const numericPart = price.replace(/[^0-9.]/g, "");
+    if (!numericPart) return price;
+    
+    const number = parseFloat(numericPart);
+    if (isNaN(number)) return price;
+    
+    const formattedNumber = number.toLocaleString("en-US");
+    return `${unit} ${formattedNumber}`;
+  }
+  
+  // Extract currency symbol/unit from the beginning of the string
+  const currencyMatch = price.match(/^[₹$€£¥A-Z]+/i);
+  const currencySymbol = currencyMatch ? currencyMatch[0] : "";
+  
+  // Extract numeric part
+  const numericPart = price.replace(/^[₹$€£¥A-Z]+/i, "").trim();
+  
+  // If no numeric part, return original
+  if (!numericPart) return price;
+  
+  // Parse the number and format with commas
+  const number = parseFloat(numericPart.replace(/,/g, ""));
+  if (isNaN(number)) return price;
+  
+  // Format with comma separators
+  const formattedNumber = number.toLocaleString("en-US");
+  
+  // Return with currency symbol (add space between if symbol exists)
+  return currencySymbol ? `${currencySymbol} ${formattedNumber}` : formattedNumber;
+};
+
+/**
  * Displays comprehensive job details with skills, tools, earnings, and attachments.
  * Renders job title, description, required skills, tools with pricing, duration,
  * engagement model, experience level, vacancies, weekly/total pay, and additional details.
@@ -146,12 +189,12 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                           <div className="flex flex-wrap gap-x-2 text-xs">
                             {tool.price && (
                               <p className="text-gray-600 dark:text-gray-400">
-                                <span className="font-medium">Price:</span> {tool.price}
+                                <span className="font-medium">Price: </span> {formatPriceWithComma(tool.price, tool.unit)}
                               </p>
                             )}
                             {tool.engineerPrice && (
                               <p className="text-green-600 dark:text-green-400">
-                                <span className="font-medium">:</span> {tool.engineerPrice}
+                                <span className="font-medium">:</span> {formatPriceWithComma(tool.engineerPrice, tool.unit)}
                               </p>
                             )}
                           </div>
@@ -232,7 +275,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                 Total Amount
               </p>
               <p className="text-sm font-bold text-gray-900 dark:text-white">
-                {totalPayment}
+                {formatPriceWithComma(totalPayment)}
               </p>
             </div>
           )}
@@ -246,7 +289,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
             Total Cost
           </h3>
           <p className="text-sm font-bold text-gray-900 dark:text-white">
-            {totalPayment}
+           {formatPriceWithComma(totalPayment)}
           </p>
         </div>
       )}

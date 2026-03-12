@@ -12,6 +12,7 @@ export interface Tool {
   name: string;
   price: string;
   engineerPrice?: string; // Price for engineer (earnings)
+  unit?: string; // Currency unit (e.g., "INR", "USD", "₹")
   image?: string;
   imageUrl?: string; // Alternative field name
 }

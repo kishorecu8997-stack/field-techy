@@ -59,7 +59,8 @@ const mapClientJobToJobOverview = (
   // Extract tools - convert IDs to labels using toolMap
   const rawTools = getJobValue<unknown>("tools");
   const toolAttachmentUrls = getJobValue<string[]>("toolAttachmentUrls") || [];
-  let tools: Array<{ name: string; price: string; image?: string }> = [];
+  const currencySymbol = getJobValue<string>("currencySymbol") || "$";
+  let tools: Array<{ name: string; price: string; image?: string; unit?: string }> = [];
 
   // Helper function to convert tool ID to label
   const getToolLabel = (toolValue: string | number): string => {
@@ -102,7 +103,7 @@ const mapClientJobToJobOverview = (
   // Check for tools array first
   if (Array.isArray(rawTools) && rawTools.length > 0) {
     tools = rawTools
-      .map((tool, index): { name: string; price: string; image?: string } => {
+      .map((tool, index): { name: string; price: string; image?: string; unit?: string } => {
         if (typeof tool === "object" && tool !== null) {
           const toolObj = tool as Record<string, unknown>;
           const toolName = toolObj.name || toolObj.toolId || toolObj.id;
@@ -122,12 +123,14 @@ const mapClientJobToJobOverview = (
               : String(tool),
             price: getToolPrice(toolObj),
             image: toolImage,
+            unit: currencySymbol,
           };
         }
         return {
           name: getToolLabel(tool as string | number),
           price: "",
           image: index < toolAttachmentUrls.length ? toolAttachmentUrls[index] : undefined,
+          unit: currencySymbol,
         };
       })
       .filter((t) => t.name && t.name !== "undefined");
@@ -151,6 +154,7 @@ const mapClientJobToJobOverview = (
           name: getToolLabel(name),
           price: budgetParts[index] || "",
           image: index === 0 && toolImage ? toolImage : undefined,
+          unit: currencySymbol,
         }))
         .filter((t) => t.name);
     }
@@ -162,6 +166,7 @@ const mapClientJobToJobOverview = (
     tools = tools.map((tool, index) => ({
       ...tool,
       image: tool.image || (toolAttachmentUrls[index] ? toolAttachmentUrls[index] : undefined),
+      unit: tool.unit || currencySymbol,
     }));
   }
 
@@ -221,7 +226,6 @@ const mapClientJobToJobOverview = (
 
   // Extract earnings info
   const totalPrice = getJobValue<string>("totalPrice");
-  const currencySymbol = getJobValue<string>("currencySymbol") || "$";
   const weeklyPayRaw = getJobValue<string | number>("weeklyPay");
   const toolAllowanceRaw = getJobValue<string | number>("toolAllowance");
   // const weeklyPayNoteFromApi = getJobValue<string>("weeklyPayNote");
