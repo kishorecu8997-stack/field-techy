@@ -52,7 +52,6 @@ const PricingTable: React.FC<{
                     {editable ? (
                       <InputField
                         name={`skills.${index}.tiers.${tierIdx}.${field}`}
-                        placeholder="$"
                         rules={{
                           validate: (v: string) =>
                             validatePricingModel(v, field as PricingField, {
@@ -69,7 +68,7 @@ const PricingTable: React.FC<{
                         name={`skills.${index}.tiers.${tierIdx}.${field}`}
                         render={({ field: controllerField }) => (
                           <span className="text-gray-800 dark:text-gray-200">
-                            ${controllerField.value || "—"}
+                            {controllerField.value || "—"}
                           </span>
                         )}
                       />
