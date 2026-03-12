@@ -11,5 +11,5 @@ export const transactionTypeMap: Record<string, string> = {
 
 export const categoryMap: Record<string, string> = {
   jobrelated: "Job Related",
- banktransaction: "Bank Transaction",
+  banktransaction: "Bank Transaction",
 };

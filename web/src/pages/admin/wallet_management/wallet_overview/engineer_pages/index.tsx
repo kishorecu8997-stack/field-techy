@@ -44,10 +44,9 @@ const EngineerWallet: React.FC = () => {
     return (data?.engineerDetails ?? []).map((item) => ({
       ...item,
       userId: item.engineerId,
-      engineerName: item.clientName, 
+      engineerName: item.clientName,
     }));
   }, [data]);
-
 
   const filtered = useMemo(() => {
     if (!search.trim()) return items;
@@ -58,18 +57,19 @@ const EngineerWallet: React.FC = () => {
       (item) =>
         (item.engineerName || "").toLowerCase().includes(term) ||
         (item.mobileNo || "").toLowerCase().includes(term) ||
-        (item.amount || "").toLowerCase().includes(term)
+        (item.amount || "").toLowerCase().includes(term),
     );
   }, [items, search]);
 
-  const displayTotal = search.trim() ? filtered.length : data?.total ?? 0;
+  const displayTotal = search.trim() ? filtered.length : (data?.total ?? 0);
 
-  
-  const parseAmount = (amountStr: string) => {
-    const cleaned = amountStr.replace(/[^0-9.-]/g, "");
+  const parseAmount = (amountStr?: string | null) => {
+    const safeAmount = amountStr ?? "";
+
+    const cleaned = safeAmount.replace(/[^0-9.-]/g, "");
     const value = Number(cleaned) || 0;
 
-    const symbolMatch = amountStr.match(/^[^0-9.]+/);
+    const symbolMatch = safeAmount.match(/^[^0-9.]+/);
     const symbol = symbolMatch ? symbolMatch[0].trim() : "-";
 
     return { symbol, value };
@@ -155,7 +155,7 @@ const EngineerWallet: React.FC = () => {
                 mobileNo: row.mobileNo || undefined,
                 usertype: "engineer",
               },
-            }
+            },
           );
         };
 

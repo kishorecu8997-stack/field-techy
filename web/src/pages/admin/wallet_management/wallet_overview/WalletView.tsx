@@ -3,7 +3,7 @@ import CustomTable, {
   type Column,
 } from "@/shared/components/commonUI/custom_table";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -74,6 +74,7 @@ function InvoiceDownloadButton({
 
   return (
     <FiDownload
+      role="button"
       className={`h-5 w-5 cursor-pointer transition-colors ${
         isFetching
           ? "opacity-50 cursor-wait text-gray-400"
@@ -87,7 +88,6 @@ function InvoiceDownloadButton({
 
 export default function WalletView() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
   const location = useLocation();
 
   const { usertype, userId, clientName, mobileNo } = (location.state || {}) as {
@@ -100,7 +100,7 @@ export default function WalletView() {
   const methods = useForm();
 
   const { data, isLoading: isTransactionsLoading } =
-    useAdminGetManageTransactions({ limit: 9999 }, { enabled: true });
+    useAdminGetManageTransactions({ limit: 9999 }, { enabled: !!userId });
 
   const userTransactions = useMemo<TransactionType[]>(() => {
     if (!data?.data || !userId) return [];

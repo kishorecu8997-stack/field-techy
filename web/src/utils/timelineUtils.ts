@@ -3,8 +3,15 @@ import type { GetJobLogsResponse } from "@/api";
 import { getAttachmentFileName } from "@/shared/libs/utils";
 
 /**
- * Format a date string to display format
- * Uses en-US locale with short month, 2-digit day, full year, and 12-hour time
+ * Format a date string into a readable date-time format.
+ * Uses the user's default locale with:
+ * - 2-digit day
+ * - short month
+ * - full year
+ * - 12-hour time with hour and minute
+ *
+ * If the input date is null, undefined, or invalid,
+ * the current date-time will be returned.
  */
 export const formatApiDate = (dateStr: string | null | undefined): string => {
   if (!dateStr) return formatDateTime();
