@@ -11,7 +11,7 @@ export interface BasicInformation {
   country?: string;
   state?: string;
   city?: string;
-  postalCode: string;
+  postalCode?: string;
 }
 
 export interface ExperienceDetails {
@@ -25,6 +25,7 @@ export interface ExperienceDetails {
 export interface Documents {
   governmentId: File | FileList | string | null;
   certificate: File | FileList | string | null;
+  resume: File | FileList | string | null;
 }
 export interface DocumentOption {
   value: string;

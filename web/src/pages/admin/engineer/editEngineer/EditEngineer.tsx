@@ -24,7 +24,9 @@ import type { EngineerFormData } from "../types";
 const toOptionalString = (value: unknown) =>
   value === null || value === undefined ? "" : String(value);
 
-const mapEngineerToFormData = (engineer: AdminGetEngineerResponse): EngineerFormData => {
+const mapEngineerToFormData = (
+  engineer: AdminGetEngineerResponse,
+): EngineerFormData => {
   const skills = engineer.skills?.map((s) => String(s.id)) ?? [];
 
   return {
@@ -36,7 +38,9 @@ const mapEngineerToFormData = (engineer: AdminGetEngineerResponse): EngineerForm
     address: engineer.address ?? "",
     skills,
     price: toOptionalString(engineer.pricePerHour),
-    serviceCategory: engineer.serviceCategory ? String(engineer.serviceCategory) : "",
+    serviceCategory: engineer.serviceCategory
+      ? String(engineer.serviceCategory)
+      : "",
     portfolio: engineer.portfolioLink ?? "",
     country: engineer.country?.id ? String(engineer.country?.id) : "",
     state: engineer.state?.id ? String(engineer.state?.id) : "",
@@ -70,10 +74,13 @@ export default function EditEngineer() {
   const engineerId = Number(id);
   const hasValidEngineerId = Number.isFinite(engineerId) && engineerId > 0;
 
-  const { data: engineerData, isLoading, error } =
-    useAdminGetEngineerById(engineerId, {
-      refetchOnMount: "always",
-    });
+  const {
+    data: engineerData,
+    isLoading,
+    error,
+  } = useAdminGetEngineerById(engineerId, {
+    refetchOnMount: "always",
+  });
 
   const methods = useForm<EngineerFormData>({
     defaultValues: {
@@ -104,7 +111,19 @@ export default function EditEngineer() {
   const { trigger, getValues, reset } = methods;
 
   const validateBasicInformation = () =>
-    trigger(["name", "email", "phoneNumber", "address", "skills", "price", "serviceCategory", "country", "state", "city", "postalCode"]);
+    trigger([
+      "name",
+      "email",
+      "phoneNumber",
+      "address",
+      "skills",
+      "price",
+      "serviceCategory",
+      "country",
+      "state",
+      "city",
+      "postalCode",
+    ]);
 
   const validateExperienceDetails = () =>
     trigger(["designation", "resume", "employer", "experience"]);
@@ -116,10 +135,16 @@ export default function EditEngineer() {
     reset(mapEngineerToFormData(engineerData));
   }, [engineerData, reset]);
 
-  type UploadKey = "profilePicture" | "govIdDoc" | "certificateDoc" | "resumeFile";
+  type UploadKey =
+    | "profilePicture"
+    | "govIdDoc"
+    | "certificateDoc"
+    | "resumeFile";
 
   const extractFile = (value: unknown) =>
-    value instanceof File ? value : (value instanceof FileList && value[0]) || null;
+    value instanceof File
+      ? value
+      : (value instanceof FileList && value[0]) || null;
 
   const buildPayload = (data: EngineerFormData) => {
     const files: Record<UploadKey, File | null> = {
@@ -139,9 +164,13 @@ export default function EditEngineer() {
       email: data.email,
       phoneNumber: data.phoneNumber,
       address: data.address || undefined,
-      serviceCategoryId: data.serviceCategory ? Number(data.serviceCategory) : undefined,
+      serviceCategoryId: data.serviceCategory
+        ? Number(data.serviceCategory)
+        : undefined,
       hourlyRate:
-          data.price !== null && data.price !== "" ? Number(data.price) : undefined,      
+        data.price !== null && data.price !== ""
+          ? Number(data.price)
+          : undefined,
       portfolioLink: data.portfolio || "",
       employer: data.employer || undefined,
       currentDesignation: data.designation || undefined,
@@ -153,31 +182,33 @@ export default function EditEngineer() {
       postalCode: data.postalCode || undefined,
     };
 
-    (Object.entries(files) as [UploadKey, File | null][]).forEach(([key, file]) => {
-      if (!file) return;
-      body[key] = {
-        filename: file.name,
-        size: file.size,
-        mimeType: file.type,
-      };
-    });
+    (Object.entries(files) as [UploadKey, File | null][]).forEach(
+      ([key, file]) => {
+        if (!file) return;
+        body[key] = {
+          filename: file.name,
+          size: file.size,
+          mimeType: file.type,
+        };
+      },
+    );
 
     return { body, files };
   };
 
-const handleNext = async () => {
-  let ok = false;
+  const handleNext = async () => {
+    let ok = false;
 
-  if (activeTab === "Basic Information") {
-    ok = await validateBasicInformation();
-    if (!ok) return;
-    setActiveTab("Experience Details");
-  } else if (activeTab === "Experience Details") {
-    ok = await validateExperienceDetails();
-    if (!ok) return;
-    setActiveTab("Documents");
-  }
-};
+    if (activeTab === "Basic Information") {
+      ok = await validateBasicInformation();
+      if (!ok) return;
+      setActiveTab("Experience Details");
+    } else if (activeTab === "Experience Details") {
+      ok = await validateExperienceDetails();
+      if (!ok) return;
+      setActiveTab("Documents");
+    }
+  };
 
   const handlePrevious = () => {
     if (activeTab === "Experience Details") setActiveTab("Basic Information");
@@ -204,9 +235,14 @@ const handleNext = async () => {
               } as AdminUpdateEngineerData);
 
               if (res && "uploadUrls" in res && res.uploadUrls) {
-                const uploadUrls = res.uploadUrls as Record<string, { uploadUrl: string; fileId: number }>;
+                const uploadUrls = res.uploadUrls as Record<
+                  string,
+                  { uploadUrl: string; fileId: number }
+                >;
 
-                for (const [key, { uploadUrl, fileId }] of Object.entries(uploadUrls)) {
+                for (const [key, { uploadUrl, fileId }] of Object.entries(
+                  uploadUrls,
+                )) {
                   const file = files[key as keyof typeof files];
                   if (!file) continue;
 
@@ -217,13 +253,22 @@ const handleNext = async () => {
                   });
 
                   if (upload.ok) {
-                    await markFileUploaded({ path: { userId: engineerId }, body: { fileId } });
+                    await markFileUploaded({
+                      path: { userId: engineerId },
+                      body: { fileId },
+                    });
                   }
                 }
               }
 
-              await queryClient.invalidateQueries({ queryKey: queryKeys.admin.manageEngineers, exact: false });
-              await queryClient.invalidateQueries({ queryKey: queryKeys.admin.adminGetEngineer, exact: false });
+              await queryClient.invalidateQueries({
+                queryKey: queryKeys.admin.manageEngineers,
+                exact: false,
+              });
+              await queryClient.invalidateQueries({
+                queryKey: queryKeys.admin.adminGetEngineer,
+                exact: false,
+              });
 
               toast.success("Engineer updated successfully!");
               reset();
@@ -264,29 +309,37 @@ const handleNext = async () => {
   };
 
   const tabs = [
-    { label: "Basic Information", content: <BasicInformation disableEmail={true} />, hide: false },
-    { label: "Experience Details", content: <ExperienceDetails />, hide: false },
+    {
+      label: "Basic Information",
+      content: <BasicInformation disableEmail={true} />,
+      hide: false,
+    },
+    {
+      label: "Experience Details",
+      content: <ExperienceDetails />,
+      hide: false,
+    },
     { label: "Documents", content: <Documents />, hide: false },
   ];
 
   const isLastTab = activeTab === "Documents";
 
-const handleTabChange = async (nextTab: string) => {
-  if (nextTab === activeTab) return;
+  const handleTabChange = async (nextTab: string) => {
+    if (nextTab === activeTab) return;
 
-  if (nextTab === "Experience Details") {
-    const ok = await validateBasicInformation();
-    if (!ok) return;
-  }
+    if (nextTab === "Experience Details") {
+      const ok = await validateBasicInformation();
+      if (!ok) return;
+    }
 
-  if (nextTab === "Documents") {
-    const okBasic = await validateBasicInformation();
-    const okExp = await validateExperienceDetails();
-    if (!okBasic || !okExp) return;
-  }
+    if (nextTab === "Documents") {
+      const okBasic = await validateBasicInformation();
+      const okExp = await validateExperienceDetails();
+      if (!okBasic || !okExp) return;
+    }
 
-  setActiveTab(nextTab);
-};
+    setActiveTab(nextTab);
+  };
 
   if (isLoading) return <LoaderComponent />;
 
@@ -321,19 +374,34 @@ const handleTabChange = async (nextTab: string) => {
     <div className="w-full px-4 h-full mt-6">
       <div className="flex py-3 justify-between gap-4">
         <h2 className="mt-2 mb-4 font-semibold">Edit Engineer</h2>
-        <Button variant="solid" onClick={() => navigate(-1)}>Back</Button>
+        <Button variant="solid" onClick={() => navigate(-1)}>
+          Back
+        </Button>
       </div>
 
       <FormContainer methods={methods}>
         <div className="bg-white dark:bg-gray-700 rounded-lg px-4 py-1 mx-auto">
-          <AdminTabComponent tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
+          <AdminTabComponent
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+          />
           <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">
             {activeTab !== "Basic Information" && (
-              <Button type="button" onClick={handlePrevious} className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90">
+              <Button
+                type="button"
+                onClick={handlePrevious}
+                className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+              >
                 Back
               </Button>
             )}
-            <Button type="button" onClick={isLastTab ? handleSave : handleNext} disabled={isSubmitting} className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 disabled:opacity-50">
+            <Button
+              type="button"
+              onClick={isLastTab ? handleSave : handleNext}
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 disabled:opacity-50"
+            >
               {isSubmitting ? "Saving..." : isLastTab ? "Save" : "Next"}
             </Button>
           </div>

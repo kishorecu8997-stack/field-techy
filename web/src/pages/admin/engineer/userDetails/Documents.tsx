@@ -12,6 +12,7 @@ export default function Documents({ isView = false }: DocumentsProps) {
 
   const governmentId = watch("governmentId");
   const certificate = watch("certificate");
+  const resume = watch("resume");
 
   // Determine if a value is an existing file URL
   const isExistingFile = (value: unknown): value is string =>
@@ -26,12 +27,12 @@ export default function Documents({ isView = false }: DocumentsProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4">
-      <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:w-9/12">
+    <div className="bg-white dark:bg-gray-800 p-4 ">
+      <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-3 lg:w-9/12">
         {/* Government ID Proof */}
         <div className="w-full">
           {isExistingFile(governmentId) ? (
-            <div className="flex flex-col gap-2 xl:w-96">
+            <div className="flex flex-col gap-2 w-full">
               <DocumentCard
                 id={1}
                 document={{
@@ -62,7 +63,7 @@ export default function Documents({ isView = false }: DocumentsProps) {
         {/* Qualification Certificate */}
         <div className="w-full">
           {isExistingFile(certificate) ? (
-            <div className="flex flex-col gap-2 xl:w-96">
+            <div className="flex flex-col gap-2 w-full">
               <DocumentCard
                 id={2}
                 document={{
@@ -83,6 +84,34 @@ export default function Documents({ isView = false }: DocumentsProps) {
               name="certificate"
               label="Qualification Certificate"
               placeholder="Upload Certificate"
+              accept=".pdf"
+              required
+              disabled={isView}
+            />
+          )}
+        </div>
+        {/* Resume */}
+        <div className="w-full">
+          {isExistingFile(resume) ? (
+            <div className="flex flex-col gap-2 w-full">
+              <DocumentCard
+                id={3}
+                document={{
+                  title: "Resume",
+                  fileName: resume.split("/").pop() || "resume.pdf",
+                  fileType: "PDF",
+                  previewUrl: resume,
+                }}
+                onEdit={isView ? undefined : () => handleEdit("resume")}
+                onDelete={isView ? undefined : () => handleDelete("resume")}
+                onDownload={() => window.open(resume, "_blank")}
+              />
+            </div>
+          ) : (
+            <FileUpload
+              name="resume"
+              label="Resume"
+              placeholder="Upload Resume"
               accept=".pdf"
               required
               disabled={isView}
