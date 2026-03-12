@@ -5,6 +5,12 @@ interface TooltipProps {
   children: React.ReactNode;
 }
 
+/*
+This component is used to display a tooltip.
+It is used in the engineer's account settings page.
+It is used to display a tooltip.
+It is used to display a tooltip.
+*/
 const Tooltip: React.FC<TooltipProps> = ({ text, children }) => {
   const [isTooltipVisible, setTooltipVisible] = useState(false);
 

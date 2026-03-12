@@ -13,7 +13,12 @@ interface ConfirmationPopupProps {
   confirmText?: string;
   cancelText?: string;
 }
-
+/*
+This component is used to display a confirmation popup.
+It is used in the engineer's account settings page.
+It is used to display a confirmation popup.
+It is used to display a confirmation popup.
+*/
 const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
   isOpen,
   onClose,

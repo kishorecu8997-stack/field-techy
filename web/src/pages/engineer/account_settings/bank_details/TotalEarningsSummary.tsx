@@ -14,7 +14,7 @@ import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
  *
  * All values are derived from the `transactions` data source.
  */
-const TotalEarningsSummary = ({data, isLoading, isError}:{data:GetEngineerEarningsResponse, isLoading:boolean, isError:boolean}) => {
+const TotalEarningsSummary = ({ data, isLoading, isError }: { data: GetEngineerEarningsResponse, isLoading: boolean, isError: boolean }) => {
   const [showBalance, setShowBalance] = useState<boolean>(false);
   const totalEarnings = data ? Number(data.totalEarnings) : 0;
   const now = new Date();
@@ -36,7 +36,6 @@ const TotalEarningsSummary = ({data, isLoading, isError}:{data:GetEngineerEarnin
   }
   const thisMonthEarnings = data ? Number(data.monthlyEarnings) : 0;
   const totalWithdrawn = data ? Number(data.withdrawn) : 0;
-  console.log("Earnings data:", data?.withdrawn);
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
       {/* Header */}

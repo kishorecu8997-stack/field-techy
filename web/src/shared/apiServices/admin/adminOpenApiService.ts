@@ -262,7 +262,7 @@ export function useAdminCreateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "adminGetServiceCategories",
+          "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -287,7 +287,7 @@ export function useAdminUpdateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "adminGetServiceCategories",
+          "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -312,7 +312,7 @@ export function useAdminDeleteServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-            "adminGetServiceCategories",
+          "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -408,7 +408,7 @@ export function useAdminManageEngineers(
     ...query,
     regionId:
       query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
+      Number(selectedRegionId),
   };
 
   return useQuery<
@@ -452,7 +452,7 @@ export function useAdminManageClients(options?: {
     ...(clientType ? { clientType } : {}),
     regionId:
       query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
+      Number(selectedRegionId),
   };
 
   return useQuery<
@@ -493,7 +493,7 @@ export function useAdminClientsByUserIdStatus(options?: {
     ...adminUpdateUserStatusMutation({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     onSuccess: (data) => {
@@ -518,7 +518,7 @@ export function useAdminEngineersByUserIdStatus(options?: {
     ...adminUpdateUserStatusMutation({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     onSuccess: (data) => {
@@ -599,7 +599,7 @@ export function useAdminUpdateJobStatus(options?: {
         client: apiClient,
         query: {
           ...fnOptions.query,
-          regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+          regionId: Number(selectedRegionId),
         },
         body: fnOptions.body,
         throwOnError: true,
@@ -783,9 +783,7 @@ export function useAdminGetJobs(
 
   const mergedQuery: AdminGetJobsQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({
@@ -814,12 +812,12 @@ export function useAdminGetJobDetails(
 
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
     ? {
-        ...query,
-        regionId:
-          query?.regionId ??
-          (selectedRegionId ? Number(selectedRegionId) : undefined),
-      }
-    : { jobId: 0 };
+      ...query,
+      regionId:
+        query?.regionId ??
+        Number(selectedRegionId),
+    }
+    : { jobId: 0, regionId: Number(selectedRegionId) };
 
   return useQuery({
     ...adminGetJobDetailsOptions({
@@ -844,7 +842,7 @@ export function useAdminAddClient(options?: {
     ...adminCreateClientMutation({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     onSuccess: (data: AdminAddClientResponse) => {
@@ -870,7 +868,7 @@ export function useAdminUpdateClient(options?: {
     ...adminUpdateClientMutation({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     onSuccess: (data: AdminUpdateClientResponse) => {
@@ -902,7 +900,7 @@ export function useAdminGetClientByUserId(
       client: apiClient,
       path: { userId: isValidId ? Number(userId) : 0 },
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     enabled: isValidId ? options?.enabled : false,
@@ -950,7 +948,7 @@ export function useAdminGetEngineerById(userId: number, enabled = true) {
       client: apiClient,
       path: { userId: isValidId ? userId : 0 },
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     enabled: enabled && isValidId,
@@ -1064,12 +1062,12 @@ export function useAdminGetJobLogs(
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
-        ...query,
-        regionId:
-          query?.regionId ??
-          (selectedRegionId ? Number(selectedRegionId) : undefined),
-      }
-    : { jobId: 0 };
+      ...query,
+      regionId:
+        query?.regionId ??
+        (selectedRegionId ? Number(selectedRegionId) : undefined),
+    }
+    : { jobId: 0, regionId: Number(selectedRegionId) };
 
   return useQuery({
     ...adminGetJobLogsOptions({
@@ -1107,7 +1105,7 @@ export function useAdminGetPaymentTransactions(
     jobId: query?.jobId ?? 0,
     regionId:
       query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
+      Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1187,7 +1185,7 @@ export function useAdminGetDashboardStats(options?: {
     ...getDashboardStatsOptions({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     ...options,
@@ -1304,7 +1302,7 @@ export function useAdminGetSubAdmins(
     ...query,
     regionId:
       query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
+      Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1339,7 +1337,7 @@ export function useAdminGetManageTransactions(
     ...query,
     regionId:
       query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
+      Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1371,7 +1369,7 @@ export function useAdminGetTransactionRequests(
     ...query,
     regionId:
       query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
+      Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1403,7 +1401,7 @@ export function useAdminGetWithdrawalRequests(
     ...query,
     regionId:
       query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
+      Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1465,7 +1463,7 @@ export function useAdminDownloadInvoice(
       client: apiClient,
       path: { id: isValidId ? invoiceId : 0 },
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     enabled: isValidId ? (options?.enabled ?? true) : false,
@@ -1482,7 +1480,7 @@ export function useAdminDeleteClientMutation(options?: {
     ...adminDeleteClientMutation({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     onSuccess: (data) => {
@@ -1537,7 +1535,7 @@ export function useAdminAddEngineer(options?: {
     ...adminCreateEngineerMutation({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     onSuccess: (data: AdminAddEngineerResponse) => {
@@ -1594,7 +1592,7 @@ export function useAdminUpdateEngineer(options?: {
     ...adminUpdateEngineerMutation({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     onSuccess: (data: AdminUpdateEngineerResponse) => {
@@ -1618,7 +1616,7 @@ export function useAdminDeleteEngineerMutation(options?: {
     ...adminDeleteEngineerMutation({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
     onSuccess: (data) => {
@@ -1652,7 +1650,7 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
           ...variables,
           query: {
             ...(variables.query ?? {}),
-            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+            regionId: Number(selectedRegionId),
           },
         },
         context,
@@ -1724,7 +1722,7 @@ export function useAdminApprovePayment(options?: {
           ...variables,
           query: {
             ...(variables.query ?? {}),
-            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+            regionId: Number(selectedRegionId),
           },
         },
         context,
@@ -1765,7 +1763,7 @@ export function useAdminWithdrawalAction(options?: {
           ...variables,
           query: {
             ...(variables.query ?? {}),
-            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+            regionId: Number(selectedRegionId),
           },
         },
         context,
@@ -1833,7 +1831,7 @@ export function useAdminBroadcastNotification(options?: {
     ...adminBroadcastNotificationMutation({
       client: apiClient,
       query: {
-        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+        regionId: Number(selectedRegionId),
       },
     }),
 
@@ -1862,7 +1860,7 @@ export function useAdminGetNotifications(
     ...query,
     regionId:
       query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
+      Number(selectedRegionId),
   };
 
   return useQuery({

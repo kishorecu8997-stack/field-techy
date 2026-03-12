@@ -20,6 +20,12 @@ interface IWithdrawForm {
   amount: string;
 }
 
+/*
+ * This component is used to request withdrawal of funds from the engineer's account.
+ * It is used in the engineer's account settings page.
+ * It is used to request withdrawal of funds from the engineer's account.
+ * It is used to request withdrawal of funds from the engineer's account.
+*/
 const EngineerWithdraw: React.FC<ClientWithdrawProps> = ({
   balance,
   currencyCode,
@@ -72,19 +78,14 @@ const EngineerWithdraw: React.FC<ClientWithdrawProps> = ({
       toast.success("Withdrawal request raised successfully.");
     } catch (error) {
       console.error("Failed to raise withdrawal request:", error);
+      toast.error("Failed to raise withdrawal request.")
     }
   };
 
   return (
     <FormProvider {...methods}>
       <div className="p-4 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          aria-label="Close"
-        >
-          <IoMdClose size={24} />
-        </button>
+        <IoMdClose onClick={onClose} size={24} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer" />
         {isConfirming ? (
           <div>
             <h2 className="text-xl font-bold mb-4 text-gray-700 dark:text-gray-300">
