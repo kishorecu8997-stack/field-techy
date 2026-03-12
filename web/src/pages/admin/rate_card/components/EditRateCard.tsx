@@ -323,7 +323,7 @@ const EditRateCard = () => {
         className="w-full h-full flex-1 overflow-y-auto"
       >
         {isEdit || isView ? (
-          <RateCardForm readOnly={isView} />
+          <RateCardForm readOnly={isView || isEdit} />
         ) : (
           <RateCardDetails />
         )}
