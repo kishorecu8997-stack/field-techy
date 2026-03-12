@@ -26,6 +26,14 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
   // phoneNumber,
   // email,
 }) => {
+
+  const num = parseFloat(String(rating));
+  const formattedRating = isNaN(num)
+    ? String(rating)
+    : num % 1 === 0
+      ? String(num)
+      : `${Math.floor(num)}+`;
+
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-6">
       <div className="flex items-center justify-between mb-4">
@@ -62,12 +70,12 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
           <span>{location}</span>
         </div> */}
 
-        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-          <span>⭐</span>
-          <span>
-            {rating} • {reviews} Reviews
-          </span>
+        <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+          <span>⭐ {formattedRating}</span>
+          <span className="text-gray-400">|</span>
+          <span>{reviews} Reviews</span>
         </div>
+
         {/* 
         {phoneNumber && (
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">

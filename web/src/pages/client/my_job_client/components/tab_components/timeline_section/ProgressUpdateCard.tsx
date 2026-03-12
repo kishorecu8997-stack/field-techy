@@ -209,7 +209,7 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
             revisionUpdateCardData.revisions &&
             revisionUpdateCardData.revisions.length > 0 && (
               <div className="mt-4 pl-4 border-l border-gray-200 dark:border-gray-600 space-y-4">
-                <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-5">
                   Revisions ({revisionUpdateCardData.revisions?.length || 0})
                 </p>
                 {revisionUpdateCardData.revisions?.map((revision, index) => (
@@ -253,7 +253,7 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                         )}
                       </div>
                       <div className="flex flex-col items-end gap-2">
-                        <span className="text-xs text-gray-500 leading-4">
+                        <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
                           {revision.createdAt
                             ? new Date(revision.createdAt).toLocaleString(
                                 "en-US",
@@ -303,7 +303,7 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                             )}
                           </div>
                           <div className="flex flex-col items-end gap-2">
-                            <span className="text-xs text-gray-500 leading-4">
+                            <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
                               {revision.updatedAt
                                 ? new Date(revision.updatedAt).toLocaleString(
                                     "en-US",
