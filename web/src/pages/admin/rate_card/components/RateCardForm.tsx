@@ -3,6 +3,7 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { useFormContext } from "react-hook-form";
 import { useEffect } from "react";
 import { useGetServiceCategories } from "@/shared/apiServices/admin/adminService";
+import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
 
 /*
  * RateCardForm
@@ -22,12 +23,32 @@ const RateCardForm: React.FC<{ readOnly?: boolean }> = ({
   // Fetch service categories from API
   const { data: serviceCategoriesData, isLoading } = useGetServiceCategories();
 
-  // Transform API data to SelectField options format
+  // Fetch all rate cards to check for existing combinations
+  const { data: rateCardsData } = useGetRateCards({ page: 1, limit: 100 });
+
+  // Watch the selected country value
+  const countryValue = ctx.watch("country");
+
+  // Get the countryId from the selected country value (e.g., "country1" -> 1)
+  const selectedCountryId = countryValue
+    ? parseInt(countryValue.replace(/\D/g, "")) || 0
+    : 0;
+
+  // Get existing service category IDs for the selected country
+  const existingServiceCategoryIds = rateCardsData?.data
+    ?.filter((card) => card.countryId === selectedCountryId)
+    .map((card) => card.serviceCategoryId) || [];
+
+  // Transform API data to SelectField options format, filtering out existing ones
   const serviceCategoryOptions =
-    serviceCategoriesData?.data?.map((category) => ({
-      label: category.name,
-      value: `serviceCategory${category.id}`,
-    })) || [];
+    serviceCategoriesData?.data
+      ?.filter(
+        (category) => !existingServiceCategoryIds.includes(category.id),
+      )
+      .map((category) => ({
+        label: category.name,
+        value: `serviceCategory${category.id}`,
+      })) || [];
 
   // Set default value for rateType to Master Rate Card on component mount
   useEffect(() => {
