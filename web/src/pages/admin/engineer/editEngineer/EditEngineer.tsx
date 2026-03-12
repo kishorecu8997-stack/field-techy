@@ -71,7 +71,9 @@ export default function EditEngineer() {
   const hasValidEngineerId = Number.isFinite(engineerId) && engineerId > 0;
 
   const { data: engineerData, isLoading, error } =
-    useAdminGetEngineerById(engineerId);
+    useAdminGetEngineerById(engineerId, {
+      refetchOnMount: "always",
+    });
 
   const methods = useForm<EngineerFormData>({
     defaultValues: {

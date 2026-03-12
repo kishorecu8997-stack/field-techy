@@ -1567,8 +1567,12 @@ export function useAdminUpdateEngineer(options?: {
       },
     }),
     onSuccess: (data: AdminUpdateEngineerResponse) => {
-      queryClient.resetQueries({
+      queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.adminGetEngineer,
         exact: false,
       });
       options?.onSuccess?.(data);
