@@ -158,7 +158,7 @@ return (
         {/* Location */}
         <SelectField
           label="Country"
-          name=" country"
+          name="country"
           placeholder="Select Country"
           options={countryOptions}
           required
