@@ -13,6 +13,7 @@ interface ClientWithdrawProps {
   balance: number;
   currencyCode: string;
   onClose: () => void;
+  refetch?: () => void;
 }
 
 interface IWithdrawForm {
@@ -23,6 +24,7 @@ const EngineerWithdraw: React.FC<ClientWithdrawProps> = ({
   balance,
   currencyCode,
   onClose,
+  refetch,
 }) => {
   const [isConfirming, setIsConfirming] = useState(false);
   const methods = useForm<IWithdrawForm>({
@@ -65,6 +67,7 @@ const EngineerWithdraw: React.FC<ClientWithdrawProps> = ({
         },
       });
       setIsConfirming(false);
+      refetch?.();
       onClose();
       toast.success("Withdrawal request raised successfully.");
     } catch (error) {

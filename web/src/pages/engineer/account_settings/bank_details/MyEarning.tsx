@@ -8,6 +8,7 @@ import MonthlyComparison from "./MonthlyComparison";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import {
   useEngineerBalance,
+  useEngineerEarnings,
   useEngineerGetPersonalInfo,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { formatCurrency } from "@/shared/libs/utils";
@@ -19,6 +20,7 @@ import { toast } from "react-toastify";
 import { useCallback, useState } from "react";
 import Popup from "@/shared/components/Popup";
 import EngineerWithdraw from "./EngineerWithdraw";
+import type { GetEngineerEarningsResponse } from "@/api";
 
 /**
  * Displays the user's current balance with quick actions (Bank Details, Withdraw) and a transaction history dashboard.
@@ -29,6 +31,7 @@ const MyEarning = () => {
   const [showBalance, setShowBalance] = useState<boolean>(false);
   const [showWithdrawPopup, setShowWithdrawPopup] = useState<boolean>(false);
   const { data: balanceArr } = useEngineerBalance();
+    const { data:earningsData, isLoading: isEarningsLoading, isError: isEarningsError, refetch } = useEngineerEarnings();
   const { data: personalInfo } = useEngineerGetPersonalInfo();
   const balance = balanceArr?.[0];
   const hasCompletedOnboarding =
@@ -215,7 +218,7 @@ const MyEarning = () => {
       </div>
       <div className="h-[75%] overflow-y-auto">
         <div className="pt-4">
-          <TotalEarningsSummary />
+          <TotalEarningsSummary data={earningsData as GetEngineerEarningsResponse} isLoading={isEarningsLoading} isError={isEarningsError} />
         </div>
         <div className="pt-4">
           <TransactionDashboard
@@ -243,6 +246,7 @@ const MyEarning = () => {
             balance={Number(balance?.balance)}
             currencyCode={String(balance?.currencyCode)}
             onClose={() => setShowWithdrawPopup(false)}
+            refetch={refetch}
           />
         </Popup>
       )}

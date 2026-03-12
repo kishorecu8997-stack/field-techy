@@ -1,4 +1,4 @@
-import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import type { GetEngineerEarningsResponse } from "@/api";
 import { formatAmount } from "@/utils/currency";
 import React, { useState } from "react";
 import { BiTrendingUp } from "react-icons/bi";
@@ -14,9 +14,8 @@ import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
  *
  * All values are derived from the `transactions` data source.
  */
-const TotalEarningsSummary: React.FC = () => {
+const TotalEarningsSummary = ({data, isLoading, isError}:{data:GetEngineerEarningsResponse, isLoading:boolean, isError:boolean}) => {
   const [showBalance, setShowBalance] = useState<boolean>(false);
-  const { data, isLoading, isError } = useEngineerEarnings();
   const totalEarnings = data ? Number(data.totalEarnings) : 0;
   const now = new Date();
   // Loading or error message
@@ -91,18 +90,17 @@ const TotalEarningsSummary: React.FC = () => {
       {/* Main Balance */}
       <div className="px-6 py-8 text-center border-b border-gray-200 dark:border-gray-700">
         <p className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide font-medium">
-            Total Earnings
+          Total Earnings
         </p>
         <p className="text-4xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">
-         {showBalance
-              ? formatAmount(totalEarnings, data?.currencySymbol ?? "")
-              : "******"}
+          {showBalance
+            ? formatAmount(totalEarnings, data?.currencySymbol ?? "")
+            : "******"}
         </p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-700">
-     
         {/* This Month */}
         <div className="px-6 py-5 text-center">
           <div className="flex justify-center items-center gap-3 text-teal-600 dark:text-teal-400 mb-2">
