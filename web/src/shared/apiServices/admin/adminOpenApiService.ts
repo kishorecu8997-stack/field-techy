@@ -106,6 +106,7 @@ import {
   type AdminMarkFileAsUploadedError,
   type BulkCreateRateCardsResponse,
   type BulkCreateRateCardsData,
+  type AdminGetEngineerResponse,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -931,7 +932,16 @@ export function useAdminMarkFileAsUploaded(options?: {
   });
 }
 
-export function useAdminGetEngineerById(userId: number, enabled = true) {
+export function useAdminGetEngineerById(
+  userId:  number,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetEngineerResponse) => void;
+    onError?: (error: unknown) => void;
+    refetchOnMount?: boolean | "always";
+    staleTime?: number;
+  },
+) {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   const isValidId = Number.isFinite(userId) && userId > 0;
 
@@ -943,7 +953,8 @@ export function useAdminGetEngineerById(userId: number, enabled = true) {
         regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
       },
     }),
-    enabled: enabled && isValidId,
+    enabled: isValidId ? options?.enabled : false,
+    ...options,
   });
 }
 

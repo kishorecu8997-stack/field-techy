@@ -19,6 +19,10 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { EngineerFormData } from "../types";
 
+type BasicInformationProps = {
+  disableEmail?: boolean;
+};
+
 /**
  * BasicInformation component handles the first step of the engineer registration form.
  * It captures essential personal and professional information about the engineer.
@@ -49,7 +53,8 @@ import type { EngineerFormData } from "../types";
  * @returns {JSX.Element} A form section component with basic information fields
  */
 
-export default function BasicInformation() {
+
+export default function BasicInformation({ disableEmail }: BasicInformationProps) {
   const { watch, setValue } = useFormContext<EngineerFormData>();
   const serviceCategoryValue = watch("serviceCategory");
   const selectedCountry = watch("country");
@@ -207,6 +212,7 @@ return (
           type="text"
           required
           rules={validateEmailRules}
+          disabled={disableEmail}
         />
 
         <InputField

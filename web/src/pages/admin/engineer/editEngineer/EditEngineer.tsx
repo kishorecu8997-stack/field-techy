@@ -71,7 +71,7 @@ export default function EditEngineer() {
   const hasValidEngineerId = Number.isFinite(engineerId) && engineerId > 0;
 
   const { data: engineerData, isLoading, error } =
-    useAdminGetEngineerById(engineerId, hasValidEngineerId);
+    useAdminGetEngineerById(engineerId);
 
   const methods = useForm<EngineerFormData>({
     defaultValues: {
@@ -221,7 +221,7 @@ const handleNext = async () => {
               }
 
               await queryClient.invalidateQueries({ queryKey: queryKeys.admin.manageEngineers, exact: false });
-              await queryClient.invalidateQueries({ queryKey: queryKeys.engineer.adminById(engineerId) });
+              await queryClient.invalidateQueries({ queryKey: queryKeys.admin.adminGetEngineer, exact: false });
 
               toast.success("Engineer updated successfully!");
               reset();
@@ -262,7 +262,7 @@ const handleNext = async () => {
   };
 
   const tabs = [
-    { label: "Basic Information", content: <BasicInformation />, hide: false },
+    { label: "Basic Information", content: <BasicInformation disableEmail={true} />, hide: false },
     { label: "Experience Details", content: <ExperienceDetails />, hide: false },
     { label: "Documents", content: <Documents />, hide: false },
   ];
