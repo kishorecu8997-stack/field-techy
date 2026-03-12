@@ -309,7 +309,7 @@ export function useClientPostJob(options?: {
         body,
         throwOnError: true,
       });
-      return data!;
+      return data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
