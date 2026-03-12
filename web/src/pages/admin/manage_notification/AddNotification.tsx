@@ -93,16 +93,16 @@ export default function AddNotification() {
     setValue("countryId", "");
     setValue("stateId", "");
     setValue("cityId", "");
-  }, [regionId,setValue]);
+  }, [regionId, setValue]);
 
   useEffect(() => {
     setValue("stateId", "");
     setValue("cityId", "");
-  }, [countryId,setValue]);
+  }, [countryId, setValue]);
 
   useEffect(() => {
     setValue("cityId", "");
-  }, [stateId,setValue]);
+  }, [stateId, setValue]);
 
   const countryOptions = useMemo(
     () =>
@@ -163,7 +163,7 @@ export default function AddNotification() {
                     subadmin: data.subadmin,
                   },
                   countryId: Number(data.countryId),
-                 stateId: data.stateId ? Number(data.stateId) : undefined,
+                  stateId: data.stateId ? Number(data.stateId) : undefined,
                   cityId: data.cityId ? Number(data.cityId) : undefined,
                 },
               });

@@ -396,7 +396,8 @@ const EngineersActions = ({
   // const isPosted = status === JOB_STATUSES.posted;
   // const isInProgress =
   //   status === JOB_STATUSES.inProgress || status === "In Progress";
-  const isCancelled = status?.toLowerCase() === "cancelled" || status === JOB_STATUSES.cancelled;
+  const isCancelled =
+    status?.toLowerCase() === "cancelled" || status === JOB_STATUSES.cancelled;
   const isClosed = status === JOB_STATUSES.closed;
 
   // Check if job has actually started
@@ -410,7 +411,7 @@ const EngineersActions = ({
     (isProposalAccepted || isOffer || OfferJobStatus === "initial") &&
     !hasStartPending &&
     !hasJobStarted;
-    
+
   // Check if job is fully filled (approved proposals >= vacancies)
   const isJobFullyFilled =
     numberOfVacancy !== undefined &&
@@ -536,9 +537,7 @@ const EngineersActions = ({
         {isCancelled ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             <icons.checkCircle className="text-red-500 w-6 h-6" />
-            <span className="text-lg ">
-              Job Cancelled
-            </span>
+            <span className="text-lg ">Job Cancelled</span>
           </div>
         ) : hasStartPending ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
@@ -576,13 +575,22 @@ const EngineersActions = ({
           </div>
         ) : isFinalStatementRejected ? (
           <div className="flex flex-wrap gap-3 w-fit">
-            <Button className="bg-teal-900 text-white px-6 py-2" onClick={handlebreakRequest}>
+            <Button
+              className="bg-teal-900 text-white px-6 py-2"
+              onClick={handlebreakRequest}
+            >
               Break Request
             </Button>
-            <Button className="bg-teal-900 text-white px-6 py-2" onClick={() => setOpen?.(true)}>
+            <Button
+              className="bg-teal-900 text-white px-6 py-2"
+              onClick={() => setOpen?.(true)}
+            >
               Create Log
             </Button>
-            <Button className="bg-teal-900 text-white px-6 py-2" onClick={handleSubmitWork}>
+            <Button
+              className="bg-teal-900 text-white px-6 py-2"
+              onClick={handleSubmitWork}
+            >
               Final Statement
             </Button>
           </div>
