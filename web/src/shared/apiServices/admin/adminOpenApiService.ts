@@ -102,6 +102,10 @@ import {
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
+  type AdminBroadcastNotificationData,
+  type AdminBroadcastNotificationResponses,
+  type AdminGetNotificationsResponse,
+  type AdminGetNotificationsData,
   type AdminMarkFileAsUploadedResponse,
   type AdminMarkFileAsUploadedError,
   type BulkCreateRateCardsResponse,
@@ -157,6 +161,9 @@ import {
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
   adminUpdateTransactionRequestStatusMutation,
+  adminBroadcastNotificationMutation,
+  adminGetNotificationsQueryKey,
+  adminGetNotificationsOptions,
   adminGetPendingPaymentsOptions,
   adminGetPendingPaymentsQueryKey,
   adminApprovePaymentMutation,
@@ -703,12 +710,13 @@ export function useGetCmsContent(
 
     enabled: options?.enabled ?? true,
 
-    staleTime: options?.staleTime ?? 5 * 60 * 1000,
-    refetchOnWindowFocus: options?.refetchOnWindowFocus ?? "always",
-    refetchIntervalInBackground: false,
+    staleTime: 5 * 60 * 1000,
 
-    refetchInterval:
-      options?.enabled === false ? false : (options?.refetchInterval ?? false),
+    gcTime: 10 * 60 * 1000,
+
+    refetchOnWindowFocus: false,
+
+    refetchInterval: options?.refetchInterval ?? false,
   });
 }
 export function useCreateFaq(options?: {
@@ -1760,5 +1768,65 @@ export function useGetRateCards(
       return data;
     },
     enabled: options?.enabled ?? true,
+  });
+}
+
+export type AdminBroadcastNotificationBody = NonNullable<
+  AdminBroadcastNotificationData["body"]
+>;
+
+export function useAdminBroadcastNotification(options?: {
+  onSuccess?: (data: AdminBroadcastNotificationResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminBroadcastNotificationMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
+
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        queryKey: adminGetNotificationsQueryKey(),
+      });
+
+      options?.onSuccess?.(data);
+    },
+
+    onError: options?.onError,
+  });
+}
+export function useAdminGetNotifications(
+  query?: AdminGetNotificationsData["query"],
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetNotificationsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetNotificationsData["query"] = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetNotificationsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
+    enabled: options?.enabled,
   });
 }

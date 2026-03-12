@@ -240,13 +240,14 @@ export const transformLogsToTimelineItems = (
       const attachmentName = getAttachmentFileName(log.attachment);
 
       // Transform revisions to include attachment names
-      const transformedRevisions = log.revisions?.map((rev) => ({
-        ...rev,
-        attachmentUrl: rev.attachment?.url || undefined,
-        attachmentName: getAttachmentFileName(rev.attachment),
-        clientAttachmentUrl: rev.clientAttachment?.url || undefined,
-        clientAttachmentName: getAttachmentFileName(rev.clientAttachment),
-      })) || [];
+      const transformedRevisions =
+        log.revisions?.map((rev) => ({
+          ...rev,
+          attachmentUrl: rev.attachment?.url || undefined,
+          attachmentName: getAttachmentFileName(rev.attachment),
+          clientAttachmentUrl: rev.clientAttachment?.url || undefined,
+          clientAttachmentName: getAttachmentFileName(rev.clientAttachment),
+        })) || [];
 
       return {
         title,

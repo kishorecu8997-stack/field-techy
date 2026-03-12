@@ -209,7 +209,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 )}
               </p>
             )}
-        
           </div>
           <div className="flex gap-2 items-center">
             <div
@@ -312,11 +311,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
           </div>
         )}
-            {status && (
-              <span className={`mt-3 inline-block  text-sm font-medium  `}>
-                {JOB_HEADER_COPY.statusLabel} {status}
-              </span>
-            )}
+        {status && (
+          <span className={`mt-3 inline-block  text-sm font-medium  `}>
+            {JOB_HEADER_COPY.statusLabel} {status}
+          </span>
+        )}
         {/* Client or Engineer actions */}
         {isClient ? (
           <ClientActions
