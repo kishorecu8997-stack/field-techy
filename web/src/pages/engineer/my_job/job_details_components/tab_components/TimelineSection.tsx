@@ -60,7 +60,10 @@ const transformProposalToTimelineItems = (
       }
     }
 
-    if (job.assignmentStatus === "started"|| job.assignmentStatus === "submitted") {
+    if (
+      job.assignmentStatus === "started" ||
+      job.assignmentStatus === "submitted"
+    ) {
       const startedTimestamp =
         (job as { startedAt?: string | null }).startedAt ||
         job.assignedAt ||
