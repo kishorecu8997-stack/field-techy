@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { BiLineChart, BiChevronDown, BiChevronUp } from "react-icons/bi";
-import { formatCurrency } from "@/shared/libs/utils";
 import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
 import { useEngineerEarnings } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { formatAmount } from "@/utils/currency";
+import React, { useMemo, useState } from "react";
+import { BiChevronDown, BiChevronUp, BiLineChart } from "react-icons/bi";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 interface ChartData {
   month: string;
   earnings: number;
@@ -77,7 +77,7 @@ const EarningHistoryChart: React.FC = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Latest:{" "}
               <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(latest.earnings, currencyCode ?? "USD")}
+                {formatAmount(latest.earnings, data?.currencySymbol ?? "")}
               </span>{" "}
               in {latest.month}
             </p>

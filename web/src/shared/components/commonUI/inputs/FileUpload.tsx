@@ -253,14 +253,7 @@ export const FileUpload = ({
       return;
     }
 
-    // 2. Validate size - Updated to reject files below 50KB and above 350KB
-    if (file.size < 50 * 1024) {
-      const errorMsg = `File size must be at least 50 KB.`;
-      setFileError(errorMsg);
-      toast.error(errorMsg);
-      field.onChange(null);
-      return;
-    }
+    // 2. Validate size - Only check max size (removed min size restriction)
     if (file.size > maxSize) {
       const errorMsg = `File size must not exceed ${maxSize / 1024} KB.`;
       setFileError(errorMsg);
@@ -453,8 +446,7 @@ export const FileUpload = ({
                       {placeholder}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      Format: {formatAllowedTypes()}• Min 50 KB • Max{" "}
-                      {maxSize / 1024} KB
+                      Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
                       {validatePDF &&
                         accept.toLowerCase().includes("pdf") &&
                         ` • ${minPages}–${maxPages} pages`}

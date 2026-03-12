@@ -180,7 +180,7 @@ const BasicDocuments = () => {
           </div>
         </div>
       </div>
-      <div className="shrink-0 p-4 mb-8 bg-white flex justify-center gap-3">
+      <div className="shrink-0 p-4 mb-8 bg-white dark:bg-gray-800 flex justify-center gap-3">
         <div className="w-full max-w-md flex gap-3">
           <Button
             type="button"

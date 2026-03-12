@@ -7,6 +7,7 @@ import {
   transformBreakRequestsToItems,
   transformSignOffsToItems,
 } from "@/utils/timelineUtils";
+import { getAttachmentFileName } from "@/shared/libs/utils";
 import type { ProgressUpdate } from "../../types.d";
 import Popup from "@/shared/components/Popup";
 import RevisionRequestUpdateForm from "../jobHeaderComponents/RevisionRequestUpdateForm";
@@ -59,8 +60,11 @@ const transformProposalToTimelineItems = (
       }
     }
 
-    if (job.assignmentStatus === "started") {
-      const startedTimestamp = job.assignedAt || job.respondedAt;
+    if (job.assignmentStatus === "started"|| job.assignmentStatus === "submitted") {
+      const startedTimestamp =
+        (job as { startedAt?: string | null }).startedAt ||
+        job.assignedAt ||
+        job.respondedAt;
       if (startedTimestamp) {
         allItems.push({
           title: "Job Started",
@@ -75,7 +79,9 @@ const transformProposalToTimelineItems = (
     }
 
     if (job.assignmentStatus === "start_pending_approval") {
-      const startPendingTimestamp = job.respondedAt;
+      const startPendingTimestamp =
+        (job as { startRequestedAt?: string | null }).startRequestedAt ||
+        job.respondedAt;
       if (startPendingTimestamp) {
         allItems.push({
           title: "Job Started",
@@ -222,7 +228,7 @@ const TimelineSection: React.FC<{
   const apiRevisionUpdateDataList = useMemo(() => {
     if (!jobLogs?.logs?.length) return [];
 
-    const revisionDataList: any[] = [];
+    const revisionDataList = [];
 
     for (const log of jobLogs.logs) {
       if (
@@ -234,9 +240,11 @@ const TimelineSection: React.FC<{
           revisionId: rev.revisionId,
           logId: log.id,
           content: rev.content,
-          attachmentUrl: rev.attachmentUrl,
+          attachmentUrl: rev.attachment?.url,
+          attachmentName: getAttachmentFileName(rev.attachment),
           clientComment: rev.clientComment,
-          clientAttachmentUrl: rev.clientAttachmentUrl,
+          clientAttachmentUrl: rev.clientAttachment?.url,
+          clientAttachmentName: getAttachmentFileName(rev.clientAttachment),
           createdAt: rev.createdAt,
           updatedAt: rev.updatedAt,
           status: rev.status,
@@ -251,6 +259,7 @@ const TimelineSection: React.FC<{
           description: revisions[0]?.clientComment || "",
           timestamp: formatApiDate(revisions[0]?.createdAt),
           revisions: revisions,
+          status: revisions[0]?.status,
         });
       }
     }
@@ -364,9 +373,10 @@ const TimelineSection: React.FC<{
                 statusLower.includes("revise requested") ||
                 statusLower.includes("needs revision");
 
-              // Show if it's a revision request AND engineer has NOT yet responded
-              // (no content from engineer in the latest revision)
-              const engineerHasResponded = !!latestRevision?.content;
+              // Show if it's a revision request AND engineer has NOT yet responded.
+              // A response can be content-only, attachment-only, or both.
+              const engineerHasResponded =
+                !!latestRevision?.content || !!latestRevision?.attachmentUrl;
 
               return isRevisionRequest && !engineerHasResponded;
             });

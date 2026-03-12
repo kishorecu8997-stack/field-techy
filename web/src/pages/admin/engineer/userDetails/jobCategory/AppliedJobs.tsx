@@ -1,4 +1,4 @@
-import { chartData, days } from "@/dummy_data/admin/manageEngineer";
+import { days } from "@/dummy_data/admin/manageEngineer";
 import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import type { Column } from "@/shared/components/commonUI/custom_table";
@@ -8,6 +8,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { useAdminGetEngineerHistory } from "@/shared/apiServices/admin/adminOpenApiService";
 import React, { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { buildJobsChartData, coerceJobsChartGrouping } from "./jobChartUtils";
 import type { EngineerAssignment } from "./types";
 
 /**
@@ -52,8 +53,36 @@ const AppliedJob: React.FC = () => {
     { enabled: hasValidUserId },
   );
 
-  /** Raw API data */
+  /** Raw API data for table (paginated) */
   const assignments = (engineerHistory?.data ?? []) as EngineerAssignment[];
+
+  /**
+   * Separate fetch for chart data so chart is not tied to table pagination.
+   * Uses a fixed page and a high limit to approximate full history.
+   */
+  const totalCount = engineerHistory?.total ?? 0;
+
+  const { data: engineerHistoryForChart } = useAdminGetEngineerHistory(
+    hasValidUserId ? userId : 0,
+    {
+      limit: totalCount > 0 ? totalCount : 1000,
+      type: "jobs",
+      statusGroup: "applied",
+    },
+    { enabled: hasValidUserId },
+  );
+  const chartAssignments = (engineerHistoryForChart?.data ??
+    []) as EngineerAssignment[];
+
+  const jobChartData = useMemo(
+    () =>
+      buildJobsChartData(
+        chartAssignments,
+        coerceJobsChartGrouping(selectedDay),
+        (a) => a.appliedAt ?? a.invitedAt ?? null,
+      ),
+    [chartAssignments, selectedDay],
+  );
 
   /**
    * Filters assignments based on search input.
@@ -190,7 +219,7 @@ const AppliedJob: React.FC = () => {
       {/* Analytics Chart */}
       <div className="w-1/2">
         <div className="flex justify-between items-center mt-2 md:mb-2 gap-4">
-          <p className="font-bold">Total Jobs Completed</p>
+          <p className="font-bold">Total Jobs Applied</p>
 
           <SelectMenu
             placeholder="Filter By"
@@ -202,7 +231,7 @@ const AppliedJob: React.FC = () => {
         </div>
 
         <GeneralChart
-          data={chartData}
+          data={jobChartData}
           chartType="line"
           xAxisDataKey="name"
           aspectRatio={2}
@@ -215,6 +244,14 @@ const AppliedJob: React.FC = () => {
           ]}
           customTooltip={CustomTooltip}
           height={400}
+          isLoading={isLoading}
+          error={
+            !hasValidUserId
+              ? "Missing engineer id in the URL."
+              : error
+                ? "An error occurred while fetching applied jobs."
+                : null
+          }
           showLegend
           legend={{
             verticalAlign: "top",

@@ -4,6 +4,10 @@ import {
   adminUpdateJobStatus,
   getCmsContent,
   adminGetClientsForManagement,
+  getExchangeRates,
+  updateExchangeRate,
+  getRateCards,
+  bulkCreateRateCards,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -76,6 +80,10 @@ import {
   type AdminGetJobLogsResponse,
   type AdminGetJobTransactionsData,
   type AdminGetJobTransactionsResponses,
+  type GetExchangeRatesData,
+  type GetExchangeRatesResponse,
+  type UpdateExchangeRateData,
+  type UpdateExchangeRateResponse,
   type AdminGetReportsResponse,
   type AdminGetReportsData,
   type AdminUpdateReportResponse,
@@ -88,9 +96,16 @@ import {
   type AdminGetWalletOverviewData,
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
+  type AdminGetPendingPaymentsData,
+  type AdminGetPendingPaymentsResponse,
+  type AdminApprovePaymentResponses,
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
+  type AdminMarkFileAsUploadedResponse,
+  type AdminMarkFileAsUploadedError,
+  type BulkCreateRateCardsResponse,
+  type BulkCreateRateCardsData,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -142,7 +157,13 @@ import {
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
   adminUpdateTransactionRequestStatusMutation,
+  adminGetPendingPaymentsOptions,
+  adminGetPendingPaymentsQueryKey,
+  adminApprovePaymentMutation,
+  adminMarkFileAsUploadedMutation,
 } from "@/api/@tanstack/react-query.gen";
+
+export { adminGetPendingPaymentsQueryKey };
 import {
   useMutation,
   useQuery,
@@ -675,8 +696,9 @@ export function useGetCmsContent(
       const response = await getCmsContent({
         client: apiClient,
         query: { key },
+        throwOnError: true,
       });
-      return response.data;
+      return response.data ?? null;
     },
 
     enabled: options?.enabled ?? true,
@@ -820,7 +842,7 @@ export function useAdminAddClient(options?: {
       },
     }),
     onSuccess: (data: AdminAddClientResponse) => {
-      queryClient.invalidateQueries({
+      queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
@@ -879,6 +901,37 @@ export function useAdminGetClientByUserId(
     }),
     enabled: isValidId ? options?.enabled : false,
     ...options,
+  });
+}
+
+export function useAdminMarkFileAsUploaded(options?: {
+  onSuccess?: (data: AdminMarkFileAsUploadedResponse) => void;
+  onError?: (error: AdminMarkFileAsUploadedError) => void;
+}) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+  return useMutation({
+    ...adminMarkFileAsUploadedMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
+    mutationFn: (variables, context) => {
+      return adminMarkFileAsUploadedMutation({
+        client: apiClient,
+      }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId:
+              variables.query?.regionId ??
+              (selectedRegionId ? Number(selectedRegionId) : undefined),
+          },
+        },
+        context,
+      );
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
   });
 }
 
@@ -1405,6 +1458,33 @@ export function useAdminDeleteClientMutation(options?: {
   });
 }
 
+export type AdminExchangeRatesQuery = NonNullable<
+  GetExchangeRatesData["query"]
+>;
+
+export function useAdminExchangeRates(
+  query?: AdminExchangeRatesQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: GetExchangeRatesResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: [...queryKeys.admin.exchangeRates, query],
+    queryFn: async ({ signal }) => {
+      const { data } = await getExchangeRates({
+        client: apiClient,
+        query,
+        signal,
+        throwOnError: true,
+      });
+      return data as GetExchangeRatesResponse;
+    },
+    ...options,
+  });
+}
+
 export type AdminAddEngineerResponse = AdminCreateEngineerResponse;
 export type AdminAddEngineerBody = AdminCreateEngineerData["body"];
 
@@ -1425,6 +1505,36 @@ export function useAdminAddEngineer(options?: {
     onSuccess: (data: AdminAddEngineerResponse) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type UpdateExchangeRateBody = NonNullable<
+  UpdateExchangeRateData["body"]
+>;
+
+export function useUpdateExchangeRate(options?: {
+  onSuccess?: (data: UpdateExchangeRateResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: { currencyId: number; rate: string }) => {
+      const { data } = await updateExchangeRate({
+        client: apiClient,
+        path: { currencyId: params.currencyId },
+        body: { rate: params.rate },
+        throwOnError: true,
+      });
+      return data as UpdateExchangeRateResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.exchangeRates,
         exact: false,
       });
       options?.onSuccess?.(data);
@@ -1531,5 +1641,124 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
     },
 
     onError: options?.onError,
+  });
+}
+
+// Rate Card - Create
+export function useAdminCreateRateCard(options?: {
+  onSuccess?: (data: BulkCreateRateCardsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: {
+      body: BulkCreateRateCardsData["body"];
+      query: BulkCreateRateCardsData["query"];
+    }) => {
+      const response = await bulkCreateRateCards({
+        client: apiClient,
+        body: data.body,
+        query: data.query,
+        throwOnError: true,
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+export function useAdminGetPendingPayments(
+  query?: AdminGetPendingPaymentsData["query"] & { regionId?: number },
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetPendingPaymentsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    // @ts-ignore - regionId may not be in types yet
+    ...adminGetPendingPaymentsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    ...options,
+  });
+}
+
+export function useAdminApprovePayment(options?: {
+  onSuccess?: (data: AdminApprovePaymentResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminApprovePaymentMutation({ client: apiClient }),
+    mutationFn: (variables, context) => {
+      return adminApprovePaymentMutation({ client: apiClient }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+          } as any,
+        },
+        context,
+      );
+    },
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) => {
+          const firstKeyItem = query.queryKey?.[0];
+          if (!firstKeyItem || typeof firstKeyItem !== "object") {
+            return false;
+          }
+          return (
+            (firstKeyItem as { _id?: string })._id === "adminGetPendingPayments"
+          );
+        },
+        type: "all",
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+// Rate Card - Get All
+export function useGetRateCards(
+  params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    countryId?: number;
+    serviceCategoryId?: number;
+  },
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: ["admin", "rateCards", params],
+    queryFn: async ({ signal }) => {
+      const { data } = await getRateCards({
+        client: apiClient,
+        query: params,
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    enabled: options?.enabled ?? true,
   });
 }

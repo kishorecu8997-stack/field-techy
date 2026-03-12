@@ -14,7 +14,9 @@ import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import type { JobOverviewProps } from "@/shared/components/types";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { getAttachmentFileName } from "@/shared/libs/utils";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { getDurationString } from "@/utils";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -102,6 +104,7 @@ const mapJobToJobOverview = (
   skillMap: Map<number, string>,
   toolMap: Map<string, string>,
   experienceLevelMap: Map<number, string>,
+  engagementModelMap: Map<number, string>,
 ): JobOverviewProps => {
   // Extract basic job info
   const jobTitle = job?.jobTitle || "";
@@ -117,15 +120,15 @@ const mapJobToJobOverview = (
       })
     : [];
 
-  // Extract tools - convert IDs to labels using toolMap
+  // Extract tools - handle both new structure (with toolId, toolName, budget, imageUrl) and old structure (Array<number>)
   const tools = Array.isArray(job.tools)
     ? job.tools.map((tool) => {
-        const toolId = String(tool);
+        const toolId = String(tool.toolId);
         const toolLabel = toolMap.get(toolId);
         return {
-          name: toolLabel || String(tool),
-          price: "",
-          image: undefined,
+          name: toolLabel || tool.toolName || toolId,
+          price: tool.budget || "",
+          image: tool.imageUrl || undefined,
         };
       })
     : [];
@@ -135,13 +138,19 @@ const mapJobToJobOverview = (
   if (job.startDate && job.endDate) {
     const start = new Date(job.startDate);
     const end = new Date(job.endDate);
-    duration = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+    duration = `${start.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
   } else if (job.startDate) {
-    duration = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
+    duration = `Starts: ${new Date(job.startDate).toLocaleDateString("en-GB")}`;
   }
 
-  // Extract work details
-  const engagementModel = job.jobType || undefined;
+  // Extract work details - convert engagement model ID to label using engagementModelMap
+  let engagementModel: string | undefined;
+  if (job.engagementModelId && engagementModelMap.has(job.engagementModelId)) {
+    engagementModel = engagementModelMap.get(job.engagementModelId);
+  } else {
+    // Fallback to jobType if no mapping found
+    engagementModel = job.jobType || undefined;
+  }
 
   // Extract experience level - convert ID to label using experienceLevelMap
   let experienceLevel: string | undefined;
@@ -168,7 +177,10 @@ const mapJobToJobOverview = (
   // Extract attachments
   const attachments: Array<{ name: string; url: string }> = [];
   if (job.attachmentUrl) {
-    attachments.push({ name: "View Document", url: job.attachmentUrl });
+    attachments.push({
+      name: getAttachmentFileName({ url: job.attachmentUrl }),
+      url: job.attachmentUrl,
+    });
   }
 
   return {
@@ -216,10 +228,11 @@ const JobDetailsPage = () => {
 
   const job = jobList?.[0];
 
-  // Fetch skills, tools and experience levels from the lookup API
+  // Fetch skills, tools, experience levels and engagement models from the lookup API
   const { data: skillsResponse } = useLookupData("skills");
   const { data: toolsResponse } = useLookupData("tools");
   const { data: experienceLevelsResponse } = useLookupData("experienceLevels");
+  const { data: engagementModelsResponse } = useLookupData("engagementModels");
 
   // Create skill lookup map for fast ID to label conversion from API data
   const skillMap = useMemo(() => {
@@ -248,11 +261,26 @@ const JobDetailsPage = () => {
     return map;
   }, [experienceLevelsResponse]);
 
+  // Create engagement model lookup map for fast ID to label conversion
+  const engagementModelMap = useMemo(() => {
+    const map = new Map<number, string>();
+    (engagementModelsResponse || []).forEach((model) => {
+      map.set(model.id, model.name);
+    });
+    return map;
+  }, [engagementModelsResponse]);
+
   // Map job to JobOverviewProps using the lookup maps
   const jobOverview = useMemo(() => {
     if (!job) return undefined;
-    return mapJobToJobOverview(job, skillMap, toolMap, experienceLevelMap);
-  }, [job, skillMap, toolMap, experienceLevelMap]);
+    return mapJobToJobOverview(
+      job,
+      skillMap,
+      toolMap,
+      experienceLevelMap,
+      engagementModelMap,
+    );
+  }, [job, skillMap, toolMap, experienceLevelMap, engagementModelMap]);
   const assignmentId = job?.assignmentId ?? undefined;
 
   // Fetch job logs to get revision requests from client
@@ -271,12 +299,8 @@ const JobDetailsPage = () => {
         // Get original engineer's content
         const originalContent =
           log.details || "Engineer submitted a progress update";
-        const originalAttachment = log.attachmentUrl
-          ? decodeURIComponent(
-              log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
-            )
-          : undefined;
-        const originalAttachmentUrl = log.attachmentUrl;
+        const originalAttachment = getAttachmentFileName(log.attachment);
+        const originalAttachmentUrl = log.attachment?.url;
 
         // Determine statusText based on log status OR latest revision status
         // If there's a pending revision, show "Revision Requested"
@@ -328,10 +352,29 @@ const JobDetailsPage = () => {
           logId: log.id,
           // Map revisions to include jobLogId as required by type
           revisions: (log.revisions || []).map((rev) => {
-            const revision = rev as typeof rev & { jobLogId?: number };
             return {
-              ...revision,
-              jobLogId: revision.jobLogId || log.id,
+              revisionId: rev.revisionId,
+              // prefer jobLogId from rev, otherwise use current log id
+              jobLogId: rev.jobLogId ?? log.id,
+              logId: rev.jobLogId || log.id,
+              content: rev.content ?? null,
+              attachmentId: rev.attachmentId ?? null,
+              attachmentUrl: rev.attachment?.url ?? null,
+              attachmentName: rev.attachment?.filename ?? null,
+              status: rev.status,
+              clientComment: rev.clientComment ?? null,
+              clientAttachmentId: rev.clientAttachmentId ?? null,
+              clientAttachment: rev.clientAttachment
+                ? {
+                    filename: rev.clientAttachment.filename ?? "",
+                    id: rev.clientAttachment.id,
+                    size: rev.clientAttachment.size ?? 0,
+                    url: rev.clientAttachment.url ?? "",
+                  }
+                : undefined,
+              clientAttachmentName: rev.clientAttachment?.filename ?? null,
+              createdAt: rev.createdAt ?? null,
+              updatedAt: rev.updatedAt ?? null,
             };
           }),
         });
@@ -399,14 +442,20 @@ const JobDetailsPage = () => {
 
   const { data: reviewsData } = useGetUserRatingAndReviews(true, assignmentId);
 
+  const regionId = useUserSessionStore((state) => state.session?.regionId);
   const handleOpenGiveClientFeedback = () => {
     showPopup({
       body: (
         <GiveFeedbackModal
-          targetName={job?.clientDetails?.companyName ?? "Test Client"}
-          targetRole={job?.clientDetails?.clientType ?? "client"}
+          targetName={
+            job?.clientDetails?.companyName ||
+            job?.clientDetails?.personName ||
+            "Test Client"
+          }
+          targetRole={job?.clientDetails?.clientType || "client"}
           placeholder="Share your feedback about your experience with the client..."
-          assignmentId={job?.assignmentId ?? undefined}
+          assignmentId={job?.assignmentId || undefined}
+          regionId={regionId || undefined}
         />
       ),
     });
@@ -418,9 +467,9 @@ const JobDetailsPage = () => {
         <ViewClientFeedbackModal
           onClose={closePopup}
           clientName={reviewsData?.[0]?.reviewerName || clientName || "Client"}
-          clientImage={reviewsData?.[0]?.reviewerProfilePictureUrl ?? undefined}
-          rating={reviewsData?.[0]?.rating ?? undefined}
-          review={reviewsData?.[0]?.review ?? undefined}
+          clientImage={reviewsData?.[0]?.reviewerProfilePictureUrl || undefined}
+          rating={reviewsData?.[0]?.rating || undefined}
+          review={reviewsData?.[0]?.review || undefined}
         />
       ),
     });
@@ -449,8 +498,8 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             onSortChange={() => {}}
-            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -474,8 +523,8 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             onSortChange={() => {}}
-            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <LoaderComponent />
@@ -493,8 +542,8 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
+            isShowSort={false}
             onSortChange={() => {}}
-            isReport={false}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -587,7 +636,7 @@ const JobDetailsPage = () => {
           title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
-          isReport={false}
+          isShowSort={false}
           isShowBreadcrumb
           customLabels={
             isDummyJob
@@ -620,6 +669,10 @@ const JobDetailsPage = () => {
                 jobLocation={jobLocation}
                 numberOfVacancy={job?.vacancies ?? undefined}
                 numberOfApplicants={job?.assignmentId ? 1 : undefined}
+                numberOfApprovedProposals={
+                  (job as unknown as { assignedEngineerCount?: number })
+                    ?.assignedEngineerCount ?? 0
+                }
                 activeTab={activeTab}
                 onAddProgressUpdate={handleAddProgressUpdate}
                 onOpenFinalStatement={handleOpenFinalStatement}
@@ -651,6 +704,9 @@ const JobDetailsPage = () => {
                 onAddProgressUpdate={handleAddProgressUpdate}
                 assignmentId={assignmentId}
                 jobId={Number(params.jobId)}
+                workLocationLat={job?.workLocationLat ?? null}
+                workLocationLng={job?.workLocationLng ?? null}
+                workLocationName={job?.workLocationName ?? null}
                 jobInfo={
                   job
                     ? mapJobToJobInfo(job)

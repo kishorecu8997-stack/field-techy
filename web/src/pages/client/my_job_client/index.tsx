@@ -5,6 +5,7 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import jobFilters, {
   SORT_OPTIONS,
   type Job,
@@ -19,13 +20,16 @@ import type { ClientGetJobsResponse } from "@/api";
 import { useServiceCategories } from "@/shared/hooks/useLookup";
 
 // Map the UI filter label → API jobStatus query param
-type ApiJobStatus = NonNullable<Parameters<typeof useClientGetJobs>[0]>;
+type ApiJobStatus = NonNullable<
+  Parameters<typeof useClientGetJobs>[0]
+>["jobStatus"];
 const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
   [jobFilters[0]]: undefined, // "All Jobs"    → no filter
   [jobFilters[1]]: API_JOB_STATUSES.inProgress, // "In-Progress" → "In Progress"
   [jobFilters[2]]: API_JOB_STATUSES.closed, // "Completed"   → "Closed"
   [jobFilters[3]]: API_JOB_STATUSES.posted, // "Posted"      → "Posted"
   [jobFilters[4]]: API_JOB_STATUSES.hold, // "Hold"        → "Hold"
+  [jobFilters[5]]: API_JOB_STATUSES.cancelled,
 };
 
 /**
@@ -35,10 +39,34 @@ const FILTER_TO_API_STATUS: Record<string, ApiJobStatus | undefined> = {
  * @returns {React.ReactElement} The rendered "My Jobs" page for the client.
  */
 const MyJobsClient: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterParam = searchParams.get("filter");
+
+  // Initialize activeFilter from URL query param if valid
+  const [activeFilter, setActiveFilter] = useState<string>(() => {
+    if (filterParam && jobFilters.includes(filterParam)) {
+      return filterParam;
+    }
+    return jobFilters[0];
+  });
+
+  // Sync activeFilter with URL filter param when it changes (e.g., navigation from Dashboard)
+  useEffect(() => {
+    if (
+      filterParam &&
+      jobFilters.includes(filterParam) &&
+      filterParam !== activeFilter
+    ) {
+      setActiveFilter(filterParam);
+      setCurrentPage(1); // Reset pagination when filter changes via URL
+    }
+  }, [filterParam]);
 
   const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
-  const { data: jobsData, isLoading } = useClientGetJobs(apiJobStatus);
+  const { data: jobsData, isLoading } = useClientGetJobs({
+    jobStatus: apiJobStatus,
+    enabled: true,
+  });
   const { data: serviceCategories } = useServiceCategories();
 
   // Create a memoized map of service category ID to name
@@ -60,9 +88,9 @@ const MyJobsClient: React.FC = () => {
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
-      return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+      return `${start.toLocaleDateString("en-GB")} - ${end.toLocaleDateString("en-GB")}`;
     } else if (startDate) {
-      return `Starts: ${new Date(startDate).toLocaleDateString()}`;
+      return `Starts: ${new Date(startDate).toLocaleDateString("en-GB")}`;
     }
     return "Not specified";
   };
@@ -105,6 +133,7 @@ const MyJobsClient: React.FC = () => {
     description: apiJob.jobDescription || undefined,
     postedTime: apiJob.createdAt || undefined,
     currencySymbol: apiJob.currencySymbol || "$",
+    regionId: apiJob.regionId,
   });
 
   // allJobs is already filtered by the API — no client-side filtering needed
@@ -124,6 +153,7 @@ const MyJobsClient: React.FC = () => {
 
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
+    setSearchParams({ filter });
     setCurrentPage(1);
     scrollToTop();
   };
@@ -133,10 +163,11 @@ const MyJobsClient: React.FC = () => {
   const currentJobs = allJobs.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200 p-2">
       <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
         <MyJobsHeader
           title="My Jobs"
+          isShowSort={false}
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb
         />

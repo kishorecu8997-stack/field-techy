@@ -1,3 +1,4 @@
+import { UserRole } from "@/shared/enums/users";
 import type { SortOption } from "@/pages/engineer/search_result/types";
 
 export interface SortDropdownProps {
@@ -22,7 +23,7 @@ export interface JobOverviewProps {
   weeklyPayNote?: string;
   additionalDetails?: string[];
   attachments?: Array<Attachment | string>;
-  userType?: "engineer" | "client";
+  userType?: typeof UserRole.ENGINEER | typeof UserRole.CLIENT;
 }
 
 /**

@@ -84,7 +84,6 @@ export class EngineerRouteStrategy implements RouteStrategy {
             React.Fragment,
             null,
             React.createElement(Components.RootLayout),
-            withSuspense(Components.LiveChatWidget),
           ),
         }),
         children: [
@@ -129,11 +128,6 @@ export class EngineerRouteStrategy implements RouteStrategy {
             path: urls.engineer.home.search_result,
             element: withSuspense(Components.EngineerSearchResult),
           },
-          //Planned to remove search analytics feature.
-          // {
-          //   path: urls.engineer.home.search_analytics,
-          //   element: withSuspense(Components.EngineerSearchAnalyticsPage),
-          // },
           {
             path: urls.engineer.home.terms_and_conditions,
             element: withSuspense(Components.EngineerTermsAndConditions),

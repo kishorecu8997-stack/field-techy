@@ -1,21 +1,22 @@
 import { type ClientPaginationParams } from "./client/clientTypes";
 
+const clientBaseKey = ["clients"] as const;
+const engineerBaseKey = ["engineers"] as const;
+
 export const queryKeys = {
   client: {
-    all: ["clients"] as const,
-    detail: (id: string | number) =>
-      [...queryKeys.client.all, String(id)] as const,
-    allClients: () => [...queryKeys.client.all, "all-clients"] as const,
+    all: clientBaseKey,
+    detail: (id: string | number) => [...clientBaseKey, String(id)] as const,
+    allClients: () => [...clientBaseKey, "all-clients"] as const,
     list: (params: ClientPaginationParams) =>
-      [...queryKeys.client.all, "list", params] as const,
-    companyInfo: ["client", "companyInfo"] as const,
+      [...clientBaseKey, "list", params] as const,
+    companyInfo: [...clientBaseKey, "company-info"] as const,
+    balance: [...clientBaseKey, "balance"] as const,
   },
   engineer: {
-    byId: (id: string | number) =>
-      [...queryKeys.engineer.all, String(id)] as const,
-    all: ["engineers"] as const,
-    detail: (id: string | number) =>
-      [...queryKeys.engineer.all, String(id)] as const,
+    byId: (id: string | number) => [...engineerBaseKey, String(id)] as const,
+    all: engineerBaseKey,
+    detail: (id: string | number) => [...engineerBaseKey, String(id)] as const,
     adminById: (id: number) => ["admin", "engineer", id] as const,
     jobLogs: (assignmentId: number) =>
       ["engineer", "jobLogs", assignmentId] as const,
@@ -39,6 +40,14 @@ export const queryKeys = {
   admin: {
     all: ["admin"] as const,
     manageClients: ["adminManageClients"] as const,
+    exchangeRates: ["adminExchangeRates"] as const,
+    rateCards: {
+      all: ["admin", "rateCards"] as const,
+      detail: (id: number) => ["admin", "rateCards", id] as const,
+    },
+    serviceCategories: {
+      all: ["admin", "serviceCategories"] as const,
+    },
     manageEngineers: ["adminManageEngineers"] as const,
     adminGetClient: ["adminGetClient"] as const,
     notifications: {

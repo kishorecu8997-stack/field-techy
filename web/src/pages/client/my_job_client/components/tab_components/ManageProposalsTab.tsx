@@ -55,6 +55,7 @@ interface ManageProposalsTabProps {
   isLoading?: boolean;
   jobId?: number;
   numberOfVacancy?: number;
+  regionId?: number;
 }
 
 /**
@@ -64,8 +65,8 @@ interface ManageProposalsTabProps {
 const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
   assignments = [],
   isLoading = false,
-  // jobId kept for future use
   numberOfVacancy,
+  regionId,
 }) => {
   const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
   const [rejectedProposals, setRejectedProposals] = useState<string[]>([]);
@@ -142,6 +143,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           assignmentId: assignmentId,
           pendingApproval: "application",
           action: "approve",
+          regionId: regionId,
         },
       });
       setAcceptedProposals((prev) => [...prev, String(assignmentId)]);
@@ -167,6 +169,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           assignmentId: assignmentId,
           pendingApproval: "application",
           action: "reject",
+          regionId: regionId,
         },
       });
       setRejectedProposals((prev) => [...prev, String(assignmentId)]);
@@ -191,6 +194,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
     "submit_pending_approval",
     "submitted",
     "rejected",
+    "invited",
   ];
   const remainingProposals = sortedAssignments.filter(
     (proposal) =>

@@ -1,4 +1,11 @@
-import { useSaveReportClient } from "@/shared/apiServices/client/clientOpenApiService";
+import type {
+  MarkJobRelatedFilesUploadedData,
+  SubmitReportResponses,
+} from "@/api";
+import {
+  useMarkCommonFileUploaded,
+  useSaveReportClient,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import { useSaveReportEngineer } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FileUpload, TextareaInput } from "@/shared/components/commonUI/inputs";
@@ -6,11 +13,13 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import Popup from "@/shared/components/Popup";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useForm } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
+type SaveReportResponse = SubmitReportResponses["201"];
 type PriorityLevel = "high" | "low" | "medium" | "critical";
 
 type PostReportProps = {
@@ -23,15 +32,20 @@ type PostReportProps = {
 const ReportPage = ({
   open,
   onClose,
+  refetchCount,
 }: {
   open: boolean;
   onClose: () => void;
+  refetchCount: () => void;
 }) => {
   const { showPopup } = usePopupStore();
+  const regionId = useUserSessionStore.getState().session?.regionId;
+
   const { jobId } = useParams();
   const isClient = location.pathname.includes("client");
   const { mutate: saveClientReport } = useSaveReportClient();
   const { mutate: saveEngineerReport } = useSaveReportEngineer();
+  const { mutate: markFileUploaded } = useMarkCommonFileUploaded();
 
   const formCtx = useForm({
     defaultValues: {
@@ -75,25 +89,44 @@ const ReportPage = ({
               issueCategory: data.category,
               priorityLevel: data.priority,
               attachment: attachmentData,
+              regionId,
             };
 
-            try {
-              if (isClient) {
-                saveClientReport({
-                  body: reportPayload,
-                });
-              } else {
-                saveEngineerReport({
-                  body: reportPayload,
-                });
-              }
+            const mutationOptions = {
+              onSuccess: async (response: SaveReportResponse) => {
+                try {
+                  // 1. Handle S3 Upload if URL exists
+                  if (selectedFile && response?.uploadUrl) {
+                    const uploadResult = await fetch(response.uploadUrl, {
+                      method: "PUT",
+                      body: selectedFile,
+                      headers: { "Content-Type": selectedFile.type },
+                    });
 
-              toast.success("Report submitted successfully!");
-              reset();
-              close(true);
-              onClose();
-            } catch {
-              toast.error("Failed to submit report.");
+                    if (uploadResult.ok) {
+                      await markFileUploaded({
+                        body: { target: "report", reportId: response.id },
+                      } as MarkJobRelatedFilesUploadedData);
+                    }
+                  }
+                  toast.success("Report submitted successfully!");
+                  refetchCount();
+                  reset();
+                  onClose();
+                  close(true);
+                } catch {
+                  toast.error("Report saved, but file upload failed.");
+                }
+              },
+              onError: () => {
+                toast.error("Failed to submit report.");
+              },
+            };
+
+            if (isClient) {
+              saveClientReport({ body: reportPayload }, mutationOptions);
+            } else {
+              saveEngineerReport({ body: reportPayload }, mutationOptions);
             }
           },
         },

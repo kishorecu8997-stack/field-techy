@@ -2,7 +2,7 @@ import React from "react";
 import { JOB_TAB_COPY } from "@/shared/constants/jobTabs";
 import { IoAttach } from "react-icons/io5";
 import type { ProposalInfoTabProps } from "../../types.d";
-import { formatDate } from "@/shared/libs/utils";
+import { formatDate, getAttachmentFileName } from "@/shared/libs/utils";
 
 /**
  * Type guard to check if the proposal data is from API (has attachmentUrl)
@@ -66,7 +66,9 @@ const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({
   ]);
 
   const attachmentName = isApiData
-    ? "View Document"
+    ? submittedProposal.attachmentUrl
+      ? getAttachmentFileName({ url: submittedProposal.attachmentUrl })
+      : null
     : submittedProposal.attachments
       ? (submittedProposal.attachments[0]?.name ?? null)
       : null;

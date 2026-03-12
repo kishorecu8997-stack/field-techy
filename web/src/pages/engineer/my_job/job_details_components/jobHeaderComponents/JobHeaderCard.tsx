@@ -1,22 +1,25 @@
 import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
 
+import { absoluteUrls } from "@/config/urls";
 import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
 import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
+import ReportPage from "@/pages/client/report";
 import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
+import { useReportCount } from "@/shared/hooks/useReportCount";
 import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
+import { IoIosWarning } from "react-icons/io";
 import { IoChatbubble, IoEllipsisVerticalOutline } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import ReportPage from "@/pages/client/report";
-import { IoIosWarning } from "react-icons/io";
-import { absoluteUrls } from "@/config/urls";
+import { useClientCancelJob } from "@/shared/apiServices/client/clientOpenApiService";
+import { toast } from "react-toastify";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
  * Original UI with teal-800 background, Break Details button, and EngineersActions.
@@ -61,6 +64,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   jobStartDate,
   jobEndDate,
   onToggleChat,
+  clientRegionId,
 }) => {
   const params = useParams();
   const location = useLocation();
@@ -74,6 +78,30 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
     "hold",
   );
+  const { count: reportCount, refetch: refetchCount } = useReportCount({
+    jobId: jobId,
+    status: "pending",
+  });
+
+  // Cancel job mutation
+  const { mutate: cancelJob } = useClientCancelJob({
+    onSuccess: () => {
+      console.log("Job cancelled successfully");
+      toast.success("Job cancelled successfully!");
+      // Delay navigation to show the cancelled badge and toast
+      setTimeout(() => {
+        if (isClient) {
+          navigate(absoluteUrls.client.home.my_jobs);
+        } else {
+          navigate(absoluteUrls.engineer.home.my_jobs);
+        }
+      }, 2000);
+    },
+    onError: (error) => {
+      console.error("Failed to cancel job:", error);
+      toast.error("Failed to cancel job. Please try again.");
+    },
+  });
 
   const handleMenuAction = (action: string) => {
     let type: "hold" | "clone" | "cancel";
@@ -98,6 +126,21 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   };
 
   const handleConfirmAction = () => {
+    if (actionType === "cancel" && jobId) {
+      // Trigger the cancel job API
+      const jobIdNumber = Number(jobId);
+      if (isNaN(jobIdNumber)) {
+        console.error("Invalid job ID:", jobId);
+        setIsConfirmOpen(false);
+        return;
+      }
+      cancelJob({
+        body: {
+          jobId: jobIdNumber,
+          status: "Cancelled" as const,
+        },
+      });
+    }
     setIsConfirmOpen(false);
   };
 
@@ -166,6 +209,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 )}
               </p>
             )}
+        
           </div>
           <div className="flex gap-2 items-center">
             <div
@@ -181,10 +225,12 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
             >
               <span>Report Updates</span>
-              <div className="relative">
-                <IoIosWarning size={20} />
-                <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
-              </div>
+              {reportCount > 0 && (
+                <div className="relative">
+                  <IoIosWarning size={20} />
+                  <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
+                </div>
+              )}
             </div>
 
             {/* Chats button - visible unless hideChats is true */}
@@ -266,11 +312,19 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
           </div>
         )}
+            {status && (
+              <span className={`mt-3 inline-block  text-sm font-medium  `}>
+                {JOB_HEADER_COPY.statusLabel} {status}
+              </span>
+            )}
         {/* Client or Engineer actions */}
         {isClient ? (
           <ClientActions
             activeTab={activeTab}
             allCardsApproved={allCardsApproved}
+            jobStatus={status}
+            numberOfVacancy={numberOfVacancy}
+            numberOfApprovedProposals={numberOfApprovedProposals}
           />
         ) : (
           <EngineersActions
@@ -297,6 +351,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             numberOfApprovedProposals={numberOfApprovedProposals}
             jobStartDate={jobStartDate}
             jobEndDate={jobEndDate}
+            clientRegionId={clientRegionId}
           />
         )}
       </div>
@@ -317,7 +372,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           onClose={() => setIsConfirmOpen(false)}
         />
       </Popup>
-      <ReportPage open={isReportOpen} onClose={() => setIsReportOpen(false)} />
+      <ReportPage
+        open={isReportOpen}
+        refetchCount={refetchCount}
+        onClose={() => setIsReportOpen(false)}
+      />
     </>
   );
 };

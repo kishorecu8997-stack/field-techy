@@ -1,21 +1,28 @@
+import { getJobLogs } from "@/api";
+import {
+  engineerGetMyJobsQueryKey,
+  getJobLogsQueryKey,
+} from "@/api/@tanstack/react-query.gen";
 import { icons } from "@/config/icons";
+import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
+import FinalStatementForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/FinalStatementForm";
 import {
   JOB_STATUSES,
   type AssignmentStatus,
   type JobStatus,
 } from "@/pages/engineer/search_result/types";
+import { apiClient } from "@/shared/apiServices/apiClient";
+import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { type Dispatch, type SetStateAction } from "react";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
-import FinalStatementForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/FinalStatementForm";
-import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
-import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { queryKeys } from "@/shared/apiServices/queryKeys";
+import { type Dispatch, type SetStateAction } from "react";
 import { RiErrorWarningFill } from "react-icons/ri";
+import { toast } from "react-toastify";
+import type { OfferedJobStatusType, ProgressUpdate } from "../../types.d";
 
 /**
  * Maps AssignmentStatus to OfferedJobStatusType for UI compatibility
@@ -63,7 +70,7 @@ const EngineersActions = ({
   status,
   setIsReportOpen,
   onAddProgressUpdate,
-  onOpenFinalStatement,
+  // onOpenFinalStatement,
   isFinalStatementSubmitted,
   isFinalStatementApproved,
   isFinalStatementRejected,
@@ -103,31 +110,12 @@ const EngineersActions = ({
   numberOfApprovedProposals?: number;
   jobStartDate?: string;
   jobEndDate?: string;
+  clientRegionId?: number;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
   const queryClient = useQueryClient();
-
-  // Check if there's a pending progress update
-  // const hasPendingProgressUpdate = progressUpdates?.some((update) => {
-  //   // Check if there's a revision with pending status
-  //   if (update.revisions?.some((rev) => rev.status === "pending")) {
-  //     return true;
-  //   }
-  //   // Check for revision_requested status
-  //   if (update.statusText === "revision_requested") {
-  //     return true;
-  //   }
-  //   // Check for Pending status (capitalized)
-  //   if (update.statusText === "Pending") {
-  //     return true;
-  //   }
-  //   // Check for pending status (lowercase) in statusText
-  //   if (update.statusText === "pending") {
-  //     return true;
-  //   }
-  //   return false;
-  // });
+  const regionId = useUserSessionStore((state) => state.session?.regionId);
 
   // Hook for requesting to start a job
   const { mutateAsync: requestStartJob, isPending: isStartingJob } =
@@ -140,12 +128,29 @@ const EngineersActions = ({
         // Invalidate queries to refetch updated job data without page reload
         queryClient.invalidateQueries({ queryKey: ["engineers"] });
         queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
-        // Force refetch the job details
+        // Force refetch the job logs
         if (assignmentId) {
-          queryClient.invalidateQueries({
-            queryKey: ["engineer", "jobDetails", assignmentId],
+          const jobLogsQueryKey = getJobLogsQueryKey({
+            path: { assignmentId },
           });
+          queryClient.invalidateQueries({ queryKey: jobLogsQueryKey });
+          queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+
+          try {
+            const logsResponse = await getJobLogs({
+              client: apiClient,
+              path: { assignmentId },
+            });
+            queryClient.setQueryData(jobLogsQueryKey, logsResponse.data);
+          } catch (error) {
+            console.error("Failed to refetch timeline logs:", error);
+          }
         }
+
+        await queryClient.refetchQueries({
+          queryKey: engineerGetMyJobsQueryKey(),
+          type: "active",
+        });
       },
       onError: (error) => {
         console.error("Failed to request job start:", error);
@@ -207,7 +212,7 @@ const EngineersActions = ({
           action: async (close) => {
             try {
               if (assignmentId) {
-                await requestStartJob({ body: { assignmentId } });
+                await requestStartJob({ body: { assignmentId, regionId } });
               } else {
                 toast.error(
                   "No assignment found. Please apply to the job first.",
@@ -224,9 +229,9 @@ const EngineersActions = ({
     });
   };
 
-  const handleFinalStatement = () => {
-    onOpenFinalStatement?.();
-  };
+  // const handleFinalStatement = () => {
+  //   onOpenFinalStatement?.();
+  // };
 
   const handleSubmitWork = async () => {
     // Validate that assignmentId exists before opening the modal
@@ -301,7 +306,7 @@ const EngineersActions = ({
     <div className="flex flex-wrap gap-2 w-fit">
       <Button
         className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
-        onClick={handleFinalStatement}
+        onClick={handleSubmitWork}
       >
         Final Statement
       </Button>
@@ -345,7 +350,7 @@ const EngineersActions = ({
     <div className="flex flex-wrap gap-2 w-fit">
       <Button
         className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
-        onClick={handleFinalStatement}
+        onClick={handleSubmitWork}
       >
         Final Statement
       </Button>
@@ -386,10 +391,12 @@ const EngineersActions = ({
 
   // Job-level status checks - these determine what ACTIONS are available
   // NOT the engineer's proposal status
-  const isNew = status === JOB_STATUSES.new || status === "new";
+  // const isNew = status === JOB_STATUSES.new || status === "new";
   const isOffer = status === JOB_STATUSES.offer || status === "offer";
-  const isPosted = status === JOB_STATUSES.posted;
-  const isCancelled = status === JOB_STATUSES.cancelled;
+  // const isPosted = status === JOB_STATUSES.posted;
+  // const isInProgress =
+  //   status === JOB_STATUSES.inProgress || status === "In Progress";
+  const isCancelled = status?.toLowerCase() === "cancelled" || status === JOB_STATUSES.cancelled;
   const isClosed = status === JOB_STATUSES.closed;
 
   // Check if job has actually started
@@ -403,22 +410,7 @@ const EngineersActions = ({
     (isProposalAccepted || isOffer || OfferJobStatus === "initial") &&
     !hasStartPending &&
     !hasJobStarted;
-
-  // Check if proposal already submitted via API (based on assignment status)
-  // Only considers this specific engineer's proposal status, not other engineers
-  // const hasSubmittedProposal =
-  //   hasAssignment &&
-  //   (OfferJobStatus === "applied" ||
-  //     OfferJobStatus === "submitted" ||
-  //     OfferJobStatus === "assigned" ||
-  //     OfferJobStatus === "accepted" ||
-  //     OfferJobStatus === "start_pending_approval" ||
-  //     OfferJobStatus === "started" ||
-  //     OfferJobStatus === "rejected" ||
-  //     mappedOfferStatus === "initial" ||
-  //     mappedOfferStatus === "checked-in" ||
-  //     mappedOfferStatus === "declined");
-
+    
   // Check if job is fully filled (approved proposals >= vacancies)
   const isJobFullyFilled =
     numberOfVacancy !== undefined &&
@@ -528,6 +520,7 @@ const EngineersActions = ({
 
   return (
     <div className="mt-4 flex flex-wrap gap-3 h-fit justify-between">
+      {/* Report Issue link – keep it always visible (common pattern) */}
       <div
         className="flex cursor-pointer flex-row items-center gap-1 mt-3 border-b px-3"
         onClick={() => setIsReportOpen?.(true)}
@@ -535,106 +528,94 @@ const EngineersActions = ({
         <RiErrorWarningFill className="text-red-400 text-lg" />
         <span className="text-md">Report Issue</span>
       </div>
+
+      {/* ────────────────────────────────────────────────
+           Main content area – status or actions
+        ──────────────────────────────────────────────── */}
       <span className="flex rounded-md text-sm font-medium h-fit justify-end items-end w-fit">
-        {/* In Progress Status */}
-        {hasJobStarted ? (
-          isFinalStatementRejected ? (
-            <div className="flex flex-wrap gap-2 w-fit">
-              <Button
-                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={handlebreakRequest}
-              >
-                Break Request
-              </Button>
-              <Button
-                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={() => setOpen?.(true)}
-              >
-                Create Log
-              </Button>
-              <Button
-                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={handleSubmitWork}
-              >
-                Final Statement
-              </Button>
-            </div>
-          ) : isFinalStatementApproved ? (
-            <div className="flex flex-wrap gap-2 w-fit items-center">
-              <icons.checkCircle className="text-green-500 w-6 h-6" />
-              <span className="text-lg text-green-500">Job Completed</span>
-            </div>
-          ) : isFinalStatementSubmitted ? (
-            <div className="flex flex-wrap gap-2 w-fit items-center">
-              {/* <icons.checkCircle className="text-blue-500 w-6 h-6" /> */}
-              {/* <span className="text-lg text-blue-500">Final Statement Submitted</span> */}
-            </div>
-          ) : (
-            <div className="flex flex-wrap gap-2 w-fit">
-              <Button
-                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={handlebreakRequest}
-              >
-                Break Request
-              </Button>
-              <Button
-                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={() => setOpen?.(true)}
-              >
-                Create Log
-              </Button>
-              <Button
-                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={handleSubmitWork}
-              >
-                Final Statement
-              </Button>
-            </div>
-          )
-        ) : /* Final Statement Approved - Job Completed Status */
-        isFinalStatementApproved ? (
+        {isCancelled ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-red-500 w-6 h-6" />
+            <span className="text-lg ">
+              Job Cancelled
+            </span>
+          </div>
+        ) : hasStartPending ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.pending className="text-yellow-500 w-6 h-6" />
+            <span className="text-lg text-yellow-500">
+              Start Pending Approval
+            </span>
+          </div>
+        ) : hasJobStarted ? (
+          postStartActions
+        ) : isFinalStatementApproved ? (
           <div className="flex flex-col items-end">
             <div className="flex flex-wrap gap-2 w-fit items-center">
               <icons.checkCircle className="text-green-500 w-6 h-6" />
               <span className="text-lg text-green-500">Job Completed</span>
             </div>
-            <div className="flex flex-wrap gap-4 w-fit">
+            <div className="flex flex-wrap gap-4 w-fit mt-2">
               <Button
                 variant="no_style"
-                className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
+                className="text-white px-2 py-1 font-semibold flex items-center gap-2 hover:bg-teal-700/20"
                 onClick={() => onOpenViewClientFeedback?.()}
-                leftIcon={
-                  <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                }
+                leftIcon={<icons.star className="w-5 h-5 fill-yellow-400" />}
               >
-                <span>View Feedback From Client</span>
+                View Feedback From Client
               </Button>
               <Button
                 variant="no_style"
-                className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
+                className="text-white px-2 py-1 font-semibold flex items-center gap-2 hover:bg-teal-700/20"
                 onClick={() => onOpenGiveClientFeedback?.()}
-                leftIcon={
-                  <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                }
+                leftIcon={<icons.star className="w-5 h-5 fill-yellow-400" />}
               >
-                <span>Give Feedback On Client</span>
+                Give Feedback On Client
               </Button>
             </div>
           </div>
-        ) : /* Applied Status */
-        isApplied || isSubmitted ? (
+        ) : isFinalStatementRejected ? (
+          <div className="flex flex-wrap gap-3 w-fit">
+            <Button className="bg-teal-900 text-white px-6 py-2" onClick={handlebreakRequest}>
+              Break Request
+            </Button>
+            <Button className="bg-teal-900 text-white px-6 py-2" onClick={() => setOpen?.(true)}>
+              Create Log
+            </Button>
+            <Button className="bg-teal-900 text-white px-6 py-2" onClick={handleSubmitWork}>
+              Final Statement
+            </Button>
+          </div>
+        ) : isFinalStatementSubmitted ? (
+          <div className="flex flex-wrap gap-4 w-fit">
+            <Button
+              variant="no_style"
+              className="text-white px-2 py-1 flex items-center gap-2"
+              onClick={() => onOpenViewClientFeedback?.()}
+              leftIcon={<icons.star className="w-5 h-5 fill-yellow-400" />}
+            >
+              View Feedback From Client
+            </Button>
+            <Button
+              variant="no_style"
+              className="text-white px-2 py-1 flex items-center gap-2"
+              onClick={() => onOpenGiveClientFeedback?.()}
+              leftIcon={<icons.star className="w-5 h-5 fill-yellow-400" />}
+            >
+              Give Feedback On Client
+            </Button>
+          </div>
+        ) : isApplied || isSubmitted ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             <icons.checkCircle className="text-green-500 w-6 h-6" />
             <span className="text-lg">Job Applied</span>
           </div>
-        ) : /* Rejected Status */
-        isRejected ? (
+        ) : isRejected ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             <icons.checkCircle className="text-red-500 w-6 h-6" />
             <span className="text-lg text-red-500">Proposal Rejected</span>
           </div>
-        ) : /* Job Started Status */
-        isJobStarted ? (
+        ) : isJobStarted ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             {OfferJobStatus === "start_pending_approval" ? (
               <>
@@ -657,11 +638,6 @@ const EngineersActions = ({
                   Final Statement Submitted
                 </span>
               </>
-            ) : isFinalStatementApproved ? (
-              <>
-                <icons.checkCircle className="text-green-500 w-6 h-6" />
-                <span className="text-lg text-green-500">Job Completed</span>
-              </>
             ) : (
               <>
                 <icons.checkCircle className="text-green-500 w-6 h-6" />
@@ -669,26 +645,16 @@ const EngineersActions = ({
               </>
             )}
           </div>
-        ) : /* New/Posted/Offer/Accepted/Assigned Status */
-        (isNew || isPosted || isOffer || isProposalAccepted || hasAssignment) &&
-          !hasStartPending ? (
-          <div className="flex flex-wrap gap-2 w-fit items-center">
-            {renderJobActionButtons()}
-          </div>
-        ) : /* Cancelled Status */
-        isCancelled ? (
-          <div className="flex flex-wrap gap-2 w-fit items-center">
-            <icons.checkCircle className="text-red-500 w-6 h-6" />
-            <span className="text-lg">Job Cancelled</span>
-          </div>
-        ) : /* Closed Status */
-        isClosed ? (
+        ) : isClosed ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             <icons.checkCircle className="text-green-500 w-6 h-6" />
             <span className="text-lg">Job Closed</span>
           </div>
-        ) : /* Unknown Status */
-        null}
+        ) : (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            {renderJobActionButtons()}
+          </div>
+        )}
       </span>
     </div>
   );

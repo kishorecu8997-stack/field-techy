@@ -18,7 +18,9 @@ export const MODAL_TITLES = {
   jobRejection: "Reject Job Start",
   finalStatementApproval: "Approve Final Statement",
   finalStatementRejection: "Reject Final Statement",
+  progressApprove: "Approve Progress Update",
   progressReject: "Reject Progress Update",
+  revisionApprove: "Approve Revision Update",
   revisionReject: "Reject Revision Update",
 } as const;
 
@@ -31,8 +33,12 @@ export const MODAL_MESSAGES = {
     "Are you sure you want to approve this final statement? The job will be marked as completed.",
   finalStatementRejectConfirm:
     "Are you sure you want to reject this final statement? The engineer will need to resubmit.",
+  progressApproveConfirm:
+    "Are you sure you want to approve this progress update?",
   progressRejectConfirm:
     "Are you sure you want to reject this progress update? The engineer will need to resubmit.",
+  revisionApproveConfirm:
+    "Are you sure you want to approve this revision update?",
   revisionRejectConfirm:
     "Are you sure you want to reject this revision update? The engineer will need to resubmit.",
 } as const;

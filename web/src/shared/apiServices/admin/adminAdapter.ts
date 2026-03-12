@@ -16,6 +16,16 @@ import type {
   FileDownloadResponse,
   FileUploadResponse,
 } from "../client/clientTypes";
+import type {
+  RateCardsResponse,
+  RateCardParams,
+  CreateRateCardParams,
+  CreateRateCardResponse,
+  UpdateRateCardParams,
+  UpdateRateCardResponse,
+  DeleteRateCardResponse,
+  ServiceCategoriesResponse,
+} from "./adminTypes";
 
 /*
  * AdminAdapter
@@ -337,6 +347,89 @@ export class AdminAdapter {
     try {
       const response = await axiosInstance.get(
         ADMIN_ROUTER_PATHS.ADMIN_GET(id),
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Get Rate Cards */
+  static async getRateCards(
+    params?: RateCardParams,
+  ): Promise<RateCardsResponse> {
+    try {
+      const response = await axiosInstance.get(
+        ADMIN_ROUTER_PATHS.GET_RATE_CARDS,
+        { params },
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Create Rate Card */
+  static async createRateCard(
+    data: CreateRateCardParams,
+  ): Promise<CreateRateCardResponse> {
+    try {
+      const response = await axiosInstance.post(
+        ADMIN_ROUTER_PATHS.CREATE_RATE_CARD,
+        { experienceLevels: data.experienceLevels },
+        {
+          params: {
+            countryId: data.countryId,
+            serviceCategoryId: data.serviceCategoryId,
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Update Rate Card */
+  static async updateRateCard(
+    id: number,
+    data: UpdateRateCardParams,
+  ): Promise<UpdateRateCardResponse> {
+    try {
+      const response = await axiosInstance.put(
+        ADMIN_ROUTER_PATHS.UPDATE_RATE_CARD(id),
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Delete Rate Card */
+  static async deleteRateCard(
+    serviceCategoryId: number,
+  ): Promise<DeleteRateCardResponse> {
+    try {
+      const response = await axiosInstance.delete(
+        ADMIN_ROUTER_PATHS.DELETE_RATE_CARD,
+        { params: { serviceCategoryId } },
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Get Service Categories */
+  static async getServiceCategories(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<ServiceCategoriesResponse> {
+    try {
+      const response = await axiosInstance.get(
+        ADMIN_ROUTER_PATHS.GET_SERVICE_CATEGORIES,
+        { params },
       );
       return response.data;
     } catch (error) {

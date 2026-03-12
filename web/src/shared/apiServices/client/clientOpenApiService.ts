@@ -2,13 +2,12 @@ import {
   clientActionOnAssignment,
   clientActionOnBreak,
   clientActionOnWorkLog,
+  clientCalculateJobPrice,
   clientCancelJob,
   clientGetCompanyInfo,
   clientGetRateCard,
   clientInviteEngineer,
-  clientMarksJobFileUploaded,
   clientPostJob,
-  getClientBalance,
   getClientTransactions,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
@@ -17,6 +16,8 @@ import {
   type AppRegisterClientResponse,
   type AppUploadProfileFileResponse,
   type ClientCalculateJobPriceData,
+  type ClientCalculateJobPriceResponse,
+  type ClientExploreEngineersData,
   type ClientGetAssignmentDetailsData,
   type ClientGetCompanyInfoResponse,
   type ClientGetJobsData,
@@ -27,13 +28,15 @@ import {
   type ClientPostJobData,
   type ClientPostJobResponse,
   type ClientUpdateCompanyInfoResponse,
-  type GetClientBalanceError,
-  type GetClientBalanceResponse,
+  type CreatePaymentIntentError,
+  type CreatePaymentIntentResponse,
   type GetClientTransactionsData,
   type GetClientTransactionsError,
-  type GetUserReportsData,
   type GetClientTransactionsResponse,
+  type GetUserReportsData,
   type GetUserReportsResponses,
+  type MarkWorkLogFileUploadedResponse,
+  type Options
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -45,29 +48,63 @@ import {
   clientActionOnAssignmentMutation,
   clientActionOnBreakMutation,
   clientActionOnWorkLogMutation,
-  clientCalculateJobPriceOptions,
   clientCancelJobMutation,
+  clientExploreEngineersInfiniteOptions,
+  clientExploreEngineersOptions,
   clientGetAssignmentDetailsOptions,
   clientGetCompanyInfoOptions,
   clientGetCompanyInfoQueryKey,
   clientGetDashboardOptions,
   clientGetJobsOptions,
+  clientGetJobsQueryKey,
   clientGetMyDocumentsOptions,
+  clientGetPublicEngineerProfileOptions,
   clientInviteEngineerMutation,
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
+  createPaymentIntentMutation,
+  getClientBalanceOptions,
+  getClientBalanceQueryKey,
   getJobLogsOptions,
-  submitReportMutation,
   getUserReportsOptions,
-  clientGetJobsQueryKey,
+  markWorkLogFileUploadedMutation,
+  submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
+import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useEffect } from "react";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
+
+/**
+ * Robust balance invalidation helper to ensure consistency.
+ * Inconsistent updates can occur if the backend database is still processing.
+ * This helper performs one immediate invalidation and two delayed ones to catch up.
+ */
+export const syncClientBalance = (
+  queryClient: ReturnType<typeof useQueryClient>,
+) => {
+  const performSync = () => {
+    void queryClient.invalidateQueries({
+      queryKey: getClientBalanceQueryKey({ client: apiClient }),
+      refetchType: "all",
+    });
+    void useClientWalletStore.getState().fetchBalance();
+  };
+
+  performSync(); // Initial sync
+  setTimeout(performSync, 1000); // Delayed sync for server processing
+  setTimeout(performSync, 3000); // Long delayed sync for safety
+};
 
 /**
  * Returns the regionId stored in the current client session (decoded from JWT at login).
@@ -140,6 +177,48 @@ export function useClientUpdateCompanyInfo(options?: {
         queryKey: clientGetCompanyInfoQueryKey({ client: apiClient }),
         exact: false,
       });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientBalance(enabled: boolean = true) {
+  const session = useUserSessionStore((state) => state.session);
+  const role = session?.role;
+  const isClient = role === "CLIENT" || role === "client";
+
+  const query = useQuery({
+    ...getClientBalanceOptions({ client: apiClient }),
+    enabled: enabled && isClient,
+    queryKey: getClientBalanceQueryKey({ client: apiClient }),
+    staleTime: 0, // Ensure we always get fresh balance when requested
+  });
+
+  // Sync with Zustand store for any legacy components
+  useEffect(() => {
+    if (query.data) {
+      useClientWalletStore.setState({
+        balanceArr: query.data,
+        fetched: true,
+      });
+    }
+  }, [query.data]);
+
+  return query;
+}
+
+// create-payment-intent for wallet top-up stripe integration
+export function useCreatePaymentIntent(options?: {
+  onSuccess?: (data: CreatePaymentIntentResponse) => void;
+  onError?: (error: CreatePaymentIntentError | unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...createPaymentIntentMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -234,24 +313,32 @@ export function useClientPostJob(options?: {
       return data!;
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       queryClient.invalidateQueries({
         queryKey: clientGetJobsQueryKey({ client: apiClient }),
         exact: false,
       });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
 }
 
-export function useClientGetJobs(
-  jobStatus?: NonNullable<ClientGetJobsData["query"]>["jobStatus"],
-  enabled: boolean = true,
-) {
+export function useClientGetJobs({
+  jobId,
+  jobStatus,
+  enabled,
+}: {
+  jobId?: number;
+  regionId?: number;
+  jobStatus?: NonNullable<ClientGetJobsData["query"]>["jobStatus"];
+  enabled: boolean;
+}) {
   return useQuery({
     ...clientGetJobsOptions({
       client: apiClient,
-      query: jobStatus ? { jobStatus } : undefined,
+      query: { jobId, jobStatus },
     }),
     enabled: enabled,
     staleTime: 0,
@@ -279,7 +366,6 @@ export function useClientGetRateCard(options?: {
     onError: options?.onError,
   });
 }
-
 export function useClientMarkJobFileUploaded(options?: {
   onSuccess?: (
     data: ClientMarksJobFileUploadedResponses[keyof ClientMarksJobFileUploadedResponses],
@@ -287,23 +373,8 @@ export function useClientMarkJobFileUploaded(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientMarksJobFileUploadedMutation({ client: apiClient }),
-    mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
-      const { data } = await clientMarksJobFileUploaded({
-        client: apiClient,
-        ...fnOptions,
-        body,
-        throwOnError: true,
-      });
-      return data;
-    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       queryClient.invalidateQueries({
@@ -340,6 +411,7 @@ export function useClientInviteEngineer(options?: {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data as ClientInviteEngineerResponse);
     },
     onError: options?.onError,
@@ -352,16 +424,10 @@ export function useClientGetAssignmentDetails(
   query: ClientGetAssignmentDetailsData["query"] = {},
   enabled: boolean = true,
 ) {
-  const regionId = useClientRegionId();
-  // Merge regionId into query params; caller-provided regionId takes precedence if explicitly set
-  const mergedQuery: ClientGetAssignmentDetailsData["query"] = {
-    ...(regionId !== undefined && !query.regionId ? { regionId } : {}),
-    ...query,
-  };
   return useQuery({
     ...clientGetAssignmentDetailsOptions({
       client: apiClient,
-      query: mergedQuery,
+      query,
     }),
     enabled: enabled,
   });
@@ -373,19 +439,13 @@ export function useClientActionOnAssignment(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientActionOnAssignmentMutation({ client: apiClient }),
     mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
       const { data } = await clientActionOnAssignment({
         client: apiClient,
         ...fnOptions,
-        body,
+        body: fnOptions?.body,
         throwOnError: true,
       });
       return data;
@@ -399,6 +459,7 @@ export function useClientActionOnAssignment(options?: {
           exact: false,
         });
       }
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -430,22 +491,33 @@ export function useClientCancelJob(options?: {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
 }
 
-export function useClientCalculateJobPrice(
-  query: ClientCalculateJobPriceData["query"],
-  enabled: boolean = false,
-) {
-  return useQuery({
-    ...clientCalculateJobPriceOptions({
-      client: apiClient,
-      query,
-    }),
-    enabled: enabled,
+export function useClientCalculateJobPrice(options?: {
+  onSuccess?: (data: ClientCalculateJobPriceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation<
+    ClientCalculateJobPriceResponse,
+    unknown,
+    Omit<Options<ClientCalculateJobPriceData>, "url">
+  >({
+    mutationFn: async (
+      args: Omit<Options<ClientCalculateJobPriceData>, "url">,
+    ) => {
+      const { data } = await clientCalculateJobPrice({
+        client: apiClient,
+        ...args,
+      });
+      return data!;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
   });
 }
 
@@ -484,18 +556,12 @@ export function useClientActionOnWorkLog(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientActionOnWorkLogMutation({ client: apiClient }),
     mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
+      const body = fnOptions?.body;
       const { data } = await clientActionOnWorkLog({
         client: apiClient,
-        ...fnOptions,
         body,
         throwOnError: true,
       });
@@ -510,6 +576,28 @@ export function useClientActionOnWorkLog(options?: {
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * Hook to mark worklog related files as uploaded
+ * Used for client_revision attachments when client requests revision
+ */
+export function useMarkWorkLogFileUploaded(options?: {
+  onSuccess?: (data: MarkWorkLogFileUploadedResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...markWorkLogFileUploadedMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -522,18 +610,12 @@ export function useClientActionOnBreak(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientActionOnBreakMutation({ client: apiClient }),
     mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
+      const body = fnOptions?.body;
       const { data } = await clientActionOnBreak({
         client: apiClient,
-        ...fnOptions,
         body,
         throwOnError: true,
       });
@@ -548,6 +630,7 @@ export function useClientActionOnBreak(options?: {
         });
       }
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -566,8 +649,11 @@ export function useClientFiles() {
   };
 }
 
-export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
-  const regionId = useClientRegionId();
+export function useGetJobLogs(
+  assignmentId: number,
+  enabled: boolean = true,
+  regionId?: number,
+) {
   return useQuery({
     ...getJobLogsOptions({
       client: apiClient,
@@ -601,22 +687,6 @@ export async function getClientCompanyInfo() {
   return response.data as ClientGetCompanyInfoResponse;
 }
 
-export function useClientBalance(enabled: boolean = true) {
-  return useQuery<GetClientBalanceResponse, GetClientBalanceError>({
-    queryKey: [...queryKeys.client.all, "balance"],
-    queryFn: async () => {
-      const response = await getClientBalance({ client: apiClient });
-      if (response.data) {
-        return response.data;
-      }
-      throw response.error ?? { error: "Unknown error" };
-    },
-    enabled,
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
-}
-
 export function useClientTransactions(
   params: GetClientTransactionsData["query"] = {},
   enabled = true,
@@ -643,5 +713,61 @@ export function useClientJobOverviewDashboard(enabled: boolean = true) {
       client: apiClient,
     }),
     enabled: enabled,
+  });
+}
+
+export function useClientExploreEngineers(
+  query: ClientExploreEngineersData["query"] = {},
+  enabled: boolean = true,
+) {
+  // Forward the provided query object (including optional jobId) to the API hook.
+  return useQuery({
+    ...clientExploreEngineersOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+    staleTime: 0,
+  });
+}
+
+export function useClientExploreEngineersInfinite(
+  query: ClientExploreEngineersData["query"] = {},
+  enabled: boolean = true,
+) {
+  return useInfiniteQuery({
+    ...clientExploreEngineersInfiniteOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.data && lastPage.data.length > 0) {
+        return allPages.length + 1;
+      }
+      return undefined;
+    },
+  });
+}
+
+/**
+ * Hook for fetching a single engineer's public profile.
+ * Wraps the `/jobs/explore/engineers/{id}` endpoint.
+ *
+ * @param id - engineer ID from the route or other context
+ * @param enabled - whether the query should be active
+ */
+export function useClientGetPublicEngineerProfile(
+  id: number,
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...clientGetPublicEngineerProfileOptions({
+      client: apiClient,
+      path: { id },
+    }),
+    enabled: enabled && !!id,
+    staleTime: 0,
   });
 }

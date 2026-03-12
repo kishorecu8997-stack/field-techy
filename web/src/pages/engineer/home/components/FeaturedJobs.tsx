@@ -12,6 +12,7 @@ import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { JobItem } from "../types";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Renders a circular progress ring for the match score.
@@ -113,6 +114,10 @@ const FeatureJobCard: React.FC<
   const job = props as JobItem;
   const { bookMarkRefetch } = props;
   const { data: engagementModels } = useLookupData("engagementModels");
+  // Fetch service categories from API
+  const { data: serviceCategoriesData } = useLookupData("serviceCategories");
+  const regionId = useUserSessionStore.getState().session?.regionId;
+
   const { refetch } = useGetEngineerSavedJobs({
     limit: 10,
     page: 1,
@@ -149,6 +154,7 @@ const FeatureJobCard: React.FC<
     toggleSaveMutation({
       body: {
         jobId: Number(job.id),
+        regionId,
       },
     });
   };
@@ -219,11 +225,6 @@ const FeatureJobCard: React.FC<
 
         {/* Tags section */}
         <div className="flex flex-wrap gap-2 mb-3 w-full py-2">
-          {props.category && (
-            <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-              {props.category}
-            </span>
-          )}
           {props.jobType && (
             <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
               {props.jobType}
@@ -242,6 +243,12 @@ const FeatureJobCard: React.FC<
           {props.slaLevel && (
             <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
               {props.slaLevel}
+            </span>
+          )}
+          {props.category && (
+            <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
+              {serviceCategoriesData?.find((c) => c.id === props.category)
+                ?.name || props.category}
             </span>
           )}
         </div>

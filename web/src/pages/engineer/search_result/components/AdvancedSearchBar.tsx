@@ -28,7 +28,8 @@ const AdvancedSearchBar: React.FC<{
   const [localFilters, setLocalFilters] = useState<Filters>(() => {
     // Load filters from session storage on initial render
     const savedFilters = sessionStorage.getItem("advancedSearchFilters");
-    return savedFilters ? JSON.parse(savedFilters) : currentFilters;
+    const parsed = savedFilters ? JSON.parse(savedFilters) : {};
+    return { ...currentFilters, ...parsed };
   });
 
   const serviceTypeOptions = ["Dedicated", "Dispatch", "Scheduled"];
@@ -110,6 +111,9 @@ const AdvancedSearchBar: React.FC<{
     if (localFilters.primaryLanguage) count++;
     if (localFilters.slaLevel) count++;
     if (localFilters.locationRadius !== 0) count++;
+    if (localFilters.q) count++;
+    if (localFilters.country) count++;
+    if (localFilters.state) count++;
     if (
       localFilters.budgetRange.min !== 0 ||
       localFilters.budgetRange.max !== 10000
@@ -122,6 +126,13 @@ const AdvancedSearchBar: React.FC<{
 
   const handleClearAllFilters = () => {
     const defaultFilters: Filters = {
+      q: "",
+      country: "",
+      state: "",
+      city: "",
+      countryId: null,
+      stateId: null,
+      cityId: null,
       location: [],
       category: [],
       rating: [],

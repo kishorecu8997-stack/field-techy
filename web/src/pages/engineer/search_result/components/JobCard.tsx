@@ -1,5 +1,4 @@
 import { icons } from "@/config/icons";
-import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import {
   useGetEngineerSavedJobs,
   useStoreEngineerSaveJobs,
@@ -12,10 +11,13 @@ import React, { useMemo, useState } from "react";
 import { BiUser } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import LocationDisplay from "@/shared/components/commonUI/LocationDisplay";
 import { toast } from "react-toastify";
 import type { JobItem } from "../../home/types";
 import { getExperienceLevel, JOB_STATUSES } from "../types";
 import { Badge } from "./BadgeVariant";
+import { formatAmount } from "@/utils/currency";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 dayjs.extend(relativeTime);
 
@@ -169,19 +171,8 @@ const JobCard: React.FC<{
   userTools = [],
 }) => {
   const [showWhyPopover, setShowWhyPopover] = useState(false);
+  const regionId = useUserSessionStore.getState().session?.regionId;
 
-  // Fetch lookup data for location
-  const { data: countries } = useLookupData("countries");
-  const { data: states } = useLookupData(
-    "states",
-    job.countryId ? String(job.countryId) : undefined,
-    !!job.countryId,
-  );
-  const { data: cities } = useLookupData(
-    "cities",
-    job.stateId ? String(job.stateId) : undefined,
-    !!job.stateId,
-  );
   const { refetch } = useGetEngineerSavedJobs({
     limit: 10,
     page: 1,
@@ -210,32 +201,17 @@ const JobCard: React.FC<{
       return typeof value === "string" ? value : undefined;
     };
 
-    const clientName = job.client?.contactPersonName || "-";
-
-    // Resolve location string from lookups
-    const countryName = countries?.find((c) => c.id === job.countryId)?.name;
-    const stateName = states?.find((s) => s.id === job.stateId)?.name;
-    const cityName = cities?.find((c) => c.id === job.cityId)?.name;
-
-    let locationParts = [];
-    if (job.location) locationParts.push(job.location);
-    else {
-      if (cityName) locationParts.push(cityName);
-      if (stateName) locationParts.push(stateName);
-      if (countryName) locationParts.push(countryName);
-    }
-
-    const location = locationParts.join(", ") || "-";
+    const clientName = job.client?.clientType === "home" ? job.client?.name : job.client?.companyName;
 
     return {
       id: job.id,
       title: job.jobTitle || getString("title") || "",
       clientName,
-      location,
-      salary: job.salary || "-",
+      salary: job.salary,
       status: job.status,
       skills: job.skills,
       tools: job.tools,
+      currencySymbol: job.currencySymbol,
       isSaved: job.isSaved,
       description: job.jobDescription || getString("description") || "",
       postedTime: job.postedTime ? dayjs(job.postedTime).fromNow() : "Just now",
@@ -243,7 +219,7 @@ const JobCard: React.FC<{
       duration: job.jobDuration || getString("duration"),
       startDate: job.startDate || getString("startDate") || "",
     };
-  }, [job, countries, states, cities]);
+  }, [job]);
 
   const matchScore = useMemo(() => {
     return calculateMatchScore(
@@ -261,6 +237,7 @@ const JobCard: React.FC<{
     toggleSaveMutation({
       body: {
         jobId: Number(job.id),
+        regionId,
       },
     });
   };
@@ -291,8 +268,7 @@ const JobCard: React.FC<{
     ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
     : job.status;
 
-  const salaryDisplay = jobData.salary ?? "-";
-  const hasSalary = Boolean(jobData.salary);
+  const hasSalary = Boolean(jobData.salary) && jobData.salary !== "-";
 
   return (
     <>
@@ -388,22 +364,26 @@ const JobCard: React.FC<{
 
         {hasSalary ? (
           <div className="flex items-center gap-1.5 pb-2">
-            <span className="text-gray-800 dark:text-gray-200">
-              {salaryDisplay}
+            <span className="text-gray-500 font-bold dark:text-gray-200">
+              {formatAmount(jobData.salary, job.currencySymbol)}
             </span>
           </div>
         ) : null}
         {/* FOOTER BAR */}
         <div className="flex flex-wrap items-center justify-between bg-gray-100 dark:bg-gray-700/50 rounded-md p-3">
           <div className="flex flex-wrap items-center gap-5">
-            {jobData.location && (
-              <div className="flex items-center gap-1.5">
-                <IoLocationSharp className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-800 dark:text-gray-200">
-                  {jobData.location}
-                </span>
+            <div className="flex items-start gap-1.5 min-w-0">
+              <IoLocationSharp className="h-4 w-4 mt-0.5 flex-shrink-0 text-gray-500" />
+              <div className="text-gray-800 dark:text-gray-200 break-words">
+                <LocationDisplay
+                  countryId={job.countryId as number | undefined}
+                  stateId={job.stateId as number | undefined}
+                  cityId={job.cityId as number | undefined}
+                  workLocationName={job.location}
+                  fallback="-"
+                />
               </div>
-            )}
+            </div>
 
             {job.slaLevel && (
               <div className="flex items-center gap-1.5">

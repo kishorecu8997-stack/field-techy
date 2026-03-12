@@ -63,7 +63,6 @@ const ApplicationHistoryPage = () => {
         title="Application History"
         isShowBreadcrumb={true}
         isShowSort={false}
-        isReport={false}
       />
 
       <div className="p-6">

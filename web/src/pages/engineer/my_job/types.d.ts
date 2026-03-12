@@ -51,7 +51,6 @@ export interface MyJobsHeaderProps {
   onSortChange?: (sort: SortOption) => void;
   isShowBreadcrumb?: boolean;
   description?: string;
-  isReport?: boolean;
   isShowSort?: boolean;
   action?: React.ReactNode;
   isShowButton?: boolean;
@@ -146,6 +145,7 @@ export interface JobHeaderCardProps {
   jobEndDate?: string;
   onToggleChat?: (jobId: string) => void;
   onCloseChat?: () => void;
+  clientRegionId?: number;
 }
 
 export interface JobTabsProps {
@@ -230,10 +230,17 @@ export interface ProgressUpdate {
     content: string | null;
     attachmentId: number | null;
     attachmentUrl?: string | null;
+    attachmentName?: string | null;
     status: string;
     clientComment: string | null;
     clientAttachmentId: number | null;
-    clientAttachmentUrl?: string | null;
+    clientAttachment?: {
+      filename: string;
+      id: number;
+      size: number;
+      url: string;
+    };
+    clientAttachmentName?: string | null;
     createdAt: string | null;
     updatedAt: string | null;
   }>;

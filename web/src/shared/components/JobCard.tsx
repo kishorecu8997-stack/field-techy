@@ -6,6 +6,7 @@ import { getDurationString, scrollToTop } from "@/utils";
 import { formatAmount } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
+import LocationDisplay from "./commonUI/LocationDisplay";
 
 /**
  * Formats a date string to a readable format (DD/MM/YYYY)
@@ -39,7 +40,7 @@ interface JobCardProps {
     personName?: string | null;
     name?: string | null; // fallbacks
   } | null;
-  allocationType?: "Automatic" | "Manual";
+  // allocationType?: "Automatic" | "Manual";
   [key: string]: unknown;
 }
 
@@ -49,7 +50,6 @@ interface JobCardProps {
  */
 const JobCard: React.FC<JobCardProps> = (props) => {
   const {
-    allocationType = "Automatic",
     id,
     jobTitle,
     status,
@@ -60,6 +60,9 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     totalPrice,
     clientDetails,
     currencySymbol,
+    countryId,
+    stateId,
+    cityId,
   } = props;
   const location = useLocation();
   const isClientPath = location.pathname.includes("/client");
@@ -117,34 +120,39 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           })()}
         </span>
       </div>
-      <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">
-        <p>
+      <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3 min-w-0">
+        <p className="truncate">
           <span className="font-medium">Client:</span> {companyName}
         </p>
-        <p>
+        <p className="truncate">
           <span className="font-medium">Start: </span>
           {formatDate(startDate)}
         </p>
-        <p>
+        <p className="truncate">
           <span className="font-medium">Duration:</span> {getDuration()}
         </p>
       </div>
-      <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
-          <MdLocationPin className="h-4 w-4 flex-shrink-0" />
-          <span className="truncate">{workLocationName || "N/A"}</span>
+      <div className="flex justify-between items-start pt-2 border-t border-gray-200 dark:border-gray-700 gap-4">
+        <div className="flex items-start gap-1.5 text-sm text-gray-600 dark:text-gray-400 min-w-0 flex-1">
+          <MdLocationPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+          <div className="break-words">
+            <LocationDisplay
+              countryId={countryId as number | undefined}
+              stateId={stateId as number | undefined}
+              cityId={cityId as number | undefined}
+              workLocationName={workLocationName}
+            />
+          </div>
         </div>
 
-        <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
-          <span>{formattedPay}</span>
+        <div className="flex-shrink-0 text-sm font-semibold text-teal-800 dark:text-teal-400 whitespace-nowrap pt-0.5">
+          {formattedPay}
         </div>
       </div>
 
       <div className="mt-3">
         <JobStatusBadge status={status as any} />
-        <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
-          <span className="font-medium">Allocation:</span> {allocationType}
-        </div>
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2"></div>
       </div>
     </Link>
   );

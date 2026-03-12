@@ -28,7 +28,7 @@ const JobsDetails: React.FC = () => {
     error,
     isError,
     refetch,
-  } = useClientGetJobs();
+  } = useClientGetJobs({ enabled: true });
   // Find the specific job from the API data
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   const job =
@@ -43,7 +43,7 @@ const JobsDetails: React.FC = () => {
             <MyJobsHeader
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
-              isReport
+              isShowSort={false}
               onSortChange={() => {}}
             />
           </div>
@@ -66,7 +66,7 @@ const JobsDetails: React.FC = () => {
             <MyJobsHeader
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
-              isReport
+              isShowSort={false}
               onSortChange={() => {}}
             />
           </div>
@@ -89,7 +89,7 @@ const JobsDetails: React.FC = () => {
             <MyJobsHeader
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
-              isReport
+              isShowSort={false}
               onSortChange={() => {}}
             />
           </div>
@@ -110,9 +110,9 @@ const JobsDetails: React.FC = () => {
   if (job.startDate && job.endDate) {
     const startDate = new Date(job.startDate);
     const endDate = new Date(job.endDate);
-    durationDisplay = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+    durationDisplay = `${startDate.toLocaleDateString("en-GB")} - ${endDate.toLocaleDateString("en-GB")}`;
   } else if (job.startDate) {
-    durationDisplay = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
+    durationDisplay = `Starts: ${new Date(job.startDate).toLocaleDateString("en-GB")}`;
   }
 
   // Transform API job to component format
@@ -150,8 +150,7 @@ const JobsDetails: React.FC = () => {
           <MyJobsHeader
             title={pageHeading}
             currentSort={SORT_OPTIONS.NEWEST}
-            isReport={breadcrumbExtra !== "chats"}
-            isShowSort={breadcrumbExtra !== "chats"}
+            isShowSort={false}
             onSortChange={() => {}}
             segments={segments}
             isChatVisible={breadcrumbExtra === "chats"}
