@@ -88,7 +88,6 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
     pay_type: engineer.hourlyRate
       ? `${CurrencySymbol} ${engineer.hourlyRate}/hr`
       : "N/A",
-    availability: engineer.isEmployed ? "Busy" : "Available",
   }));
 
   if (isLoading) {
