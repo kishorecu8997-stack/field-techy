@@ -216,7 +216,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                   Number of Vacancies
                 </p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  {numberOfVacancies} Engineers
+                  {numberOfVacancies === 1 ? "1 Engineer" : `${numberOfVacancies} Engineers`}
                 </p>
               </div>
             )}
