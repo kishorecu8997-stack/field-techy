@@ -73,7 +73,7 @@ export default function ManageEngineer() {
   return (
     <div className="w-full h-full px-4">
       <div className="flex justify-between my-4">
-        <h1 className="font-semibold">Engineers</h1>
+        <h1 className="font-semibold">Manage Engineers</h1>
         <div className="flex gap-4">
           <Button
             type="submit"

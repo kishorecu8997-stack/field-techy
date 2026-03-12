@@ -48,7 +48,7 @@ export default function UserDetails() {
     data: engineerData,
     isLoading,
     error,
-  } = useAdminGetEngineerById(engineerId, hasValidEngineerId);
+  } = useAdminGetEngineerById(engineerId, { enabled: hasValidEngineerId });
 
   const methods = useForm<EngineerFormData>({
     defaultValues: {
@@ -62,7 +62,6 @@ export default function UserDetails() {
       serviceCategory: "",
       portfolio: "",
       designation: "",
-      location: "",
       employer: "",
       experience: "",
       resume: null,
@@ -165,7 +164,6 @@ const mapEngineerToFormData = (
       : "",
     portfolio: engineer.portfolioLink ?? "",
     designation: engineer.currentDesignation ?? "",
-    location: engineer.location?.city ?? engineer.city?.name ?? "",
     employer: engineer.employer ?? "",
     experience: toOptionalString(engineer.totalExperience),
     resume: engineer.documents?.resume?.url ?? null,
