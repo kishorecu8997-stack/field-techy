@@ -258,7 +258,7 @@ const JobTabSection = ({
 
         // Mark the file as uploaded so the client can view it
         await markUploaded({
-          body: { jobId: Number(jobId) },
+          body: { jobId: Number(jobId), regionId },
         });
       }
 
