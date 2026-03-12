@@ -21,6 +21,7 @@ import {
   useAppNotifications,
 } from "@/shared/apiServices/notifications/notificationOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
 
 /**
  * Header
@@ -189,7 +190,13 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                 onClick={async (e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  await markAllAsRead.mutateAsync({});
+                  try {
+                    await markAllAsRead.mutateAsync({});
+                  } catch {
+                    toast.error(
+                      "Failed to mark all notifications as read. Please try again.",
+                    );
+                  }
                 }}
               >
                 Mark all as read

@@ -692,7 +692,7 @@ export function useGetCmsContent(
   key: GetCmsContentData["query"]["key"],
   options?: {
     enabled?: boolean;
-    refetchInterval?: number | false;
+    refetchInterval?: number | false | (() => number | false);
   },
 ) {
   return useQuery({
@@ -714,7 +714,7 @@ export function useGetCmsContent(
 
     refetchOnWindowFocus: false,
 
-    refetchInterval: options?.refetchInterval ?? 60000,
+    refetchInterval: options?.refetchInterval ?? false,
   });
 }
 export function useCreateFaq(options?: {
