@@ -665,6 +665,8 @@ export function useGetCmsContent(
   options?: {
     enabled?: boolean;
     refetchInterval?: number | false | (() => number | false);
+    staleTime?: number;
+    refetchOnWindowFocus?: boolean | "always";
   },
 ) {
   return useQuery({
@@ -679,19 +681,12 @@ export function useGetCmsContent(
 
     enabled: options?.enabled ?? true,
 
-    staleTime: 0,
-    refetchOnWindowFocus: true,
+    staleTime: options?.staleTime ?? 5 * 60 * 1000,
+    refetchOnWindowFocus: options?.refetchOnWindowFocus ?? "always",
     refetchIntervalInBackground: false,
 
     refetchInterval:
-      options?.enabled === false
-        ? false
-        : (options?.refetchInterval ??
-          (() =>
-            typeof document !== "undefined" &&
-            document.visibilityState === "visible"
-              ? 15000
-              : false)),
+      options?.enabled === false ? false : (options?.refetchInterval ?? false),
   });
 }
 export function useCreateFaq(options?: {
