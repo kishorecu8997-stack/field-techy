@@ -29,7 +29,10 @@ const LoginWithOTP = ({
   const { mutateAsync: sendOtp, isPending: isSending } = useAppSendLoginOtp();
   const { mutateAsync: verifyOtp } = useAppVerifyLoginOtp();
 
-  const handleSendOtp = async (type: "email" | "phoneNumber", value: string) => {
+  const handleSendOtp = async (
+    type: "email" | "phoneNumber",
+    value: string,
+  ) => {
     try {
       await sendOtp({
         body: {

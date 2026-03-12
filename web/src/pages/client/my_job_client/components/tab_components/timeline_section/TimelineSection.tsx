@@ -1,57 +1,57 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useForm } from "react-hook-form";
-import { HiCheckCircle, HiChevronDown, HiXMark } from "react-icons/hi2";
-import { toast } from "react-toastify";
-import { formatDateTime } from "@/utils/formatDateTime";
+import type { ClientGetAssignmentDetailsResponse } from "@/api";
+import { getJobLogs } from "@/api";
+import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
+import type { TimelineStatus } from "@/constants/timelineConstants";
 import {
-  formatApiDate,
-  formatTimeOnly,
-  formatDateOnly,
-  calculateBreakDuration,
-  transformLogsToTimelineItems,
-} from "@/utils/timelineUtils";
+  MODAL_MESSAGES,
+  MODAL_TITLES,
+  TIMELINE_CARD_COLORS,
+  TIMELINE_STATUS,
+  TOAST_MESSAGES,
+} from "@/constants/timelineConstants";
 import type {
   CardButtonType,
   TimelineRevisionData,
 } from "@/pages/client/my_job_client/types";
-import type { RevisionData } from "./TimelineSectionHeader";
+import { apiClient } from "@/shared/apiServices/apiClient";
 import {
-  TIMELINE_STATUS,
-  TIMELINE_CARD_COLORS,
-  MODAL_TITLES,
-  MODAL_MESSAGES,
-  TOAST_MESSAGES,
-} from "@/constants/timelineConstants";
-import type { TimelineStatus } from "@/constants/timelineConstants";
-import ProgressUpdateCard from "./ProgressUpdateCard";
-import ShortBreakCard from "./ShortBreakCard";
-import FinalStatementCard from "./FinalStatementCard";
-import JobStartedCard from "./JobStartedCard";
-import RevisionFormModal from "./RevisionFormModal";
-import ConfirmModal from "./ConfirmModal";
-import ShortBreakApprovalModal from "./ShortBreakApprovalModal";
-import ShortBreakRejectModal from "./ShortBreakRejectModal";
-import ActionRequiredBadge from "./ActionRequiredBadge";
-import TimelineSectionHeader from "./TimelineSectionHeader";
+  useClientActionOnAssignment,
+  useClientActionOnBreak,
+  useClientActionOnWorkLog,
+  useGetJobLogs,
+  useMarkWorkLogFileUploaded
+} from "@/shared/apiServices/client/clientOpenApiService";
 import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
-import type { ClientGetAssignmentDetailsResponse } from "@/api";
+import { formatDateTime } from "@/utils/formatDateTime";
+import {
+  calculateBreakDuration,
+  formatApiDate,
+  formatDateOnly,
+  formatTimeOnly,
+  transformLogsToTimelineItems,
+} from "@/utils/timelineUtils";
+import { getAttachmentFileName } from "@/shared/libs/utils";
+import { useQueryClient } from "@tanstack/react-query";
+import React, { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { HiCheckCircle, HiChevronDown, HiXMark } from "react-icons/hi2";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import ActionRequiredBadge from "./ActionRequiredBadge";
 import type {
   RevisionFormData,
   RevisionRequestDetails,
 } from "./clientTimelineTypes";
-import {
-  useGetJobLogs,
-  useClientGetAssignmentDetails,
-  useClientActionOnAssignment,
-  useClientActionOnWorkLog,
-  useClientActionOnBreak,
-  useClientRegionId,
-  useMarkWorkLogFileUploaded,
-} from "@/shared/apiServices/client/clientOpenApiService";
-import { getJobLogs } from "@/api";
-import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
-import { apiClient } from "@/shared/apiServices/apiClient";
-import { useQueryClient } from "@tanstack/react-query";
+import ConfirmModal from "./ConfirmModal";
+import FinalStatementCard from "./FinalStatementCard";
+import JobStartedCard from "./JobStartedCard";
+import ProgressUpdateCard from "./ProgressUpdateCard";
+import RevisionFormModal from "./RevisionFormModal";
+import ShortBreakApprovalModal from "./ShortBreakApprovalModal";
+import ShortBreakCard from "./ShortBreakCard";
+import ShortBreakRejectModal from "./ShortBreakRejectModal";
+import type { RevisionData } from "./TimelineSectionHeader";
+import TimelineSectionHeader from "./TimelineSectionHeader";
 
 const FormMode = {
   Revision: "revision",
@@ -74,9 +74,17 @@ const TimelineSection: React.FC<{
   jobId?: number;
   hasProposals?: boolean;
   assignments?: ClientGetAssignmentDetailsResponse;
-}> = ({ assignmentId, jobId, hasProposals = false, assignments }) => {
+  regionId?: number;
+  refetchAssignments?: () => void;
+}> = ({ assignmentId,  hasProposals = false, assignments, refetchAssignments }) => {
+  const [searchParams] = useSearchParams();
+  const regionIdfromParam = searchParams.get("regionId");
+
+  const regionIdParam = regionIdfromParam
+    ? Number(regionIdfromParam)
+    : undefined;
+
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   const [_isProgressCollapsed, setIsProgressCollapsed] = useState(false);
   const [isShortBreakCollapsed] = useState(false);
   const [isFinalStatementCollapsed, setIsFinalStatementCollapsed] =
@@ -169,23 +177,13 @@ const TimelineSection: React.FC<{
   // Fetch assignment details - pass both jobId and assignmentId to API
   // API accepts both parameters, so we can use either one or both
   // Ensure jobId is valid (not NaN) before passing
-  const validJobId = jobId && !isNaN(jobId) ? jobId : undefined;
   const fetchedAssignmentsProp = useMemo(() => assignments, [assignments]);
 
-  // Always fetch from API when we have jobId or assignmentId to ensure we can refetch after actions
-  // The prop takes precedence but API data allows for refetching after mutations
-  const {
-    data: fetchedAssignmentDetailsFromApi,
-    refetch: refetchAssignmentDetails,
-  } = useClientGetAssignmentDetails(
-    { jobId: validJobId, assignmentId },
-    !!(validJobId || assignmentId),
-  );
+
 
   // Use API data when available (after refetch), otherwise use prop
   // This ensures we get updated data after mutations
-  const assignmentDetails =
-    fetchedAssignmentDetailsFromApi || fetchedAssignmentsProp || [];
+  const assignmentDetails = fetchedAssignmentsProp || [];
   const effectiveAssignmentId =
     assignmentId || (assignmentDetails?.[0]?.assignmentId ?? 0);
   const shouldFetchLogs = effectiveAssignmentId > 0;
@@ -196,23 +194,24 @@ const TimelineSection: React.FC<{
   const { data: jobLogs, isLoading: isLoadingLogs } = useGetJobLogs(
     effectiveAssignmentId,
     shouldFetchLogs,
+    regionIdParam,
   );
 
   const { mutate: actionOnAssignment } = useClientActionOnAssignment({
     onSuccess: async () => {
       // Refetch assignment details to update hasPendingStartRequest
-      refetchAssignmentDetails();
+      refetchAssignments?.();
       // Also refetch job logs
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
-            query: regionId !== undefined ? { regionId } : undefined,
+            query: { regionId: regionIdParam },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId: effectiveAssignmentId },
-            query: regionId !== undefined ? { regionId } : undefined,
+            query: { regionId: regionIdParam },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
@@ -233,16 +232,17 @@ const TimelineSection: React.FC<{
   const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
     onSuccess: async () => {
       // Refetch job logs after file is marked as uploaded
+      refetchAssignments?.();
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
-            query: regionId !== undefined ? { regionId } : undefined,
+            query: { regionId: regionIdParam },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId: effectiveAssignmentId },
-            query: regionId !== undefined ? { regionId } : undefined,
+            query: { regionId: regionIdParam },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
@@ -258,16 +258,17 @@ const TimelineSection: React.FC<{
 
   const { mutateAsync: actionOnWorkLog } = useClientActionOnWorkLog({
     onSuccess: async () => {
+      refetchAssignments?.();
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
-            query: regionId !== undefined ? { regionId } : undefined,
+            query: { regionId: regionIdParam },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId: effectiveAssignmentId },
-            query: regionId !== undefined ? { regionId } : undefined,
+            query: { regionId: regionIdParam },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
@@ -286,16 +287,17 @@ const TimelineSection: React.FC<{
 
   const { mutate: actionOnBreak } = useClientActionOnBreak({
     onSuccess: async () => {
+      refetchAssignments?.();
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId: effectiveAssignmentId },
-            query: regionId !== undefined ? { regionId } : undefined,
+            query: { regionId: regionIdParam },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId: effectiveAssignmentId },
-            query: regionId !== undefined ? { regionId } : undefined,
+            query: { regionId: regionIdParam },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
@@ -410,22 +412,37 @@ const TimelineSection: React.FC<{
         formatApiDate(assignment.invitedAt) ||
         formatDateTime();
 
-      if (status === "submitted") {
-        allItems.push({
-          title: "Work Submitted",
-          timestamp: appliedDate,
-          statusText: "Submitted",
-          statusColor: "#22c55e",
-          accentColor: "#22c55e",
-          details: "",
-          sortOrder: 100,
-        });
-      }
+      // Get timestamps for different events - pick raw timestamp first, then format once
+      const rawAcceptedDate =
+        (assignment as { assignedAt?: string | null }).assignedAt ||
+        (assignment as { respondedAt?: string | null }).respondedAt ||
+        null;
+
+      const acceptedDate = formatApiDate(rawAcceptedDate) || appliedDate;
+
+      const rawStartedDate =
+        (assignment as { startedAt?: string | null }).startedAt ||
+        (assignment as { startRequestedAt?: string | null }).startRequestedAt ||
+        null;
+
+      const startedDate = formatApiDate(rawStartedDate) || acceptedDate;
+
+      // if (status === "submitted") {
+      //   allItems.push({
+      //     title: "Work Submitted",
+      //     timestamp: appliedDate,
+      //     statusText: "Submitted",
+      //     statusColor: "#22c55e",
+      //     accentColor: "#22c55e",
+      //     details: "",
+      //     sortOrder: 100,
+      //   });
+      // }
 
       if (status === "started" || status === "submitted") {
         allItems.push({
           title: "Job Started",
-          timestamp: appliedDate,
+          timestamp: startedDate,
           statusText: "Approved",
           statusColor: "#22c55e",
           accentColor: "#22c55e",
@@ -444,7 +461,7 @@ const TimelineSection: React.FC<{
       ) {
         allItems.push({
           title: "Proposal Accepted",
-          timestamp: appliedDate,
+          timestamp: acceptedDate,
           statusText: "Approved",
           statusColor: "#22c55e",
           accentColor: "#22c55e",
@@ -489,19 +506,16 @@ const TimelineSection: React.FC<{
     if (progressLogs.length === 0) return [];
 
     return progressLogs.map((progressLog) => {
-      const attachments = progressLog.attachmentUrl
+      const attachments = progressLog.attachment?.url
         ? [
             {
-              name: decodeURIComponent(
-                progressLog.attachmentUrl.split("/").pop()?.split("?")[0] ||
-                  "Attachment",
-              ),
-              url: progressLog.attachmentUrl,
+              name: getAttachmentFileName(progressLog.attachment),
+              url: progressLog.attachment.url,
             },
           ]
         : undefined;
 
-      let title = progressLog.title || "Progress Update";
+      let title = progressLog.logType || "Progress Update";
       const logStatus = progressLog.status as string;
       if (progressLog.logType === "SUBMISSION") {
         if (logStatus === "pending") title = "Proposal Submitted";
@@ -511,7 +525,7 @@ const TimelineSection: React.FC<{
         progressLog.logType === "progress_update" &&
         logStatus === "revision_requested"
       ) {
-        title = progressLog.title || "Revision Requested";
+        title = "Revision Requested";
       }
 
       return {
@@ -546,19 +560,27 @@ const TimelineSection: React.FC<{
           revisionId: rev.revisionId,
           logId: log.id,
           content: rev.content,
-          attachmentUrl: rev.attachmentUrl,
+          attachmentUrl: rev.attachment?.url,
+          attachmentName: getAttachmentFileName(rev.attachment),
           clientComment: rev.clientComment,
-          clientAttachmentUrl: rev.clientAttachmentUrl,
+          clientAttachmentUrl: rev.clientAttachment?.url,
+          clientAttachmentName: getAttachmentFileName(rev.clientAttachment),
           createdAt: rev.createdAt,
           updatedAt: rev.updatedAt,
           status: rev.status,
         }));
         revisionDataList.push({
+          id: `revision-update-${log.id}`,
           logId: log.id,
           revisionId: revisions[0]?.revisionId || 0,
-          content: revisions[0]?.content || null,
-          attachmentUrl: revisions[0]?.attachmentUrl || null,
+          type: "revisionRequestUpdate" as const,
+          title: "Revision Request",
           status: revisions[0]?.status || "pending",
+          description:
+            revisions[0]?.clientComment || revisions[0]?.content || "",
+          timestamp:
+            formatApiDate(revisions[0]?.createdAt) ||
+            formatApiDate(log.timestamp),
           revisions: revisions,
         });
       }
@@ -589,14 +611,11 @@ const TimelineSection: React.FC<{
       timestamp: formatApiDate(
         latestRevision?.createdAt || latestLog.timestamp,
       ),
-      attachments: latestRevision?.attachmentUrl
+      attachments: latestRevision?.attachment?.url
         ? [
             {
-              name: decodeURIComponent(
-                latestRevision.attachmentUrl.split("/").pop()?.split("?")[0] ||
-                  "Attachment",
-              ),
-              url: latestRevision.attachmentUrl,
+              name: getAttachmentFileName(latestRevision.attachment),
+              url: latestRevision.attachment.url,
             },
           ]
         : undefined,
@@ -662,21 +681,16 @@ const TimelineSection: React.FC<{
     if (!jobLogs?.signOffSheets?.length) return null;
     const signOff = jobLogs.signOffSheets[0];
     const attachments: Array<{ name: string; url: string }> = [];
-    if (signOff.attachmentUrl) {
+    if (signOff.attachment?.url) {
       attachments.push({
-        name: decodeURIComponent(
-          signOff.attachmentUrl.split("/").pop()?.split("?")[0] || "Attachment",
-        ),
-        url: signOff.attachmentUrl,
+        name: getAttachmentFileName(signOff.attachment),
+        url: signOff.attachment?.url,
       });
     }
-    if (signOff.signatureAttachmentUrl) {
+    if (signOff.signature?.url) {
       attachments.push({
-        name: decodeURIComponent(
-          signOff.signatureAttachmentUrl.split("/").pop()?.split("?")[0] ||
-            "Attachment",
-        ),
-        url: signOff.signatureAttachmentUrl,
+        name: getAttachmentFileName(signOff.signature),
+        url: signOff.signature.url,
       });
     }
 
@@ -972,6 +986,22 @@ const TimelineSection: React.FC<{
     );
   }, [assignmentDetails]);
 
+  // Get startRequestedAt timestamp from the assignment with pending start request
+  // Using type casting as the API response includes startRequestedAt but the generated type doesn't
+  const pendingStartRequestTimestamp = useMemo(() => {
+    if (!assignmentDetails || assignmentDetails.length === 0) return null;
+    const pendingAssignment = (
+      assignmentDetails as Array<{
+        assignmentStatus: string;
+        startRequestedAt?: string | null;
+      }>
+    ).find(
+      (a) =>
+        a.assignmentStatus === "start_pending_approval" && a.startRequestedAt,
+    );
+    return pendingAssignment?.startRequestedAt || null;
+  }, [assignmentDetails]);
+
   const hasJobStartedData = apiJobStartedData !== null;
   const showJobStartedCard = hasJobStartedData || hasPendingStartRequest;
 
@@ -1148,6 +1178,7 @@ const TimelineSection: React.FC<{
             logId: currentRevisionLogId,
             action: "request_revision",
             clientComment: notes,
+            regionId: regionIdParam,
             clientAttachment: attachment?.[0]
               ? {
                   filename: attachment[0].name,
@@ -1172,6 +1203,7 @@ const TimelineSection: React.FC<{
               target: "client_revision",
               logId: currentRevisionLogId,
               revisionId: response?.revisionId,
+              regionId: regionIdParam,
             },
           });
         }
@@ -1192,6 +1224,7 @@ const TimelineSection: React.FC<{
               revisionId: revisionId,
               action: "request_revision",
               clientComment: notes,
+              regionId: regionIdParam,
               clientAttachment: attachment?.[0]
                 ? {
                     filename: attachment[0].name,
@@ -1216,6 +1249,7 @@ const TimelineSection: React.FC<{
                 target: "client_revision",
                 logId,
                 revisionId: response?.revisionId || revisionId,
+                regionId: regionIdParam,
               },
             });
           }
@@ -1296,6 +1330,7 @@ const TimelineSection: React.FC<{
           requestId: currentBreakRequestId,
           action: "approve",
           approverComment: shortBreakNotes,
+          regionId: regionIdParam,
         },
       });
       setShortBreakStatuses((prev) => ({
@@ -1328,6 +1363,7 @@ const TimelineSection: React.FC<{
           requestId: currentBreakRequestId,
           action: "reject",
           approverComment: shortBreakRejectNotes,
+          regionId: regionIdParam,
         },
       });
       setShortBreakStatuses((prev) => ({
@@ -1358,6 +1394,7 @@ const TimelineSection: React.FC<{
           assignmentId: effectiveAssignmentId,
           pendingApproval: "submission",
           action: "approve",
+          regionId: regionIdParam,
         },
       });
     }
@@ -1380,6 +1417,7 @@ const TimelineSection: React.FC<{
           assignmentId: effectiveAssignmentId,
           pendingApproval: "submission",
           action: "reject",
+          regionId: regionIdParam,
         },
       });
     }
@@ -1411,6 +1449,7 @@ const TimelineSection: React.FC<{
           assignmentId: effectiveAssignmentId,
           pendingApproval: "start",
           action: "approve",
+          regionId: regionIdParam,
         },
       });
     }
@@ -1431,6 +1470,7 @@ const TimelineSection: React.FC<{
           assignmentId: effectiveAssignmentId,
           pendingApproval: "start",
           action: "reject",
+          regionId: regionIdParam,
         },
       });
     }
@@ -1458,6 +1498,7 @@ const TimelineSection: React.FC<{
             assignmentId: effectiveAssignmentId,
             logId: targetLogId,
             action: "reject",
+            regionId: regionIdParam,
           },
         });
       }
@@ -1485,6 +1526,7 @@ const TimelineSection: React.FC<{
             assignmentId: effectiveAssignmentId,
             logId: targetLogId,
             action: "approve",
+            regionId: regionIdParam,
           },
         });
       }
@@ -1524,6 +1566,7 @@ const TimelineSection: React.FC<{
             logId: lgId,
             revisionId: revId,
             action: "reject",
+            regionId: regionIdParam,
           },
         });
       }
@@ -1559,6 +1602,7 @@ const TimelineSection: React.FC<{
             logId: lgId,
             revisionId: revId,
             action: "approve",
+            regionId: regionIdParam,
           },
         });
       }
@@ -1773,6 +1817,7 @@ const TimelineSection: React.FC<{
                     }
                     stopPropagation
                     textClassName="cursor-pointer font-medium text-amber-600 dark:text-amber-500"
+                    regionId={regionIdParam}
                   />
                 )}
                 <button
@@ -1857,8 +1902,10 @@ const TimelineSection: React.FC<{
                                     logId: revisionData.logId,
                                     content: r.content,
                                     attachmentUrl: r.attachmentUrl,
+                                    attachmentName: r.attachmentName,
                                     clientComment: r.clientComment,
                                     clientAttachmentUrl: r.clientAttachmentUrl,
+                                    clientAttachmentName: r.clientAttachmentName,
                                     createdAt: r.createdAt,
                                     updatedAt: r.updatedAt,
                                     status: r.status,
@@ -1965,10 +2012,6 @@ const TimelineSection: React.FC<{
                     />
                   )}
 
-                {/* Show JobStartedCard when:
-                 * 1. apiJobStartedData exists (normal case), OR
-                 * 2. hasPendingStartRequest is true but no JOB_STARTED log yet (engineer requested to start)
-                 */}
                 {(showJobStartedCard && apiJobStartedData) ||
                 (hasPendingStartRequest && !apiJobStartedData) ? (
                   <JobStartedCard
@@ -1980,14 +2023,16 @@ const TimelineSection: React.FC<{
                         title: "Job Started",
                         description:
                           "Engineer has requested to start working on the job",
-                        timestamp: new Date().toLocaleDateString("en-US", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        }),
+                        timestamp: pendingStartRequestTimestamp
+                          ? formatApiDate(pendingStartRequestTimestamp)
+                          : new Date().toLocaleDateString("en-US", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            }),
                         accentColor: TIMELINE_CARD_COLORS.orange,
                         buttons: ["reject", "approve"],
                       }

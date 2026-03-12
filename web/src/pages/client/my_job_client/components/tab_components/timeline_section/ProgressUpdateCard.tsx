@@ -144,7 +144,7 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
               </div>
               {/* Action buttons below the details */}
               {progressStatus === TIMELINE_STATUS.pending && (
-                <div className="flex gap-3 mt-4">
+                <div className="absolute right-4 top-4 flex gap-3 mt-7">
                   <Button
                     variant="no_style"
                     onClick={() => onProgressReject()}
@@ -241,12 +241,13 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                               className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50"
                             >
                               📎{" "}
-                              {decodeURIComponent(
-                                revision.clientAttachmentUrl
-                                  .split("/")
-                                  .pop()
-                                  ?.split("?")[0] || "",
-                              )}
+                              {revision.clientAttachmentName ||
+                                decodeURIComponent(
+                                  revision.clientAttachmentUrl
+                                    .split("/")
+                                    .pop()
+                                    ?.split("?")[0] || "",
+                                )}
                             </a>
                           </div>
                         )}
@@ -290,12 +291,13 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                                   className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50"
                                 >
                                   📎{" "}
-                                  {decodeURIComponent(
-                                    revision.attachmentUrl
-                                      .split("/")
-                                      .pop()
-                                      ?.split("?")[0] || "",
-                                  )}
+                                  {revision.attachmentName ||
+                                    decodeURIComponent(
+                                      revision.attachmentUrl
+                                        .split("/")
+                                        .pop()
+                                        ?.split("?")[0] || "",
+                                    )}
                                 </a>
                               </div>
                             )}

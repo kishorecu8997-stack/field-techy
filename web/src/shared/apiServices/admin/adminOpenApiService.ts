@@ -4,6 +4,10 @@ import {
   adminUpdateJobStatus,
   getCmsContent,
   adminGetClientsForManagement,
+  getExchangeRates,
+  updateExchangeRate,
+  getRateCards,
+  bulkCreateRateCards,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -76,6 +80,10 @@ import {
   type AdminGetJobLogsResponse,
   type AdminGetJobTransactionsData,
   type AdminGetJobTransactionsResponses,
+  type GetExchangeRatesData,
+  type GetExchangeRatesResponse,
+  type UpdateExchangeRateData,
+  type UpdateExchangeRateResponse,
   type AdminGetReportsResponse,
   type AdminGetReportsData,
   type AdminUpdateReportResponse,
@@ -98,6 +106,10 @@ import {
   type AdminBroadcastNotificationResponses,
   type AdminGetNotificationsResponse,
   type AdminGetNotificationsData,
+  type AdminMarkFileAsUploadedResponse,
+  type AdminMarkFileAsUploadedError,
+  type BulkCreateRateCardsResponse,
+  type BulkCreateRateCardsData,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -155,6 +167,7 @@ import {
   adminGetPendingPaymentsOptions,
   adminGetPendingPaymentsQueryKey,
   adminApprovePaymentMutation,
+  adminMarkFileAsUploadedMutation,
 } from "@/api/@tanstack/react-query.gen";
 
 export { adminGetPendingPaymentsQueryKey };
@@ -249,7 +262,7 @@ export function useAdminCreateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -274,7 +287,7 @@ export function useAdminUpdateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -299,7 +312,7 @@ export function useAdminDeleteServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -801,11 +814,11 @@ export function useAdminGetJobDetails(
 
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
     ? {
-      ...query,
-      regionId:
-        query?.regionId ??
-        (selectedRegionId ? Number(selectedRegionId) : undefined),
-    }
+        ...query,
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
+      }
     : { jobId: 0 };
 
   return useQuery({
@@ -835,7 +848,7 @@ export function useAdminAddClient(options?: {
       },
     }),
     onSuccess: (data: AdminAddClientResponse) => {
-      queryClient.invalidateQueries({
+      queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
@@ -894,6 +907,37 @@ export function useAdminGetClientByUserId(
     }),
     enabled: isValidId ? options?.enabled : false,
     ...options,
+  });
+}
+
+export function useAdminMarkFileAsUploaded(options?: {
+  onSuccess?: (data: AdminMarkFileAsUploadedResponse) => void;
+  onError?: (error: AdminMarkFileAsUploadedError) => void;
+}) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+  return useMutation({
+    ...adminMarkFileAsUploadedMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
+    mutationFn: (variables, context) => {
+      return adminMarkFileAsUploadedMutation({
+        client: apiClient,
+      }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId:
+              variables.query?.regionId ??
+              (selectedRegionId ? Number(selectedRegionId) : undefined),
+          },
+        },
+        context,
+      );
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
   });
 }
 
@@ -1020,11 +1064,11 @@ export function useAdminGetJobLogs(
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
-      ...query,
-      regionId:
-        query?.regionId ??
-        (selectedRegionId ? Number(selectedRegionId) : undefined),
-    }
+        ...query,
+        regionId:
+          query?.regionId ??
+          (selectedRegionId ? Number(selectedRegionId) : undefined),
+      }
     : { jobId: 0 };
 
   return useQuery({
@@ -1420,6 +1464,33 @@ export function useAdminDeleteClientMutation(options?: {
   });
 }
 
+export type AdminExchangeRatesQuery = NonNullable<
+  GetExchangeRatesData["query"]
+>;
+
+export function useAdminExchangeRates(
+  query?: AdminExchangeRatesQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: GetExchangeRatesResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: [...queryKeys.admin.exchangeRates, query],
+    queryFn: async ({ signal }) => {
+      const { data } = await getExchangeRates({
+        client: apiClient,
+        query,
+        signal,
+        throwOnError: true,
+      });
+      return data as GetExchangeRatesResponse;
+    },
+    ...options,
+  });
+}
+
 export type AdminAddEngineerResponse = AdminCreateEngineerResponse;
 export type AdminAddEngineerBody = AdminCreateEngineerData["body"];
 
@@ -1440,6 +1511,36 @@ export function useAdminAddEngineer(options?: {
     onSuccess: (data: AdminAddEngineerResponse) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type UpdateExchangeRateBody = NonNullable<
+  UpdateExchangeRateData["body"]
+>;
+
+export function useUpdateExchangeRate(options?: {
+  onSuccess?: (data: UpdateExchangeRateResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: { currencyId: number; rate: string }) => {
+      const { data } = await updateExchangeRate({
+        client: apiClient,
+        path: { currencyId: params.currencyId },
+        body: { rate: params.rate },
+        throwOnError: true,
+      });
+      return data as UpdateExchangeRateResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.exchangeRates,
         exact: false,
       });
       options?.onSuccess?.(data);
@@ -1549,6 +1650,32 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
   });
 }
 
+// Rate Card - Create
+export function useAdminCreateRateCard(options?: {
+  onSuccess?: (data: BulkCreateRateCardsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: {
+      body: BulkCreateRateCardsData["body"];
+      query: BulkCreateRateCardsData["query"];
+    }) => {
+      const response = await bulkCreateRateCards({
+        client: apiClient,
+        body: data.body,
+        query: data.query,
+        throwOnError: true,
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
 export function useAdminGetPendingPayments(
   query?: AdminGetPendingPaymentsData["query"] & { regionId?: number },
   options?: {
@@ -1613,6 +1740,32 @@ export function useAdminApprovePayment(options?: {
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+}
+
+// Rate Card - Get All
+export function useGetRateCards(
+  params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    countryId?: number;
+    serviceCategoryId?: number;
+  },
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: ["admin", "rateCards", params],
+    queryFn: async ({ signal }) => {
+      const { data } = await getRateCards({
+        client: apiClient,
+        query: params,
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    enabled: options?.enabled ?? true,
   });
 }
 

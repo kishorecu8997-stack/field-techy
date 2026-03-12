@@ -35,6 +35,31 @@ import { toast } from "react-toastify";
  *
  * @returns {JSX.Element} The rendered "All Jobs" view with filters and a data table.
  */
+
+type StatusKind = "Hold" | "Flagged" | "Cancelled" | "Unknown";
+const getCurrentStatusKind = (
+  status: string | null | undefined,
+): StatusKind => {
+  const s = (status ?? "").trim().toLowerCase();
+  if (s === "cancel" || s === "cancelled") return "Cancelled";
+  if (s === "flag" || s === "flagged") return "Flagged";
+  if (s === "hold" || s === "onhold" || s === "held") return "Hold";
+  return "Unknown";
+};
+
+const normalizeStatus = (
+  status: string,
+): AdminUpdateJobStatusBody["status"] => {
+  const normalized = status.toLowerCase();
+  if (normalized === "cancel" || normalized === "cancelled") {
+    return "Cancelled";
+  }
+  if (normalized === "flag" || normalized === "flagged") {
+    return "Flagged";
+  }
+  return "Hold";
+};
+
 const JobByCategory: React.FC<JobByCategoryProps> = ({
   data,
   isLoading,
@@ -74,27 +99,15 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       label: cat.name,
     })) || [];
 
-  const normalizeStatus = (
-    status: string,
-  ): AdminUpdateJobStatusBody["status"] => {
-    const normalized = status.toLowerCase();
-    if (normalized === "cancel" || normalized === "cancelled") {
-      return "Cancelled";
-    }
-    if (normalized === "flag" || normalized === "flagged") {
-      return "Flagged";
-    }
-    return "Hold";
-  };
-
   const handleStatusChange = async (job: JobItem, status: string | null) => {
     if (!status) return;
-    const currentStatus = rowStatuses[job.id] ?? job.status ?? "";
-    const previousStatus = currentStatus;
+
+    const current = rowStatuses[job.id] ?? job.status ?? "";
+    const previousStatus = current;
     const nextStatus = normalizeStatus(status);
 
     if (
-      normalizeStatus(currentStatus) === "Cancelled" &&
+      normalizeStatus(current) === "Cancelled" &&
       nextStatus !== "Cancelled"
     ) {
       toast.error("Cannot update status of a Cancelled job");
@@ -109,8 +122,8 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
     let isSuccess = false;
 
     await showPopup({
-      title: `${nextStatus} Job`,
-      body: `Are you sure you want to set this job to ${nextStatus}?`,
+      title: `${status} Job`,
+      body: `Are you sure you want to set this job to ${status}?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -128,7 +141,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
                 body: { status: nextStatus },
               });
               isSuccess = true;
-              toast.success(`Job status updated to ${nextStatus}`);
+              toast.success(`Job status updated to ${status}`);
               close(true);
             } catch (error) {
               toast.error(
@@ -211,9 +224,9 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
     { key: "cityName", label: "City" },
     {
       key: "startDate",
-      label: "Start Date/Time",
+      label: "Start Date",
       renderCell: (row: JobItem) =>
-        row.startDate ? dayjs(row.startDate).format("DD/MM/YYYY HH:mm") : "N/A",
+        row.startDate ? dayjs(row.startDate).format("DD/MM/YYYY") : "N/A",
     },
     {
       key: "createdAt",
@@ -226,17 +239,47 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       label: "Status",
       renderCell: (row: JobItem) => {
         if (showStatusSelect) {
-          const currentStatus = rowStatuses[row.id] ?? row.status ?? "";
-          const isCancelled =
-            normalizeStatus(currentStatus || "Hold") === "Cancelled";
-          const statusOptions = AllJobStatus.map((option) => ({
-            ...option,
-            disabled: isCancelled && option.value !== "Cancelled",
-          }));
+          const rawCurrent = rowStatuses[row.id] ?? row.status ?? "";
+          const currentKind = getCurrentStatusKind(rawCurrent);
+
+          const statusOptions = AllJobStatus.filter((option) => {
+            if (option.value === "Unhold" && currentKind !== "Hold") {
+              return false;
+            }
+            return true;
+          }).map((option) => {
+            if (currentKind === "Cancelled") {
+              return {
+                ...option,
+                disabled: option.value !== "Cancelled",
+              };
+            }
+
+            if (
+              option.value !== "Unhold" &&
+              currentKind !== "Unknown" &&
+              normalizeStatus(option.value) === currentKind
+            ) {
+              return {
+                ...option,
+                disabled: true,
+              };
+            }
+
+            if (option.value === "Unhold") {
+              return {
+                ...option,
+                disabled: currentKind !== "Hold",
+              };
+            }
+
+            return option;
+          });
+
           return (
             <SelectMenu
               placeholder="Select"
-              value={currentStatus}
+              value={rawCurrent}
               onChange={(value) => {
                 handleStatusChange(row, value);
               }}
@@ -341,6 +384,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
           </Button>
         )}
       </div>
+
       <div className="h-full flex-1 overflow-y-auto my-4">
         <CustomTable<JobItem>
           columns={columns}

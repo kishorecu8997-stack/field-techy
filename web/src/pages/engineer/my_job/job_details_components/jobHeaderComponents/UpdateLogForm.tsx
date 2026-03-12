@@ -19,6 +19,7 @@ import { getJobLogs } from "@/api";
 import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "@/shared/apiServices/apiClient";
 import { useQueryClient } from "@tanstack/react-query";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 interface UpdateLogFormProps {
   onClose: () => void;
@@ -43,6 +44,7 @@ const UpdateLogForm = ({
   });
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
+  const regionId = useUserSessionStore.getState().session?.regionId;
 
   const refetchTimeline = async () => {
     if (!assignmentId) return;
@@ -50,8 +52,12 @@ const UpdateLogForm = ({
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
+        query: { regionId },
       });
-      const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+      const exactQueryKey = getJobLogsQueryKey({
+        path: { assignmentId },
+        query: { regionId },
+      });
       queryClient.setQueryData(exactQueryKey, response.data);
     } catch (error) {
       console.error("Failed to refetch timeline:", error);
@@ -111,6 +117,7 @@ const UpdateLogForm = ({
                 logType: "progress_update",
                 title: data.title,
                 details: data.notes,
+                regionId,
               };
 
               // Only add attachment if file exists
@@ -124,8 +131,8 @@ const UpdateLogForm = ({
               });
 
               // Upload file to S3 if URL is provided in response
-              if (attachment && response.attachmentUrl) {
-                await fetch(response.attachmentUrl, {
+              if (attachment && response.uploadUrl) {
+                await fetch(response.uploadUrl, {
                   method: "PUT",
                   body: attachment,
                   headers: { "Content-Type": attachment.type },
@@ -159,11 +166,11 @@ const UpdateLogForm = ({
   return (
     <div className="flex flex-col p-6 gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="text-xl font-semibold dark:text-gray-200">
           {UPDATE_LOG_LABELS.title}
         </h2>
         {jobId && (
-          <span className="text-sm text-gray-200">
+          <span className="text-sm dark:text-gray-200">
             {UPDATE_LOG_LABELS.jobIdLabel} {jobId}
           </span>
         )}

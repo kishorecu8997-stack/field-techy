@@ -14,7 +14,9 @@ import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import type { JobOverviewProps } from "@/shared/components/types";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { getAttachmentFileName } from "@/shared/libs/utils";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { getDurationString } from "@/utils";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -118,15 +120,15 @@ const mapJobToJobOverview = (
       })
     : [];
 
-  // Extract tools - convert IDs to labels using toolMap
+  // Extract tools - handle both new structure (with toolId, toolName, budget, imageUrl) and old structure (Array<number>)
   const tools = Array.isArray(job.tools)
-    ? job.tools.map((tool, index) => {
-        const toolId = String(tool);
+    ? job.tools.map((tool) => {
+        const toolId = String(tool.toolId);
         const toolLabel = toolMap.get(toolId);
         return {
-          name: toolLabel || String(tool),
-          price: "",
-          image: job.toolAttachmentUrls?.[index],
+          name: toolLabel || tool.toolName || toolId,
+          price: tool.budget || "",
+          image: tool.imageUrl || undefined,
         };
       })
     : [];
@@ -176,9 +178,7 @@ const mapJobToJobOverview = (
   const attachments: Array<{ name: string; url: string }> = [];
   if (job.attachmentUrl) {
     attachments.push({
-      name: decodeURIComponent(
-        job.attachmentUrl.split("/").pop()?.split("?")[0] || "Attachment",
-      ),
+      name: getAttachmentFileName({ url: job.attachmentUrl }),
       url: job.attachmentUrl,
     });
   }
@@ -299,12 +299,8 @@ const JobDetailsPage = () => {
         // Get original engineer's content
         const originalContent =
           log.details || "Engineer submitted a progress update";
-        const originalAttachment = log.attachmentUrl
-          ? decodeURIComponent(
-              log.attachmentUrl.split("/").pop()?.split("?")[0] || "",
-            )
-          : undefined;
-        const originalAttachmentUrl = log.attachmentUrl;
+        const originalAttachment = getAttachmentFileName(log.attachment);
+        const originalAttachmentUrl = log.attachment?.url;
 
         // Determine statusText based on log status OR latest revision status
         // If there's a pending revision, show "Revision Requested"
@@ -356,10 +352,29 @@ const JobDetailsPage = () => {
           logId: log.id,
           // Map revisions to include jobLogId as required by type
           revisions: (log.revisions || []).map((rev) => {
-            const revision = rev as typeof rev & { jobLogId?: number };
             return {
-              ...revision,
-              jobLogId: revision.jobLogId || log.id,
+              revisionId: rev.revisionId,
+              // prefer jobLogId from rev, otherwise use current log id
+              jobLogId: rev.jobLogId ?? log.id,
+              logId: rev.jobLogId || log.id,
+              content: rev.content ?? null,
+              attachmentId: rev.attachmentId ?? null,
+              attachmentUrl: rev.attachment?.url ?? null,
+              attachmentName: rev.attachment?.filename ?? null,
+              status: rev.status,
+              clientComment: rev.clientComment ?? null,
+              clientAttachmentId: rev.clientAttachmentId ?? null,
+              clientAttachment: rev.clientAttachment
+                ? {
+                    filename: rev.clientAttachment.filename ?? "",
+                    id: rev.clientAttachment.id,
+                    size: rev.clientAttachment.size ?? 0,
+                    url: rev.clientAttachment.url ?? "",
+                  }
+                : undefined,
+              clientAttachmentName: rev.clientAttachment?.filename ?? null,
+              createdAt: rev.createdAt ?? null,
+              updatedAt: rev.updatedAt ?? null,
             };
           }),
         });
@@ -427,6 +442,7 @@ const JobDetailsPage = () => {
 
   const { data: reviewsData } = useGetUserRatingAndReviews(true, assignmentId);
 
+  const regionId = useUserSessionStore((state) => state.session?.regionId);
   const handleOpenGiveClientFeedback = () => {
     showPopup({
       body: (
@@ -439,6 +455,7 @@ const JobDetailsPage = () => {
           targetRole={job?.clientDetails?.clientType || "client"}
           placeholder="Share your feedback about your experience with the client..."
           assignmentId={job?.assignmentId || undefined}
+          regionId={regionId || undefined}
         />
       ),
     });

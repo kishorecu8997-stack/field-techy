@@ -7,7 +7,6 @@ import {
   clientGetCompanyInfo,
   clientGetRateCard,
   clientInviteEngineer,
-  clientMarksJobFileUploaded,
   clientPostJob,
   getClientTransactions,
   type AppChangePasswordResponse,
@@ -36,8 +35,8 @@ import {
   type GetClientTransactionsResponse,
   type GetUserReportsData,
   type GetUserReportsResponses,
-  type Options,
   type MarkWorkLogFileUploadedResponse,
+  type Options
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -50,12 +49,14 @@ import {
   clientActionOnBreakMutation,
   clientActionOnWorkLogMutation,
   clientCancelJobMutation,
+  clientExploreEngineersInfiniteOptions,
   clientExploreEngineersOptions,
   clientGetAssignmentDetailsOptions,
   clientGetCompanyInfoOptions,
   clientGetCompanyInfoQueryKey,
   clientGetDashboardOptions,
   clientGetJobsOptions,
+  clientGetJobsQueryKey,
   clientGetMyDocumentsOptions,
   clientGetPublicEngineerProfileOptions,
   clientInviteEngineerMutation,
@@ -65,15 +66,18 @@ import {
   getClientBalanceOptions,
   getClientBalanceQueryKey,
   getJobLogsOptions,
-  clientExploreEngineersInfiniteOptions,
   getUserReportsOptions,
-  clientGetJobsQueryKey,
   markWorkLogFileUploadedMutation,
   submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useEffect } from "react";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
@@ -321,14 +325,20 @@ export function useClientPostJob(options?: {
   });
 }
 
-export function useClientGetJobs(
-  jobStatus?: NonNullable<ClientGetJobsData["query"]>["jobStatus"],
-  enabled: boolean = true,
-) {
+export function useClientGetJobs({
+  jobId,
+  jobStatus,
+  enabled,
+}: {
+  jobId?: number;
+  regionId?: number;
+  jobStatus?: NonNullable<ClientGetJobsData["query"]>["jobStatus"];
+  enabled: boolean;
+}) {
   return useQuery({
     ...clientGetJobsOptions({
       client: apiClient,
-      query: jobStatus ? { jobStatus } : undefined,
+      query: { jobId, jobStatus },
     }),
     enabled: enabled,
     staleTime: 0,
@@ -356,7 +366,6 @@ export function useClientGetRateCard(options?: {
     onError: options?.onError,
   });
 }
-
 export function useClientMarkJobFileUploaded(options?: {
   onSuccess?: (
     data: ClientMarksJobFileUploadedResponses[keyof ClientMarksJobFileUploadedResponses],
@@ -364,29 +373,13 @@ export function useClientMarkJobFileUploaded(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientMarksJobFileUploadedMutation({ client: apiClient }),
-    mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
-      const { data } = await clientMarksJobFileUploaded({
-        client: apiClient,
-        ...fnOptions,
-        body,
-        throwOnError: true,
-      });
-      return data;
-    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       queryClient.invalidateQueries({
         queryKey: clientGetJobsQueryKey({ client: apiClient }),
       });
-      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -431,16 +424,10 @@ export function useClientGetAssignmentDetails(
   query: ClientGetAssignmentDetailsData["query"] = {},
   enabled: boolean = true,
 ) {
-  const regionId = useClientRegionId();
-  // Merge regionId into query params; caller-provided regionId takes precedence if explicitly set
-  const mergedQuery: ClientGetAssignmentDetailsData["query"] = {
-    ...(regionId !== undefined && !query.regionId ? { regionId } : {}),
-    ...query,
-  };
   return useQuery({
     ...clientGetAssignmentDetailsOptions({
       client: apiClient,
-      query: mergedQuery,
+      query,
     }),
     enabled: enabled,
   });
@@ -452,19 +439,13 @@ export function useClientActionOnAssignment(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientActionOnAssignmentMutation({ client: apiClient }),
     mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
       const { data } = await clientActionOnAssignment({
         client: apiClient,
         ...fnOptions,
-        body,
+        body: fnOptions?.body,
         throwOnError: true,
       });
       return data;
@@ -575,18 +556,12 @@ export function useClientActionOnWorkLog(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientActionOnWorkLogMutation({ client: apiClient }),
     mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
+      const body = fnOptions?.body;
       const { data } = await clientActionOnWorkLog({
         client: apiClient,
-        ...fnOptions,
         body,
         throwOnError: true,
       });
@@ -635,18 +610,12 @@ export function useClientActionOnBreak(options?: {
   assignmentId?: number;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientActionOnBreakMutation({ client: apiClient }),
     mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
+      const body = fnOptions?.body;
       const { data } = await clientActionOnBreak({
         client: apiClient,
-        ...fnOptions,
         body,
         throwOnError: true,
       });
@@ -680,8 +649,11 @@ export function useClientFiles() {
   };
 }
 
-export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
-  const regionId = useClientRegionId();
+export function useGetJobLogs(
+  assignmentId: number,
+  enabled: boolean = true,
+  regionId?: number,
+) {
   return useQuery({
     ...getJobLogsOptions({
       client: apiClient,

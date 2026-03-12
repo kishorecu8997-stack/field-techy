@@ -112,8 +112,9 @@ const PostJobPage = () => {
   const numberOfVacancy = formCtx.watch("numberOfVacancy");
   const toolsData = formCtx.watch("toolsData");
 
-  const isSafeDate = (d: any) => d && !Number.isNaN(new Date(d).getTime());
-
+const isSafeDate = (d: string | number | Date | null | undefined): boolean => {
+  return !!d && !Number.isNaN(new Date(d).getTime());
+};
   const queryEnabled = Boolean(
     serviceCategory &&
     experienceLevel &&
@@ -327,7 +328,7 @@ const PostJobPage = () => {
     });
   };
 
-  const { mutate: postJob, isPending: isPosting } = useClientPostJob();
+  const { mutate: postJob, isPending: isPosting, data: postJobData } = useClientPostJob();
   const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
 
   const getRequiredNumber = (val: unknown, fieldName: string): number => {
@@ -335,12 +336,14 @@ const PostJobPage = () => {
     if (!num) throw new Error(`${fieldName} is required`);
     return num;
   };
+
   const uploadFile = (file: File, url: string) =>
     fetch(url, {
       method: "PUT",
       body: file,
       headers: { "Content-Type": file.type },
     });
+
   const uploadAttachmentsAndTools = async (
     response: ClientPostJobResponse,
     data: PostAJobFieldsProps,
@@ -360,9 +363,10 @@ const PostJobPage = () => {
       });
     await Promise.all(uploadPromises);
     if (uploadPromises.length > 0) {
-      await markUploaded({ body: { jobId: response.id } });
+      await markUploaded({ body: { jobId: response.id, regionId: postJobData?.regionId } });
     }
   };
+
   const createJobPayload = (
     data: PostAJobFieldsProps,
   ): ClientPostJobData["body"] => {
@@ -370,11 +374,10 @@ const PostJobPage = () => {
       throw new Error("Attachment is required");
     }
 
-    const tools = (data.toolsData || []).map((t) => {
-      if (!t.images || t.images.length === 0 || !t.images[0].file) {
-        throw new Error(`Image is required for tool: ${t.name}`);
-      }
-      return {
+    // Tools are optional - only include tools that have complete data (name, image, cost)
+    const tools = (data.toolsData || [])
+      .filter((t) => t.images && t.images.length > 0 && t.images[0].file)
+      .map((t) => ({
         toolId: Number(t.id) || 0,
         budget: Number(t.budget.replace(/[^0-9.]/g, "")) || 0,
         image: {
@@ -382,8 +385,7 @@ const PostJobPage = () => {
           size: t.images[0].file.size,
           mimeType: t.images[0].file.type,
         },
-      };
-    });
+      }));
 
     return {
       jobTitle: data.jobTitle,
@@ -485,9 +487,6 @@ const PostJobPage = () => {
           }
           // Fallback to scroll to top if no error element found
           scrollToTop();
-          if (errors.toolEntriesCount) {
-            toast.error("Please add a tool details");
-          }
         }}
       >
         <MyJobsHeader
