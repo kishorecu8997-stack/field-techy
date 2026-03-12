@@ -162,13 +162,13 @@ const ManageRateCards: React.FC = () => {
         <div className="whitespace-nowrap">{row.skillSet}</div>
       ),
     },
-    {
-      key: "region",
-      label: "Region",
-      renderCell: (row: RateCardProps) => (
-        <div className="whitespace-nowrap">{row.region}</div>
-      ),
-    },
+    // {
+    //   key: "region",
+    //   label: "Region",
+    //   renderCell: (row: RateCardProps) => (
+    //     <div className="whitespace-nowrap">{row.region}</div>
+    //   ),
+    // },
     {
       key: "location",
       label: "Country",
