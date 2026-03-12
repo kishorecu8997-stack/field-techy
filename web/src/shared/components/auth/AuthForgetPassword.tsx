@@ -40,7 +40,8 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
   });
   const { success, error: toastError } = useToast();
 
-  const { mutateAsync: forgotPassword, isPending } = useForgotPassword({
+  // Using mutate (fire-and-forget pattern) with onError callback for proper error handling
+  const { mutate: forgotPassword, isPending } = useForgotPassword({
     onSuccess: () => {
       success("OTP sent to your email address");
       // Navigate directly to reset password page
@@ -68,8 +69,8 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
         return;
       }
 
-      // User exists, proceed to send OTP
-      await forgotPassword({
+      // User exists, proceed to send OTP (using mutate - no await needed)
+      forgotPassword({
         body: {
           email: data.email,
           userRole: role,
