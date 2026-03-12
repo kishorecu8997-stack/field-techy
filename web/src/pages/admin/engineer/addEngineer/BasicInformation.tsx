@@ -182,7 +182,7 @@ return (
 
         <SelectField
           label="City"
-          name="City"
+          name="city"
           placeholder="Select City"
           options={cityOptions}
           required
