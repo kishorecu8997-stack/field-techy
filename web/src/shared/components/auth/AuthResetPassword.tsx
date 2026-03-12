@@ -6,7 +6,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
-import { useForgotPassword, useResetPassword } from "@/shared/apiServices/commonOpenApiService";
+import {
+  useForgotPassword,
+  useResetPassword,
+} from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import AuthPasswordSection from "./AuthPasswordSection";
@@ -41,7 +44,7 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") || "";
   const { success, error: toastError } = useToast();
-  
+
   // Timer state for OTP resend
   const [timer, setTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
@@ -62,6 +65,12 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
       return () => clearInterval(countdown);
     }
   }, [timer]);
+
+  // Start timer on page load since OTP was already sent from forgot password page
+  useEffect(() => {
+    setTimer(OTP_EXPIRY_SECONDS);
+    setCanResend(false);
+  }, []);
 
   const methods = useForm<ResetPasswordFormData>({
     defaultValues: {
@@ -153,7 +162,7 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
             required
             disabled
           />
-          
+
           {/* OTP Field */}
           <InputField
             name="otp"
@@ -163,13 +172,13 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
             required
             maxLength={6}
           />
-          
+
           {/* Timer and Resend Button */}
           <div className="flex justify-between items-center mt-1">
             <div className="flex items-center gap-2">
               {timer > 0 && (
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Resend OTP in {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')}
+                  {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, "0")}
                 </span>
               )}
             </div>
@@ -179,10 +188,14 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
               disabled={!canResend || isResendingOtp}
               className="text-sm text-teal-700 dark:text-teal-500 hover:underline disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              {isResendingOtp ? "Sending..." : timer > 0 ? "Resend" : "Resend OTP"}
+              {isResendingOtp
+                ? "Sending..."
+                : timer > 0
+                  ? "Resend"
+                  : "Resend OTP"}
             </button>
           </div>
-          
+
           <AuthPasswordSection />
           <div className="pt-6">
             <Button
