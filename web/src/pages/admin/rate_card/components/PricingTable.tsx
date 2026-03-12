@@ -60,7 +60,7 @@ const PricingTable: React.FC<{
                               monthly: Number(relatedValues.monthly),
                             }),
                         }}
-                        inputClassName="h-8 border border-neutral-700 dark:border-neutral-400 rounded-md p-1"
+                        inputClassName="h-8 border border-neutral-700 dark:border-neutral-400 rounded-md p-1 text-center"
                       />
                     ) : (
                       <Controller
