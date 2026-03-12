@@ -8,7 +8,6 @@ import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
-import useToggleStatus from "@/shared/components/ToggleStatus";
 import { useGetRateCards } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
@@ -131,14 +130,6 @@ const ManageRateCards: React.FC = () => {
     );
   }, [tableData, searchTerm]);
 
-  const initialStatus = React.useMemo(() => {
-    const initial: Record<string, boolean> = {};
-    tableData.forEach((rateCard) => {
-      initial[rateCard.id] = rateCard.status;
-    });
-    return initial;
-  }, [tableData]);
-  const { get, toggle } = useToggleStatus(initialStatus);
 
   const columns: Column<RateCardProps>[] = [
     {
@@ -232,25 +223,6 @@ const ManageRateCards: React.FC = () => {
       ),
     },
     { key: "createdDate", label: "Created Date" },
-    {
-      key: "status",
-      label: "Status",
-      renderCell: (row: RateCardProps) => {
-        const val = get(row.id) ?? row.status;
-
-        return (
-          <div
-            className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-              val ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-            }`}
-            onClick={() => toggle(row.id)}
-          >
-            {val ? "On" : "Off"}
-          </div>
-        );
-      },
-    },
-
     {
       key: "action",
       label: "Actions",
