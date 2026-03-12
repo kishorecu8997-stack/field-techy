@@ -30,7 +30,7 @@ const PricingTable: React.FC<{
               Experience Level
             </th>
             {headers.map((h) => (
-              <th key={h} className="px-4 py-2 font-semibold text-left">
+              <th key={h} className="px-4 py-2 font-semibold text-center">
                 {h}
               </th>
             ))}
@@ -48,7 +48,7 @@ const PricingTable: React.FC<{
                   {tier.level} - {tier.description}
                 </td>
                 {fields.map((field) => (
-                  <td key={field} className="px-6 py-2 align-middle text-left">
+                  <td key={field} className="px-6 py-2 align-middle text-center">
                     {editable ? (
                       <InputField
                         name={`skills.${index}.tiers.${tierIdx}.${field}`}
