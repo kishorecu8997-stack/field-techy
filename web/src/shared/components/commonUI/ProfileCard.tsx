@@ -4,6 +4,8 @@ import { useFormContext } from "react-hook-form";
 import { toast } from "react-toastify";
 import { getUserId } from "@/utils";
 import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
+import { FaLink } from "react-icons/fa6";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * ProfileCard component displays a user profile with avatar, name, title, and rating information.
@@ -52,6 +54,8 @@ const ProfileCard = ({
   const formContext = useFormContext();
   const watch = formContext?.watch;
 
+  const { setActiveKey } = useDrawerStore();
+
   const userId = getUserId();
   const profileImage = watch ? watch("profileImage") : null;
   const { uploadProfileFile, isUploading } = useProfileFileUpload({
@@ -91,8 +95,13 @@ const ProfileCard = ({
           {name}
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          {rating} Ratings | {reviewCount} Reviews
+        <p
+          className="text-xs text-gray-500 dark:text-gray-400 hover:text-green-500 cursor-pointer"
+          onClick={() => setActiveKey("engineerFromFeedback", true)}
+        >
+          {rating} Ratings | {reviewCount} Reviews 
+
+          <FaLink className="inline-block ml-1" />
         </p>
       </div>
     </div>
