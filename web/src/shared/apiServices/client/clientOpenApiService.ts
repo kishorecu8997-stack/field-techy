@@ -3,7 +3,6 @@ import {
   clientActionOnBreak,
   clientActionOnWorkLog,
   clientCalculateJobPrice,
-  clientCancelJob,
   clientGetCompanyInfo,
   clientGetRateCard,
   clientInviteEngineer,
@@ -36,8 +35,8 @@ import {
   type GetClientTransactionsResponse,
   type GetUserReportsData,
   type GetUserReportsResponses,
-  type Options,
   type MarkWorkLogFileUploadedResponse,
+  type Options
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -50,12 +49,14 @@ import {
   clientActionOnBreakMutation,
   clientActionOnWorkLogMutation,
   clientCancelJobMutation,
+  clientExploreEngineersInfiniteOptions,
   clientExploreEngineersOptions,
   clientGetAssignmentDetailsOptions,
   clientGetCompanyInfoOptions,
   clientGetCompanyInfoQueryKey,
   clientGetDashboardOptions,
   clientGetJobsOptions,
+  clientGetJobsQueryKey,
   clientGetMyDocumentsOptions,
   clientGetPublicEngineerProfileOptions,
   clientInviteEngineerMutation,
@@ -65,19 +66,17 @@ import {
   getClientBalanceOptions,
   getClientBalanceQueryKey,
   getJobLogsOptions,
-  clientExploreEngineersInfiniteOptions,
   getUserReportsOptions,
-  clientGetJobsQueryKey,
   markWorkLogFileUploadedMutation,
   submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useClientWalletStore } from "@/shared/store/useClientWalletStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
-  useInfiniteQuery,
 } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { apiClient } from "../apiClient";
@@ -489,24 +488,8 @@ export function useClientCancelJob(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientCancelJobMutation({ client: apiClient }),
-    mutationFn: async (fnOptions) => {
-      // Deep-merge regionId; cast to satisfy required body shape since callers provide required fields
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
-      const { data } = await clientCancelJob({
-        client: apiClient,
-        ...fnOptions,
-        body,
-        throwOnError: true,
-      });
-      return data;
-    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       syncClientBalance(queryClient);
