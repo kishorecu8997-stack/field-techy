@@ -166,11 +166,11 @@ const UpdateLogForm = ({
   return (
     <div className="flex flex-col p-6 gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="text-xl font-semibold dark:text-gray-200">
           {UPDATE_LOG_LABELS.title}
         </h2>
         {jobId && (
-          <span className="text-sm text-gray-200">
+          <span className="text-sm dark:text-gray-200">
             {UPDATE_LOG_LABELS.jobIdLabel} {jobId}
           </span>
         )}
