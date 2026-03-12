@@ -47,10 +47,25 @@ const ManageRateCards: React.FC = () => {
   const tableData: RateCardProps[] = useMemo(() => {
     if (!rateCardsResponse?.data) return [];
 
+    // Sort by createdDate descending (newest first) - handle DD/MM/YYYY format
+    const parseDate = (dateStr: string | null) => {
+      if (!dateStr) return 0;
+      const parts = dateStr.split('/');
+      if (parts.length === 3) {
+        // DD/MM/YYYY format - create date using YYYY, MM-1, DD
+        return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])).getTime();
+      }
+      return new Date(dateStr).getTime() || 0;
+    };
+
+    const sortedData = [...rateCardsResponse.data].sort((a, b) => {
+      return parseDate(b.createdDate) - parseDate(a.createdDate); // Descending order
+    });
+
     // Group by serviceCategoryId
     const groupedData = new Map<number, RateCardProps>();
 
-    rateCardsResponse.data.forEach((item) => {
+    sortedData.forEach((item) => {
       const key = item.serviceCategoryId;
       // Map experienceLevelId to level string
       let level: "L1" | "L2" | "L3" | undefined;
