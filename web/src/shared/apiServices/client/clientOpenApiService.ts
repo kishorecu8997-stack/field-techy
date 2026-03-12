@@ -36,7 +36,7 @@ import {
   type GetUserReportsData,
   type GetUserReportsResponses,
   type MarkWorkLogFileUploadedResponse,
-  type Options
+  type Options,
 } from "@/api";
 import {
   appChangePasswordMutation,

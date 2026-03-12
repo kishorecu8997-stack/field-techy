@@ -112,9 +112,11 @@ const PostJobPage = () => {
   const numberOfVacancy = formCtx.watch("numberOfVacancy");
   const toolsData = formCtx.watch("toolsData");
 
-const isSafeDate = (d: string | number | Date | null | undefined): boolean => {
-  return !!d && !Number.isNaN(new Date(d).getTime());
-};
+  const isSafeDate = (
+    d: string | number | Date | null | undefined,
+  ): boolean => {
+    return !!d && !Number.isNaN(new Date(d).getTime());
+  };
   const queryEnabled = Boolean(
     serviceCategory &&
     experienceLevel &&
@@ -328,7 +330,11 @@ const isSafeDate = (d: string | number | Date | null | undefined): boolean => {
     });
   };
 
-  const { mutate: postJob, isPending: isPosting, data: postJobData } = useClientPostJob();
+  const {
+    mutate: postJob,
+    isPending: isPosting,
+    data: postJobData,
+  } = useClientPostJob();
   const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
 
   const getRequiredNumber = (val: unknown, fieldName: string): number => {
@@ -363,7 +369,9 @@ const isSafeDate = (d: string | number | Date | null | undefined): boolean => {
       });
     await Promise.all(uploadPromises);
     if (uploadPromises.length > 0) {
-      await markUploaded({ body: { jobId: response.id, regionId: postJobData?.regionId } });
+      await markUploaded({
+        body: { jobId: response.id, regionId: postJobData?.regionId },
+      });
     }
   };
 

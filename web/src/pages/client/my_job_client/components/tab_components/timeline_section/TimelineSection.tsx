@@ -19,7 +19,7 @@ import {
   useClientActionOnBreak,
   useClientActionOnWorkLog,
   useGetJobLogs,
-  useMarkWorkLogFileUploaded
+  useMarkWorkLogFileUploaded,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
 import { formatDateTime } from "@/utils/formatDateTime";
@@ -76,7 +76,12 @@ const TimelineSection: React.FC<{
   assignments?: ClientGetAssignmentDetailsResponse;
   regionId?: number;
   refetchAssignments?: () => void;
-}> = ({ assignmentId,  hasProposals = false, assignments, refetchAssignments }) => {
+}> = ({
+  assignmentId,
+  hasProposals = false,
+  assignments,
+  refetchAssignments,
+}) => {
   const [searchParams] = useSearchParams();
   const regionIdfromParam = searchParams.get("regionId");
 
@@ -178,8 +183,6 @@ const TimelineSection: React.FC<{
   // API accepts both parameters, so we can use either one or both
   // Ensure jobId is valid (not NaN) before passing
   const fetchedAssignmentsProp = useMemo(() => assignments, [assignments]);
-
-
 
   // Use API data when available (after refetch), otherwise use prop
   // This ensures we get updated data after mutations
@@ -1905,7 +1908,8 @@ const TimelineSection: React.FC<{
                                     attachmentName: r.attachmentName,
                                     clientComment: r.clientComment,
                                     clientAttachmentUrl: r.clientAttachmentUrl,
-                                    clientAttachmentName: r.clientAttachmentName,
+                                    clientAttachmentName:
+                                      r.clientAttachmentName,
                                     createdAt: r.createdAt,
                                     updatedAt: r.updatedAt,
                                     status: r.status,
