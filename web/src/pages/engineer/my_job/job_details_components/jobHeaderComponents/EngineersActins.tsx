@@ -1,28 +1,28 @@
-import { icons } from "@/config/icons";
-import {
-  JOB_STATUSES,
-  type AssignmentStatus,
-  type JobStatus,
-} from "@/pages/engineer/search_result/types";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { usePopupStore } from "@/shared/store/popupStore";
-import useDrawerStore from "@/shared/store/useDrawerStore";
-import { type Dispatch, type SetStateAction } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
-import FinalStatementForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/FinalStatementForm";
-import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
-import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { queryKeys } from "@/shared/apiServices/queryKeys";
-import { RiErrorWarningFill } from "react-icons/ri";
 import { getJobLogs } from "@/api";
 import {
   engineerGetMyJobsQueryKey,
   getJobLogsQueryKey,
 } from "@/api/@tanstack/react-query.gen";
+import { icons } from "@/config/icons";
+import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
+import FinalStatementForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/FinalStatementForm";
+import {
+  JOB_STATUSES,
+  type AssignmentStatus,
+  type JobStatus,
+} from "@/pages/engineer/search_result/types";
 import { apiClient } from "@/shared/apiServices/apiClient";
+import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { type Dispatch, type SetStateAction } from "react";
+import { RiErrorWarningFill } from "react-icons/ri";
+import { toast } from "react-toastify";
+import type { OfferedJobStatusType, ProgressUpdate } from "../../types.d";
 
 /**
  * Maps AssignmentStatus to OfferedJobStatusType for UI compatibility
@@ -410,22 +410,7 @@ const EngineersActions = ({
     (isProposalAccepted || isOffer || OfferJobStatus === "initial") &&
     !hasStartPending &&
     !hasJobStarted;
-
-  // Check if proposal already submitted via API (based on assignment status)
-  // Only considers this specific engineer's proposal status, not other engineers
-  // const hasSubmittedProposal =
-  //   hasAssignment &&
-  //   (OfferJobStatus === "applied" ||
-  //     OfferJobStatus === "submitted" ||
-  //     OfferJobStatus === "assigned" ||
-  //     OfferJobStatus === "accepted" ||
-  //     OfferJobStatus === "start_pending_approval" ||
-  //     OfferJobStatus === "started" ||
-  //     OfferJobStatus === "rejected" ||
-  //     mappedOfferStatus === "initial" ||
-  //     mappedOfferStatus === "checked-in" ||
-  //     mappedOfferStatus === "declined");
-
+    
   // Check if job is fully filled (approved proposals >= vacancies)
   const isJobFullyFilled =
     numberOfVacancy !== undefined &&
