@@ -62,11 +62,12 @@ const ManageRateCards: React.FC = () => {
       return parseDate(b.createdDate) - parseDate(a.createdDate); // Descending order
     });
 
-    // Group by serviceCategoryId
-    const groupedData = new Map<number, RateCardProps>();
+    // Group by serviceCategoryId AND countryId to show different rate cards for same service category in different countries
+    const groupedData = new Map<string, RateCardProps>();
 
     sortedData.forEach((item) => {
-      const key = item.serviceCategoryId;
+      // Create composite key with both serviceCategoryId and countryId
+      const key = `${item.serviceCategoryId}-${item.countryId}`;
       // Map experienceLevelId to level string
       let level: "L1" | "L2" | "L3" | undefined;
       if (item.experienceLevelId === 1) level = "L1";
