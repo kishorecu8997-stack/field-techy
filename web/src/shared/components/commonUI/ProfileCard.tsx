@@ -96,11 +96,10 @@ const ProfileCard = ({
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
         <p
-          className="text-xs text-gray-500 dark:text-gray-400 hover:text-green-500 cursor-pointer"
+          className="text-xs text-gray-500 dark:text-gray-400 hover:text-green-500 cursor-pointer hover:underline"
           onClick={() => setActiveKey("engineerFromFeedback", true)}
         >
           {rating} Ratings | {reviewCount} Reviews 
-
           <FaLink className="inline-block ml-1" />
         </p>
       </div>
