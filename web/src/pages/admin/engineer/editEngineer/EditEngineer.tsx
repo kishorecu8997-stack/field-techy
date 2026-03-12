@@ -41,10 +41,10 @@ const mapEngineerToFormData = (engineer: AdminGetEngineerResponse): EngineerForm
     Country: engineer.country?.id ? String(engineer.country?.id) : "",
     State: engineer.state?.id ? String(engineer.state?.id) : "",
     City: engineer.city?.id ? String(engineer.city?.id) : "",
+    postalCode: engineer.location?.postalCode ?? "",
 
     // Experience Details
     designation: engineer.currentDesignation ?? "",
-    location: engineer.location?.city ?? engineer.city?.name ?? "",
     employer: engineer.employer ?? "",
     experience: toOptionalString(engineer.totalExperience),
     resume: engineer.documents?.resume?.url ?? null,
@@ -85,7 +85,6 @@ export default function EditEngineer() {
       serviceCategory: "",
       portfolio: "",
       designation: "",
-      location: "",
       employer: "",
       experience: "",
       resume: null,
@@ -94,6 +93,7 @@ export default function EditEngineer() {
       Country: "",
       State: "",
       City: "",
+      postalCode: "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -102,10 +102,10 @@ export default function EditEngineer() {
   const { trigger, getValues, reset } = methods;
 
   const validateBasicInformation = () =>
-    trigger(["name", "email", "phoneNumber", "address", "skills", "price", "serviceCategory", "Country", "State", "City"]);
+    trigger(["name", "email", "phoneNumber", "address", "skills", "price", "serviceCategory", "Country", "State", "City", "postalCode"]);
 
   const validateExperienceDetails = () =>
-    trigger(["designation", "location", "resume", "employer", "experience"]);
+    trigger(["designation", "resume", "employer", "experience"]);
 
   const validateDocuments = () => trigger(["governmentId", "certificate"]);
 
@@ -147,6 +147,7 @@ export default function EditEngineer() {
       stateId: data.State ? Number(data.State) : undefined,
       cityId: data.City ? Number(data.City) : undefined,
       skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
+      postalCode: data.postalCode || undefined,
     };
 
     (Object.entries(files) as [UploadKey, File | null][]).forEach(([key, file]) => {

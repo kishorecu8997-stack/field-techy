@@ -9,6 +9,7 @@ import {
   validateName,
   validatePortfolioLink,
   validatePricePerHour,
+  validateZipcode
 } from "@/utils/validate";
 import { useEffect, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
@@ -186,6 +187,15 @@ return (
           options={cityOptions}
           required
           disabled={!selectedState}
+        />
+
+        <InputField
+          name="postalCode"
+          label="Postal Code"
+          type="text"
+          placeholder="Enter Postal Code"
+          required
+          rules={{ validate: (v: string) => validateZipcode(v) }}
         />
       </div>
 

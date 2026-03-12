@@ -11,11 +11,11 @@ export interface BasicInformation {
   Country: string;
   State: string;
   City: string;
+  postalCode: string;
 }
 
 export interface ExperienceDetails {
   designation: string;
-  location: string;
   employer: string;
   experience: string;
   resume: File | FileList | string | null;
