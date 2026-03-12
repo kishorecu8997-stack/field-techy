@@ -442,8 +442,6 @@ const JobDetailsPage = () => {
 
   const { data: reviewsData } = useGetUserRatingAndReviews(true, assignmentId);
 
-  console.log(reviewsData);
-
   const regionId = useUserSessionStore((state) => state.session?.regionId);
   const handleOpenGiveClientFeedback = () => {
     showPopup({
