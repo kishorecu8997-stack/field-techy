@@ -6,7 +6,6 @@ import {
   clientGetCompanyInfo,
   clientGetRateCard,
   clientInviteEngineer,
-  clientMarksJobFileUploaded,
   clientPostJob,
   getClientTransactions,
   type AppChangePasswordResponse,
@@ -36,7 +35,7 @@ import {
   type GetUserReportsData,
   type GetUserReportsResponses,
   type MarkWorkLogFileUploadedResponse,
-  type Options
+  type Options,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -366,7 +365,6 @@ export function useClientGetRateCard(options?: {
     onError: options?.onError,
   });
 }
-
 export function useClientMarkJobFileUploaded(options?: {
   onSuccess?: (
     data: ClientMarksJobFileUploadedResponses[keyof ClientMarksJobFileUploadedResponses],
@@ -374,29 +372,13 @@ export function useClientMarkJobFileUploaded(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientMarksJobFileUploadedMutation({ client: apiClient }),
-    mutationFn: async (fnOptions) => {
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
-      const { data } = await clientMarksJobFileUploaded({
-        client: apiClient,
-        ...fnOptions,
-        body,
-        throwOnError: true,
-      });
-      return data;
-    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       queryClient.invalidateQueries({
         queryKey: clientGetJobsQueryKey({ client: apiClient }),
       });
-      syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

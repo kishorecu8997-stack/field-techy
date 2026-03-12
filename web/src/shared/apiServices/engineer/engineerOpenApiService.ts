@@ -580,14 +580,18 @@ export function useEngineerRequestStart(options?: {
       // Invalidate job logs query when start request is submitted
       if (options?.assignmentId) {
         queryClient.invalidateQueries({
-          queryKey: getJobLogsQueryKey({ path: { assignmentId: options.assignmentId } }),
+          queryKey: getJobLogsQueryKey({
+            path: { assignmentId: options.assignmentId },
+          }),
         });
         queryClient.invalidateQueries({
           queryKey: ["getJobLogs"],
           exact: false,
         });
         await queryClient.refetchQueries({
-          queryKey: getJobLogsQueryKey({ path: { assignmentId: options.assignmentId } }),
+          queryKey: getJobLogsQueryKey({
+            path: { assignmentId: options.assignmentId },
+          }),
           type: "active",
         });
       }
@@ -828,7 +832,6 @@ export function useEngineerBalance(enabled: boolean = true) {
     },
     enabled,
     staleTime: 30 * 1000,
-    refetchOnWindowFocus: false,
   });
 }
 
