@@ -7,13 +7,10 @@ import { notifications, type NavbarProps } from "./types";
 import { absoluteUrls } from "@/config/urls";
 import NotificationDropdown from "@/shared/components/NotitficationPopover";
 import SelectMenu from "@/shared/components/SelectMenu";
-import {
-  LookupTable,
-  useAppGetLookupData,
-} from "@/shared/apiServices/admin/adminOpenApiService";
 import { useAdminProfile } from "@/shared/store/useAdminProfileStore";
 import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useAdminRegionParam } from "@/shared/hooks/useAdminRegionParam";
 
 /**
  * Header
@@ -23,23 +20,25 @@ import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
  *
  * Features:
  * - Sidebar toggle control
- * - Region selection dropdown
+ * - Region selection dropdown (admin only; hidden for sub-admins)
  * - Notifications panel with click-outside behavior
  * - User profile section with avatar and role display
+ *
+ * Region URL sync is handled externally by AdminRegionSync (mounted in AdminLayout).
  *
  * @param {NavbarProps} props - Component props
  * @param {Function} props.onToggleSidebar - Callback to toggle the sidebar visibility
  * @returns {JSX.Element} Header component with navigation controls and user interface
  */
 export default function Header({ onToggleSidebar }: NavbarProps) {
-  const { regionId, setRegion } = useAdminCountryStore();
+  const { regionId } = useAdminCountryStore();
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const subRegionId = useUserSessionStore((s) => s.session?.regionId);
 
   const adminProfile = useAdminProfile();
-  const { data: adminLookupData } = useAppGetLookupData(LookupTable.Regions);
+  const { setRegionParam, adminLookupData } = useAdminRegionParam();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -61,21 +60,6 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const toggleNotifications = () => {
     setIsNotificationOpen((prev) => !prev);
   };
-
-  const handleRegionChange = (id: string | null) => {
-    const selectedRegion = adminLookupData?.find(
-      (item) => item.id.toString() === id,
-    );
-    setRegion(id, selectedRegion?.name ?? null);
-  };
-
-  // Auto-select first region when data loads and none is selected yet
-  useEffect(() => {
-    if (adminLookupData && adminLookupData.length > 0 && !regionId) {
-      const first = adminLookupData[0];
-      setRegion(first.id.toString(), first.name ?? null);
-    }
-  }, [adminLookupData, regionId, setRegion]);
 
   return (
     <header
@@ -110,7 +94,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
               })) ?? []
             }
             value={regionId ?? adminLookupData?.[0]?.id.toString() ?? null}
-            onChange={handleRegionChange}
+            onChange={setRegionParam}
           />
         )}
         <div
