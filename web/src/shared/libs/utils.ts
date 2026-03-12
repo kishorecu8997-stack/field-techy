@@ -441,3 +441,29 @@ export const extractErrorMessage = (
 ): string => {
   return GlobalApiErrorHandler.handle(error, fallback).message;
 };
+
+/**
+ * Extracts filename from attachment object.
+ * Prefers the filename field directly from API, falls back to extracting from URL.
+ *
+ * @param attachment - The attachment object with optional filename and url
+ * @param fallback - Fallback name if neither filename nor url is available
+ * @returns The filename string
+ */
+export const getAttachmentFileName = (
+  attachment:
+    | { filename?: string | null; url?: string | null }
+    | null
+    | undefined,
+  fallback = "Attachment",
+): string => {
+  if (attachment?.filename) {
+    return attachment.filename;
+  }
+  if (attachment?.url) {
+    return decodeURIComponent(
+      attachment.url.split("/").pop()?.split("?")[0] || fallback,
+    );
+  }
+  return fallback;
+};
