@@ -693,6 +693,8 @@ export function useGetCmsContent(
   options?: {
     enabled?: boolean;
     refetchInterval?: number | false | (() => number | false);
+    staleTime?: number;
+    refetchOnWindowFocus?: boolean | "always";
   },
 ) {
   return useQuery({
