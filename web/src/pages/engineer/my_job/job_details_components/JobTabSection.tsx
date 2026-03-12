@@ -281,9 +281,18 @@ const JobTabSection = ({
 
       // Manually fetch and update engineerJobs cache for timeline
       try {
-        const response = await engineerGetMyJobs({ client: apiClient });
+        const response = await engineerGetMyJobs({ 
+          client: apiClient,
+          query: {
+            regionId,
+          }
+        });
         if (response.data) {
-          const exactQueryKey = engineerGetMyJobsQueryKey();
+          const exactQueryKey = engineerGetMyJobsQueryKey({
+            query: {
+              regionId,
+            },
+          });
           queryClient.setQueryData(exactQueryKey, response.data);
         }
       } catch (error) {
@@ -300,6 +309,9 @@ const JobTabSection = ({
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
+            query: {
+              regionId,
+            },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId },

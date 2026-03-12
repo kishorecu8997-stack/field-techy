@@ -2,6 +2,14 @@ import React from "react";
 import { IoAttach } from "react-icons/io5";
 import { Button } from "./commonUI/Buttons";
 import type { Attachment, JobOverviewProps } from "./types";
+import { FaFilePdf } from "react-icons/fa";
+
+/**
+ * Helper function to check if a URL points to a PDF file
+ */
+const isPdfFile = (url: string): boolean => {
+  return url?.toLowerCase().endsWith(".pdf") || url?.includes(".pdf?") || url?.includes("%2Epdf");
+};
 
 /**
  * Displays comprehensive job details with skills, tools, earnings, and attachments.
@@ -21,6 +29,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
   experienceLevel,
   numberOfVacancies,
   totalPayment,
+  // engineerEarnings,
   additionalDetails = [],
   attachments = [],
   userType = "client",
@@ -91,33 +100,66 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                 Tools
               </p>
               <div className="grid grid-cols-2 gap-2">
-                {tools.map((tool, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-600"
-                  >
-                    {tool.image && (
-                      <img
-                        src={tool.image}
-                        alt={tool.name}
-                        className="w-8 h-8 object-contain"
-                      />
-                    )}
-                    {tool.image && (
-                      <div className="h-7 w-px bg-gray-200 dark:bg-gray-600" />
-                    )}
-                    <div className="space-y-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white leading-snug">
-                        {tool.name}
-                      </p>
-                      {tool.price && (
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
-                          {tool.price}
-                        </p>
+                {tools.map((tool, idx) => {
+                  const toolImage = tool.image || tool.imageUrl;
+                  const isPdf = toolImage ? isPdfFile(toolImage) : false;
+                  
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-600"
+                    >
+                      {toolImage && (
+                        <>
+                          {isPdf ? (
+                            <a
+                              href={toolImage}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="w-8 h-8 flex items-center justify-center text-red-500 hover:text-red-700"
+                              title="View PDF"
+                            >
+                              <FaFilePdf className="w-6 h-6" />
+                            </a>
+                          ) : (
+                            <a
+                              href={toolImage}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="w-8 h-8 flex-shrink-0"
+                            >
+                              <img
+                                src={toolImage}
+                                alt={tool.name}
+                                className="w-8 h-8 object-contain"
+                              />
+                            </a>
+                          )}
+                          <div className="h-7 w-px bg-gray-200 dark:bg-gray-600" />
+                        </>
                       )}
+                      <div className="space-y-0 flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white leading-snug truncate">
+                          {tool.name}
+                        </p>
+                        {(tool.price || tool.engineerPrice) && (
+                          <div className="flex flex-wrap gap-x-2 text-xs">
+                            {tool.price && (
+                              <p className="text-gray-600 dark:text-gray-400">
+                                <span className="font-medium">Price:</span> {tool.price}
+                              </p>
+                            )}
+                            {tool.engineerPrice && (
+                              <p className="text-green-600 dark:text-green-400">
+                                <span className="font-medium">:</span> {tool.engineerPrice}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

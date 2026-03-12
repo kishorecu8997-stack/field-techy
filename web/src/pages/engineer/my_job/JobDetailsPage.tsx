@@ -626,8 +626,11 @@ const JobDetailsPage = () => {
 
   // Determine if proposal is approved (hide buttons when not approved)
   // Show buttons only after the job has started
-  const isProposalApproved = assignmentStatus === "started";
-
+  const isProposalApproved =
+    assignmentStatus === "started" ||
+    assignmentStatus === "submit_pending_approval" ||
+    assignmentStatus === "submitted";
+    
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">

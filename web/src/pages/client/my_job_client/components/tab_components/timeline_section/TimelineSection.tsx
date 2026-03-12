@@ -1,6 +1,6 @@
 import type { ClientGetAssignmentDetailsResponse } from "@/api";
 import { getJobLogs } from "@/api";
-import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
+import { clientGetAssignmentDetailsQueryKey, getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import type { TimelineStatus } from "@/constants/timelineConstants";
 import {
   MODAL_MESSAGES,
@@ -75,7 +75,7 @@ const TimelineSection: React.FC<{
   hasProposals?: boolean;
   assignments?: ClientGetAssignmentDetailsResponse;
   regionId?: number;
-}> = ({ assignmentId,  hasProposals = false, assignments }) => {
+}> = ({ assignmentId, jobId, hasProposals = false, assignments }) => {
   const [searchParams] = useSearchParams();
   const regionIdfromParam = searchParams.get("regionId");
 
@@ -215,6 +215,22 @@ const TimelineSection: React.FC<{
         } catch (error) {
           console.error("Failed to refetch timeline:", error);
           queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+        
+        // Invalidate assignment details query to update hasPendingStartRequest
+        // This ensures the Action Required badge updates immediately
+        try {
+          const assignmentDetailsQueryKey = clientGetAssignmentDetailsQueryKey({
+            query: { jobId: jobId, regionId: regionIdParam },
+          });
+          queryClient.invalidateQueries({ queryKey: assignmentDetailsQueryKey });
+        } catch (error) {
+          console.error("Failed to invalidate assignment details:", error);
+          // Fallback: invalidate all client assignment details queries
+          queryClient.invalidateQueries({ 
+            queryKey: ["clientGetAssignmentDetails"],
+            exact: false 
+          });
         }
       }
     },

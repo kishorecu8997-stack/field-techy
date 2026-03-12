@@ -83,15 +83,20 @@ const mapClientJobToJobOverview = (
   const getToolImage = (
     toolObj: Record<string, unknown>,
   ): string | undefined => {
-    const candidate =
-      toolObj.image ??
+    // First check if tool object has image directly
+    const directImage =
       toolObj.imageUrl ??
+      toolObj.image ??
       toolObj.toolImage ??
       toolObj.attachmentUrl ??
       toolObj.url;
-    return typeof candidate === "string" && candidate.trim()
-      ? candidate
-      : undefined;
+    
+    if (directImage && typeof directImage === "string" && directImage.trim()) {
+      return directImage;
+    }
+    
+    // If no direct image, return undefined (don't use fallback - we'll handle that separately)
+    return undefined;
   };
 
   // Check for tools array first
@@ -101,18 +106,28 @@ const mapClientJobToJobOverview = (
         if (typeof tool === "object" && tool !== null) {
           const toolObj = tool as Record<string, unknown>;
           const toolName = toolObj.name || toolObj.toolId || toolObj.id;
+          
+          // Get direct image from tool object first
+          let toolImage = getToolImage(toolObj);
+          
+          // Only use toolAttachmentUrls as fallback if tool doesn't have its own image
+          // and there's a valid URL at this index
+          if (!toolImage && index < toolAttachmentUrls.length) {
+            toolImage = toolAttachmentUrls[index];
+          }
+          
           return {
             name: toolName
               ? getToolLabel(toolName as string | number)
               : String(tool),
             price: getToolPrice(toolObj),
-            image: getToolImage(toolObj),
+            image: toolImage,
           };
         }
         return {
           name: getToolLabel(tool as string | number),
           price: "",
-          image: toolAttachmentUrls[index],
+          image: index < toolAttachmentUrls.length ? toolAttachmentUrls[index] : undefined,
         };
       })
       .filter((t) => t.name && t.name !== "undefined");
@@ -142,10 +157,11 @@ const mapClientJobToJobOverview = (
   }
 
   // Fallback: when tools are numeric IDs, image URLs usually come via toolAttachmentUrls in the same order.
+  // Only apply images to tools that have corresponding URLs (check if index exists)
   if (tools.length > 0 && toolAttachmentUrls.length > 0) {
     tools = tools.map((tool, index) => ({
       ...tool,
-      image: tool.image || toolAttachmentUrls[index],
+      image: tool.image || (toolAttachmentUrls[index] ? toolAttachmentUrls[index] : undefined),
     }));
   }
 

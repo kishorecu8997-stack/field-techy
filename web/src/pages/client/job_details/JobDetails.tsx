@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 import JobCardHead from "./components/JobCardHead";
 import JobTabSection from "../my_job_client/components/JobTabSection";
@@ -10,6 +10,9 @@ import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
  */
 const JobDetails: React.FC = () => {
   const params = useParams();
+  const [searchParams] = useSearchParams();
+  const regionIdParam = searchParams.get("regionId");
+  const parsedRegionId = regionIdParam ? Number(regionIdParam) : undefined;
   const [activeTab] = useState(JOB_TAB_LABELS.timeline);
   const jobId = params.jobId;
 
@@ -25,7 +28,11 @@ const JobDetails: React.FC = () => {
 
   // Find the specific job from the API data
   const job = jobsArray.find(
-    (j: { id?: string | number }) => String(j.id) === jobId,
+    (j: { id?: string | number; regionId?: number | string }) => {
+      const jobIdMatch = String(j.id) === jobId;
+      const regionIdMatch = parsedRegionId ? Number(j.regionId) === parsedRegionId : true;
+      return jobIdMatch && regionIdMatch;
+    }
   );
 
   // Loading state
@@ -66,7 +73,7 @@ const JobDetails: React.FC = () => {
           <div className="flex justify-center items-center h-64">
             <div className="text-gray-600 dark:text-gray-400">
               {jobsArray.length > 0
-                ? `Job with ID ${jobId} not found. Available IDs: ${jobsArray.map((j: { id: number }) => j.id).join(", ")}`
+                ? `Job with ID ${jobId}${parsedRegionId ? ` and regionId ${parsedRegionId}` : ""} not found. Available jobs: ${jobsArray.map((j: { id: number; regionId?: number }) => `${j.id}(region:${j.regionId})`).join(", ")}`
                 : "No jobs found for this client"}
             </div>
           </div>
