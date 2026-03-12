@@ -17,7 +17,7 @@ export const formatApiDate = (dateStr: string | null | undefined): string => {
   if (!dateStr) return formatDateTime();
   try {
     const date = new Date(dateStr);
-     return date.toLocaleString(undefined, {
+    return date.toLocaleString(undefined, {
       day: "2-digit",
       month: "short",
       year: "numeric",
