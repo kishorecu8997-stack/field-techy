@@ -40,7 +40,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
     data: engineerDetails,
     isLoading: isEngineerLoading,
     isError: isEngineerError,
-  } = useAdminGetEngineerById(userId ?? 0, shouldFetchFromAdmin);
+  } = useAdminGetEngineerById(userId ?? 0, { enabled: shouldFetchFromAdmin });
 
   const adminFileUrl = (() => {
     const docs = engineerDetails?.documents;

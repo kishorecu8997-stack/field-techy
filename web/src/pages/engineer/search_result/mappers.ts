@@ -56,8 +56,8 @@ export const mapApiJobToJobItem = (
     },
     // Timestamp fields for job start
     startRequestedAt:
-      (job as unknown as { startRequestedAt?: string | null }).startRequestedAt ||
-      null,
+      (job as unknown as { startRequestedAt?: string | null })
+        .startRequestedAt || null,
     startedAt:
       (job as unknown as { startedAt?: string | null }).startedAt || null,
   } as JobItem;

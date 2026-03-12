@@ -1,15 +1,23 @@
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { GetJobLogsResponse } from "@/api";
+import { getAttachmentFileName } from "@/shared/libs/utils";
 
 /**
- * Format a date string to display format
- * Uses en-US locale with short month, 2-digit day, full year, and 12-hour time
+ * Format a date string into a readable date-time format.
+ * Uses the user's default locale with:
+ * - 2-digit day
+ * - short month
+ * - full year
+ * - 12-hour time with hour and minute
+ *
+ * If the input date is null, undefined, or invalid,
+ * the current date-time will be returned.
  */
 export const formatApiDate = (dateStr: string | null | undefined): string => {
   if (!dateStr) return formatDateTime();
   try {
     const date = new Date(dateStr);
-    return date.toLocaleString("en-US", {
+    return date.toLocaleString(undefined, {
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -70,8 +78,10 @@ export interface TimelineItem {
     revisionId: number;
     content: string;
     attachmentUrl?: string;
+    attachmentName?: string;
     clientComment?: string;
     clientAttachmentUrl?: string;
+    clientAttachmentName?: string;
     createdAt?: string;
     updatedAt?: string;
     status: string;
@@ -233,12 +243,18 @@ export const transformLogsToTimelineItems = (
             ? "#ef4444"
             : "#f59e0b");
 
-      // Extract attachment name from URL if available
-      const attachmentName = log.attachment?.url
-        ? decodeURIComponent(
-            log.attachment.url.split("/").pop()?.split("?")[0] || "",
-          )
-        : undefined;
+      // Extract attachment name - prefer filename field from API, fall back to URL extraction
+      const attachmentName = getAttachmentFileName(log.attachment);
+
+      // Transform revisions to include attachment names
+      const transformedRevisions =
+        log.revisions?.map((rev) => ({
+          ...rev,
+          attachmentUrl: rev.attachment?.url || undefined,
+          attachmentName: getAttachmentFileName(rev.attachment),
+          clientAttachmentUrl: rev.clientAttachment?.url || undefined,
+          clientAttachmentName: getAttachmentFileName(rev.clientAttachment),
+        })) || [];
 
       return {
         title,
@@ -252,7 +268,7 @@ export const transformLogsToTimelineItems = (
         detailsType,
         attachmentUrl: log.attachment?.url,
         attachmentName,
-        revisions: log.revisions || [],
+        revisions: transformedRevisions,
         logId: log.id,
         logType: log.logType,
       };
@@ -400,18 +416,14 @@ export const transformSignOffsToItems = (
 
     if (so.attachment?.url) {
       attachments.push({
-        name: decodeURIComponent(
-          so.attachment.url.split("/").pop()?.split("?")[0] || "Attachment",
-        ),
+        name: getAttachmentFileName(so.attachment),
         url: so.attachment.url,
       });
     }
 
     if (so.signature?.url) {
       attachments.push({
-        name: decodeURIComponent(
-          so.signature.url.split("/").pop()?.split("?")[0] || "Attachment",
-        ),
+        name: getAttachmentFileName(so.signature),
         url: so.signature.url,
       });
     }

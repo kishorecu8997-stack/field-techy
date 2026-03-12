@@ -102,8 +102,15 @@ import {
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
+  type AdminBroadcastNotificationData,
+  type AdminBroadcastNotificationResponses,
+  type AdminGetNotificationsResponse,
+  type AdminGetNotificationsData,
+  type AdminMarkFileAsUploadedResponse,
+  type AdminMarkFileAsUploadedError,
   type BulkCreateRateCardsResponse,
   type BulkCreateRateCardsData,
+  type AdminGetEngineerResponse,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -155,9 +162,13 @@ import {
   adminGetWalletOverviewOptions,
   adminDownloadInvoiceOptions,
   adminUpdateTransactionRequestStatusMutation,
+  adminBroadcastNotificationMutation,
+  adminGetNotificationsQueryKey,
+  adminGetNotificationsOptions,
   adminGetPendingPaymentsOptions,
   adminGetPendingPaymentsQueryKey,
   adminApprovePaymentMutation,
+  adminMarkFileAsUploadedMutation,
 } from "@/api/@tanstack/react-query.gen";
 
 export { adminGetPendingPaymentsQueryKey };
@@ -683,6 +694,8 @@ export function useGetCmsContent(
   options?: {
     enabled?: boolean;
     refetchInterval?: number | false | (() => number | false);
+    staleTime?: number;
+    refetchOnWindowFocus?: boolean | "always";
   },
 ) {
   return useQuery({
@@ -698,10 +711,13 @@ export function useGetCmsContent(
 
     enabled: options?.enabled ?? true,
 
-    staleTime: Infinity,
+    staleTime: 5 * 60 * 1000,
+
+    gcTime: 10 * 60 * 1000,
+
     refetchOnWindowFocus: false,
-    refetchIntervalInBackground: false,
-    refetchInterval: false,
+
+    refetchInterval: options?.refetchInterval ?? false,
   });
 }
 export function useCreateFaq(options?: {
@@ -835,7 +851,7 @@ export function useAdminAddClient(options?: {
       },
     }),
     onSuccess: (data: AdminAddClientResponse) => {
-      queryClient.invalidateQueries({
+      queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
@@ -897,7 +913,47 @@ export function useAdminGetClientByUserId(
   });
 }
 
-export function useAdminGetEngineerById(userId: number, enabled = true) {
+export function useAdminMarkFileAsUploaded(options?: {
+  onSuccess?: (data: AdminMarkFileAsUploadedResponse) => void;
+  onError?: (error: AdminMarkFileAsUploadedError) => void;
+}) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+  return useMutation({
+    ...adminMarkFileAsUploadedMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
+    mutationFn: (variables, context) => {
+      return adminMarkFileAsUploadedMutation({
+        client: apiClient,
+      }).mutationFn!(
+        {
+          ...variables,
+          query: {
+            ...(variables.query ?? {}),
+            regionId:
+              variables.query?.regionId ??
+              (selectedRegionId ? Number(selectedRegionId) : undefined),
+          },
+        },
+        context,
+      );
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useAdminGetEngineerById(
+  userId: number,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetEngineerResponse) => void;
+    onError?: (error: unknown) => void;
+    refetchOnMount?: boolean | "always";
+    staleTime?: number;
+  },
+) {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   const isValidId = Number.isFinite(userId) && userId > 0;
 
@@ -909,7 +965,8 @@ export function useAdminGetEngineerById(userId: number, enabled = true) {
         regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
       },
     }),
-    enabled: enabled && isValidId,
+    enabled: isValidId ? options?.enabled : false,
+    ...options,
   });
 }
 
@@ -1522,8 +1579,12 @@ export function useAdminUpdateEngineer(options?: {
       },
     }),
     onSuccess: (data: AdminUpdateEngineerResponse) => {
-      queryClient.resetQueries({
+      queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.adminGetEngineer,
         exact: false,
       });
       options?.onSuccess?.(data);
@@ -1722,5 +1783,65 @@ export function useGetRateCards(
       return data;
     },
     enabled: options?.enabled ?? true,
+  });
+}
+
+export type AdminBroadcastNotificationBody = NonNullable<
+  AdminBroadcastNotificationData["body"]
+>;
+
+export function useAdminBroadcastNotification(options?: {
+  onSuccess?: (data: AdminBroadcastNotificationResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    ...adminBroadcastNotificationMutation({
+      client: apiClient,
+      query: {
+        regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
+      },
+    }),
+
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        queryKey: adminGetNotificationsQueryKey(),
+      });
+
+      options?.onSuccess?.(data);
+    },
+
+    onError: options?.onError,
+  });
+}
+export function useAdminGetNotifications(
+  query?: AdminGetNotificationsData["query"],
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetNotificationsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  const mergedQuery: AdminGetNotificationsData["query"] = {
+    ...query,
+    regionId:
+      query?.regionId ??
+      (selectedRegionId ? Number(selectedRegionId) : undefined),
+  };
+
+  return useQuery({
+    ...adminGetNotificationsOptions({
+      client: apiClient,
+      query: mergedQuery,
+    }),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
+    enabled: options?.enabled,
   });
 }

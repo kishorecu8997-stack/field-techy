@@ -11,14 +11,13 @@ import BasicInformation from "./BasicInformation";
 import Documents from "./Documents";
 import ExperienceDetails from "./ExperienceDetails";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminAddEngineer } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useAppMarkProfileFileUploaded } from "@/shared/apiServices/commonOpenApiService";
+import {
+  useAdminAddEngineer,
+  useAdminMarkFileAsUploaded,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
-import type {
-  AdminCreateEngineerData,
-  AppMarkProfileFileUploadedData,
-} from "@/api";
+import type { AdminCreateEngineerData } from "@/api";
 import { useCheckUserExistence } from "@/shared/apiServices/commonOpenApiService";
 
 /**
@@ -53,7 +52,7 @@ export default function AddEngineer() {
   const queryClient = useQueryClient();
   const { showPopup } = usePopupStore();
   const { mutateAsync: addEngineer } = useAdminAddEngineer();
-  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
+  const { mutateAsync: markFileUploaded } = useAdminMarkFileAsUploaded();
   const methods = useForm<EngineerFormData>({
     defaultValues: {
       name: "",
@@ -67,11 +66,14 @@ export default function AddEngineer() {
       portfolio: "",
       resume: "",
       designation: "",
-      location: "",
       employer: "",
       experience: "",
       governmentId: "",
       certificate: "",
+      country: "",
+      state: "",
+      city: "",
+      postalCode: "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -118,13 +120,17 @@ export default function AddEngineer() {
       "email",
       "phoneNumber",
       "address",
+      "postalCode",
       "skills",
       "price",
       "serviceCategory",
+      "country",
+      "state",
+      "city",
     ]);
 
   const validateExperienceDetails = () =>
-    trigger(["designation", "resume", "location", "employer", "experience"]);
+    trigger(["designation", "resume", "employer", "experience"]);
 
   const validateDocuments = () => trigger(["governmentId", "certificate"]);
 
@@ -165,6 +171,10 @@ export default function AddEngineer() {
       experienceYears: data.experience ? Number(data.experience) : null,
 
       skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
+      countryId: data.country ? Number(data.country) : undefined,
+      stateId: data.state ? Number(data.state) : undefined,
+      cityId: data.city ? Number(data.city) : undefined,
+      postalCode: data.postalCode || undefined,
     };
 
     (Object.entries(files) as [keyof typeof files, File | null][]).forEach(
@@ -217,7 +227,15 @@ export default function AddEngineer() {
               const res = await addEngineer({
                 body,
               } as AdminCreateEngineerData);
-              if (res && "uploadUrls" in res && res.uploadUrls) {
+
+              const createdUserId = res?.userId;
+
+              if (
+                res &&
+                "uploadUrls" in res &&
+                res.uploadUrls &&
+                createdUserId
+              ) {
                 const uploadUrls = res.uploadUrls as Record<
                   string,
                   { uploadUrl: string; fileId: number }
@@ -235,8 +253,11 @@ export default function AddEngineer() {
                   });
                   if (upload.ok) {
                     await markFileUploaded({
+                      path: {
+                        userId: createdUserId,
+                      },
                       body: { fileId },
-                    } as AppMarkProfileFileUploadedData);
+                    });
                   }
                 }
               }
