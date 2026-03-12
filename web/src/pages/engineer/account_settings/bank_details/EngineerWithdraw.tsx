@@ -39,7 +39,7 @@ const EngineerWithdraw: React.FC<ClientWithdrawProps> = ({
 
   const {
     mutateAsync: requestWithdrawalAsync,
-    isLoading: isRequestingWithdrawal,
+    isPending: isRequestingWithdrawal,
   } = useRequestWithdrawal();
 
   const handleRaiseRequest = (data: IWithdrawForm) => {

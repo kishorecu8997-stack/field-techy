@@ -10,6 +10,7 @@ import { formatCurrency, formatDate } from "@/shared/libs/utils";
 import { FormProvider, useForm } from "react-hook-form";
 import { HiFilter, HiSearch } from "react-icons/hi";
 import Pagination from "../../search_result/components/Pagination";
+import { WITHDRAW_STATUS } from "./types";
 
 interface TransactionDashboardProps {
   showAll?: boolean;
@@ -201,7 +202,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {pageTransactions.map((tx) => {
                 const txAmount = Number(tx.amount);
-                const isCredit = tx.type === "credit";
+                const isCredit = tx.status === WITHDRAW_STATUS.APPROVED;
                 const amountColor = isCredit
                   ? "text-emerald-600 dark:text-emerald-400"
                   : "text-rose-600 dark:text-rose-400";
