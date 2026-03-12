@@ -61,6 +61,7 @@ export interface JobItem {
 export interface Client {
   id: string;
   clientType: "home" | "corporate" | string;
+  name?: string;
 
   companyName: string;
   contactPersonName: string;

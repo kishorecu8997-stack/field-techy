@@ -201,7 +201,7 @@ const JobCard: React.FC<{
       return typeof value === "string" ? value : undefined;
     };
 
-    const clientName = job.client?.contactPersonName || "-";
+    const clientName = job.client?.clientType === "home" ? job.client?.name : job.client?.companyName;
 
     return {
       id: job.id,
