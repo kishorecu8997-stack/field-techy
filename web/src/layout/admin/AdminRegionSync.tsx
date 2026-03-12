@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
@@ -27,6 +28,7 @@ export default function AdminRegionSync() {
   // Sub-admin: fixed from session.
   // Admin: from persisted store, or first region from lookup data on first visit.
   let effectiveRegionId: string | null = null;
+  let regionToSync: { id: string; name: string | null } | null = null;
 
   if (subRegionId) {
     effectiveRegionId = subRegionId.toString();
@@ -35,8 +37,15 @@ export default function AdminRegionSync() {
   } else if (adminLookupData && adminLookupData.length > 0) {
     const first = adminLookupData[0];
     effectiveRegionId = first.id.toString();
-    useAdminCountryStore.getState().setRegion(effectiveRegionId, first.name ?? null);
+    regionToSync = { id: effectiveRegionId, name: first.name ?? null };
   }
+
+  // Safely persist the default store initialization outside the render phase
+  useEffect(() => {
+    if (regionToSync) {
+      useAdminCountryStore.getState().setRegion(regionToSync.id, regionToSync.name);
+    }
+  }, [regionToSync?.id, regionToSync?.name]);
 
   if (!effectiveRegionId) return null;
 

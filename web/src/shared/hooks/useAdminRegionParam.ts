@@ -15,7 +15,7 @@ import {
  * a visual/shareable mirror that is kept in sync by AdminRegionSync.
  */
 export function useAdminRegionParam() {
-  const { setRegion } = useAdminCountryStore();
+  const setRegion = useAdminCountryStore((state) => state.setRegion);
   const [, setSearchParams] = useSearchParams();
   const { data: adminLookupData } = useAppGetLookupData(LookupTable.Regions);
 
