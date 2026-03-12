@@ -90,7 +90,7 @@ const SkillAccordion: React.FC<{
     <Accordion
       title={skill.name}
       remove={() => handleRemove(skill)}
-      showRemove={!isView}
+      showRemove={false}
     >
       <PricingTable
         control={control}
