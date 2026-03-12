@@ -346,11 +346,14 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   const parsedJobId = jobID ? Number(jobID) : undefined;
   const validJobId =
     parsedJobId && !isNaN(parsedJobId) ? parsedJobId : undefined;
-  const { data: assignmentsData, isLoading: isLoadingAssignments } =
-    useClientGetAssignmentDetails(
-      { jobId: validJobId, regionId },
-      Boolean(validJobId && regionId),
-    );
+  const {
+    data: assignmentsData,
+    isLoading: isLoadingAssignments,
+    refetch: refetchAssignments,
+  } = useClientGetAssignmentDetails(
+    { jobId: validJobId, regionId },
+    Boolean(validJobId && regionId),
+  );
 
   // Fetch skills, tools, experience levels and engagement models from the lookup API
   const { data: skillsResponse } = useLookupData("skills");
@@ -552,19 +555,21 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
 
                     return uniqueEngineerAssignments.map((assignment) => {
                       return (
-                      <div
-                        key={`${assignment.engineer?.id}-${assignment.assignmentId}`}
-                        className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800"
-                      >
-                        <TimelineSection
-                          assignmentId={assignment.assignmentId}
-                          jobId={validJobId}
-                          hasProposals={false}
-                          assignments={[assignment]}
-                          regionId={Number(job?.regionId)}
-                        />
-                      </div>
-                    )});
+                        <div
+                          key={`${assignment.engineer?.id}-${assignment.assignmentId}`}
+                          className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800"
+                        >
+                          <TimelineSection
+                            assignmentId={assignment.assignmentId}
+                            jobId={validJobId}
+                            hasProposals={false}
+                            assignments={[assignment]}
+                            regionId={Number(job?.regionId)}
+                            refetchAssignments={refetchAssignments}
+                          />
+                        </div>
+                      );
+                    });
                   })()
                 )}
               </div>

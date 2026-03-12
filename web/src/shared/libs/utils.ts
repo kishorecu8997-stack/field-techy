@@ -451,14 +451,19 @@ export const extractErrorMessage = (
  * @returns The filename string
  */
 export const getAttachmentFileName = (
-  attachment: { filename?: string | null; url?: string | null } | null | undefined,
+  attachment:
+    | { filename?: string | null; url?: string | null }
+    | null
+    | undefined,
   fallback = "Attachment",
 ): string => {
   if (attachment?.filename) {
     return attachment.filename;
   }
   if (attachment?.url) {
-    return decodeURIComponent(attachment.url.split("/").pop()?.split("?")[0] || fallback);
+    return decodeURIComponent(
+      attachment.url.split("/").pop()?.split("?")[0] || fallback,
+    );
   }
   return fallback;
 };

@@ -19,7 +19,7 @@ import {
   useClientActionOnBreak,
   useClientActionOnWorkLog,
   useGetJobLogs,
-  useMarkWorkLogFileUploaded
+  useMarkWorkLogFileUploaded,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import GiveFeedbackButton from "@/shared/components/commonUI/GiveFeedbackButton";
 import { formatDateTime } from "@/utils/formatDateTime";
@@ -75,7 +75,14 @@ const TimelineSection: React.FC<{
   hasProposals?: boolean;
   assignments?: ClientGetAssignmentDetailsResponse;
   regionId?: number;
-}> = ({ assignmentId, jobId, hasProposals = false, assignments }) => {
+  refetchAssignments?: () => void;
+}> = ({
+  assignmentId,
+  jobId,
+  hasProposals = false,
+  assignments,
+  refetchAssignments,
+}) => {
   const [searchParams] = useSearchParams();
   const regionIdfromParam = searchParams.get("regionId");
 
@@ -178,8 +185,6 @@ const TimelineSection: React.FC<{
   // Ensure jobId is valid (not NaN) before passing
   const fetchedAssignmentsProp = useMemo(() => assignments, [assignments]);
 
-
-
   // Use API data when available (after refetch), otherwise use prop
   // This ensures we get updated data after mutations
   const assignmentDetails = fetchedAssignmentsProp || [];
@@ -199,6 +204,7 @@ const TimelineSection: React.FC<{
   const { mutate: actionOnAssignment } = useClientActionOnAssignment({
     onSuccess: async () => {
       // Refetch assignment details to update hasPendingStartRequest
+      refetchAssignments?.();
       // Also refetch job logs
       if (effectiveAssignmentId) {
         try {
@@ -246,6 +252,7 @@ const TimelineSection: React.FC<{
   const { mutateAsync: markFileUploaded } = useMarkWorkLogFileUploaded({
     onSuccess: async () => {
       // Refetch job logs after file is marked as uploaded
+      refetchAssignments?.();
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
@@ -271,6 +278,7 @@ const TimelineSection: React.FC<{
 
   const { mutateAsync: actionOnWorkLog } = useClientActionOnWorkLog({
     onSuccess: async () => {
+      refetchAssignments?.();
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
@@ -299,6 +307,7 @@ const TimelineSection: React.FC<{
 
   const { mutate: actionOnBreak } = useClientActionOnBreak({
     onSuccess: async () => {
+      refetchAssignments?.();
       if (effectiveAssignmentId) {
         try {
           const response = await getJobLogs({
@@ -1916,7 +1925,8 @@ const TimelineSection: React.FC<{
                                     attachmentName: r.attachmentName,
                                     clientComment: r.clientComment,
                                     clientAttachmentUrl: r.clientAttachmentUrl,
-                                    clientAttachmentName: r.clientAttachmentName,
+                                    clientAttachmentName:
+                                      r.clientAttachmentName,
                                     createdAt: r.createdAt,
                                     updatedAt: r.updatedAt,
                                     status: r.status,
