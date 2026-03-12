@@ -38,9 +38,9 @@ const mapEngineerToFormData = (engineer: AdminGetEngineerResponse): EngineerForm
     price: toOptionalString(engineer.pricePerHour),
     serviceCategory: engineer.serviceCategory ? String(engineer.serviceCategory) : "",
     portfolio: engineer.portfolioLink ?? "",
-    Country: engineer.country?.id ? String(engineer.country?.id) : "",
-    State: engineer.state?.id ? String(engineer.state?.id) : "",
-    City: engineer.city?.id ? String(engineer.city?.id) : "",
+    country: engineer.country?.id ? String(engineer.country?.id) : "",
+    state: engineer.state?.id ? String(engineer.state?.id) : "",
+    city: engineer.city?.id ? String(engineer.city?.id) : "",
     postalCode: engineer.location?.postalCode ?? "",
 
     // Experience Details
@@ -90,9 +90,9 @@ export default function EditEngineer() {
       resume: null,
       governmentId: null,
       certificate: null,
-      Country: "",
-      State: "",
-      City: "",
+      country: "",
+      state: "",
+      city: "",
       postalCode: "",
     },
     mode: "onChange",
@@ -102,7 +102,7 @@ export default function EditEngineer() {
   const { trigger, getValues, reset } = methods;
 
   const validateBasicInformation = () =>
-    trigger(["name", "email", "phoneNumber", "address", "skills", "price", "serviceCategory", "Country", "State", "City", "postalCode"]);
+    trigger(["name", "email", "phoneNumber", "address", "skills", "price", "serviceCategory", "country", "state", "city", "postalCode"]);
 
   const validateExperienceDetails = () =>
     trigger(["designation", "resume", "employer", "experience"]);
@@ -138,14 +138,15 @@ export default function EditEngineer() {
       phoneNumber: data.phoneNumber,
       address: data.address || undefined,
       serviceCategoryId: data.serviceCategory ? Number(data.serviceCategory) : undefined,
-      hourlyRate: data.price ? Number(data.price) : undefined,
+      hourlyRate:
+          data.price !== null && data.price !== "" ? Number(data.price) : undefined,      
       portfolioLink: data.portfolio || "",
       employer: data.employer || undefined,
       currentDesignation: data.designation || undefined,
       experienceYears: data.experience ? Number(data.experience) : null,
-      countryId: data.Country ? Number(data.Country) : undefined,
-      stateId: data.State ? Number(data.State) : undefined,
-      cityId: data.City ? Number(data.City) : undefined,
+      countryId: data.country ? Number(data.country) : undefined,
+      stateId: data.state ? Number(data.state) : undefined,
+      cityId: data.city ? Number(data.city) : undefined,
       skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
       postalCode: data.postalCode || undefined,
     };

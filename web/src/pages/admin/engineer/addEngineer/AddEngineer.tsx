@@ -70,9 +70,9 @@ export default function AddEngineer() {
       experience: "",
       governmentId: "",
       certificate: "",
-      Country: "",
-      State: "",
-      City: "",
+      country: "",
+      state: "",
+      city: "",
       postalCode: "",
     },
     mode: "onChange",
@@ -124,9 +124,9 @@ export default function AddEngineer() {
       "skills",
       "price",
       "serviceCategory",
-      "Country",
-      "State",
-      "City",
+      "country",
+      "state",
+      "city",
     ]);
 
   const validateExperienceDetails = () =>
@@ -171,9 +171,9 @@ export default function AddEngineer() {
       experienceYears: data.experience ? Number(data.experience) : null,
 
       skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
-      countryId: data.Country ? Number(data.Country) : undefined,
-      stateId: data.State ? Number(data.State) : undefined,
-      cityId: data.City ? Number(data.City) : undefined,
+      countryId: data.country ? Number(data.country) : undefined,
+      stateId: data.state ? Number(data.state) : undefined,
+      cityId: data.city ? Number(data.city) : undefined,
       postalCode: data.postalCode || undefined,
     };
 

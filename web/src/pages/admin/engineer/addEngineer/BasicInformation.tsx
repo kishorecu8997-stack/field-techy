@@ -52,8 +52,8 @@ import type { EngineerFormData } from "../types";
 export default function BasicInformation() {
   const { watch, setValue } = useFormContext<EngineerFormData>();
   const serviceCategoryValue = watch("serviceCategory");
-  const selectedCountry = watch("Country");
-  const selectedState = watch("State");
+  const selectedCountry = watch("country");
+  const selectedState = watch("state");
 
   const { data: skills } = useAppGetLookupData(LookupTable.Skills);
   const { data: serviceCategories } = useAppGetLookupData(
@@ -158,25 +158,25 @@ return (
         {/* Location */}
         <SelectField
           label="Country"
-          name="Country"
+          name=" country"
           placeholder="Select Country"
           options={countryOptions}
           required
           onChange={() => {
-            setValue("State", "");
-            setValue("City", "");
+            setValue("state", "");
+            setValue("city", "");
           }}
         />
 
         <SelectField
           label="State"
-          name="State"
+          name="state"
           placeholder="Select State"
           options={stateOptions}
           required
           disabled={!selectedCountry}
           onChange={() => {
-            setValue("City", "");
+            setValue("city", "");
           }}
         />
 
