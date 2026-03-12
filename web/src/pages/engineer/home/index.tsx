@@ -82,8 +82,11 @@ const Home = () => {
         client: {
           id: job.clientId.toString(),
           clientType: clientDetails?.clientType || "unknown",
-          companyName: clientDetails?.companyName || "Unknown",
-          name: clientDetails?.name || "Unknown",
+          companyName:
+            clientDetails?.companyName ??
+            clientDetails?.personName ??
+            "Unknown",
+          name: clientDetails?.name ?? clientDetails?.personName ?? "Unknown",
           contactPersonName: clientDetails?.personName || "Unknown",
           email: clientDetails?.email || "",
           phoneNumber: clientDetails?.phoneNumber || "",
