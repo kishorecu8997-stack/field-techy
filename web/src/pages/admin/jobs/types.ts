@@ -28,6 +28,7 @@ export interface JobByCategoryProps {
   total?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
+  showCurrentStatus?: boolean;
 }
 
 export interface JobDataProps {

@@ -36,7 +36,7 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered "All Jobs" view with filters and a data table.
  */
 
-type StatusKind = "Hold" | "Flagged" | "Cancelled" | "Unknown";
+type StatusKind = "Hold" | "Flagged" | "Cancelled" | "Unhold" | "Unknown";
 const getCurrentStatusKind = (
   status: string | null | undefined,
 ): StatusKind => {
@@ -57,6 +57,9 @@ const normalizeStatus = (
   if (normalized === "flag" || normalized === "flagged") {
     return "Flagged";
   }
+    if (normalized === "unhold") {
+      return "Unhold";
+    }
   return "Hold";
 };
 
@@ -84,6 +87,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
   total,
   onPageChange,
   onPageSizeChange,
+  showCurrentStatus = false,
 }) => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
@@ -312,6 +316,18 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       ),
     },
   ];
+
+  const currentStatusColumn = {
+    key: "currentStatus",
+    label: "Current Status",
+    renderCell: (row: JobItem) => (
+      <span className="capitalize">{row.status || "N/A"}</span>
+    ),
+  };
+
+  if (showCurrentStatus) {
+    columns.splice(13, 0, currentStatusColumn);
+  }
 
   const hasSelectedFilters = [
     filterType,
