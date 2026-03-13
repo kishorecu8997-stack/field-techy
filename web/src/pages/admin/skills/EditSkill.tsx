@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import type { SkillFormData } from "./types";
 import SkillForm from "./SkillForm";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useAdminUpdateSkill } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * `EditSkill` component renders a page with a form to edit an existing Skill.
@@ -19,6 +21,7 @@ export default function EditSkill() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   const skillId = id ? Number(id) : undefined;
   const skill =
@@ -41,6 +44,19 @@ export default function EditSkill() {
   }, [skill]);
 
   const { showPopup } = usePopupStore();
+  const { mutateAsync: updateSkill, isPending: isUpdatingSkill } =
+    useAdminUpdateSkill({
+      onSuccess: () => {
+        toast.success("Skill updated successfully!");
+        methods.reset();
+        navigate(absoluteUrls.admin.home.manage_skills);
+      },
+      onError: (error) => {
+        const errorMessage =
+          error instanceof Error ? error.message : "Update skill failed";
+        toast.error(errorMessage);
+      },
+    });
 
   const handleSaveConfirmation = async (data: SkillFormData) => {
     await showPopup({
@@ -57,10 +73,39 @@ export default function EditSkill() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            // API call would go here in the future
-            toast.success("Skill updated successfully!");
-            methods.reset();
-            navigate(absoluteUrls.admin.home.manage_skills);
+            if (!skillId) return;
+            if (isUpdatingSkill) return;
+            await updateSkill({
+              body: { id: skillId, name: data.skillName },
+            });
+            queryClient.setQueriesData(
+              {
+                predicate: (query) =>
+                  Array.isArray(query.queryKey) &&
+                  query.queryKey[0] &&
+                  typeof query.queryKey[0] === "object" &&
+                  (query.queryKey[0] as { _id?: string })._id ===
+                    "adminGetSkills",
+              },
+              (oldData) => {
+                if (!oldData || typeof oldData !== "object") return oldData;
+                const prev = oldData as {
+                  data?: Array<{ id: number; name: string }>;
+                  total?: number;
+                  page?: number;
+                  limit?: number;
+                };
+                if (!Array.isArray(prev.data)) return oldData;
+                return {
+                  ...prev,
+                  data: prev.data.map((item) =>
+                    item.id === skillId
+                      ? { ...item, name: data.skillName }
+                      : item,
+                  ),
+                };
+              },
+            );
             close(true);
           },
         },

@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import type { ToolFormData } from "./types";
 import ToolForm from "./ToolForm";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useAdminCreateTool } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * `AddTool` component renders a page with a form to add a new Tool.
@@ -23,8 +25,54 @@ export default function AddTool() {
     },
   });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { showPopup } = usePopupStore();
+  const { mutateAsync: createTool, isPending: isCreatingTool } =
+    useAdminCreateTool({
+      onSuccess: (data) => {
+        queryClient.setQueriesData(
+          {
+            predicate: (query) =>
+              Array.isArray(query.queryKey) &&
+              query.queryKey[0] !== null &&
+              typeof query.queryKey[0] === "object" &&
+              (query.queryKey[0] as { _id?: string })._id ===
+                "adminGetTools",
+          },
+          (oldData: unknown) => {
+            if (!oldData || typeof oldData !== "object") return oldData;
+            const prev = oldData as {
+              data?: Array<{ id: number; name: string }>;
+              total?: number;
+              page?: number;
+              limit?: number;
+            };
+            if (!Array.isArray(prev.data)) return oldData;
+            const newItem = {
+              id: data?.id ?? Date.now(),
+              name: methods.getValues("toolName"),
+            };
+            return {
+              ...prev,
+              data: [newItem, ...prev.data],
+              total:
+                typeof prev.total === "number" ? prev.total + 1 : prev.total,
+            };
+          },
+        );
+        toast.success("Tool added successfully!");
+        methods.reset();
+        navigate(absoluteUrls.admin.home.manage_tools);
+      },
+      onError: (error) => {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "A tool with this name already exists";
+        toast.error(errorMessage);
+      },
+    });
 
   const handleSubmit = async (data: ToolFormData) => {
     await showPopup({
@@ -41,10 +89,12 @@ export default function AddTool() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            // API call would go here in the future
-            toast.success("Tool added successfully!");
-            methods.reset();
-            navigate(absoluteUrls.admin.home.manage_tools);
+            if (isCreatingTool) return;
+            await createTool({
+              body: {
+                name: data.toolName,
+              },
+            });
             close(true);
           },
         },

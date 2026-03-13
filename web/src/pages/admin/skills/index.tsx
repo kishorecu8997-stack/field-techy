@@ -6,6 +6,7 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import React, { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
+import { useAdminGetSkills } from "@/shared/apiServices/admin/adminOpenApiService";
 
 export interface ServerSkillProps {
   id: string;
@@ -38,15 +39,36 @@ const ManageSkills: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // Placeholder for API data - will be connected when API is available
+  const {
+    data: skillsResponse,
+    isLoading,
+    isFetching,
+    error,
+  } = useAdminGetSkills({
+    page,
+    limit: pageSize,
+    search: search.trim() || undefined,
+  });
+
   const tableData = useMemo<ServerSkillProps[]>(
-    () => [
-      // Empty for now - will be populated from API
-    ],
-    [search, page],
+    () =>
+      (skillsResponse?.data ?? []).map((item) => ({
+        id: String(item.id),
+        skillName: item.name,
+        skillImg: "",
+        createdDate: "-",
+        status: true,
+      })),
+    [skillsResponse],
   );
 
-  const totalCount = 0;
+  const totalCount = skillsResponse?.total ?? 0;
+  const errorMessage =
+    error instanceof Error
+      ? error.message
+      : error
+        ? "Failed to load data."
+        : null;
 
   const columns: Column<ServerSkillProps>[] = [
     {
@@ -113,8 +135,8 @@ const ManageSkills: React.FC = () => {
             columns={columns}
             data={tableData}
             initialPageSize={pageSize}
-            loading={false}
-            error={null}
+            loading={isLoading || isFetching}
+            error={errorMessage}
             totalCount={totalCount}
             currentPage={page}
             pageSize={pageSize}

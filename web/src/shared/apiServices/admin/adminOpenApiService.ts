@@ -169,7 +169,29 @@ import {
   adminGetNotificationsQueryKey,
   adminGetNotificationsOptions,
   adminDownloadInvoiceOptions,
+  adminGetSkillsOptions,
+  adminCreateSkillMutation,
+  adminUpdateSkillMutation,
+  adminGetToolsOptions,
+  adminCreateToolMutation,
+  adminUpdateToolMutation,
 } from "@/api/@tanstack/react-query.gen";
+
+
+import {
+  type AdminGetSkillsData,
+  type AdminGetSkillsResponse,
+  type AdminCreateSkillData,
+  type AdminCreateSkillResponse,
+  type AdminUpdateSkillData,
+  type AdminUpdateSkillResponse,
+  type AdminGetToolsData,
+  type AdminGetToolsResponse,
+  type AdminCreateToolData,
+  type AdminCreateToolResponse,
+  type AdminUpdateToolData,
+  type AdminUpdateToolResponse,
+} from "@/api/types.gen";
 
 
 import {
@@ -1106,6 +1128,100 @@ export function useAdminGetServiceCategories(
       query,
     }),
     ...options,
+  });
+}
+
+export function useAdminGetSkills(
+  query?: Partial<AdminGetSkillsData["query"]>,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetSkillsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetSkillsOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
+  });
+}
+
+export function useAdminCreateSkill(options?: {
+  onSuccess?: (data: AdminCreateSkillResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateSkillMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["lookup", "skills", "root"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateSkill(options?: {
+  onSuccess?: (data: AdminUpdateSkillResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateSkillMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["lookup", "skills", "root"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminGetTools(
+  query?: Partial<AdminGetToolsData["query"]>,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetToolsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetToolsOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
+  });
+}
+
+export function useAdminCreateTool(options?: {
+  onSuccess?: (data: AdminCreateToolResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateToolMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["lookup", "tools", "root"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateTool(options?: {
+  onSuccess?: (data: AdminUpdateToolResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateToolMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["lookup", "tools", "root"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
   });
 }
 
