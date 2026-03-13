@@ -289,33 +289,31 @@ export default function Faq() {
   }
 
   return (
-    <div>
-      <div className="mb-3 flex justify-end">
-        <Button
-          type="submit"
-          onClick={() => {
-            setIsModalOpen(true);
-            setFaqMode("Add");
-            setEditingFaqId(null);
-            methods.reset({
-              question: "",
-              answer: "",
-              sortOrder: faqList.length,
-            });
-          }}
-          className="w-fit mt-2 bg-gradient-to-r bg-teal-900 text-white rounded-lg hover:opacity-90 transition"
-        >
-          Add FAQ
-        </Button>
-      </div>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
-        <div>
+    <div className="h-full w-full flex flex-col overflow-hidden">
+      <div className="flex flex-1 overflow-hidden flex-col gap-2">
+        <div className="flex justify-between gap-2 mb-2 items-center">
           <SearchInput
             value={searchQuery}
             onChange={(value) => setSearchQuery(value)}
           />
+          <Button
+            type="submit"
+            onClick={() => {
+              setIsModalOpen(true);
+              setFaqMode("Add");
+              setEditingFaqId(null);
+              methods.reset({
+                question: "",
+                answer: "",
+                sortOrder: faqList.length,
+              });
+            }}
+            className="w-fit mt-2 bg-gradient-to-r bg-teal-900 text-white rounded-lg hover:opacity-90 transition"
+          >
+            Add FAQ
+          </Button>
         </div>
-        <div className="h-full flex-1 overflow-y-auto">
+        <div className="h-full flex-1 overflow-hidden">
           <CustomTable<FaqItem>
             columns={columns}
             data={filteredFaqList}

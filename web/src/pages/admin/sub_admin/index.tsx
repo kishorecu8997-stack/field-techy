@@ -173,12 +173,12 @@ export default function ManageSubAdmin() {
         </div>
       </div>
 
-      <div className="bg-white flex-1 dark:bg-gray-700 rounded-lg p-4 pb-8 shadow-sm">
+      <div className="bg-white flex flex-col flex-1 dark:bg-gray-700 rounded-lg p-4 pb-8 shadow-sm overflow-hidden">
         <div className="mb-4">
           <SearchInput value={search} onChange={setSearch} />
         </div>
 
-        <div className="h-full flex-1 overflow-y-auto my-4">
+        <div className="h-full flex-1 overflow-hidden my-4">
           <CustomTable<SubAdminItem>
             columns={columns}
             data={subAdmins}
