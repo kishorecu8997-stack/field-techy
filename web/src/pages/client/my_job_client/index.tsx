@@ -47,7 +47,7 @@ const MyJobsClient: React.FC = () => {
     if (filterParam && jobFilters.includes(filterParam)) {
       return filterParam;
     }
-    return jobFilters[0];
+    return jobFilters[3];
   });
 
   // Sync activeFilter with URL filter param when it changes (e.g., navigation from Dashboard)
