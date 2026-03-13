@@ -146,8 +146,6 @@ const PostJobPage = () => {
         .filter((t) => t.budget > 0)
       : undefined;
 
-    console.log("tools", tools);
-
     getJobPrice({
       query: {
         serviceCategoryId: Number(serviceCategory),
