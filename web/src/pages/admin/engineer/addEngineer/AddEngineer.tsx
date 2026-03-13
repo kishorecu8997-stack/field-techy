@@ -359,8 +359,9 @@ export default function AddEngineer() {
             {activeTab !== "Basic Information" && (
               <Button
                 type="button"
+                variant="no_style"
                 onClick={handlePrevious}
-                className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+                className="border border-solid rounded-md hover:transition-all hover:bg-gray-100 dark:hover:bg-gray-600"
               >
                 Back
               </Button>
@@ -370,7 +371,7 @@ export default function AddEngineer() {
               type="button"
               onClick={isLastTab ? handleSave : handleNext}
               disabled={isSubmitting || checkingUser}
-              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             >
               {isSubmitting ? "Saving…" : isLastTab ? "Save" : "Next"}
             </Button>
