@@ -24,12 +24,6 @@ const RateCardForm: React.FC<{ readOnly?: boolean }> = ({
   const isView = pathname.includes("/view");
   const isEdit = pathname.includes("/edit");
 
-  // Fetch service categories from API
-  const { data: serviceCategoriesData, isLoading } = useGetServiceCategories();
-
-  // Fetch all rate cards to check for existing combinations
-  const { data: rateCardsData } = useGetRateCards({ page: 1, limit: 100 });
-
   // Watch the selected country value
   const countryValue = ctx.watch("country");
 
@@ -37,6 +31,14 @@ const RateCardForm: React.FC<{ readOnly?: boolean }> = ({
   const selectedCountryId = countryValue
     ? parseInt(countryValue.replace(/\D/g, "")) || 0
     : 0;
+
+    // Fetch service categories from API
+   const { data: serviceCategoriesData, isLoading } = useGetServiceCategories();
+   // Fetch all rate cards to check for existing combinations
+   const { data: rateCardsData } = useGetRateCards(
+     { page: 1, limit: 100 },
+     { enabled: !isView && !isEdit && selectedCountryId > 0 },
+   );
 
   // Get existing service category IDs for the selected country
   const existingServiceCategoryIds = rateCardsData?.data

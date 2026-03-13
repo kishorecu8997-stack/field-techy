@@ -44,13 +44,13 @@ const EditRateCard = () => {
   const queryClient = useQueryClient();
 
   // Parse serviceCategoryId and countryId from URL params
-  const serviceCategoryId = serviceCategoryIdParam ? parseInt(serviceCategoryIdParam, 10) : 0;
-  const countryId = countryIdParam ? parseInt(countryIdParam, 10) : 0;
+   const parsedServiceCategoryId = serviceCategoryIdParam ? parseInt(serviceCategoryIdParam, 10) : 0;
+   const serviceCategoryId = Number.isNaN(parsedServiceCategoryId) ? 0 : parsedServiceCategoryId;
+   const parsedCountryId = countryIdParam ? parseInt(countryIdParam, 10) : 0;
+   const countryId = Number.isNaN(parsedCountryId) ? 0 : parsedCountryId;
 
   // Store countryId from URL param for use in mutation
   const countryIdRef = useRef<number>(countryId);
-
-  console.log("Service Category ID:", serviceCategoryId, "Country ID:", countryId, "from params:", { serviceCategoryIdParam, countryIdParam });
 
   const methods = useForm<any>({
     defaultValues: {

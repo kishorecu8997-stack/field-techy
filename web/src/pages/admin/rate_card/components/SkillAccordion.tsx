@@ -13,7 +13,7 @@ const SkillAccordion: React.FC<{
   skill: SkillPricing;
   control: Control<any>;
   index: number;
-  removeSkill: () => void;
+  removeSkill?: () => void;
 }> = ({ skill, control, index }) => {
   const location = useLocation();
   const isView = location.pathname.includes("/view");

@@ -1,6 +1,6 @@
 import { defaultPricingTiers } from "@/dummy_data/admin/rateCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import type { PricingFormValues, SkillPricing } from "../types";
@@ -15,7 +15,7 @@ const PricingModel: React.FC = () => {
   const isView = pathname.includes("/view");
   const isEdit = pathname.includes("/edit");
 
-  const { control, watch } = useFormContext<PricingFormValues>();
+  const { control } = useFormContext<PricingFormValues>();
   const [isExperienceLevelAdded, setIsExperienceLevelAdded] = useState(false);
 
   const {
@@ -27,16 +27,6 @@ const PricingModel: React.FC = () => {
     name: "skills",
   });
 
-  // Watch for changes in skills field
-  const watchedSkills = watch("skills");
-
-  // Effect to populate skills when in edit/view mode and data is available
-  useEffect(() => {
-    if ((isEdit || isView) && watchedSkills && watchedSkills.length === 0) {
-      // In edit/view mode with no skills, don't auto-populate
-      // Let the parent component handle population via reset
-    }
-  }, [isEdit, isView, watchedSkills]);
 
   const createDefaultSkill = (name: string, id: string): SkillPricing => ({
     id,
@@ -44,7 +34,7 @@ const PricingModel: React.FC = () => {
     isEditing: true,
     tiers: JSON.parse(JSON.stringify(defaultPricingTiers)),
   });
-
+  
   const addExperinceLevel = () => {
     // Add a single skill with all 3 experience levels (L1, L2, L3)
     append(

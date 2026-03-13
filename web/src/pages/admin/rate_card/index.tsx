@@ -64,6 +64,9 @@ const ManageRateCards: React.FC = () => {
 
     // Group by serviceCategoryId AND countryId to show different rate cards for same service category in different countries
     const groupedData = new Map<string, RateCardProps>();
+    // Track which serviceCategoryId-countryId-experienceLevel combinations have already been processed.
+     // Because sortedData is ordered newest-first, this ensures only the newest record for each combination is used.
+     const processedLevels = new Set<string>();
 
     sortedData.forEach((item) => {
       // Create composite key with both serviceCategoryId and countryId
@@ -73,6 +76,17 @@ const ManageRateCards: React.FC = () => {
       if (item.experienceLevelId === 1) level = "L1";
       else if (item.experienceLevelId === 2) level = "L2";
       else if (item.experienceLevelId === 3) level = "L3";
+
+       // If the experience level is not recognized, skip this item.
+       if (!level) {
+         return;
+       }
+       const levelKey = `${key}-${level}`;
+       // Only process the first (newest) item for each serviceCategoryId-countryId-experienceLevel combination.
+       if (processedLevels.has(levelKey)) {
+         return;
+       }
+       processedLevels.add(levelKey);
 
       if (!groupedData.has(key)) {
         // First entry for this service category - create base row
@@ -162,13 +176,13 @@ const ManageRateCards: React.FC = () => {
         <div className="whitespace-nowrap">{row.skillSet}</div>
       ),
     },
-    // {
-    //   key: "region",
-    //   label: "Region",
-    //   renderCell: (row: RateCardProps) => (
-    //     <div className="whitespace-nowrap">{row.region}</div>
-    //   ),
-    // },
+    {
+      key: "region",
+      label: "Region",
+      renderCell: (row: RateCardProps) => (
+        <div className="whitespace-nowrap">{row.region}</div>
+      ),
+    },
     {
       key: "location",
       label: "Country",
