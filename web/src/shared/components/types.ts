@@ -8,11 +8,20 @@ export interface SortDropdownProps {
 
 export type Attachment = { name: string; url: string };
 
+export interface Tool {
+  name: string;
+  price: string;
+  engineerPrice?: string; // Price for engineer (earnings)
+  unit?: string; // Currency unit (e.g., "INR", "USD", "₹")
+  image?: string;
+  imageUrl?: string; // Alternative field name
+}
+
 export interface JobOverviewProps {
   jobTitle: string;
   jobDescription: string;
   skills?: string[];
-  tools?: Array<{ name: string; price: string; image?: string }>;
+  tools?: Tool[];
   duration?: string;
   engagementModel?: string;
   experienceLevel?: string;
@@ -20,6 +29,7 @@ export interface JobOverviewProps {
   weeklyPay?: string;
   toolAllowance?: string;
   totalPayment?: string;
+  engineerEarnings?: string; // Total engineer earnings
   weeklyPayNote?: string;
   additionalDetails?: string[];
   attachments?: Array<Attachment | string>;

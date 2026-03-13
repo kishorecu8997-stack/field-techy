@@ -4,9 +4,12 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
-import { useResetPassword } from "@/shared/apiServices/commonOpenApiService";
+import {
+  useForgotPassword,
+  useResetPassword,
+} from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import AuthPasswordSection from "./AuthPasswordSection";
@@ -39,32 +42,46 @@ interface AuthResetPasswordProps {
 const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const emailFromStorage = sessionStorage.getItem("reset_password_email") || "";
-  const otpFromStorage = sessionStorage.getItem("reset_password_otp") || "";
-  const email = emailFromStorage || searchParams.get("email") || "";
-  const otp = otpFromStorage || searchParams.get("otp") || "";
+  const email = searchParams.get("email") || "";
   const { success, error: toastError } = useToast();
 
-  useEffect(() => {
-    if (emailFromStorage) {
-      sessionStorage.removeItem("reset_password_email");
-    }
+  // Timer state for OTP resend
+  const [timer, setTimer] = useState(0);
+  const [canResend, setCanResend] = useState(true);
+  const OTP_EXPIRY_SECONDS = 60;
 
-    if (otpFromStorage) {
-      sessionStorage.removeItem("reset_password_otp");
+  // Timer countdown effect
+  useEffect(() => {
+    if (timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            setCanResend(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(countdown);
     }
-  }, [emailFromStorage, otpFromStorage]);
+  }, [timer]);
+
+  // Start timer on page load since OTP was already sent from forgot password page
+  useEffect(() => {
+    setTimer(OTP_EXPIRY_SECONDS);
+    setCanResend(false);
+  }, []);
 
   const methods = useForm<ResetPasswordFormData>({
     defaultValues: {
       email: email,
-      otp: otp,
+      otp: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  const { mutate: resetPassword, isPending } = useResetPassword({
+  const { mutate: resetPassword, isPending: isResetting } = useResetPassword({
     onSuccess: () => {
       success("Password reset successfully");
       const loginUrl =
@@ -79,6 +96,31 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
       );
     },
   });
+
+  // For resending OTP
+  const { mutate: resendOtp, isPending: isResendingOtp } = useForgotPassword({
+    onSuccess: () => {
+      success("OTP sent to your email address");
+      // Start the timer countdown
+      setTimer(OTP_EXPIRY_SECONDS);
+      setCanResend(false);
+    },
+    onError: (err: unknown) => {
+      toastError(
+        GlobalApiErrorHandler.handle(err, "Failed to resend OTP").message,
+      );
+    },
+  });
+
+  const handleResendOtp = () => {
+    if (!canResend || isResendingOtp) return;
+    resendOtp({
+      body: {
+        email: methods.getValues("email"),
+        userRole: role,
+      },
+    });
+  };
 
   const handleSubmit = (data: ResetPasswordFormData) => {
     resetPassword({
@@ -120,13 +162,47 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
             required
             disabled
           />
+
+          {/* OTP Field */}
+          <InputField
+            name="otp"
+            label="OTP"
+            type="text"
+            placeholder="Enter 6-digit OTP"
+            required
+            maxLength={6}
+          />
+
+          {/* Timer and Resend Button */}
+          <div className="flex justify-between items-center mt-1">
+            <div className="flex items-center gap-2">
+              {timer > 0 && (
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, "0")}
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={!canResend || isResendingOtp}
+              className="text-sm text-teal-700 dark:text-teal-500 hover:underline disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              {isResendingOtp
+                ? "Sending..."
+                : timer > 0
+                  ? "Resend"
+                  : "Resend OTP"}
+            </button>
+          </div>
+
           <AuthPasswordSection />
           <div className="pt-6">
             <Button
               type="submit"
               className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-              loading={isPending}
-              disabled={isPending}
+              loading={isResetting || isResendingOtp}
+              disabled={isResetting || isResendingOtp}
             >
               Submit
             </Button>

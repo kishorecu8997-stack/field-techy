@@ -26,7 +26,7 @@ const PricingTable: React.FC<{
       <table className="w-full text-sm text-left border-collapse">
         <thead className="bg-neutral-100 text-neutral-700 dark:bg-gray-900 dark:text-neutral-200">
           <tr>
-            <th className="px-4 py-2 font-semibold text-center">
+            <th className="px-4 py-2 font-semibold text-left">
               Experience Level
             </th>
             {headers.map((h) => (
@@ -44,15 +44,14 @@ const PricingTable: React.FC<{
                 key={tier.level}
                 className="border-t border-gray-200 dark:border-gray-700"
               >
-                <td className="px-4 py-2 font-medium text-center text-gray-900 dark:text-gray-100">
+                <td className="px-4 py-2 font-medium text-left align-middle text-gray-900 dark:text-gray-100">
                   {tier.level} - {tier.description}
                 </td>
                 {fields.map((field) => (
-                  <td key={field} className="px-4 py-2">
+                  <td key={field} className="px-6 py-2 align-middle text-center">
                     {editable ? (
                       <InputField
                         name={`skills.${index}.tiers.${tierIdx}.${field}`}
-                        placeholder="$"
                         rules={{
                           validate: (v: string) =>
                             validatePricingModel(v, field as PricingField, {
@@ -61,7 +60,7 @@ const PricingTable: React.FC<{
                               monthly: Number(relatedValues.monthly),
                             }),
                         }}
-                        inputClassName="h-8 border border-neutral-700 dark:border-neutral-400 rounded-md p-1"
+                        inputClassName="h-8 border border-neutral-700 dark:border-neutral-400 rounded-md p-1 text-center"
                       />
                     ) : (
                       <Controller
@@ -69,7 +68,7 @@ const PricingTable: React.FC<{
                         name={`skills.${index}.tiers.${tierIdx}.${field}`}
                         render={({ field: controllerField }) => (
                           <span className="text-gray-800 dark:text-gray-200">
-                            ${controllerField.value || "—"}
+                            {controllerField.value || "—"}
                           </span>
                         )}
                       />

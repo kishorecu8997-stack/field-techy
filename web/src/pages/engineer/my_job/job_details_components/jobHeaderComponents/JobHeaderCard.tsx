@@ -156,6 +156,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             assignmentIds={allAssignmentIds}
             engineerNames={engineerNames}
             isClientView={true}
+            regionId={clientRegionId}
           />
         ),
         actionButtons: [],

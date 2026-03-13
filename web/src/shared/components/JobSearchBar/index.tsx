@@ -220,7 +220,7 @@ export const JobSearchBar = ({
               onFocus={() => {
                 setActiveDropdown(null);
               }}
-              placeholder="Search Jobs.."
+              placeholder={isEngineerRoute ? "Search Jobs.." : "Search Engineers.."}
               className="w-full bg-transparent outline-none border-none text-gray-800 placeholder-gray-400 text-sm"
             />
           </div>
