@@ -1,8 +1,8 @@
-import { TbCash, TbLayoutDashboard, TbLayoutGrid } from "react-icons/tb";
+import { TbCash, TbLayoutDashboard, TbLayoutGrid, TbTools } from "react-icons/tb";
 import { absoluteUrls } from "./urls";
 import { FaRegBell } from "react-icons/fa";
 import { HiOutlineUserGroup } from "react-icons/hi";
-import { BsPersonGear, BsPersonWorkspace, BsSuitcaseLg } from "react-icons/bs";
+import { BsPersonGear, BsPersonWorkspace, BsSuitcaseLg, BsStars } from "react-icons/bs";
 import { RxBackpack } from "react-icons/rx";
 import { LuSettings, LuSettings2, LuWallet } from "react-icons/lu";
 import { RiBankCardLine, RiErrorWarningLine } from "react-icons/ri";
@@ -72,6 +72,16 @@ export const menuItems: MenuItem[] = [
         name: "Service Category",
         path: absoluteUrls.admin.home.manage_categories,
         icon: <TbLayoutGrid className="text-lg" />,
+      },
+      {
+        name: "Tools",
+        path: absoluteUrls.admin.home.manage_tools,
+        icon: <TbTools className="text-lg" />,
+      },
+      {
+        name: "Skills",
+        path: absoluteUrls.admin.home.manage_skills,
+        icon: <BsStars className="text-lg" />,
       },
       {
         name: "Jobs",
