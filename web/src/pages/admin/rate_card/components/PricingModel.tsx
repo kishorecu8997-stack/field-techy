@@ -22,7 +22,6 @@ const PricingModel: React.FC = () => {
     fields: skills,
     append,
     remove,
-    replace,
   } = useFieldArray({
     control,
     name: "skills",
