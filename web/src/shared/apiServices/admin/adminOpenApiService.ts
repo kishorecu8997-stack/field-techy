@@ -1225,6 +1225,11 @@ export function useAdminUpdateTool(options?: {
   });
 }
 
+export type AdminAddSkillBody = AdminCreateSkillData["body"];
+export type AdminUpdateSkillBody = AdminUpdateSkillData["body"];
+export type AdminAddToolBody = AdminCreateToolData["body"];
+export type AdminUpdateToolBody = AdminUpdateToolData["body"];
+
 export type AdminGetJobLogsQuery = NonNullable<AdminGetJobLogsData["query"]>;
 
 export function useAdminGetJobLogs(
