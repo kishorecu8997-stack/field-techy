@@ -75,10 +75,10 @@ const PostAJobFields = ({
     label: string;
     value: NonNullable<ClientPostJobData["body"]>["jobType"];
   }[] = [
-    { label: "On site", value: "On site" },
-    { label: "Remote", value: "Remote" },
-    { label: "Hybrid", value: "Hybrid" },
-  ];
+      { label: "On site", value: "On site" },
+      { label: "Remote", value: "Remote" },
+      { label: "Hybrid", value: "Hybrid" },
+    ];
 
   const serviceCategoryOptions = useMemo(
     () =>
@@ -100,20 +100,11 @@ const PostAJobFields = ({
   const engagementModelOptions = useMemo(() => {
     if (!engagementModelsData) return [];
 
-    return engagementModelsData
-      .filter((model) => {
-        // Example Logic:
-        // If duration is less than 30 days, hide "Monthly" (ID 3)
-        if (durationInDays < 30 && model.id === 3) {
-          return false;
-        }
-        return true;
-      })
-      .map((e) => ({
-        label: e.name,
-        value: String(e.id),
-      }));
-  }, [engagementModelsData, durationInDays]);
+    return engagementModelsData.map((e) => ({
+      label: e.name,
+      value: String(e.id),
+    }));
+  }, [engagementModelsData]);
 
   const skillOptions = useMemo(
     () =>
