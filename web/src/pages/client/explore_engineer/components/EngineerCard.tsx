@@ -40,10 +40,6 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
           <span className="text-gray-500 dark:text-white">Pay Type:</span>{" "}
           {engineer.pay_type}
         </p>
-        {/* <p className="text-sm font-medium truncate">
-          <span className="text-gray-500 dark:text-white">Availability:</span>{" "}
-          {engineer.availability}
-        </p> */}
         <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           <NavLink
             to={detailsUrl}
