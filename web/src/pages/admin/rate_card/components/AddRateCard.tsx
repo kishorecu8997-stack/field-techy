@@ -190,10 +190,7 @@ const AddRateCard = () => {
           <RateCardForm />
           <PricingModel />
           <div className="flex justify-end">
-            <Button
-              type="submit"
-              className="bg-emerald-600 text-white px-4 py-2 rounded-md cursor-pointer"
-            >
+            <Button type="submit" className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition">
               Submit
             </Button>
           </div>

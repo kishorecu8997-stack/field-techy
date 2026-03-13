@@ -266,7 +266,7 @@ export default function BlockedUser() {
 
   return (
     <>
-      <div className="h-full w-full flex flex-1 overflow-hidden flex-col bg-white dark:bg-gray-800 rounded-md p-4">
+      <div className="h-full w-full flex flex-1 overflow-hidden flex-col">
         <div className="mb-4 flex flex-wrap gap-4 items-center">
           <SearchInput value={search} onChange={setSearch} />
         </div>

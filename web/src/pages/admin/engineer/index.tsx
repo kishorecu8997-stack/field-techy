@@ -71,9 +71,11 @@ export default function ManageEngineer() {
   }, [activeTab, activeTabStorageKey, visibleTabLabels]);
 
   return (
-    <div className="w-full h-full flex flex-col p-3 gap-3 overflow-hidden bg-gray-50 dark:bg-gray-900">
+    <div className="w-full h-full flex flex-col p-3 gap-3 overflow-hidden dark:bg-gray-800">
       <div className="flex justify-between items-center px-1">
-        <h1 className="font-semibold text-gray-800 dark:text-white">Manage Engineers</h1>
+        <h1 className="font-semibold text-gray-800 dark:text-white">
+          Manage Engineers
+        </h1>
         <div className="flex gap-4">
           <Button
             type="submit"
@@ -89,7 +91,7 @@ export default function ManageEngineer() {
           </Button>
         </div>
       </div>
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden bg-white dark:bg-gray-700 rounded-md p-4">
         <AdminTabComponent
           tabs={tabs}
           activeTab={activeTab}

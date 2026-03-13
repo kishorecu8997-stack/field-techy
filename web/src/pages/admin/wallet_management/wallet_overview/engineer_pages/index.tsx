@@ -176,7 +176,7 @@ const EngineerWallet: React.FC = () => {
   ];
 
   return (
-    <div className="h-full w-full flex flex-col flex-1 overflow-hidden bg-white dark:bg-gray-800 rounded-md p-4 gap-4">
+    <div className="h-full w-full flex flex-col flex-1 overflow-hidden gap-4">
       <div className="flex justify-between items-center gap-4">
         <SearchInput value={search} onChange={setSearch} />
       </div>

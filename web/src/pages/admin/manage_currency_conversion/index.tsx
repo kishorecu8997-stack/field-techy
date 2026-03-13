@@ -83,15 +83,15 @@ const ManageCurrencyConversion: React.FC = () => {
   ];
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
-      <h1 className="font-semibold ">Currency Rates</h1>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
+      <h1 className="font-semibold">Currency Rates</h1>
+      <div className="p-4 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex justify-between">
           <SearchInput value={search} onChange={setSearch} />
           <div className="inline-flex items-center bg-teal-100 text-black font-medium rounded-md px-3 py-4 h-6 text-sm">
             Base Currency: INR - Indian Rupee
           </div>
         </div>
-        <div className="h-full flex-1 overflow-y-auto ">
+        <div className="h-full flex-1 overflow-y-auto">
           <CustomTable<CurrencyConversionRow>
             columns={columns}
             data={tableData}

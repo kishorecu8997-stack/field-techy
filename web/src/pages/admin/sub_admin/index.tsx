@@ -158,12 +158,12 @@ export default function ManageSubAdmin() {
   ];
 
   return (
-    <div className="w-full h-full p-4">
+    <div className="w-full h-full flex flex-col flex-1 overflow-hidden p-4">
       <div className="flex justify-between items-center">
         <p className="mt-2 mb-6 font-semibold">Manage Sub-Admin</p>
         <div className="flex gap-2">
           <Button
-            className="w-fit bg-gradient-to-r from-teal-900 to-teal-700 text-white py-2 px-4 rounded-lg hover:opacity-90 transition"
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             onClick={() =>
               navigate(absoluteUrls.admin.home.manage_sub_admin_add)
             }
@@ -173,12 +173,12 @@ export default function ManageSubAdmin() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-700 rounded-lg p-4 pb-8 shadow-sm">
+      <div className="bg-white flex-1 dark:bg-gray-700 rounded-lg p-4 pb-8 shadow-sm">
         <div className="mb-4">
           <SearchInput value={search} onChange={setSearch} />
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="h-full flex-1 overflow-y-auto my-4">
           <CustomTable<SubAdminItem>
             columns={columns}
             data={subAdmins}
