@@ -20,6 +20,7 @@ import {
   type ClientGetAssignmentDetailsData,
   type ClientGetCompanyInfoResponse,
   type ClientGetJobsData,
+  type ClientGetPublicEngineerProfileData,
   type ClientGetRateCardData,
   type ClientGetRateCardResponse,
   type ClientInviteEngineerResponse,
@@ -687,7 +688,8 @@ export function useClientTransactions(
     },
     enabled,
     staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 }
 
@@ -712,6 +714,8 @@ export function useClientExploreEngineers(
     }),
     enabled: enabled,
     staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 }
 
@@ -745,13 +749,17 @@ export function useClientExploreEngineersInfinite(
 export function useClientGetPublicEngineerProfile(
   id: number,
   enabled: boolean = true,
+  query: ClientGetPublicEngineerProfileData["query"] = {},
 ) {
   return useQuery({
     ...clientGetPublicEngineerProfileOptions({
       client: apiClient,
       path: { id },
+      query: query,
     }),
     enabled: enabled && !!id,
     staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 }
