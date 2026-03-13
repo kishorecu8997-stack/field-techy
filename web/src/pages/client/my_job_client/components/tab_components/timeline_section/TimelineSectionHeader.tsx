@@ -115,9 +115,9 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
           const revisions = getRevisions(item);
           const hasApproverComment = !!item.approverComment;
           const shouldShowExpandButton = itemHasRevisions || hasApproverComment;
-          const singleAttachmentName =
-            item.attachmentName ||
-            getAttachmentFileName({ url: item.attachmentUrl || undefined });
+          // const singleAttachmentName =
+          //   item.attachmentName ||
+          //   getAttachmentFileName({ url: item.attachmentUrl || undefined });
 
           // Engineer timeline style: border-gray-200 bg-gray-50 rounded-lg p-4 shadow-sm
           return (
