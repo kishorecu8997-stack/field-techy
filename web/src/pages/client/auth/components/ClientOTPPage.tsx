@@ -1,3 +1,5 @@
+/*This component is removed from the UI (Flow) */
+
 import { icons } from "@/config/icons";
 import { useVerifyOtp } from "@/shared/apiServices/commonOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -83,9 +85,15 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
       });
       handleNavigate?.(data.otp);
     } catch (error: unknown) {
+      const errorObj = GlobalApiErrorHandler.handle(error);
+      // Replace technical JWT error message with user-friendly message
+      const message =
+        errorObj.message === "Invalid or missing JWT token"
+          ? "Invalid OTP."
+          : errorObj.message;
       method.setError("otp", {
         type: "manual",
-        message: GlobalApiErrorHandler.handle(error).message,
+        message,
       });
     }
   };
