@@ -1,18 +1,15 @@
 import { assetsConfig } from "@/assets";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import { BsTextLeft } from "react-icons/bs";
 import { FaRegBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { type NavbarProps } from "./types";
 import { absoluteUrls } from "@/config/urls";
 import SelectMenu from "@/shared/components/SelectMenu";
-import {
-  LookupTable,
-  useAppGetLookupData,
-} from "@/shared/apiServices/admin/adminOpenApiService";
 import { useAdminProfile } from "@/shared/store/useAdminProfileStore";
 import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useAdminRegionParam } from "@/shared/hooks/useAdminRegionParam";
 
 import {
   useAppMarkAllNotificationsAsRead,
@@ -31,23 +28,25 @@ import { RiCloseLine } from "react-icons/ri";
  *
  * Features:
  * - Sidebar toggle control
- * - Region selection dropdown
+ * - Region selection dropdown (admin only; hidden for sub-admins)
  * - Notifications panel with click-outside behavior
  * - User profile section with avatar and role display
+ *
+ * Region URL sync is handled externally by AdminRegionSync (mounted in AdminLayout).
  *
  * @param {NavbarProps} props - Component props
  * @param {Function} props.onToggleSidebar - Callback to toggle the sidebar visibility
  * @returns {JSX.Element} Header component with navigation controls and user interface
  */
 export default function Header({ onToggleSidebar }: NavbarProps) {
-  const { regionId, setRegion } = useAdminCountryStore();
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const { regionId } = useAdminCountryStore();
+  const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
 
   const subRegionId = useUserSessionStore((s) => s.session?.regionId);
 
   const adminProfile = useAdminProfile();
-  const { data: adminLookupData } = useAppGetLookupData(LookupTable.Regions);
+  const { setRegionParam, adminLookupData } = useAdminRegionParam();
 
   const { notifications } = useAppNotifications();
   const markAsRead = useAppMarkNotificationAsRead();
@@ -63,21 +62,8 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
     setIsNotificationOpen((prev) => !prev);
   };
 
-  const handleRegionChange = (id: string | null) => {
-    const selectedRegion = adminLookupData?.find(
-      (item) => item.id.toString() === id,
-    );
-    setRegion(id, selectedRegion?.name ?? null);
-  };
-
-  useEffect(() => {
-    if (adminLookupData && adminLookupData.length > 0 && !regionId) {
-      const first = adminLookupData[0];
-      setRegion(first.id.toString(), first.name ?? null);
-    }
-  }, [adminLookupData, regionId, setRegion]);
-
-  return (   <>
+  return (
+    <>
       <header
         className="text-white px-4 sm:px-6 py-2 shadow-lg flex justify-between items-center"
         style={{
@@ -109,7 +95,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                 })) ?? []
               }
               value={regionId ?? adminLookupData?.[0]?.id.toString() ?? null}
-              onChange={handleRegionChange}
+              onChange={setRegionParam}
             />
           )}
           <div
