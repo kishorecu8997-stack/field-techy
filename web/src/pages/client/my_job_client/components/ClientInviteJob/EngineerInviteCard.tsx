@@ -4,6 +4,7 @@ import React from "react";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { FaRegCircle } from "react-icons/fa";
 import type { EngineerInviteCardProps } from "../../types";
+import { formatRating } from "@/utils/helpers";
 
 /**
  * EngineerInviteCard Component
@@ -18,6 +19,7 @@ const EngineerInviteCard: React.FC<EngineerInviteCardProps> = ({
   selected = false,
 }) => {
   const { id, name, rating, reviewCount, title } = engineer;
+  const formattedRating = formatRating(rating);
 
   return (
     <div className="p-4 rounded-lg flex items-start gap-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white transition-colors duration-300 cursor-pointer hover:shadow-md">
@@ -34,7 +36,7 @@ const EngineerInviteCard: React.FC<EngineerInviteCardProps> = ({
         <div className="flex items-center gap-1 text-sm mb-1">
           <span className="text-yellow-500">★</span>
           <span>
-            {rating} ({reviewCount} reviews)
+            {formattedRating} ({reviewCount} reviews)
           </span>
         </div>
         <p className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">

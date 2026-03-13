@@ -3,6 +3,7 @@ import type { ClientInfoCardProps } from "../types";
 // import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { IoClose } from "react-icons/io5";
+import { formatRating } from "@/utils/helpers";
 
 /**
  * ClientInfoCard
@@ -26,14 +27,8 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
   // phoneNumber,
   // email,
 }) => {
-
-  const num = parseFloat(String(rating));
-  const formattedRating = isNaN(num)
-    ? String(rating)
-    : num % 1 === 0
-      ? String(num)
-      : `${Math.floor(num)}+`;
-
+  const formattedRating = formatRating(rating);
+  
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-6">
       <div className="flex items-center justify-between mb-4">
