@@ -124,6 +124,7 @@ import {
   type BulkCreateRateCardsData,
   adminApprovePayment,
   adminWithdrawalAction,
+  type AdminGetEngineerResponse,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
@@ -730,6 +731,8 @@ export function useGetCmsContent(
   options?: {
     enabled?: boolean;
     refetchInterval?: number | false | (() => number | false);
+    staleTime?: number;
+    refetchOnWindowFocus?: boolean | "always";
   },
 ) {
   return useQuery({
@@ -992,7 +995,16 @@ export function useAdminMarkFileAsUploaded(options?: {
   });
 }
 
-export function useAdminGetEngineerById(userId: number, enabled = true) {
+export function useAdminGetEngineerById(
+  userId: number,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetEngineerResponse) => void;
+    onError?: (error: unknown) => void;
+    refetchOnMount?: boolean | "always";
+    staleTime?: number;
+  },
+) {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   const isValidId = Number.isFinite(userId) && userId > 0;
 
@@ -1004,7 +1016,8 @@ export function useAdminGetEngineerById(userId: number, enabled = true) {
         regionId: Number(selectedRegionId),
       },
     }),
-    enabled: enabled && isValidId,
+    enabled: isValidId ? options?.enabled : false,
+    ...options,
   });
 }
 
@@ -1111,9 +1124,9 @@ export function useAdminGetJobLogs(
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
-        ...query,
-        regionId: Number(query?.regionId ?? selectedRegionId) || 0,
-      } as AdminGetJobLogsQuery
+      ...query,
+      regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+    } as AdminGetJobLogsQuery
     : ({ jobId: 0, regionId: Number(selectedRegionId) } as AdminGetJobLogsQuery);
 
   return useQuery({
@@ -1669,7 +1682,7 @@ export function useAdminUpdateEngineer(options?: {
       return data as AdminUpdateEngineerResponse;
     },
     onSuccess: (data: AdminUpdateEngineerResponse) => {
-      queryClient.resetQueries({
+      queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
         exact: false,
       });

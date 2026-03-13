@@ -8,7 +8,6 @@ import {
   validateCompany,
   validateDesignation,
   validateExperience,
-  validateLocation,
 } from "@/utils/validate";
 
 /**
@@ -108,13 +107,13 @@ export default function ExperienceDetails() {
             required
             rules={{ validate: (v: string) => validateDesignation(v) }}
           />
+
           <InputField
-            name="location"
-            label="Location"
+            name="experience"
+            label="Total Experience (In years)"
             type="text"
-            placeholder="Enter Location"
             required
-            rules={{ validate: (v: string) => validateLocation(v) }}
+            rules={{ validate: (v: string) => validateExperience(v) }}
           />
         </div>
 
@@ -125,14 +124,6 @@ export default function ExperienceDetails() {
             type="text"
             required
             rules={{ validate: (v: string) => validateCompany(v) }}
-          />
-
-          <InputField
-            name="experience"
-            label="Total Experience (In years)"
-            type="text"
-            required
-            rules={{ validate: (v: string) => validateExperience(v) }}
           />
         </div>
       </div>

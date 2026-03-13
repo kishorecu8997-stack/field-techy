@@ -26,37 +26,40 @@ const toOptionalString = (value: unknown) =>
   value === null || value === undefined ? "" : String(value);
 
 const mapEngineerToFormData = (
-  engineerData: AdminGetEngineerResponse,
+  engineer: AdminGetEngineerResponse,
 ): EngineerFormData => {
-  const skills = engineerData.skills?.map((s) => String(s.id)) ?? [];
+  const skills = engineer.skills?.map((s) => String(s.id)) ?? [];
 
   return {
-    name: engineerData.name ?? "",
-    email: engineerData.email ?? "",
-    phoneNumber: engineerData.phoneNumber ?? "",
-    profileImage: engineerData.documents?.profileImage?.url ?? null,
-    address: engineerData.address ?? "",
+    // Basic Information
+    name: engineer.name ?? "",
+    email: engineer.email ?? "",
+    phoneNumber: engineer.phoneNumber ?? "",
+    profileImage: engineer.documents?.profileImage?.url ?? null,
+    address: engineer.address ?? "",
     skills,
-    price: toOptionalString(engineerData.pricePerHour),
-    serviceCategory: engineerData.serviceCategory
-      ? String(engineerData.serviceCategory)
+    price: toOptionalString(engineer.pricePerHour),
+    serviceCategory: engineer.serviceCategory
+      ? String(engineer.serviceCategory)
       : "",
-    portfolio: engineerData.portfolioLink ?? "",
-    designation: engineerData.currentDesignation ?? "",
-    location: engineerData.location?.city ?? engineerData.city?.name ?? "",
-    employer: engineerData.employer ?? "",
-    experience: toOptionalString(engineerData.totalExperience),
-    resume: engineerData.documents?.resume?.url ?? null,
-    governmentId: engineerData.documents?.governmentId?.url ?? null,
-    certificate: engineerData.documents?.qualificationCertificate?.url ?? null,
+    portfolio: engineer.portfolioLink ?? "",
+    country: engineer.country?.id ? String(engineer.country?.id) : "",
+    state: engineer.state?.id ? String(engineer.state?.id) : "",
+    city: engineer.city?.id ? String(engineer.city?.id) : "",
+    postalCode: engineer.location?.postalCode ?? "",
+
+    // Experience Details
+    designation: engineer.currentDesignation ?? "",
+    employer: engineer.employer ?? "",
+    experience: toOptionalString(engineer.totalExperience),
+    resume: engineer.documents?.resume?.url ?? null,
+
+    // Documents
+    governmentId: engineer.documents?.governmentId?.url ?? null,
+    certificate: engineer.documents?.qualificationCertificate?.url ?? null,
   };
 };
 
-/**
- * EditEngineer component for editing an existing engineer.
- * - GET: fetches engineer data (including document URLs) and hydrates the form
- * - PUT: submits updated fields, optionally returning presigned upload URLs for files
- */
 export default function EditEngineer() {
   const [activeTab, setActiveTab] = useState("Basic Information");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -76,7 +79,9 @@ export default function EditEngineer() {
     data: engineerData,
     isLoading,
     error,
-  } = useAdminGetEngineerById(engineerId, hasValidEngineerId);
+  } = useAdminGetEngineerById(engineerId, {
+    refetchOnMount: "always",
+  });
 
   const methods = useForm<EngineerFormData>({
     defaultValues: {
@@ -90,12 +95,15 @@ export default function EditEngineer() {
       serviceCategory: "",
       portfolio: "",
       designation: "",
-      location: "",
       employer: "",
       experience: "",
       resume: null,
       governmentId: null,
       certificate: null,
+      country: "",
+      state: "",
+      city: "",
+      postalCode: "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -112,17 +120,21 @@ export default function EditEngineer() {
       "skills",
       "price",
       "serviceCategory",
+      "country",
+      "state",
+      "city",
+      "postalCode",
     ]);
 
   const validateExperienceDetails = () =>
-    trigger(["designation", "location", "resume", "employer", "experience"]);
+    trigger(["designation", "resume", "employer", "experience"]);
 
   const validateDocuments = () => trigger(["governmentId", "certificate"]);
 
   useEffect(() => {
     if (!engineerData) return;
-    methods.reset(mapEngineerToFormData(engineerData));
-  }, [engineerData, methods]);
+    reset(mapEngineerToFormData(engineerData));
+  }, [engineerData, reset]);
 
   type UploadKey =
     | "profilePicture"
@@ -152,24 +164,23 @@ export default function EditEngineer() {
       name: data.name,
       email: data.email,
       phoneNumber: data.phoneNumber,
-
       address: data.address || undefined,
       serviceCategoryId: data.serviceCategory
         ? Number(data.serviceCategory)
         : undefined,
-
       hourlyRate:
         data.price !== null && data.price !== ""
           ? Number(data.price)
           : undefined,
-
       portfolioLink: data.portfolio || "",
       employer: data.employer || undefined,
       currentDesignation: data.designation || undefined,
-
       experienceYears: data.experience ? Number(data.experience) : null,
-
+      countryId: data.country ? Number(data.country) : undefined,
+      stateId: data.state ? Number(data.state) : undefined,
+      cityId: data.city ? Number(data.city) : undefined,
       skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
+      postalCode: data.postalCode || undefined,
     };
 
     (Object.entries(files) as [UploadKey, File | null][]).forEach(
@@ -187,16 +198,16 @@ export default function EditEngineer() {
   };
 
   const handleNext = async () => {
-    let isValid = false;
-    if (activeTab === "Basic Information") {
-      isValid = await validateBasicInformation();
-      if (isValid) setActiveTab("Experience Details");
-      return;
-    }
+    let ok = false;
 
-    if (activeTab === "Experience Details") {
-      isValid = await validateExperienceDetails();
-      if (isValid) setActiveTab("Documents");
+    if (activeTab === "Basic Information") {
+      ok = await validateBasicInformation();
+      if (!ok) return;
+      setActiveTab("Experience Details");
+    } else if (activeTab === "Experience Details") {
+      ok = await validateExperienceDetails();
+      if (!ok) return;
+      setActiveTab("Documents");
     }
   };
 
@@ -244,9 +255,7 @@ export default function EditEngineer() {
 
                   if (upload.ok) {
                     await markFileUploaded({
-                      path: {
-                        userId: engineerId,
-                      },
+                      path: { userId: engineerId },
                       body: { fileId },
                     });
                   }
@@ -257,9 +266,9 @@ export default function EditEngineer() {
                 queryKey: queryKeys.admin.manageEngineers,
                 exact: false,
               });
-
               await queryClient.invalidateQueries({
-                queryKey: queryKeys.engineer.adminById(engineerId),
+                queryKey: queryKeys.admin.adminGetEngineer,
+                exact: false,
               });
 
               toast.success("Engineer updated successfully!");
@@ -282,14 +291,15 @@ export default function EditEngineer() {
       toast.error("Invalid engineer id");
       return;
     }
-    const isValidBasic = await validateBasicInformation();
-    if (!isValidBasic) return;
 
-    const isValidExperience = await validateExperienceDetails();
-    if (!isValidExperience) return;
+    const okBasic = await validateBasicInformation();
+    if (!okBasic) return;
 
-    const isValidDocs = await validateDocuments();
-    if (!isValidDocs) return;
+    const okExp = await validateExperienceDetails();
+    if (!okExp) return;
+
+    const okDocs = await validateDocuments();
+    if (!okDocs) return;
 
     setIsSubmitting(true);
     try {
@@ -300,7 +310,11 @@ export default function EditEngineer() {
   };
 
   const tabs = [
-    { label: "Basic Information", content: <BasicInformation />, hide: false },
+    {
+      label: "Basic Information",
+      content: <BasicInformation disableEmail={true} />,
+      hide: false,
+    },
     {
       label: "Experience Details",
       content: <ExperienceDetails />,
@@ -314,24 +328,15 @@ export default function EditEngineer() {
   const handleTabChange = async (nextTab: string) => {
     if (nextTab === activeTab) return;
 
-    const order = ["Basic Information", "Experience Details", "Documents"];
-    const currentIndex = order.indexOf(activeTab);
-    const nextIndex = order.indexOf(nextTab);
-
-    if (nextIndex === -1) return;
-    if (nextIndex <= currentIndex) {
-      setActiveTab(nextTab);
-      return;
-    }
-
-    if (currentIndex < 1 && nextIndex >= 1) {
+    if (nextTab === "Experience Details") {
       const ok = await validateBasicInformation();
       if (!ok) return;
     }
 
-    if (currentIndex < 2 && nextIndex >= 2) {
-      const ok = await validateExperienceDetails();
-      if (!ok) return;
+    if (nextTab === "Documents") {
+      const okBasic = await validateBasicInformation();
+      const okExp = await validateExperienceDetails();
+      if (!okBasic || !okExp) return;
     }
 
     setActiveTab(nextTab);
@@ -339,7 +344,7 @@ export default function EditEngineer() {
 
   if (isLoading) return <LoaderComponent />;
 
-  if (!hasValidEngineerId) {
+  if (!hasValidEngineerId)
     return (
       <div className="w-full px-4 h-full mt-6">
         <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
@@ -347,9 +352,8 @@ export default function EditEngineer() {
         </div>
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <div className="w-full px-4 h-full mt-6">
         <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
@@ -357,9 +361,8 @@ export default function EditEngineer() {
         </div>
       </div>
     );
-  }
 
-  if (!engineerData) {
+  if (!engineerData)
     return (
       <div className="w-full px-4 h-full mt-6">
         <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center text-red-600 dark:text-red-300">
@@ -367,7 +370,6 @@ export default function EditEngineer() {
         </div>
       </div>
     );
-  }
 
   return (
     <div className="w-full px-4 h-full mt-6">
@@ -385,7 +387,6 @@ export default function EditEngineer() {
             activeTab={activeTab}
             onTabChange={handleTabChange}
           />
-
           <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">
             {activeTab !== "Basic Information" && (
               <Button
@@ -396,7 +397,6 @@ export default function EditEngineer() {
                 Back
               </Button>
             )}
-
             <Button
               type="button"
               onClick={isLastTab ? handleSave : handleNext}

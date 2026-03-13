@@ -8,11 +8,14 @@ export interface BasicInformation {
   price: string | number | null;
   serviceCategory: string;
   portfolio: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  postalCode?: string;
 }
 
 export interface ExperienceDetails {
   designation: string;
-  location: string;
   employer: string;
   experience: string;
   resume: File | FileList | string | null;
@@ -22,6 +25,7 @@ export interface ExperienceDetails {
 export interface Documents {
   governmentId: File | FileList | string | null;
   certificate: File | FileList | string | null;
+  resume: File | FileList | string | null;
 }
 export interface DocumentOption {
   value: string;

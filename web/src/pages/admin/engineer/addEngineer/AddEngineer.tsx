@@ -67,11 +67,14 @@ export default function AddEngineer() {
       portfolio: "",
       resume: "",
       designation: "",
-      location: "",
       employer: "",
       experience: "",
       governmentId: "",
       certificate: "",
+      country: "",
+      state: "",
+      city: "",
+      postalCode: "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -118,13 +121,17 @@ export default function AddEngineer() {
       "email",
       "phoneNumber",
       "address",
+      "postalCode",
       "skills",
       "price",
       "serviceCategory",
+      "country",
+      "state",
+      "city",
     ]);
 
   const validateExperienceDetails = () =>
-    trigger(["designation", "resume", "location", "employer", "experience"]);
+    trigger(["designation", "resume", "employer", "experience"]);
 
   const validateDocuments = () => trigger(["governmentId", "certificate"]);
 
@@ -165,6 +172,10 @@ export default function AddEngineer() {
       experienceYears: data.experience ? Number(data.experience) : null,
 
       skills: skillsArray?.length ? skillsArray.map(Number) : undefined,
+      countryId: data.country ? Number(data.country) : undefined,
+      stateId: data.state ? Number(data.state) : undefined,
+      cityId: data.city ? Number(data.city) : undefined,
+      postalCode: data.postalCode || undefined,
     };
 
     (Object.entries(files) as [keyof typeof files, File | null][]).forEach(
