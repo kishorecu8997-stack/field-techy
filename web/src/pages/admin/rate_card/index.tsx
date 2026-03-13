@@ -248,10 +248,12 @@ const ManageRateCards: React.FC = () => {
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(
-                absoluteUrls.admin.home.view_rate_card.replace(
-                  ":id",
-                  String(row.serviceCategoryId),
-                ),
+                absoluteUrls.admin.home.view_rate_card
+                  .replace(
+                    ":serviceCategoryId",
+                    String(row.serviceCategoryId),
+                  )
+                  .replace(":countryId", String(row.countryId)),
               )
             }
           >
@@ -261,10 +263,12 @@ const ManageRateCards: React.FC = () => {
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(
-                absoluteUrls.admin.home.edit_rate_card.replace(
-                  ":id",
-                  String(row.serviceCategoryId),
-                ),
+                absoluteUrls.admin.home.edit_rate_card
+                  .replace(
+                    ":serviceCategoryId",
+                    String(row.serviceCategoryId),
+                  )
+                  .replace(":countryId", String(row.countryId)),
               )
             }
           >
