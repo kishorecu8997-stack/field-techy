@@ -326,6 +326,7 @@ export function useClientPostJob(options?: {
 
 export function useClientGetJobs({
   jobId,
+  regionId,
   jobStatus,
   enabled,
 }: {
@@ -337,7 +338,7 @@ export function useClientGetJobs({
   return useQuery({
     ...clientGetJobsOptions({
       client: apiClient,
-      query: { jobId, jobStatus },
+      query: { jobId, regionId, jobStatus },
     }),
     enabled: enabled,
     staleTime: 0,

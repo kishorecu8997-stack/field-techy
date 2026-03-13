@@ -59,7 +59,8 @@ const mapClientJobToJobOverview = (
   // Extract tools - convert IDs to labels using toolMap
   const rawTools = getJobValue<unknown>("tools");
   const toolAttachmentUrls = getJobValue<string[]>("toolAttachmentUrls") || [];
-  let tools: Array<{ name: string; price: string; image?: string }> = [];
+  const currencySymbol = getJobValue<string>("currencySymbol") || "$";
+  let tools: Array<{ name: string; price: string; image?: string; unit?: string }> = [];
 
   // Helper function to convert tool ID to label
   const getToolLabel = (toolValue: string | number): string => {
@@ -83,36 +84,53 @@ const mapClientJobToJobOverview = (
   const getToolImage = (
     toolObj: Record<string, unknown>,
   ): string | undefined => {
-    const candidate =
-      toolObj.image ??
+    // First check if tool object has image directly
+    const directImage =
       toolObj.imageUrl ??
+      toolObj.image ??
       toolObj.toolImage ??
       toolObj.attachmentUrl ??
       toolObj.url;
-    return typeof candidate === "string" && candidate.trim()
-      ? candidate
-      : undefined;
+    
+    if (directImage && typeof directImage === "string" && directImage.trim()) {
+      return directImage;
+    }
+    
+    // If no direct image, return undefined (don't use fallback - we'll handle that separately)
+    return undefined;
   };
 
   // Check for tools array first
   if (Array.isArray(rawTools) && rawTools.length > 0) {
     tools = rawTools
-      .map((tool, index): { name: string; price: string; image?: string } => {
+      .map((tool, index): { name: string; price: string; image?: string; unit?: string } => {
         if (typeof tool === "object" && tool !== null) {
           const toolObj = tool as Record<string, unknown>;
           const toolName = toolObj.name || toolObj.toolId || toolObj.id;
+          
+          // Get direct image from tool object first
+          let toolImage = getToolImage(toolObj);
+          
+          // Only use toolAttachmentUrls as fallback if tool doesn't have its own image
+          // and there's a valid URL at this index
+          if (!toolImage && index < toolAttachmentUrls.length) {
+            toolImage = toolAttachmentUrls[index];
+          }
+          
           return {
             name: toolName
               ? getToolLabel(toolName as string | number)
               : String(tool),
             price: getToolPrice(toolObj),
-            image: getToolImage(toolObj),
+            image: toolImage,
+            unit: currencySymbol,
           };
         }
         return {
           name: getToolLabel(tool as string | number),
           price: "",
-          image: toolAttachmentUrls[index],
+          image: index < toolAttachmentUrls.length ? toolAttachmentUrls[index] : undefined,
+          unit: currencySymbol,
         };
       })
       .filter((t) => t.name && t.name !== "undefined");
@@ -136,16 +154,19 @@ const mapClientJobToJobOverview = (
           name: getToolLabel(name),
           price: budgetParts[index] || "",
           image: index === 0 && toolImage ? toolImage : undefined,
+          unit: currencySymbol,
         }))
         .filter((t) => t.name);
     }
   }
 
   // Fallback: when tools are numeric IDs, image URLs usually come via toolAttachmentUrls in the same order.
+  // Only apply images to tools that have corresponding URLs (check if index exists)
   if (tools.length > 0 && toolAttachmentUrls.length > 0) {
     tools = tools.map((tool, index) => ({
       ...tool,
-      image: tool.image || toolAttachmentUrls[index],
+      image: tool.image || (toolAttachmentUrls[index] ? toolAttachmentUrls[index] : undefined),
+      unit: tool.unit || currencySymbol,
     }));
   }
 
@@ -205,7 +226,6 @@ const mapClientJobToJobOverview = (
 
   // Extract earnings info
   const totalPrice = getJobValue<string>("totalPrice");
-  const currencySymbol = getJobValue<string>("currencySymbol") || "$";
   const weeklyPayRaw = getJobValue<string | number>("weeklyPay");
   const toolAllowanceRaw = getJobValue<string | number>("toolAllowance");
   // const weeklyPayNoteFromApi = getJobValue<string>("weeklyPayNote");

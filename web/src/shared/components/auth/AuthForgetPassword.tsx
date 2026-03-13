@@ -1,7 +1,5 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import ClientOTPPage from "@/pages/client/auth/components/ClientOTPPage";
-import EngineerOTPPage from "@/pages/engineer/auth/components/EngineerOTPPage";
 import {
   useCheckUserExistenceMutation,
   useForgotPassword,
@@ -12,7 +10,6 @@ import { validateEmailRules } from "@/shared/components/commonUI/emailValidation
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
-import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdOutlineMailOutline } from "react-icons/md";
@@ -34,7 +31,6 @@ interface AuthForgetPasswordProps {
  */
 
 const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [isCheckingUser, setIsCheckingUser] = useState(false);
   const navigate = useNavigate();
   const methods = useForm<ForgetPasswordFormData>({
@@ -44,10 +40,12 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
   });
   const { success, error: toastError } = useToast();
 
-  const { mutateAsync: forgotPassword, isPending } = useForgotPassword({
+  // Using mutate (fire-and-forget pattern) with onError callback for proper error handling
+  const { mutate: forgotPassword, isPending } = useForgotPassword({
     onSuccess: () => {
       success("OTP sent to your email address");
-      setIsOpen(true);
+      // Navigate directly to reset password page
+      navigate(`${resetUrl}?email=${methods.getValues("email")}`);
     },
     onError: (err: unknown) => {
       toastError(
@@ -71,8 +69,8 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
         return;
       }
 
-      // User exists, proceed to send OTP
-      await forgotPassword({
+      // User exists, proceed to send OTP (using mutate - no await needed)
+      forgotPassword({
         body: {
           email: data.email,
           userRole: role,
@@ -91,14 +89,7 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
       ? absoluteUrls.client.auth.reset_password
       : absoluteUrls.engineer.auth.reset_password;
 
-  const handleOtpSubmit = (otp?: string) => {
-    // Store email and OTP for reset password page (validation already happened in popup)
-    sessionStorage.setItem("reset_password_email", methods.getValues("email"));
-    if (otp) {
-      sessionStorage.setItem("reset_password_otp", otp);
-    }
-    navigate(`${resetUrl}?email=${methods.getValues("email")}`);
-  };
+  // Removed: handleOtpSubmit and OTP Popup - now navigating directly after OTP is sent
 
   return (
     <div className="flex items-center justify-center max-w-lg md:w-lg ">
@@ -141,28 +132,6 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
             Submit
           </Button>
         </FormContainer>
-
-        <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-          {role === "client" ? (
-            <ClientOTPPage
-              header="Enter the OTP"
-              description="We sent you an OTP code"
-              onClose={() => setIsOpen(false)}
-              verificationType="email"
-              contact={methods.getValues("email")}
-              handleNavigate={handleOtpSubmit}
-            />
-          ) : (
-            <EngineerOTPPage
-              header="Enter the OTP"
-              description="We sent you an OTP code"
-              onClose={() => setIsOpen(false)}
-              verificationType="email"
-              contact={methods.getValues("email")}
-              handleNavigate={handleOtpSubmit}
-            />
-          )}
-        </Popup>
       </div>
     </div>
   );

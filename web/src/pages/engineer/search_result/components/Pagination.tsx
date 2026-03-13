@@ -56,6 +56,7 @@ const Pagination: React.FC<{
   return (
     <div className="flex justify-center items-center mt-6 space-x-2">
       <button
+        type="button"
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
         className={`px-3 py-1 rounded-md ${
@@ -77,6 +78,7 @@ const Pagination: React.FC<{
           </span>
         ) : (
           <button
+            type="button"
             key={page}
             onClick={() => onPageChange(page)}
             className={`px-3 py-1 rounded-md ${
