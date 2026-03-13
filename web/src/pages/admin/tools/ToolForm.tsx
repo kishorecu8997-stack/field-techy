@@ -1,5 +1,5 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
-import { validateCategoryName } from "@/utils/validate";
+import { validateToolName } from "@/utils/validate";
 /**
  * `ToolForm` provides the form fields for creating or editing a tool.
  * It is designed to be used within a `FormContainer` that provides the `react-hook-form` context.
@@ -18,7 +18,7 @@ export default function ToolForm() {
           type="text"
           placeholder="Enter Name"
           required
-          rules={{ validate: (v: string) => validateCategoryName(v) }}
+          rules={{ validate: (v: string) => validateToolName(v) }}
         />
       </div>
     </div>

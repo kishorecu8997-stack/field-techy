@@ -172,6 +172,7 @@ import {
   adminGetSkillsOptions,
   adminCreateSkillMutation,
   adminUpdateSkillMutation,
+  adminGetToolsQueryKey,
   adminGetToolsOptions,
   adminCreateToolMutation,
   adminUpdateToolMutation,
@@ -180,13 +181,11 @@ import {
 
 import {
   type AdminGetSkillsData,
-  type AdminGetSkillsResponse,
   type AdminCreateSkillData,
   type AdminCreateSkillResponse,
   type AdminUpdateSkillData,
   type AdminUpdateSkillResponse,
   type AdminGetToolsData,
-  type AdminGetToolsResponse,
   type AdminCreateToolData,
   type AdminCreateToolResponse,
   type AdminUpdateToolData,
@@ -1135,8 +1134,6 @@ export function useAdminGetSkills(
   query?: Partial<AdminGetSkillsData["query"]>,
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: AdminGetSkillsResponse) => void;
-    onError?: (error: unknown) => void;
   },
 ) {
   return useQuery({
@@ -1157,6 +1154,13 @@ export function useAdminCreateSkill(options?: {
     ...adminCreateSkillMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["lookup", "skills", "root"] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "adminGetSkills",
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -1172,6 +1176,13 @@ export function useAdminUpdateSkill(options?: {
     ...adminUpdateSkillMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["lookup", "skills", "root"] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "adminGetSkills",
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -1182,8 +1193,6 @@ export function useAdminGetTools(
   query?: Partial<AdminGetToolsData["query"]>,
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: AdminGetToolsResponse) => void;
-    onError?: (error: unknown) => void;
   },
 ) {
   return useQuery({
@@ -1204,6 +1213,16 @@ export function useAdminCreateTool(options?: {
     ...adminCreateToolMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["lookup", "tools", "root"] });
+      queryClient.invalidateQueries({
+        queryKey: adminGetToolsQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "adminGetTools",
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -1219,6 +1238,16 @@ export function useAdminUpdateTool(options?: {
     ...adminUpdateToolMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["lookup", "tools", "root"] });
+      queryClient.invalidateQueries({
+        queryKey: adminGetToolsQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "adminGetTools",
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

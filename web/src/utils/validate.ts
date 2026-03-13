@@ -579,32 +579,44 @@ export const validateJobDescription = (value: string) => {
 };
 
 export const validateCategoryName = (value: string) => {
+  return validateEntityName(value, "Category");
+};
+
+export const validateToolName = (value: string) => {
+  return validateEntityName(value, "Tool");
+};
+
+export const validateSkillName = (value: string) => {
+  return validateEntityName(value, "Skill");
+};
+
+function validateEntityName(value: string, fieldName: string): true | string {
   const trimmed = value.trim();
 
   // Reject if original had leading or trailing spaces
   if (trimmed !== value) {
-    return "Category name must not have leading or trailing spaces";
+    return `${fieldName} name must not have leading or trailing spaces`;
   }
 
   if (trimmed.length < 3) {
-    return "Category name must be at least 3 characters";
+    return `${fieldName} name must be at least 3 characters`;
   }
   if (trimmed.length > 50) {
-    return "Category name must not exceed 50 characters";
+    return `${fieldName} name must not exceed 50 characters`;
   }
 
   // Reject consecutive spaces
   if (/ {2,}/.test(trimmed)) {
-    return "Category name must not contain consecutive spaces";
+    return `${fieldName} name must not contain consecutive spaces`;
   }
 
   // Allow only letters, numbers, spaces, underscores, and hyphens
   if (!/^[A-Za-z0-9 _&-]+$/.test(trimmed)) {
-    return "Category name may contain only letters, numbers, spaces, underscores (_), and hyphens (-), and ampersand (&)";
+    return `${fieldName} name may contain only letters, numbers, spaces, underscores (_), and hyphens (-), and ampersand (&)`;
   }
 
   return true;
-};
+}
 /**
  * Validates that a payment method has been selected.
  * The value is expected to be a `SelectOption` object.
@@ -1354,6 +1366,8 @@ export default {
   validateNotificationTitle,
   validateNotificationMessage,
   validateCategoryName,
+  validateToolName,
+  validateSkillName,
   validateCheckboxGroup,
   validateProjectName,
   validateDescription,
