@@ -1,21 +1,20 @@
+import {
+  useAdminGetWithdrawalRequests,
+  useAdminWithdrawalAction,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import { apiClient } from "@/shared/apiServices/apiClient";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import SelectMenu from "@/shared/components/SelectMenu";
-import React, { useState, useMemo, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
 import { usePopupStore } from "@/shared/store/popupStore";
-import {
-  useAdminGetPendingPayments,
-  useAdminApprovePayment,
-  adminGetPendingPaymentsQueryKey,
-} from "@/shared/apiServices/admin/adminOpenApiService";
-import { toast } from "react-toastify";
-import { useQueryClient, type QueryKey } from "@tanstack/react-query";
-import { apiClient } from "@/shared/apiServices/apiClient";
 import { useAdminCountryStore } from "@/shared/store/useAdminCountryStore";
 import { formatAmount } from "@/utils/currency";
+import { useQueryClient, type QueryKey } from "@tanstack/react-query";
+import React, { useCallback, useMemo, useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 /**
  * PendingTable Component
@@ -25,16 +24,14 @@ import { formatAmount } from "@/utils/currency";
  */
 
 type TransactionRequest = {
-  assignmentId: number;
-  jobId: number;
-  jobCode: string;
-  jobTitle: string;
+  transactionId: number;
   amount: string;
+  currencySymbol: string;
   engineerId: number;
   engineerName: string;
   engineerProfileUrl?: string | null;
-  submittedAt?: string | null;
-  currencySymbol: string;
+  status: string;
+  requestedAt?: string | null;
 };
 
 interface TransactionRequestsQueryData {
@@ -45,6 +42,8 @@ interface TransactionRequestsQueryData {
 interface TableProps {
   active: boolean;
 }
+
+type ClosePopup = (success?: boolean) => void;
 
 const PendingTable: React.FC<TableProps> = ({ active }) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -58,7 +57,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
   const queryClient = useQueryClient();
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
-  const { data, isLoading, refetch } = useAdminGetPendingPayments(
+  const { data, isLoading, refetch } = useAdminGetWithdrawalRequests(
     {
       limit,
       page,
@@ -69,9 +68,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
     },
   );
 
-  type ClosePopup = (success?: boolean) => void;
-
-  const updateStatusMutation = useAdminApprovePayment({
+  const updateStatusMutation = useAdminWithdrawalAction({
     onSuccess: () => {
       toast.success("Payment action processed successfully!");
       refetch();
@@ -91,14 +88,14 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
 
     return apiItems.filter((row) => {
       return (
+        row.transactionId.toString().includes(term) ||
+        row.engineerId.toString().includes(term) ||
+        row.engineerProfileUrl?.toLowerCase().includes(term) ||
         row.engineerName?.toLowerCase().includes(term) ||
-        row.jobTitle?.toLowerCase().includes(term) ||
-        row.jobCode?.toLowerCase().includes(term) ||
         row.amount?.toLowerCase().includes(term) ||
-        row.jobId.toString().includes(term) ||
-        row.assignmentId.toString().includes(term) ||
-        row.submittedAt?.toLowerCase().includes(term) ||
-        row.currencySymbol?.toLowerCase().includes(term)
+        row.currencySymbol?.toLowerCase().includes(term)||
+        row.status?.toLowerCase().includes(term) ||
+        row.requestedAt?.toLowerCase().includes(term)
       );
     });
   }, [apiItems, search]);
@@ -109,7 +106,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
     async (row: TransactionRequest, newStatus: "approve" | "reject") => {
       if (!newStatus) return;
 
-      const queryKey = adminGetPendingPaymentsQueryKey({
+      const queryKey = {
         client: apiClient,
         query: {
           limit,
@@ -117,7 +114,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
           status: "pending",
           regionId: selectedRegionId ? Number(selectedRegionId) : undefined,
         },
-      }) as unknown as QueryKey;
+      } as unknown as QueryKey;
 
       const previousData =
         queryClient.getQueryData<TransactionRequestsQueryData>(queryKey);
@@ -129,7 +126,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
           const updatedData = {
             ...old,
             data: old.data.filter(
-              (item) => item.assignmentId !== row.assignmentId,
+              (item) => item.transactionId !== row.transactionId,
             ),
             total: Math.max(0, old.total - 1),
           };
@@ -158,7 +155,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
             action: async (close: ClosePopup) => {
               try {
                 await updateStatusMutation.mutateAsync({
-                  body: { assignmentId: row.assignmentId, action: newStatus },
+                  body: { transactionId: row.transactionId, action: newStatus },
                 });
                 refetch();
                 close(true);
@@ -212,16 +209,13 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
           </div>
         </div>
       ),
-    },
+    },     
     {
-      key: "jobDetails",
-      label: "Job Details",
+      key: "date&time",
+      label: "Requested Date",
       renderCell: (row: TransactionRequest) => (
         <div className="flex flex-col">
-          <span className="font-semibold">{row.jobCode || "—"}</span>
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">
-            {row.jobTitle || "—"}
-          </span>
+          <span className="font-semibold">{row.requestedAt || "—"}</span>
         </div>
       ),
     },
@@ -239,7 +233,6 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         );
       },
     },
-
     {
       key: "status",
       label: "Status",

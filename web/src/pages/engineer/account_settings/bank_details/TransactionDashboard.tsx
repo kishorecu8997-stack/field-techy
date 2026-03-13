@@ -10,6 +10,7 @@ import { formatCurrency, formatDate } from "@/shared/libs/utils";
 import { FormProvider, useForm } from "react-hook-form";
 import { HiFilter, HiSearch } from "react-icons/hi";
 import Pagination from "../../search_result/components/Pagination";
+import { WITHDRAW_STATUS } from "./types";
 
 interface TransactionDashboardProps {
   showAll?: boolean;
@@ -79,7 +80,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     );
 
   const validTransactions = (transactionsRaw?.transactions ?? []).filter(
-    (tx) => !isNaN(new Date(tx.timestamp).getTime()),
+    (tx) => tx.timestamp && !isNaN(new Date(tx.timestamp).getTime()),
   );
 
   const hasActiveFilters = !!(searchTerm || filterDateFrom || filterDateTo);
@@ -91,6 +92,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     )
       return false;
 
+    if (!tx.timestamp) return false;
     const txDate = new Date(tx.timestamp);
     if (filterDateFrom && txDate < filterDateFrom) return false;
     if (filterDateTo && txDate > filterDateTo) return false;
@@ -201,7 +203,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {pageTransactions.map((tx) => {
                 const txAmount = Number(tx.amount);
-                const isCredit = tx.type === "credit";
+                const isCredit = tx.status === WITHDRAW_STATUS.APPROVED;
                 const amountColor = isCredit
                   ? "text-emerald-600 dark:text-emerald-400"
                   : "text-rose-600 dark:text-rose-400";
@@ -213,7 +215,9 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
                       {tx.description}
                     </td>
                     <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {formatDate(new Date(tx.timestamp).toISOString())}
+                      {tx.timestamp
+                        ? formatDate(new Date(tx.timestamp).toISOString())
+                        : "---"}
                     </td>
                     <td
                       className={`px-8 py-4 whitespace-nowrap text-sm font-semibold ${amountColor}`}

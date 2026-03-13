@@ -3,7 +3,6 @@ import {
   clientActionOnBreak,
   clientActionOnWorkLog,
   clientCalculateJobPrice,
-  clientCancelJob,
   clientGetCompanyInfo,
   clientGetRateCard,
   clientInviteEngineer,
@@ -310,7 +309,7 @@ export function useClientPostJob(options?: {
         body,
         throwOnError: true,
       });
-      return data!;
+      return data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
@@ -471,24 +470,8 @@ export function useClientCancelJob(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  const regionId = useClientRegionId();
   return useMutation({
     ...clientCancelJobMutation({ client: apiClient }),
-    mutationFn: async (fnOptions) => {
-      // Deep-merge regionId; cast to satisfy required body shape since callers provide required fields
-      const body = (
-        regionId !== undefined
-          ? { ...fnOptions?.body, regionId }
-          : fnOptions?.body
-      ) as (typeof fnOptions)["body"];
-      const { data } = await clientCancelJob({
-        client: apiClient,
-        ...fnOptions,
-        body,
-        throwOnError: true,
-      });
-      return data;
-    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       syncClientBalance(queryClient);
