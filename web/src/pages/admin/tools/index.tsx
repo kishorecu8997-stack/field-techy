@@ -44,11 +44,17 @@ const ManageTools: React.FC = () => {
     isLoading,
     isFetching,
     error,
-  } = useAdminGetTools({
-    page,
-    limit: pageSize,
-    search: search.trim() || undefined,
-  });
+  } = useAdminGetTools(
+    {
+      page,
+      limit: pageSize,
+      search: search.trim() || undefined,
+    },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    },
+  );
 
   const tableData = useMemo<ServerToolProps[]>(
     () =>

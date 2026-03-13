@@ -9,6 +9,7 @@ import type { SkillFormData } from "./types";
 import SkillForm from "./SkillForm";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useAdminUpdateSkill } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * `EditSkill` component renders a page with a form to edit an existing Skill.
@@ -20,6 +21,7 @@ export default function EditSkill() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   const skillId = id ? Number(id) : undefined;
   const skill =
@@ -44,9 +46,12 @@ export default function EditSkill() {
   const { showPopup } = usePopupStore();
   const { mutateAsync: updateSkill, isPending: isUpdatingSkill } =
     useAdminUpdateSkill({
-      onSuccess: () => {
+      onSuccess: async () => {
         toast.success("Skill updated successfully!");
         methods.reset();
+        // Invalidate and refetch the skills list
+        await queryClient.invalidateQueries({ queryKey: ["lookup", "skills", "root"] });
+        await queryClient.invalidateQueries({ queryKey: ["adminGetSkills"] });
         navigate(absoluteUrls.admin.home.manage_skills);
       },
       onError: (error) => {

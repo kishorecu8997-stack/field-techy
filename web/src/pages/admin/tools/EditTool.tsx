@@ -9,6 +9,7 @@ import type { ToolFormData } from "./types";
 import ToolForm from "./ToolForm";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useAdminUpdateTool } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * `EditTool` component renders a page with a form to edit an existing Tool.
@@ -20,6 +21,7 @@ export default function EditTool() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   const toolId = id ? Number(id) : undefined;
   const tool =
@@ -44,9 +46,12 @@ export default function EditTool() {
   const { showPopup } = usePopupStore();
   const { mutateAsync: updateTool, isPending: isUpdatingTool } =
     useAdminUpdateTool({
-      onSuccess: () => {
+      onSuccess: async () => {
         toast.success("Tool updated successfully!");
         methods.reset();
+        // Invalidate and refetch the tools list
+        await queryClient.invalidateQueries({ queryKey: ["lookup", "tools", "root"] });
+        await queryClient.invalidateQueries({ queryKey: ["adminGetTools"] });
         navigate(absoluteUrls.admin.home.manage_tools);
       },
       onError: (error) => {

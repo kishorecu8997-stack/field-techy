@@ -1134,6 +1134,9 @@ export function useAdminGetSkills(
   query?: Partial<AdminGetSkillsData["query"]>,
   options?: {
     enabled?: boolean;
+    refetchOnMount?: boolean;
+    refetchOnWindowFocus?: boolean;
+    staleTime?: number;
   },
 ) {
   return useQuery({
@@ -1193,6 +1196,9 @@ export function useAdminGetTools(
   query?: Partial<AdminGetToolsData["query"]>,
   options?: {
     enabled?: boolean;
+    refetchOnMount?: boolean;
+    refetchOnWindowFocus?: boolean;
+    staleTime?: number;
   },
 ) {
   return useQuery({

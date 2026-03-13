@@ -44,11 +44,17 @@ const ManageSkills: React.FC = () => {
     isLoading,
     isFetching,
     error,
-  } = useAdminGetSkills({
-    page,
-    limit: pageSize,
-    search: search.trim() || undefined,
-  });
+  } = useAdminGetSkills(
+    {
+      page,
+      limit: pageSize,
+      search: search.trim() || undefined,
+    },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    },
+  );
 
   const tableData = useMemo<ServerSkillProps[]>(
     () =>
