@@ -4,20 +4,18 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { useAdminGetPendingPayments } from "@/shared/apiServices/admin/adminOpenApiService";
 import { formatAmount } from "@/utils/currency";
+import { useAdminGetWithdrawalRequests } from "@/shared/apiServices/admin/adminOpenApiService";
 
 type TransactionRequest = {
-  assignmentId: number;
-  jobId: number;
-  jobCode: string;
-  jobTitle: string;
+  transactionId: number;
   amount: string;
+  currencySymbol: string;
   engineerId: number;
   engineerName: string;
   engineerProfileUrl?: string | null;
-  submittedAt?: string | null;
-  currencySymbol: string;
+  status: string;
+  requestedAt?: string | null;
 };
 
 /**
@@ -40,7 +38,7 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
 
   const [search, setSearch] = useState("");
 
-  const { data, isLoading } = useAdminGetPendingPayments(
+  const { data, isLoading } = useAdminGetWithdrawalRequests(
     {
       status: "approved",
       limit,
@@ -61,14 +59,14 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
 
     return apiItems.filter((row) => {
       return (
+        row.transactionId.toString().includes(term) ||
+        row.engineerId.toString().includes(term) ||
+        row.engineerProfileUrl?.toLowerCase().includes(term) ||
         row.engineerName?.toLowerCase().includes(term) ||
-        row.jobTitle?.toLowerCase().includes(term) ||
-        row.jobCode?.toLowerCase().includes(term) ||
         row.amount?.toLowerCase().includes(term) ||
-        row.jobId.toString().includes(term) ||
-        row.assignmentId.toString().includes(term) ||
-        row.submittedAt?.toLowerCase().includes(term) ||
-        row.currencySymbol?.toLowerCase().includes(term)
+        row.currencySymbol?.toLowerCase().includes(term) ||
+        row.status?.toLowerCase().includes(term) ||
+        row.requestedAt?.toLowerCase().includes(term)
       );
     });
   }, [apiItems, search]);
@@ -105,18 +103,6 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
       ),
     },
     {
-      key: "jobDetails",
-      label: "Job Details",
-      renderCell: (row: TransactionRequest) => (
-        <div className="flex flex-col">
-          <span className="font-semibold">{row.jobCode || "—"}</span>
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">
-            {row.jobTitle || "—"}
-          </span>
-        </div>
-      ),
-    },
-    {
       key: "amount",
       label: "Amount",
       renderCell: (row: TransactionRequest) => {
@@ -142,9 +128,9 @@ const ApprovedTable: React.FC<TableProps> = ({ active }) => {
       key: "submittedAt",
       label: "Date",
       renderCell: (row: TransactionRequest) => {
-        if (!row.submittedAt) return "—";
+        if (!row.requestedAt) return "—";
 
-        return new Date(row.submittedAt).toLocaleString("en-IN", {
+        return new Date(row.requestedAt).toLocaleString("en-IN", {
           day: "2-digit",
           month: "short",
           year: "numeric",

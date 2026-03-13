@@ -1,6 +1,13 @@
 type TransactionDate = string | Date;
 type TransactionStatus = "Pending" | "Approved" | "Completed" | "Failed";
 
+export const WITHDRAW_STATUS = {
+  APPROVED: "approved",
+  REJECTED: "rejected",
+  PENDING: "pending",
+} as const;
+export type WithdrawStatus = (typeof WITHDRAW_STATUS)[keyof typeof WITHDRAW_STATUS];
+
 export interface Transaction {
   id: number | string;
   description: string;
@@ -19,4 +26,7 @@ export interface BankDetails {
   iban?: string;
   name?: string;
 }
+
 export type bankDetails = BankDetails;
+
+

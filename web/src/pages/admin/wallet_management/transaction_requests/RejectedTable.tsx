@@ -4,20 +4,18 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { useAdminGetPendingPayments } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminGetWithdrawalRequests } from "@/shared/apiServices/admin/adminOpenApiService";
 import { formatAmount } from "@/utils/currency";
 
 type TransactionRequest = {
-  assignmentId: number;
-  jobId: number;
-  jobCode: string;
-  jobTitle: string;
+  transactionId: number;
   amount: string;
+  currencySymbol: string;
   engineerId: number;
   engineerName: string;
   engineerProfileUrl?: string | null;
-  submittedAt?: string | null;
-  currencySymbol: string;
+  status: string;
+  requestedAt?: string | null;
 };
 
 /**
@@ -42,7 +40,7 @@ const RejectedTable: React.FC<TableProps> = ({ active }) => {
 
   const [search, setSearch] = useState("");
 
-  const { data, isLoading } = useAdminGetPendingPayments(
+  const { data, isLoading } = useAdminGetWithdrawalRequests(
     {
       status: "rejected",
       limit,
@@ -64,12 +62,7 @@ const RejectedTable: React.FC<TableProps> = ({ active }) => {
     return apiItems.filter((row) => {
       return (
         row.engineerName?.toLowerCase().includes(term) ||
-        row.jobTitle?.toLowerCase().includes(term) ||
-        row.jobCode?.toLowerCase().includes(term) ||
         row.amount?.toLowerCase().includes(term) ||
-        row.jobId.toString().includes(term) ||
-        row.assignmentId.toString().includes(term) ||
-        row.submittedAt?.toLowerCase().includes(term) ||
         row.currencySymbol?.toLowerCase().includes(term)
       );
     });
@@ -107,18 +100,6 @@ const RejectedTable: React.FC<TableProps> = ({ active }) => {
       ),
     },
     {
-      key: "jobDetails",
-      label: "Job Details",
-      renderCell: (row: TransactionRequest) => (
-        <div className="flex flex-col">
-          <span className="font-semibold">{row.jobCode || "—"}</span>
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">
-            {row.jobTitle || "—"}
-          </span>
-        </div>
-      ),
-    },
-    {
       key: "amount",
       label: "Amount",
       renderCell: (row: TransactionRequest) => {
@@ -143,9 +124,9 @@ const RejectedTable: React.FC<TableProps> = ({ active }) => {
       key: "submittedAt",
       label: "Date",
       renderCell: (row: TransactionRequest) => {
-        if (!row.submittedAt) return "—";
+        if (!row.requestedAt) return "—";
 
-        return new Date(row.submittedAt).toLocaleString("en-IN", {
+        return new Date(row.requestedAt).toLocaleString("en-IN", {
           day: "2-digit",
           month: "short",
           year: "numeric",

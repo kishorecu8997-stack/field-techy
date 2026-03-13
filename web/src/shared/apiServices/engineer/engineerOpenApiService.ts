@@ -42,6 +42,8 @@ import {
   type MarkWorkLogFileUploadedData,
   type MarkWorkLogFileUploadedResponse,
   type Options,
+  type RequestWithdrawalError,
+  type RequestWithdrawalResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -77,12 +79,13 @@ import {
   engineerUpdatePersonalInfoMutation,
   engineerUpdateSkillsAndToolsMutation,
   engineerUpdateWorkPreferenceMutation,
-  getJobLogsQueryKey,
   getEngineerEarningsOptions,
   getJobLogsOptions,
+  getJobLogsQueryKey,
   getOnboardingLinkMutation,
   getUserReportsOptions,
   markWorkLogFileUploadedMutation,
+  requestWithdrawalMutation,
   submitReportMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
@@ -106,7 +109,7 @@ export {
   useLookupData,
   useResetPassword,
   useSendOtp,
-  useVerifyOtp,
+  useVerifyOtp
 } from "../commonOpenApiService";
 
 /**
@@ -911,6 +914,21 @@ export function useGetOnboardingLink(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...getOnboardingLinkMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useRequestWithdrawal(options?: {
+  onSuccess?: (data: RequestWithdrawalResponse) => void;
+  onError?: (error: RequestWithdrawalError | unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...requestWithdrawalMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);

@@ -8,6 +8,7 @@ import MonthlyComparison from "./MonthlyComparison";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import {
   useEngineerBalance,
+  useEngineerEarnings,
   useEngineerGetPersonalInfo,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { formatCurrency } from "@/shared/libs/utils";
@@ -17,6 +18,10 @@ import {
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { toast } from "react-toastify";
 import { useCallback, useState } from "react";
+import Popup from "@/shared/components/Popup";
+import EngineerWithdraw from "./EngineerWithdraw";
+import type { GetEngineerEarningsResponse } from "@/api";
+
 /**
  * Displays the user's current balance with quick actions (Bank Details, Withdraw) and a transaction history dashboard.
  * Uses dummy transaction data and integrates with the drawer store for navigation.
@@ -24,7 +29,9 @@ import { useCallback, useState } from "react";
 const MyEarning = () => {
   const { setActiveKey } = useDrawerStore();
   const [showBalance, setShowBalance] = useState<boolean>(false);
+  const [showWithdrawPopup, setShowWithdrawPopup] = useState<boolean>(false);
   const { data: balanceArr } = useEngineerBalance();
+    const { data:earningsData, isLoading: isEarningsLoading, isError: isEarningsError, refetch } = useEngineerEarnings();
   const { data: personalInfo } = useEngineerGetPersonalInfo();
   const balance = balanceArr?.[0];
   const hasCompletedOnboarding =
@@ -121,11 +128,15 @@ const MyEarning = () => {
     }
   }, [connectStripeAccountAsync, getOnboardingLinkAsync, setActiveKey]);
 
+  const Withdraw = () => {
+    setShowWithdrawPopup(true);
+  };
+
   const BankSection = () => {
     return (
       <div>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Current Balance
+          Wallet Balance
         </p>
         <div className="flex justify-between items-center">
           <p className="text-2xl md:text-3xl items-center font-extrabold text-gray-900 dark:text-white">
@@ -168,6 +179,17 @@ const MyEarning = () => {
             </p>
           )}
           <div className="flex gap-3 justify-end">
+            {/* Withdraw Button */}
+            {balance && Number(balance?.balance) > 0 && (
+              <Button
+                onClick={() => Withdraw()}
+                className="px-6 py-3 bg-teal-700 text-white rounded-full font-medium hover:bg-teal-800 transition dark:bg-teal-700 dark:text-white"
+              >
+                Withdraw
+              </Button>
+            )}
+
+            {/* Add/Edit Bank Details Button */}
             {hasError ? (
               <Button
                 onClick={() => void startStripeOnboarding()}
@@ -196,7 +218,7 @@ const MyEarning = () => {
       </div>
       <div className="h-[75%] overflow-y-auto">
         <div className="pt-4">
-          <TotalEarningsSummary />
+          <TotalEarningsSummary data={earningsData as GetEngineerEarningsResponse} isLoading={isEarningsLoading} isError={isEarningsError} />
         </div>
         <div className="pt-4">
           <TransactionDashboard
@@ -216,8 +238,21 @@ const MyEarning = () => {
           <MonthlyComparison />
         </div>
       </div>
+
+      
+      {showWithdrawPopup && balance && (
+        <Popup open={showWithdrawPopup} onClose={() => setShowWithdrawPopup(false)}>
+          <EngineerWithdraw
+            balance={Number(balance?.balance)}
+            currencyCode={String(balance?.currencyCode)}
+            onClose={() => setShowWithdrawPopup(false)}
+            refetch={refetch}
+          />
+        </Popup>
+      )}
     </div>
   );
 };
 
 export default MyEarning;
+
