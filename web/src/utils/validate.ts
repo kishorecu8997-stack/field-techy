@@ -753,29 +753,13 @@ export const validatePricingModel = (
 export const validateNotificationMessage = (value: string) => {
   const raw = value || "";
 
-  // Trim check: reject if has leading or trailing spaces
-  if (raw !== raw.trim()) {
-    return "Message must not have leading or trailing spaces";
-  }
-
-  // Reject if contains double (or more) consecutive spaces
-  if (/ {2,}/.test(raw)) {
-    return "Message must not contain consecutive spaces";
-  }
-
   // Length check
   if (raw.length < 120) {
     return "Message must be at least 120 characters";
   }
-  if (raw.length > 500) {
-    return "Message must not exceed 500 characters";
-  }
-
-  const allowedPattern = /^[A-Za-z0-9 /(),.#-]+$/;
-
-  if (!allowedPattern.test(raw)) {
-    return "Only letters, spaces, numbers, and special characters such as / ( ) , . - # are allowed.";
-  }
+  // if (raw.length > 500) {
+  //   return "Message must not exceed 500000 characters";
+  // }
 
   return true;
 };
