@@ -63,6 +63,7 @@ const mapAssignmentToOfferStatus = (
  */
 const EngineersActions = ({
   setOfferJobStatus,
+  viewReviewComment,
   setSendProposal,
   setOpen,
   setActiveTab,
@@ -111,6 +112,7 @@ const EngineersActions = ({
   jobStartDate?: string;
   jobEndDate?: string;
   clientRegionId?: number;
+  viewReviewComment?: boolean;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
@@ -281,16 +283,18 @@ const EngineersActions = ({
 
   const postStartActions = isFinalStatementApproved ? (
     <div className="flex flex-wrap gap-4 w-fit">
-      <Button
-        variant="no_style"
-        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
-        onClick={() => onOpenViewClientFeedback?.()}
-        leftIcon={
-          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-        }
-      >
-        <span>View Feedback From Client</span>
-      </Button>
+      {/* {viewReviewComment && ( */}
+        <Button
+          variant="no_style"
+          className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
+          onClick={() => onOpenViewClientFeedback?.()}
+          leftIcon={
+            <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+          }
+        >
+          <span>View Feedback From Client</span>
+        </Button>
+      {/* )}   */}
       <Button
         variant="no_style"
         className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
@@ -325,16 +329,18 @@ const EngineersActions = ({
     </div>
   ) : isFinalStatementSubmitted ? (
     <div className="flex flex-wrap gap-4 w-fit">
-      <Button
-        variant="no_style"
-        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
-        onClick={() => onOpenViewClientFeedback?.()}
-        leftIcon={
-          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-        }
-      >
-        <span>View Feedback From Client</span>
-      </Button>
+      {/* {viewReviewComment && ( */}
+        <Button
+          variant="no_style"
+          className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
+          onClick={() => onOpenViewClientFeedback?.()}
+          leftIcon={
+            <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+          }
+        >
+          <span>View Feedback From Client</span>
+        </Button>
+      {/* )}   */}
       <Button
         variant="no_style"
         className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg"
@@ -555,14 +561,16 @@ const EngineersActions = ({
               <span className="text-lg text-green-500">Job Completed</span>
             </div>
             <div className="flex flex-wrap gap-4 w-fit mt-2">
-              <Button
-                variant="no_style"
-                className="text-white px-2 py-1 font-semibold flex items-center gap-2 hover:bg-teal-700/20"
-                onClick={() => onOpenViewClientFeedback?.()}
-                leftIcon={<icons.star className="w-5 h-5 fill-yellow-400" />}
-              >
-                View Feedback From Client
-              </Button>
+              {viewReviewComment && (
+                <Button
+                  variant="no_style"
+                  className="text-white px-2 py-1 font-semibold flex items-center gap-2 hover:bg-teal-700/20"
+                  onClick={() => onOpenViewClientFeedback?.()}
+                  leftIcon={<icons.star className="w-5 h-5 fill-yellow-400" />}
+                >
+                  View Feedback From Client
+                </Button>
+              )}  
               <Button
                 variant="no_style"
                 className="text-white px-2 py-1 font-semibold flex items-center gap-2 hover:bg-teal-700/20"

@@ -49,6 +49,7 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
     "hold",
   );
+  const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   if (isLoading) {
     return (
@@ -98,7 +99,6 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({
     setIsOpen(false);
   };
 
-  const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   return (
     <>

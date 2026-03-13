@@ -660,6 +660,7 @@ const JobDetailsPage = () => {
             <div className="lg:col-span-2 space-y-6">
               <JobHeaderCard
                 title={jobTitle}
+                viewReviewComment={reviewsData?.length ? true : false}
                 client={clientName}
                 duration={exactTimeline || getJobDuration()}
                 type={engagementType}

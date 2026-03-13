@@ -15,6 +15,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
+import { scrollToTop } from "@/utils";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +28,6 @@ import {
   type PostAJobFieldsProps,
   type PostOption,
 } from "../types";
-import { scrollToTop } from "@/utils";
 import BillSummary from "./components/form_sections/BillSummary";
 import PostAJobFields from "./components/PostAJobFields";
 import JobPostDropdown from "./JobPostDropdown";
@@ -300,11 +300,6 @@ const PostJobPage = () => {
       ),
       body,
       actionButtons: [
-        // {
-        //   label: "Cancel",
-        //   value: null,
-        //   variant: "outline",
-        // },
         {
           label: "Edit Details",
           value: "edit",
@@ -333,8 +328,8 @@ const PostJobPage = () => {
   const {
     mutate: postJob,
     isPending: isPosting,
-    data: postJobData,
   } = useClientPostJob();
+
   const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
 
   const getRequiredNumber = (val: unknown, fieldName: string): number => {

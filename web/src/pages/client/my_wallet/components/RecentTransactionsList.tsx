@@ -47,7 +47,7 @@ const RecentTransactionsList: React.FC = () => {
 
       const signedAmount = tx.type === "credit" ? amount : -amount;
 
-      const txDate = new Date(tx.timestamp);
+      const txDate = new Date(tx.timestamp || "");
       const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
 
       return {
