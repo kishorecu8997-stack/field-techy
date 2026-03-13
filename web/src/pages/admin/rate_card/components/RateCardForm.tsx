@@ -2,7 +2,9 @@ import { countryList, rateCardTypes } from "@/dummy_data/admin";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { useFormContext } from "react-hook-form";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useGetServiceCategories } from "@/shared/apiServices/admin/adminService";
+import { useGetRateCards } from "@/shared/apiServices/admin/adminService";
 
 /*
  * RateCardForm
@@ -18,16 +20,61 @@ const RateCardForm: React.FC<{ readOnly?: boolean }> = ({
   readOnly = false,
 }) => {
   const ctx = useFormContext();
+  const { pathname } = useLocation();
+  const isView = pathname.includes("/view");
+  const isEdit = pathname.includes("/edit");
 
-  // Fetch service categories from API
-  const { data: serviceCategoriesData, isLoading } = useGetServiceCategories();
+  // Watch the selected country value
+  const countryValue = ctx.watch("country");
+
+  // Get the countryId from the selected country value (e.g., "country1" -> 1)
+  const selectedCountryId = countryValue
+    ? parseInt(countryValue.replace(/\D/g, "")) || 0
+    : 0;
+
+    // Fetch service categories from API
+   const { data: serviceCategoriesData, isLoading } = useGetServiceCategories();
+   // Fetch all rate cards to check for existing combinations
+   const { data: rateCardsData } = useGetRateCards(
+     { page: 1, limit: 100 },
+     { enabled: !isView && !isEdit && selectedCountryId > 0 },
+   );
+
+  // Get existing service category IDs for the selected country
+  const existingServiceCategoryIds = rateCardsData?.data
+    ?.filter((card) => card.countryId === selectedCountryId)
+    .map((card) => card.serviceCategoryId) || [];
+
+  // Get current service category from form
+  const currentServiceCategory = ctx.watch("serviceCategory");
 
   // Transform API data to SelectField options format
+  // In edit/view mode, include current service category even if it already exists
   const serviceCategoryOptions =
-    serviceCategoriesData?.data?.map((category) => ({
-      label: category.name,
-      value: `serviceCategory${category.id}`,
-    })) || [];
+    serviceCategoriesData?.data
+      ?.filter(
+        (category) =>
+          isView || isEdit
+            ? true
+            : !existingServiceCategoryIds.includes(category.id),
+      )
+      .map((category) => ({
+        label: category.name,
+        value: `serviceCategory${category.id}`,
+      })) || [];
+
+  // If in edit/view mode and current service category exists, ensure it's in options
+  if ((isView || isEdit) && currentServiceCategory && !serviceCategoryOptions.some(opt => opt.value === currentServiceCategory)) {
+    const currentCategory = serviceCategoriesData?.data?.find(
+      (cat) => `serviceCategory${cat.id}` === currentServiceCategory
+    );
+    if (currentCategory) {
+      serviceCategoryOptions.unshift({
+        label: currentCategory.name,
+        value: currentServiceCategory,
+      });
+    }
+  }
 
   // Set default value for rateType to Master Rate Card on component mount
   useEffect(() => {

@@ -13,6 +13,7 @@ import { IoMdAdd } from "react-icons/io";
 const PricingModel: React.FC = () => {
   const { pathname } = useLocation();
   const isView = pathname.includes("/view");
+  const isEdit = pathname.includes("/edit");
 
   const { control } = useFormContext<PricingFormValues>();
   const [isExperienceLevelAdded, setIsExperienceLevelAdded] = useState(false);
@@ -26,13 +27,14 @@ const PricingModel: React.FC = () => {
     name: "skills",
   });
 
+
   const createDefaultSkill = (name: string, id: string): SkillPricing => ({
     id,
     name,
     isEditing: true,
     tiers: JSON.parse(JSON.stringify(defaultPricingTiers)),
   });
-
+  
   const addExperinceLevel = () => {
     // Add a single skill with all 3 experience levels (L1, L2, L3)
     append(
@@ -47,7 +49,7 @@ const PricingModel: React.FC = () => {
   return (
     <div className="px-2 py-4">
       <div className="flex justify-between items-center mb-4">
-        {!isView && (
+        {!isView && !isEdit && (
           <Button
             variant="link"
             type="button"
