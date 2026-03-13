@@ -58,6 +58,7 @@ const ExploreJobs: React.FC = () => {
     serviceCategoryIds: filters.category || [],
     experienceLevelId: filters.experience || 0,
     skillIds: filters.skills || [],
+    isExplore: true,
   });
 
   const apiJobs = useMemo(() => {
