@@ -4,7 +4,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { createPathBuilder } from "@/utils";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 /**
  * ClientActions Component
@@ -27,6 +27,8 @@ const ClientActions = ({
   const navigate = useNavigate();
   const { id, jobId } = useParams();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+  const [searchParams] = useSearchParams();
+  const regionIdParam = searchParams.get("regionId");
 
   const makeUrl = createPathBuilder(absoluteUrls.client.home.SelectEngineer);
   const URl = makeUrl({ id: String(id || jobId) });
@@ -70,7 +72,7 @@ const ClientActions = ({
             <Button
               variant="primary"
               onClick={() => {
-                navigate(URl);
+                navigate(`${URl}?regionId=${regionIdParam}`);
               }}
             >
               Invite to Job
