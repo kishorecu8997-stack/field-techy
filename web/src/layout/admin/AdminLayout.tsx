@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import AdminRegionSync from "./AdminRegionSync";
 import { useState } from "react";
 
 /**
@@ -27,6 +28,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+      <AdminRegionSync />
       <Header onToggleSidebar={toggleSidebar} />
 
       <div className="flex flex-1 overflow-hidden h-screen ">
