@@ -144,6 +144,7 @@ const transformProposalToTimelineItems = (
           accentColor: "#3b82f6",
           details: proposalDetails,
           sortOrder: 25,
+          attachmentUrl: job.proposalAttachmentUrl || undefined,
         });
       }
     }

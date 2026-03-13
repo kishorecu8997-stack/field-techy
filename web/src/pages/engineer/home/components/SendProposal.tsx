@@ -145,6 +145,7 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
                 await markUploaded({
                   body: {
                     jobId: Number(jobId),
+                    regionId,
                   },
                 });
               }

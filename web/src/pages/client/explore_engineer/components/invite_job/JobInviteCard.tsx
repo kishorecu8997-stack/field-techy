@@ -28,6 +28,20 @@ const JobInviteCard: React.FC<JobCardProps> = ({
   locationString,
 }) => {
   const location = locationString || job.location || "";
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "inprogress":
+        return "text-yellow-600 dark:text-yellow-400";
+      case "completed":
+        return "text-green-600 dark:text-green-400";
+      case "posted":
+        return "text-blue-600 dark:text-blue-400";
+      case "hold":
+        return "text-red-600 dark:text-red-400";
+      default:
+        return "text-gray-600 dark:text-gray-400";
+    }
+  };
 
   return (
     <div
@@ -79,6 +93,11 @@ const JobInviteCard: React.FC<JobCardProps> = ({
             <IoMdTime className="w-4 h-4 mr-2" />
             {job.date}
           </div>
+          <span className={`text-xs font-medium ${getStatusColor(job.status ?? "")}`}>
+          {job.status?.toLowerCase() === "inprogress"
+            ? "In-Progress"
+            : job.status ? job.status.charAt(0).toUpperCase() + job.status.slice(1) : ""}
+        </span>
         </div>
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">

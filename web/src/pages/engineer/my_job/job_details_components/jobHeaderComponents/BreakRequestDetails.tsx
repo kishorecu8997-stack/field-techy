@@ -6,16 +6,18 @@ import { toast } from "react-toastify";
 import { formatDate } from "@/utils/formatDate";
 import { useClientActionOnBreak } from "@/shared/apiServices/client/clientOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { apiClient } from "@/shared/apiServices/apiClient";
 import { getJobLogsOptions } from "@/api/@tanstack/react-query.gen";
+import { TOAST_MESSAGES } from "@/constants/timelineConstants";
 
 interface BreakRequestDetailsProps {
   onClose: () => void;
   assignmentIds?: number[]; // Array of assignment IDs for multiple engineers
   isClientView?: boolean; // If true, hide action buttons and show all breaks
   engineerNames?: string[]; // Engineer names corresponding to assignment IDs
+  regionId?: number; // Region ID for API filtering
 }
 
 interface Break {
@@ -53,17 +55,20 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
   assignmentIds,
   isClientView = false,
   engineerNames,
+  regionId,
 }) => {
   const { showPopup } = usePopupStore();
   const { mutate: actionOnBreak } = useClientActionOnBreak({});
-  const [allBreakRequests, setAllBreakRequests] = useState<Break[]>([]);
 
   // Fetch job logs for all assignment IDs using useQueries for parallel fetching
+  // Use regionId from props
   const results = useQueries({
     queries: (assignmentIds || []).map((id) => ({
       ...getJobLogsOptions({
         client: apiClient,
         path: { assignmentId: id },
+        // Use regionId from props
+        query: regionId !== undefined ? { regionId } : undefined,
       }),
       enabled: !!assignmentIds?.length && id > 0,
     })),
@@ -72,11 +77,10 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
   // Derived loading state from all query results
   const isLoading = results.some((r) => r.isLoading);
 
-  // Collect all break requests from all assignments
-  useEffect(() => {
+  // Process break requests from query results - use useMemo to avoid infinite re-renders
+  const allBreakRequests = useMemo(() => {
     if (!assignmentIds?.length) {
-      setAllBreakRequests([]);
-      return;
+      return [];
     }
 
     const breaks: Break[] = [];
@@ -86,14 +90,13 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
         result.data.breakRequests.forEach((brk) => {
           breaks.push({
             ...brk,
-            // Map engineer name if available for this assignment
             engineerName: engineerNames?.[assignmentIndex] || undefined,
           });
         });
       }
     });
 
-    setAllBreakRequests(breaks);
+    return breaks;
   }, [assignmentIds, results, engineerNames]);
 
   // If assignmentIds is provided, show all breaks; otherwise show nothing
@@ -122,7 +125,8 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
                 approverComment: reason,
               },
             } as any);
-            toast.success("Break rejected!");
+            const breakTypeMsg = brk.type === "long_term" ? TOAST_MESSAGES.longBreakRejected : TOAST_MESSAGES.shortBreakRejected;
+            toast.success(breakTypeMsg);
             onClose();
           }}
           onClose={onClose}
@@ -150,7 +154,8 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
                 approverComment: reason,
               },
             } as any);
-            toast.success("Break approved!");
+            const breakTypeMsg = brk.type === "long_term" ? TOAST_MESSAGES.longBreakApproved : TOAST_MESSAGES.shortBreakApproved;
+            toast.success(breakTypeMsg);
             onClose();
           }}
           onClose={onClose}

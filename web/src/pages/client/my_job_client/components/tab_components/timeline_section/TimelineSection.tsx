@@ -1,6 +1,6 @@
 import type { ClientGetAssignmentDetailsResponse } from "@/api";
 import { getJobLogs } from "@/api";
-import { getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
+import { clientGetAssignmentDetailsQueryKey, getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
 import type { TimelineStatus } from "@/constants/timelineConstants";
 import {
   MODAL_MESSAGES,
@@ -78,6 +78,7 @@ const TimelineSection: React.FC<{
   refetchAssignments?: () => void;
 }> = ({
   assignmentId,
+  jobId,
   hasProposals = false,
   assignments,
   refetchAssignments,
@@ -160,6 +161,9 @@ const TimelineSection: React.FC<{
   const [currentBreakRequestId, setCurrentBreakRequestId] = useState<
     number | null
   >(null);
+  const [currentBreakType, setCurrentBreakType] = useState<
+    "short_term" | "long_term" | null
+  >(null);
   const [showJobApproveConfirm, setShowJobApproveConfirm] = useState(false);
   const [showJobRejectConfirm, setShowJobRejectConfirm] = useState(false);
   const [shortBreakNotes, setShortBreakNotes] = useState("");
@@ -220,6 +224,22 @@ const TimelineSection: React.FC<{
         } catch (error) {
           console.error("Failed to refetch timeline:", error);
           queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
+        }
+        
+        // Invalidate assignment details query to update hasPendingStartRequest
+        // This ensures the Action Required badge updates immediately
+        try {
+          const assignmentDetailsQueryKey = clientGetAssignmentDetailsQueryKey({
+            query: { jobId: jobId, regionId: regionIdParam },
+          });
+          queryClient.invalidateQueries({ queryKey: assignmentDetailsQueryKey });
+        } catch (error) {
+          console.error("Failed to invalidate assignment details:", error);
+          // Fallback: invalidate all client assignment details queries
+          queryClient.invalidateQueries({ 
+            queryKey: ["clientGetAssignmentDetails"],
+            exact: false 
+          });
         }
       }
     },
@@ -406,6 +426,8 @@ const TimelineSection: React.FC<{
       accentColor: string;
       details: string;
       sortOrder: number;
+      proposalDetail?: string | null;
+      proposalAttachmentUrl?: string | null;
     }> = [];
 
     assignmentDetails.forEach((assignment) => {
@@ -473,6 +495,12 @@ const TimelineSection: React.FC<{
         });
       }
 
+      // Build proposal details text
+      let proposalDetailsText = "";
+      if (assignment.proposalDetail) {
+        proposalDetailsText = `\n\nProposal Details: ${assignment.proposalDetail}`;
+      }
+
       allItems.push({
         title: "Proposal Received",
         timestamp: appliedDate,
@@ -480,7 +508,9 @@ const TimelineSection: React.FC<{
         statusColor: "#3b82f6",
         accentColor: "#3b82f6",
         sortOrder: 0,
-        details: "",
+        details: proposalDetailsText,
+        proposalDetail: assignment.proposalDetail,
+        proposalAttachmentUrl: assignment.proposalAttachmentUrl,
       });
 
       if (status === "rejected") {
@@ -492,6 +522,8 @@ const TimelineSection: React.FC<{
           accentColor: "#ef4444",
           details: "",
           sortOrder: 100,
+          proposalDetail: assignment.proposalDetail,
+          proposalAttachmentUrl: assignment.proposalAttachmentUrl,
         });
       }
     });
@@ -648,8 +680,8 @@ const TimelineSection: React.FC<{
           // Short term: show time and date
           return `${startTime} - ${endTime} (${startDate})`;
         } else {
-          // Long term: show date and time
-          return `${startDate} - ${endDate} (${startTime} - ${endTime})`;
+          // Long term: show only date range without time
+          return `${startDate} - ${endDate}`;
         }
       };
 
@@ -852,6 +884,9 @@ const TimelineSection: React.FC<{
       duration?: string;
       breakType?: "short_term" | "long_term";
       detailsType?: string;
+      // Proposal fields
+      proposalDetail?: string | null;
+      proposalAttachmentUrl?: string | null;
     };
 
     const itemsMap = new Map<string, TimelineItem>();
@@ -1320,8 +1355,9 @@ const TimelineSection: React.FC<{
     handleRevisionRejectClick(keepExpanded, revisionId, logId);
   };
 
-  const handleShortBreakApprove = (requestId: number) => {
+  const handleShortBreakApprove = (requestId: number, breakType?: "short_term" | "long_term") => {
     setCurrentBreakRequestId(requestId);
+    if (breakType) setCurrentBreakType(breakType);
     setShowShortBreakApprovalModal(true);
   };
 
@@ -1344,17 +1380,21 @@ const TimelineSection: React.FC<{
     setShowShortBreakApprovalModal(false);
     setShortBreakNotes("");
     setCurrentBreakRequestId(null);
-    toast.success(TOAST_MESSAGES.shortBreakApproved, { position: "top-right" });
+    const breakTypeMsg = currentBreakType === "long_term" ? TOAST_MESSAGES.longBreakApproved : TOAST_MESSAGES.shortBreakApproved;
+    toast.success(breakTypeMsg, { position: "top-right" });
+    setCurrentBreakType(null);
   };
 
   const handleShortBreakApprovalCancel = () => {
     setShowShortBreakApprovalModal(false);
     setShortBreakNotes("");
     setCurrentBreakRequestId(null);
+    setCurrentBreakType(null);
   };
 
-  const handleShortBreakReject = (requestId: number) => {
+  const handleShortBreakReject = (requestId: number, breakType?: "short_term" | "long_term") => {
     setCurrentBreakRequestId(requestId);
+    if (breakType) setCurrentBreakType(breakType);
     setShowShortBreakRejectModal(true);
   };
 
@@ -1377,13 +1417,16 @@ const TimelineSection: React.FC<{
     setShowShortBreakRejectModal(false);
     setShortBreakRejectNotes("");
     setCurrentBreakRequestId(null);
-    toast.error(TOAST_MESSAGES.shortBreakRejected, { position: "top-right" });
+    const breakTypeMsg = currentBreakType === "long_term" ? TOAST_MESSAGES.longBreakRejected : TOAST_MESSAGES.shortBreakRejected;
+    toast.error(breakTypeMsg, { position: "top-right" });
+    setCurrentBreakType(null);
   };
 
   const handleShortBreakRejectCancel = () => {
     setShowShortBreakRejectModal(false);
     setShortBreakRejectNotes("");
     setCurrentBreakRequestId(null);
+    setCurrentBreakType(null);
   };
 
   const handleFinalStatementApprove = () => {
@@ -1993,10 +2036,10 @@ const TimelineSection: React.FC<{
                             breakStatus,
                           )}
                           onShortBreakReject={() =>
-                            handleShortBreakReject(breakData.requestId)
+                            handleShortBreakReject(breakData.requestId, breakData.breakType)
                           }
                           onShortBreakApprove={() =>
-                            handleShortBreakApprove(breakData.requestId)
+                            handleShortBreakApprove(breakData.requestId, breakData.breakType)
                           }
                         />
                       );

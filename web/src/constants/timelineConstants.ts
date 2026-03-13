@@ -51,6 +51,8 @@ export const TOAST_MESSAGES = {
   revisionUpdateRejected: "Revision update rejected",
   shortBreakApproved: "Short term break approved",
   shortBreakRejected: "Short term break rejected",
+  longBreakApproved: "Long break request approved",
+  longBreakRejected: "Long break request rejected",
   finalStatementApproved: "Final statement approved",
   finalStatementRejected: "Final statement rejected",
   jobApproved: "Job approved",
