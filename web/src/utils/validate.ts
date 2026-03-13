@@ -598,9 +598,9 @@ export const validateCategoryName = (value: string) => {
     return "Category name must not contain consecutive spaces";
   }
 
-  // Allow only letters, spaces, underscores, and hyphens
-  if (!/^[A-Za-z _&-]+$/.test(trimmed)) {
-    return "Category name may contain only letters, spaces, underscores (_), and hyphens (-), and ampersand (&)";
+  // Allow only letters, numbers, spaces, underscores, and hyphens
+  if (!/^[A-Za-z0-9 _&-]+$/.test(trimmed)) {
+    return "Category name may contain only letters, numbers, spaces, underscores (_), and hyphens (-), and ampersand (&)";
   }
 
   return true;
