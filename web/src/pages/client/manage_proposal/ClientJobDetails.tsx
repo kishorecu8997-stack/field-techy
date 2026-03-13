@@ -195,6 +195,7 @@ const hasEngineerStarted = assignments.some(
                 }
                 allCardsApproved={job?.status === JOB_STATUSES.closed}
                 activeTab={activeTab}
+                clientRegionId={job?.regionId}
               />
               <JobTabSection
                 status={(jobStatus as JobStatus) || "Posted"}
