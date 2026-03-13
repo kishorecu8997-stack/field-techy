@@ -73,12 +73,12 @@ const FinalStatementForm = ({
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
-        query: { regionId },
+        query: { regionId: Number(regionId) },
       });
 
       const exactQueryKey = getJobLogsQueryKey({
         path: { assignmentId },
-        query: { regionId },
+        query: { regionId: Number(regionId) },
       });
 
       queryClient.setQueryData(exactQueryKey, response.data);
@@ -110,7 +110,7 @@ const FinalStatementForm = ({
       const logsResponse = await getJobLogs({
         client: apiClient,
         path: { assignmentId: assignmentIdValue },
-        query: { regionId },
+        query: { regionId: Number(regionId) },
       });
       const signOffSheets = logsResponse.data?.signOffSheets || [];
       if (!signOffSheets.length) return undefined;
@@ -200,7 +200,7 @@ const FinalStatementForm = ({
               const response = await submitSignOff({
                 body: {
                   assignmentId: Number(assignmentId),
-                  regionId,
+                  regionId: Number(regionId),
                   workAttachment: workAttachment || {
                     filename: "",
                     size: 0,
@@ -255,6 +255,7 @@ const FinalStatementForm = ({
                     assignmentId: Number(assignmentId),
                     target: "signoff",
                     signOffId,
+                    regionId: Number(regionId),
                   },
                 });
               }

@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 import {
@@ -109,13 +109,13 @@ const JobTabSection = ({
             client: apiClient,
             path: { assignmentId },
             query: {
-              regionId,
+              regionId: Number(regionId),
             },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId },
             query: {
-              regionId,
+              regionId: Number(regionId),
             },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
@@ -236,7 +236,7 @@ const JobTabSection = ({
           jobId: Number(jobId),
           proposalDetail: data.proposalDescription || "",
           proposalAttachment: proposalAttachmentMeta,
-          regionId,
+          regionId: Number(regionId),
         },
       });
 
@@ -258,7 +258,7 @@ const JobTabSection = ({
 
         // Mark the file as uploaded so the client can view it
         await markUploaded({
-          body: { jobId: Number(jobId) },
+          body: { jobId: Number(jobId), regionId: Number(regionId) },
         });
       }
 
@@ -300,11 +300,14 @@ const JobTabSection = ({
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
+            query: {
+              regionId: Number(regionId),
+            },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId },
             query: {
-              regionId,
+              regionId: Number(regionId),
             },
           });
           queryClient.setQueryData(exactQueryKey, response.data);

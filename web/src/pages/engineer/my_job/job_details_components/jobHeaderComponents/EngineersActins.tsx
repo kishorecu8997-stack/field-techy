@@ -134,6 +134,7 @@ const EngineersActions = ({
         if (assignmentId) {
           const jobLogsQueryKey = getJobLogsQueryKey({
             path: { assignmentId },
+            query: { regionId: Number(regionId) },
           });
           queryClient.invalidateQueries({ queryKey: jobLogsQueryKey });
           queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
@@ -142,6 +143,7 @@ const EngineersActions = ({
             const logsResponse = await getJobLogs({
               client: apiClient,
               path: { assignmentId },
+              query: { regionId: Number(regionId) },
             });
             queryClient.setQueryData(jobLogsQueryKey, logsResponse.data);
           } catch (error) {
@@ -214,7 +216,7 @@ const EngineersActions = ({
           action: async (close) => {
             try {
               if (assignmentId) {
-                await requestStartJob({ body: { assignmentId, regionId } });
+                await requestStartJob({ body: { assignmentId, regionId: Number(regionId) } });
               } else {
                 toast.error(
                   "No assignment found. Please apply to the job first.",

@@ -636,15 +636,15 @@ export function useClientFiles() {
 export function useGetJobLogs(
   assignmentId: number,
   enabled: boolean = true,
-  regionId?: number,
+  regionId: number,
 ) {
   return useQuery({
     ...getJobLogsOptions({
       client: apiClient,
       path: { assignmentId },
-      query: regionId !== undefined ? { regionId } : undefined,
+      query: { regionId },
     }),
-    enabled: enabled && !!assignmentId,
+    enabled: enabled && !!assignmentId && !!regionId,
     retry: 1,
   });
 }

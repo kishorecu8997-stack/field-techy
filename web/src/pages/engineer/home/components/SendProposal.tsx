@@ -127,7 +127,7 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
                   jobId: Number(jobId),
                   proposalDetail: fullDescription,
                   proposalAttachment: proposalAttachmentMeta,
-                  regionId,
+                  regionId: Number(regionId),
                 },
               });
 
@@ -145,6 +145,7 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
                 await markUploaded({
                   body: {
                     jobId: Number(jobId),
+                    regionId: Number(regionId),
                   },
                 });
               }

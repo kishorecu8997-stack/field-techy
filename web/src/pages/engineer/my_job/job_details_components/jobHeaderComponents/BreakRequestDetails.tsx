@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { apiClient } from "@/shared/apiServices/apiClient";
 import { getJobLogsOptions } from "@/api/@tanstack/react-query.gen";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 interface BreakRequestDetailsProps {
   onClose: () => void;
@@ -58,12 +59,14 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
   const { mutate: actionOnBreak } = useClientActionOnBreak({});
   const [allBreakRequests, setAllBreakRequests] = useState<Break[]>([]);
 
+  const regionId = useUserSessionStore.getState().session?.regionId;
   // Fetch job logs for all assignment IDs using useQueries for parallel fetching
   const results = useQueries({
     queries: (assignmentIds || []).map((id) => ({
       ...getJobLogsOptions({
         client: apiClient,
         path: { assignmentId: id },
+        query: { regionId: Number(regionId) },
       }),
       enabled: !!assignmentIds?.length && id > 0,
     })),

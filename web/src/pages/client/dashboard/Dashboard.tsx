@@ -214,9 +214,9 @@ const Dashboard: React.FC = () => {
           : "Not scheduled",
         location: locationText,
         workLocationName: job.workLocationName || null,
-        cityId: job.cityId,
-        stateId: job.stateId,
-        countryId: job.countryId,
+        cityId: job.cityId ?? undefined,
+        stateId: job.stateId ?? undefined,
+        countryId: job.countryId ?? undefined,
         duration: job.endDate
           ? job.startDate
             ? `${new Date(job.startDate).toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
