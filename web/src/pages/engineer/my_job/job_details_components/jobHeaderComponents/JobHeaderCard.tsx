@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { IoIosWarning } from "react-icons/io";
 import { IoChatbubble, IoEllipsisVerticalOutline } from "react-icons/io5";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
@@ -65,6 +65,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   jobEndDate,
   onToggleChat,
   clientRegionId,
+  viewReviewComment = false,
 }) => {
   const params = useParams();
   const location = useLocation();
@@ -82,13 +83,14 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     jobId: jobId,
     status: "pending",
   });
+  const [searchParams] = useSearchParams();
+  const regionIdParam = searchParams.get("regionId"); 
+  const regionId = regionIdParam ? Number(regionIdParam) : NaN;
 
   // Cancel job mutation
   const { mutate: cancelJob } = useClientCancelJob({
     onSuccess: () => {
-      console.log("Job cancelled successfully");
       toast.success("Job cancelled successfully!");
-      // Delay navigation to show the cancelled badge and toast
       setTimeout(() => {
         if (isClient) {
           navigate(absoluteUrls.client.home.my_jobs);
@@ -127,7 +129,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
 
   const handleConfirmAction = () => {
     if (actionType === "cancel" && jobId) {
-      // Trigger the cancel job API
       const jobIdNumber = Number(jobId);
       if (isNaN(jobIdNumber)) {
         console.error("Invalid job ID:", jobId);
@@ -138,6 +139,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         body: {
           jobId: jobIdNumber,
           status: "Cancelled" as const,
+          regionId
         },
       });
     }
@@ -328,6 +330,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         ) : (
           <EngineersActions
             OfferJobStatus={OfferJobStatus}
+            viewReviewComment={viewReviewComment}
             isSendProposal={isSendProposal}
             setActiveTab={setActiveTab}
             setIsWorkSubmitted={setIsWorkSubmitted}
