@@ -43,6 +43,8 @@ interface TableProps {
   active: boolean;
 }
 
+type ClosePopup = (success?: boolean) => void;
+
 const PendingTable: React.FC<TableProps> = ({ active }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -65,8 +67,6 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
       enabled: active,
     },
   );
-
-  type ClosePopup = (success?: boolean) => void;
 
   const updateStatusMutation = useAdminWithdrawalAction({
     onSuccess: () => {

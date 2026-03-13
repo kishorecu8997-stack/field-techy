@@ -4,6 +4,15 @@ import {
   adminUpdateJobStatus,
   getCmsContent,
   adminGetClientsForManagement,
+  adminUpdateUserStatus,
+  adminCreateClient,
+  adminUpdateClient,
+  adminUpdateReport,
+  adminDeleteClient,
+  adminCreateEngineer,
+  adminUpdateEngineer,
+  adminDeleteEngineer,
+  adminBroadcastNotification,
   getExchangeRates,
   updateExchangeRate,
   getRateCards,
@@ -92,37 +101,39 @@ import {
   type AdminGetManageTransactionsResponse,
   type AdminGetManageTransactionsError,
   type AdminGetTransactionRequestsData,
-  type AdminGetTransactionRequestsResponse,
+  type AdminGetTransactionRequestsResponses,
   type AdminGetWalletOverviewData,
   type AdminGetWalletOverviewResponse,
   type AdminDownloadInvoiceResponse,
   type AdminGetWithdrawalRequestsData,
-  type AdminGetWithdrawalRequestsResponse,
+  type AdminGetWithdrawalRequestsResponses,
   type AdminApprovePaymentResponses,
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
   type AdminUpdateTransactionRequestStatusResponses,
   type AdminWithdrawalActionResponses,
+  adminUpdateTransactionRequestStatus,
   type AdminBroadcastNotificationData,
   type AdminBroadcastNotificationResponses,
   type AdminGetNotificationsResponse,
   type AdminGetNotificationsData,
+  adminMarkFileAsUploaded,
+  type AdminMarkFileAsUploadedData,
   type AdminMarkFileAsUploadedResponse,
-  type AdminMarkFileAsUploadedError,
   type BulkCreateRateCardsResponse,
   type BulkCreateRateCardsData,
+  adminApprovePayment,
+  adminWithdrawalAction,
 } from "@/api";
 
 export type { AdminGetClientHistoryResponse, AdminGetClientHistoryData };
 import {
   adminGetPersonalInfoOptions,
-  adminUpdatePersonalInfoMutation,
   appChangePasswordMutation,
   appForgotPasswordMutation,
   appGetLookupDataOptions,
   appLoginMutation,
   appResetPasswordMutation,
-  adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetJobDetailsOptions,
   createOrUpdatePageMutation,
@@ -131,10 +142,7 @@ import {
   createFaqMutation,
   updateFaqMutation,
   deleteFaqMutation,
-  adminCreateClientMutation,
-  adminUpdateClientMutation,
   adminGetClientOptions,
-  adminDeleteClientMutation,
   adminGetEngineerOptions,
   adminGetEngineerHistoryOptions,
   adminGetClientHistoryOptions,
@@ -142,9 +150,6 @@ import {
   adminGetServiceCategoriesOptions,
   adminUpdateServiceCategoryMutation,
   adminDeleteServiceCategoryMutation,
-  adminCreateEngineerMutation,
-  adminUpdateEngineerMutation,
-  adminDeleteEngineerMutation,
   adminCreateSubAdminMutation,
   adminUpdateSubAdminMutation,
   adminGetJobGraphOptions,
@@ -154,22 +159,17 @@ import {
   adminGetJobLogsOptions,
   adminGetJobTransactionsOptions,
   adminGetReportsOptions,
-  adminUpdateReportMutation,
   adminGetSubAdminsOptions,
   adminGetSubAdminsQueryKey,
   adminGetManageTransactionsOptions,
   adminGetTransactionRequestsOptions,
   adminGetWithdrawalRequestsOptions,
   adminGetWalletOverviewOptions,
-  adminDownloadInvoiceOptions,
-  adminUpdateTransactionRequestStatusMutation,
-  adminBroadcastNotificationMutation,
   adminGetNotificationsQueryKey,
   adminGetNotificationsOptions,
-  adminApprovePaymentMutation,
-  adminWithdrawalActionMutation,
-  adminMarkFileAsUploadedMutation,
+  adminDownloadInvoiceOptions,
 } from "@/api/@tanstack/react-query.gen";
+
 
 import {
   useMutation,
@@ -211,7 +211,7 @@ export function useAdminLogin(options?: {
     ...appLoginMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -236,10 +236,17 @@ export function useAdminUpdatePersonalInfo(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    ...adminUpdatePersonalInfoMutation({ client: apiClient }),
-    onSuccess: (data) => {
+    mutationFn: async (variables: { body: AdminPersonalInfoBody }) => {
+      const { data } = await adminUpdatePersonalInfo({
+        client: apiClient,
+        body: variables.body,
+        throwOnError: true,
+      });
+      return data as AdminUpdatePersonalInfoSuccess;
+    },
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -264,7 +271,7 @@ export function useAdminCreateServiceCategory(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
           "adminGetServiceCategories",
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -289,7 +296,7 @@ export function useAdminUpdateServiceCategory(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
           "adminGetServiceCategories",
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -314,7 +321,7 @@ export function useAdminDeleteServiceCategory(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
           "adminGetServiceCategories",
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -380,7 +387,7 @@ export function useAppGetLookupData(
         ...(parentId && { parentId: String(parentId) }),
       },
     }),
-    staleTime: 10 * 60 * 1000, // 10 minutes — lookup data rarely changes
+    staleTime: 10 * 60 * 1000, // 10 minutes â€” lookup data rarely changes
     gcTime: 30 * 60 * 1000, // keep in cache for 30 minutes
     refetchOnWindowFocus: false,
     ...options,
@@ -395,7 +402,7 @@ export type AdminManageEngineersResponse =
   AdminGetEngineersForManagementResponses[200];
 
 export function useAdminManageEngineers(
-  query?: AdminGetEngineersQuery,
+  query?: Partial<AdminGetEngineersQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminManageEngineersResponse) => void;
@@ -406,9 +413,7 @@ export function useAdminManageEngineers(
 
   const mergedQuery: AdminGetEngineersQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: (query?.regionId ?? Number(selectedRegionId)) || 0,
   };
 
   return useQuery<
@@ -440,7 +445,7 @@ export type AdminGetClientsQuery = NonNullable<
 
 export function useAdminManageClients(options?: {
   clientType?: ClientType;
-  query?: AdminGetClientsQuery;
+  query?: Partial<AdminGetClientsQuery>;
   onSuccess?: (data: AdminManageClientsResponse) => void;
   onError?: (error: unknown) => void;
 }) {
@@ -490,19 +495,29 @@ export function useAdminClientsByUserIdStatus(options?: {
   const queryClient = useQueryClient();
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminUpdateUserStatusMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
+    mutationFn: async (variables: {
+      path: { userId: number };
+      body: AdminClientsByUserIdStatusBody;
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminUpdateUserStatus({
+        client: apiClient,
+        path: variables.path,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminClientsByUserIdStatusResponse;
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
         refetchType: "all",
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -515,19 +530,29 @@ export function useAdminEngineersByUserIdStatus(options?: {
   const queryClient = useQueryClient();
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminUpdateUserStatusMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
+    mutationFn: async (variables: {
+      path: { userId: number };
+      body: AdminClientsByUserIdStatusBody;
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminUpdateUserStatus({
+        client: apiClient,
+        path: variables.path,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminUpdateUserStatusResponses[200];
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
         exact: false,
         refetchType: "all",
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -545,15 +570,21 @@ export function useAdminCreateSubAdmin(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
   return useMutation({
     ...adminCreateSubAdminMutation({ client: apiClient }),
     onSuccess: async (data) => {
       await queryClient.refetchQueries({
-        queryKey: adminGetSubAdminsQueryKey(),
+        queryKey: adminGetSubAdminsQueryKey({
+          client: apiClient,
+          query: {
+            regionId: Number(selectedRegionId),
+          },
+        }),
       });
 
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -564,15 +595,21 @@ export function useAdminUpdateSubAdmin(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
   return useMutation({
     ...adminUpdateSubAdminMutation({ client: apiClient }),
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
-        queryKey: adminGetSubAdminsQueryKey(),
+        queryKey: adminGetSubAdminsQueryKey({
+          client: apiClient,
+          query: {
+            regionId: Number(selectedRegionId),
+          },
+        }),
       });
 
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -621,7 +658,7 @@ export function useAdminUpdateJobStatus(options?: {
             );
           })(),
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -656,7 +693,7 @@ export function useCreateOrUpdateCMSPage(options?: {
     ...createOrUpdatePageMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -671,7 +708,7 @@ export function useAddAndUpdateContactSupport(options?: {
     ...addAndUpdateContactSupportMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -726,7 +763,7 @@ export function useCreateFaq(options?: {
     ...createFaqMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["cms-content", "faq"] });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -741,7 +778,7 @@ export function useUpdateFaq(options?: {
     ...updateFaqMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["cms-content", "faq"] });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -756,7 +793,7 @@ export function useDeleteFaq(options?: {
     ...deleteFaqMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["cms-content", "faq"] });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -772,7 +809,7 @@ export type AdminGetJobsQuery = NonNullable<AdminGetJobsData["query"]> & {
 };
 
 export function useAdminGetJobs(
-  query?: AdminGetJobsQuery,
+  query?: Partial<AdminGetJobsQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetJobsResponse) => void;
@@ -800,7 +837,7 @@ export type AdminGetJobDetailsQuery = NonNullable<
 >;
 
 export function useAdminGetJobDetails(
-  query?: AdminGetJobDetailsQuery,
+  query?: Partial<AdminGetJobDetailsQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetJobDetailsResponse) => void;
@@ -813,10 +850,8 @@ export function useAdminGetJobDetails(
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
     ? {
       ...query,
-      regionId:
-        query?.regionId ??
-        Number(selectedRegionId),
-    }
+      regionId: Number(query?.regionId ?? selectedRegionId),
+    } as AdminGetJobDetailsQuery
     : { jobId: 0, regionId: Number(selectedRegionId) };
 
   return useQuery({
@@ -839,18 +874,26 @@ export function useAdminAddClient(options?: {
   const queryClient = useQueryClient();
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminCreateClientMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
+    mutationFn: async (variables: {
+      body: AdminAddClientBody;
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminCreateClient({
+        client: apiClient,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminAddClientResponse;
+    },
     onSuccess: (data: AdminAddClientResponse) => {
       queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -865,18 +908,28 @@ export function useAdminUpdateClient(options?: {
   const queryClient = useQueryClient();
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminUpdateClientMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
+    mutationFn: async (variables: {
+      path: { userId: number };
+      body: AdminUpdateClientBody;
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminUpdateClient({
+        client: apiClient,
+        path: variables.path,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminUpdateClientResponse;
+    },
     onSuccess: (data: AdminUpdateClientResponse) => {
       queryClient.resetQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -908,33 +961,33 @@ export function useAdminGetClientByUserId(
   });
 }
 
+export type AdminMarkFileAsUploadedBody = AdminMarkFileAsUploadedData["body"];
+
 export function useAdminMarkFileAsUploaded(options?: {
   onSuccess?: (data: AdminMarkFileAsUploadedResponse) => void;
-  onError?: (error: AdminMarkFileAsUploadedError) => void;
+  onError?: (error: unknown) => void;
 }) {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminMarkFileAsUploadedMutation({
-      client: apiClient,
-      headers: { authorization: "" },
-    }),
-    mutationFn: (variables, context) => {
-      return adminMarkFileAsUploadedMutation({
+    mutationFn: async (variables: {
+      path: { userId: number };
+      body: AdminMarkFileAsUploadedBody;
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminMarkFileAsUploaded({
         client: apiClient,
-      }).mutationFn!(
-        {
-          ...variables,
-          query: {
-            ...(variables.query ?? {}),
-            regionId:
-              variables.query?.regionId ??
-              (selectedRegionId ? Number(selectedRegionId) : undefined),
-          },
+        path: variables.path,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
         },
-        context,
-      );
+        throwOnError: true,
+      });
+      return data as AdminMarkFileAsUploadedResponse;
     },
-    onSuccess: options?.onSuccess,
+    onSuccess: (data: AdminMarkFileAsUploadedResponse) => {
+      options?.onSuccess?.(data as any);
+    },
     onError: options?.onError,
   });
 }
@@ -955,7 +1008,7 @@ export function useAdminGetEngineerById(userId: number, enabled = true) {
   });
 }
 
-// ─── Engineer History ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Engineer History â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetEngineerHistoryQuery = NonNullable<
   AdminGetEngineerHistoryData["query"]
@@ -963,7 +1016,7 @@ export type AdminGetEngineerHistoryQuery = NonNullable<
 
 export function useAdminGetEngineerHistory(
   userId: number,
-  query: AdminGetEngineerHistoryQuery,
+  query?: Partial<AdminGetEngineerHistoryQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetEngineerHistoryResponse) => void;
@@ -975,10 +1028,8 @@ export function useAdminGetEngineerHistory(
 
   const mergedQuery: AdminGetEngineerHistoryQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
-  };
+    regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+  } as AdminGetEngineerHistoryQuery;
 
   return useQuery({
     ...adminGetEngineerHistoryOptions({
@@ -991,7 +1042,7 @@ export function useAdminGetEngineerHistory(
   });
 }
 
-// ─── Client History ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Client History â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetClientHistoryQuery = NonNullable<
   AdminGetClientHistoryData["query"]
@@ -999,7 +1050,7 @@ export type AdminGetClientHistoryQuery = NonNullable<
 
 export function useAdminGetClientHistory(
   userId: number,
-  query: AdminGetClientHistoryQuery,
+  query?: Partial<AdminGetClientHistoryQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetClientHistoryResponse) => void;
@@ -1011,10 +1062,8 @@ export function useAdminGetClientHistory(
 
   const mergedQuery: AdminGetClientHistoryQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
-  };
+    regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+  } as AdminGetClientHistoryQuery;
 
   return useQuery({
     ...adminGetClientHistoryOptions({
@@ -1031,7 +1080,7 @@ export type AdminGetServiceCategoriesQuery = NonNullable<
 >;
 
 export function useAdminGetServiceCategories(
-  query?: AdminGetServiceCategoriesQuery,
+  query?: Partial<AdminGetServiceCategoriesQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetServiceCategoriesResponse) => void;
@@ -1050,7 +1099,7 @@ export function useAdminGetServiceCategories(
 export type AdminGetJobLogsQuery = NonNullable<AdminGetJobLogsData["query"]>;
 
 export function useAdminGetJobLogs(
-  query?: AdminGetJobLogsQuery,
+  query?: Partial<AdminGetJobLogsQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetJobLogsResponse) => void;
@@ -1062,12 +1111,10 @@ export function useAdminGetJobLogs(
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
     ? {
-      ...query,
-      regionId:
-        query?.regionId ??
-        (selectedRegionId ? Number(selectedRegionId) : undefined),
-    }
-    : { jobId: 0, regionId: Number(selectedRegionId) };
+        ...query,
+        regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+      } as AdminGetJobLogsQuery
+    : ({ jobId: 0, regionId: Number(selectedRegionId) } as AdminGetJobLogsQuery);
 
   return useQuery({
     ...adminGetJobLogsOptions({
@@ -1091,7 +1138,7 @@ export type AdminGetPaymentTransactionsQuery = NonNullable<
 >;
 
 export function useAdminGetPaymentTransactions(
-  query?: AdminGetPaymentTransactionsQuery,
+  query?: Partial<AdminGetPaymentTransactionsQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: PaymentTransactionsResponse) => void;
@@ -1120,7 +1167,7 @@ export function useAdminGetPaymentTransactions(
 export type AdminGetReportsQuery = NonNullable<AdminGetReportsData["query"]>;
 
 export function useAdminGetReport(
-  query?: AdminGetReportsQuery,
+  query?: Partial<AdminGetReportsQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetReportsResponse) => void;
@@ -1142,12 +1189,12 @@ export function useAdminGetReport(
   });
 }
 
-// ─── Job Graph ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Job Graph â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetJobGraphQuery = NonNullable<AdminGetJobGraphData["query"]>;
 
 export function useAdminGetJobGraph(
-  query: AdminGetJobGraphQuery,
+  query: Partial<AdminGetJobGraphQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetJobGraphResponse) => void;
@@ -1158,10 +1205,8 @@ export function useAdminGetJobGraph(
 
   const mergedQuery: AdminGetJobGraphQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
-  };
+    regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+  } as AdminGetJobGraphQuery;
 
   return useQuery({
     ...adminGetJobGraphOptions({
@@ -1172,7 +1217,7 @@ export function useAdminGetJobGraph(
   });
 }
 
-// ─── Dashboard Stats ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Dashboard Stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function useAdminGetDashboardStats(options?: {
   enabled?: boolean;
@@ -1192,14 +1237,14 @@ export function useAdminGetDashboardStats(options?: {
   });
 }
 
-// ─── Dashboard Job Graph ──────────────────────────────────────────────────────
+// â”€â”€â”€ Dashboard Job Graph â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetDashboardJobGraphQuery = NonNullable<
   AdminGetDashboardJobGraphData["query"]
 >;
 
 export function useAdminGetDashboardJobGraph(
-  query: AdminGetDashboardJobGraphQuery,
+  query: Partial<AdminGetDashboardJobGraphQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetDashboardJobGraphResponse) => void;
@@ -1210,10 +1255,8 @@ export function useAdminGetDashboardJobGraph(
 
   const mergedQuery: AdminGetDashboardJobGraphQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
-  };
+    regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+  } as AdminGetDashboardJobGraphQuery;
 
   return useQuery({
     ...adminGetDashboardJobGraphOptions({
@@ -1224,14 +1267,14 @@ export function useAdminGetDashboardJobGraph(
   });
 }
 
-// ─── User Graph ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ User Graph â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetUserGraphQuery = NonNullable<
   AdminGetUserGraphData["query"]
 >;
 
 export function useAdminGetUserGraph(
-  query: AdminGetUserGraphQuery,
+  query: Partial<AdminGetUserGraphQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetUserGraphResponse) => void;
@@ -1242,10 +1285,8 @@ export function useAdminGetUserGraph(
 
   const mergedQuery: AdminGetUserGraphQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
-  };
+    regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+  } as AdminGetUserGraphQuery;
 
   return useQuery({
     ...adminGetUserGraphOptions({
@@ -1265,31 +1306,39 @@ export function useAdminResolveReport(options?: {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   const queryClient = useQueryClient();
   return useMutation({
-    ...adminUpdateReportMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
-    onSuccess: (data: AdminUpdateReportResponse) => {
+    mutationFn: async (variables: {
+      body: AdminUpdateReportBody; // This already contains reportId
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminUpdateReport({
+        client: apiClient,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminUpdateReportResponse;
+    },
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
 }
 
-// ─── Sub Admins ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Sub Admins â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetSubAdminsQuery = NonNullable<
   AdminGetSubAdminsData["query"]
 >;
 
 export function useAdminGetSubAdmins(
-  query?: AdminGetSubAdminsQuery,
+  query?: Partial<AdminGetSubAdminsQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetSubAdminsResponse) => void;
@@ -1317,14 +1366,14 @@ export function useAdminGetSubAdmins(
   });
 }
 
-// ─── Manage Transactions ─────────────────────────────────────────────────────
+// â”€â”€â”€ Manage Transactions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetManageTransactionsQuery = NonNullable<
   AdminGetManageTransactionsData["query"]
 >;
 
 export function useAdminGetManageTransactions(
-  query?: AdminGetManageTransactionsQuery,
+  query?: Partial<AdminGetManageTransactionsQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetManageTransactionsResponse) => void;
@@ -1349,17 +1398,17 @@ export function useAdminGetManageTransactions(
   });
 }
 
-// ─── Transaction Requests ─────────────────────────────────────────────────────
+// â”€â”€â”€ Transaction Requests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetTransactionRequestsQuery = NonNullable<
   AdminGetTransactionRequestsData["query"]
 >;
 
 export function useAdminGetTransactionRequests(
-  query?: AdminGetTransactionRequestsQuery,
+  query?: Partial<AdminGetTransactionRequestsQuery>,
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: AdminGetTransactionRequestsResponse) => void;
+    onSuccess?: (data: AdminGetTransactionRequestsResponses[200]) => void;
     onError?: (error: unknown) => void;
   },
 ) {
@@ -1381,17 +1430,17 @@ export function useAdminGetTransactionRequests(
   });
 }
 
-// ─── Withdrawal Requests ─────────────────────────────────────────────────────
+// â”€â”€â”€ Withdrawal Requests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetWithdrawalRequestsQuery = NonNullable<
   AdminGetWithdrawalRequestsData["query"]
 >;
 
 export function useAdminGetWithdrawalRequests(
-  query?: AdminGetWithdrawalRequestsQuery,
+  query?: Partial<AdminGetWithdrawalRequestsQuery>,
   options?: {
     enabled?: boolean;
-    onSuccess?: (data: AdminGetWithdrawalRequestsResponse) => void;
+    onSuccess?: (data: AdminGetWithdrawalRequestsResponses[200]) => void;
     onError?: (error: unknown) => void;
   },
 ) {
@@ -1413,14 +1462,14 @@ export function useAdminGetWithdrawalRequests(
   });
 }
 
-// ─── Wallet Overview ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Wallet Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type AdminGetWalletOverviewQuery = NonNullable<
   AdminGetWalletOverviewData["query"]
 >;
 
 export function useAdminGetWalletOverview(
-  query: AdminGetWalletOverviewQuery,
+  query: Partial<AdminGetWalletOverviewQuery>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetWalletOverviewResponse) => void;
@@ -1431,10 +1480,8 @@ export function useAdminGetWalletOverview(
 
   const mergedQuery: AdminGetWalletOverviewQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      (selectedRegionId ? Number(selectedRegionId) : undefined),
-  };
+    regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+  } as AdminGetWalletOverviewQuery;
 
   return useQuery({
     ...adminGetWalletOverviewOptions({
@@ -1445,7 +1492,7 @@ export function useAdminGetWalletOverview(
   });
 }
 
-// ─── Download Invoice ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Download Invoice â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function useAdminDownloadInvoice(
   invoiceId: number,
@@ -1477,18 +1524,26 @@ export function useAdminDeleteClientMutation(options?: {
   const queryClient = useQueryClient();
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
   return useMutation({
-    ...adminDeleteClientMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
+    mutationFn: async (variables: {
+      path: { userId: number };
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminDeleteClient({
+        client: apiClient,
+        path: variables.path,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminDeleteClientResponse;
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -1532,18 +1587,26 @@ export function useAdminAddEngineer(options?: {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
   return useMutation({
-    ...adminCreateEngineerMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
+    mutationFn: async (variables: {
+      body: AdminAddEngineerBody;
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminCreateEngineer({
+        client: apiClient,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminAddEngineerResponse;
+    },
     onSuccess: (data: AdminAddEngineerResponse) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
         exact: false,
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -1573,7 +1636,7 @@ export function useUpdateExchangeRate(options?: {
         queryKey: queryKeys.admin.exchangeRates,
         exact: false,
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -1589,119 +1652,28 @@ export function useAdminUpdateEngineer(options?: {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
   return useMutation({
-    ...adminUpdateEngineerMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
+    mutationFn: async (variables: {
+      path: { userId: number };
+      body: AdminUpdateEngineerBody;
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminUpdateEngineer({
+        client: apiClient,
+        path: variables.path,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminUpdateEngineerResponse;
+    },
     onSuccess: (data: AdminUpdateEngineerResponse) => {
       queryClient.resetQueries({
         queryKey: queryKeys.admin.manageEngineers,
         exact: false,
       });
-      options?.onSuccess?.(data);
-    },
-    onError: options?.onError,
-  });
-}
-
-export function useAdminDeleteEngineerMutation(options?: {
-  onSuccess?: (data: AdminDeleteEngineerResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
-  const queryClient = useQueryClient();
-  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
-  return useMutation({
-    ...adminDeleteEngineerMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.admin.manageEngineers,
-        exact: false,
-      });
-      options?.onSuccess?.(data);
-    },
-    onError: options?.onError,
-  });
-}
-
-export function useAdminUpdateTransactionRequestStatus(options?: {
-  onSuccess?: (data: AdminUpdateTransactionRequestStatusResponses[200]) => void;
-  onError?: (error: unknown) => void;
-}) {
-  const queryClient = useQueryClient();
-  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
-
-  return useMutation({
-    ...adminUpdateTransactionRequestStatusMutation({
-      client: apiClient,
-    }),
-
-    mutationFn: (variables, context) => {
-      return adminUpdateTransactionRequestStatusMutation({
-        client: apiClient,
-      }).mutationFn!(
-        {
-          ...variables,
-          query: {
-            ...(variables.query ?? {}),
-            regionId: Number(selectedRegionId),
-          },
-        },
-        context,
-      );
-    },
-
-    onSuccess: async (data) => {
-      await queryClient.refetchQueries({
-        predicate: (query) => {
-          const firstKeyItem = query.queryKey?.[0];
-
-          if (!firstKeyItem || typeof firstKeyItem !== "object") {
-            return false;
-          }
-          return (
-            (firstKeyItem as { _id?: string })._id ===
-            "adminGetTransactionRequests"
-          );
-        },
-        type: "all",
-      });
-
-      options?.onSuccess?.(data);
-    },
-
-    onError: options?.onError,
-  });
-}
-
-// Rate Card - Create
-export function useAdminCreateRateCard(options?: {
-  onSuccess?: (data: BulkCreateRateCardsResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (data: {
-      body: BulkCreateRateCardsData["body"];
-      query: BulkCreateRateCardsData["query"];
-    }) => {
-      const response = await bulkCreateRateCards({
-        client: apiClient,
-        body: data.body,
-        query: data.query,
-        throwOnError: true,
-      });
-      return response.data;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -1715,20 +1687,21 @@ export function useAdminApprovePayment(options?: {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
   return useMutation({
-    ...adminApprovePaymentMutation({ client: apiClient }),
-    mutationFn: (variables, context) => {
-      return adminApprovePaymentMutation({ client: apiClient }).mutationFn!(
-        {
-          ...variables,
-          query: {
-            ...(variables.query ?? {}),
-            regionId: Number(selectedRegionId),
-          },
+    mutationFn: async (variables: {
+      body: { transactionId: number; action: "approve" | "reject" };
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminApprovePayment({
+        client: apiClient,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
         },
-        context,
-      );
+        throwOnError: true,
+      });
+      return data as AdminApprovePaymentResponses[200];
     },
-    onSuccess: async (data) => {
+    onSuccess: async (data: any) => {
       await queryClient.refetchQueries({
         predicate: (query) => {
           const firstKeyItem = query.queryKey?.[0];
@@ -1737,12 +1710,12 @@ export function useAdminApprovePayment(options?: {
           }
           return (
             (firstKeyItem as { _id?: string })._id ===
-            "adminGetWithdrawalRequests"
+            "adminGetTransactionRequests"
           );
         },
         type: "all",
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
@@ -1756,20 +1729,21 @@ export function useAdminWithdrawalAction(options?: {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
   return useMutation({
-    ...adminWithdrawalActionMutation({ client: apiClient }),
-    mutationFn: (variables, context) => {
-      return adminWithdrawalActionMutation({ client: apiClient }).mutationFn!(
-        {
-          ...variables,
-          query: {
-            ...(variables.query ?? {}),
-            regionId: Number(selectedRegionId),
-          },
+    mutationFn: async (variables: {
+      body: { transactionId: number; action: "approve" | "reject" };
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminWithdrawalAction({
+        client: apiClient,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
         },
-        context,
-      );
+        throwOnError: true,
+      });
+      return data as AdminWithdrawalActionResponses[200];
     },
-    onSuccess: async (data) => {
+    onSuccess: async (data: any) => {
       await queryClient.refetchQueries({
         predicate: (query) => {
           const firstKeyItem = query.queryKey?.[0];
@@ -1783,11 +1757,79 @@ export function useAdminWithdrawalAction(options?: {
         },
         type: "all",
       });
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
     onError: options?.onError,
   });
 }
+
+export function useAdminDeleteEngineerMutation(options?: {
+  onSuccess?: (data: AdminDeleteEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    mutationFn: async (variables: {
+      path: { userId: number };
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminDeleteEngineer({
+        client: apiClient,
+        path: variables.path,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminDeleteEngineerResponse;
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageEngineers,
+        exact: false,
+      });
+      options?.onSuccess?.(data as any);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateTransactionRequestStatus(options?: {
+  onSuccess?: (data: AdminUpdateTransactionRequestStatusResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const selectedRegionId = useAdminCountryStore((state) => state.regionId);
+
+  return useMutation({
+    mutationFn: async (variables: {
+      path?: never;
+      body: { status: "approved" | "rejected" };
+      query: { id: number; regionId?: number };
+    }) => {
+      const { data } = await adminUpdateTransactionRequestStatus({
+        client: apiClient,
+        body: variables.body,
+        query: {
+          id: variables.query.id,
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminUpdateTransactionRequestStatusResponses[200];
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageTransactions,
+      });
+      options?.onSuccess?.(data as any);
+    },
+    onError: options?.onError,
+  });
+}
+
 
 // Rate Card - Get All
 export function useGetRateCards(
@@ -1815,6 +1857,32 @@ export function useGetRateCards(
   });
 }
 
+export function useAdminCreateRateCard(options?: {
+  onSuccess?: (data: BulkCreateRateCardsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (variables: {
+      body: BulkCreateRateCardsData["body"];
+      query: BulkCreateRateCardsData["query"];
+    }) => {
+      const { data } = await bulkCreateRateCards({
+        client: apiClient,
+        body: variables.body,
+        query: variables.query,
+        throwOnError: true,
+      });
+      return data as BulkCreateRateCardsResponse;
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
+      options?.onSuccess?.(data as any);
+    },
+    onError: options?.onError,
+  });
+}
+
 export type AdminBroadcastNotificationBody = NonNullable<
   AdminBroadcastNotificationData["body"]
 >;
@@ -1828,26 +1896,39 @@ export function useAdminBroadcastNotification(options?: {
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
   return useMutation({
-    ...adminBroadcastNotificationMutation({
-      client: apiClient,
-      query: {
-        regionId: Number(selectedRegionId),
-      },
-    }),
+    mutationFn: async (variables: {
+      body: AdminBroadcastNotificationBody;
+      query?: { regionId?: number };
+    }) => {
+      const { data } = await adminBroadcastNotification({
+        client: apiClient,
+        body: variables.body,
+        query: {
+          regionId: variables.query?.regionId ?? Number(selectedRegionId),
+        },
+        throwOnError: true,
+      });
+      return data as AdminBroadcastNotificationResponses[200];
+    },
 
     onSuccess: async (data) => {
       await queryClient.refetchQueries({
-        queryKey: adminGetNotificationsQueryKey(),
+        queryKey: adminGetNotificationsQueryKey({
+          client: apiClient,
+          query: {
+            regionId: Number(selectedRegionId),
+          },
+        }),
       });
 
-      options?.onSuccess?.(data);
+      options?.onSuccess?.(data as any);
     },
 
     onError: options?.onError,
   });
 }
 export function useAdminGetNotifications(
-  query?: AdminGetNotificationsData["query"],
+  query?: Partial<AdminGetNotificationsData["query"]>,
   options?: {
     enabled?: boolean;
     onSuccess?: (data: AdminGetNotificationsResponse) => void;

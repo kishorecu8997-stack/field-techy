@@ -80,7 +80,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     );
 
   const validTransactions = (transactionsRaw?.transactions ?? []).filter(
-    (tx) => !isNaN(new Date(tx.timestamp).getTime()),
+    (tx) => tx.timestamp && !isNaN(new Date(tx.timestamp).getTime()),
   );
 
   const hasActiveFilters = !!(searchTerm || filterDateFrom || filterDateTo);
@@ -92,6 +92,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     )
       return false;
 
+    if (!tx.timestamp) return false;
     const txDate = new Date(tx.timestamp);
     if (filterDateFrom && txDate < filterDateFrom) return false;
     if (filterDateTo && txDate > filterDateTo) return false;
@@ -214,7 +215,9 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
                       {tx.description}
                     </td>
                     <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {formatDate(new Date(tx.timestamp).toISOString())}
+                      {tx.timestamp
+                        ? formatDate(new Date(tx.timestamp).toISOString())
+                        : "---"}
                     </td>
                     <td
                       className={`px-8 py-4 whitespace-nowrap text-sm font-semibold ${amountColor}`}
