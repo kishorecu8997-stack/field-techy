@@ -56,6 +56,11 @@ export function CustomTable<T extends object>({
   const [internalLoading, setInternalLoading] = useState(false);
   const [internalError, setInternalError] = useState<string | null>(null);
 
+  // Keep internal pageSize in sync when the external initialPageSize prop changes
+  useEffect(() => {
+    setPageSize(initialPageSize);
+  }, [initialPageSize]);
+
   const loading = externalLoading ?? internalLoading;
   const error = externalError ?? internalError;
 
