@@ -212,7 +212,7 @@ export function useAdminLogin(options?: {
     ...appLoginMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -245,9 +245,9 @@ export function useAdminUpdatePersonalInfo(options?: {
       });
       return data as AdminUpdatePersonalInfoSuccess;
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -272,7 +272,7 @@ export function useAdminCreateServiceCategory(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
           "adminGetServiceCategories",
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -297,7 +297,7 @@ export function useAdminUpdateServiceCategory(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
           "adminGetServiceCategories",
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -322,7 +322,7 @@ export function useAdminDeleteServiceCategory(options?: {
           (query.queryKey[0] as { _id?: string })._id ===
           "adminGetServiceCategories",
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -518,7 +518,7 @@ export function useAdminClientsByUserIdStatus(options?: {
         exact: false,
         refetchType: "all",
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -553,7 +553,7 @@ export function useAdminEngineersByUserIdStatus(options?: {
         exact: false,
         refetchType: "all",
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -585,7 +585,7 @@ export function useAdminCreateSubAdmin(options?: {
         }),
       });
 
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -610,7 +610,7 @@ export function useAdminUpdateSubAdmin(options?: {
         }),
       });
 
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -659,7 +659,7 @@ export function useAdminUpdateJobStatus(options?: {
             );
           })(),
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -694,7 +694,7 @@ export function useCreateOrUpdateCMSPage(options?: {
     ...createOrUpdatePageMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -709,7 +709,7 @@ export function useAddAndUpdateContactSupport(options?: {
     ...addAndUpdateContactSupportMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -766,7 +766,7 @@ export function useCreateFaq(options?: {
     ...createFaqMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["cms-content", "faq"] });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -781,7 +781,7 @@ export function useUpdateFaq(options?: {
     ...updateFaqMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["cms-content", "faq"] });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -796,7 +796,7 @@ export function useDeleteFaq(options?: {
     ...deleteFaqMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["cms-content", "faq"] });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -896,7 +896,7 @@ export function useAdminAddClient(options?: {
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -932,7 +932,7 @@ export function useAdminUpdateClient(options?: {
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -989,7 +989,7 @@ export function useAdminMarkFileAsUploaded(options?: {
       return data as AdminMarkFileAsUploadedResponse;
     },
     onSuccess: (data: AdminMarkFileAsUploadedResponse) => {
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1333,12 +1333,12 @@ export function useAdminResolveReport(options?: {
       });
       return data as AdminUpdateReportResponse;
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1556,7 +1556,7 @@ export function useAdminDeleteClientMutation(options?: {
         queryKey: queryKeys.admin.manageClients,
         exact: false,
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1619,7 +1619,7 @@ export function useAdminAddEngineer(options?: {
         queryKey: queryKeys.admin.manageEngineers,
         exact: false,
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1649,7 +1649,7 @@ export function useUpdateExchangeRate(options?: {
         queryKey: queryKeys.admin.exchangeRates,
         exact: false,
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1686,7 +1686,7 @@ export function useAdminUpdateEngineer(options?: {
         queryKey: queryKeys.admin.manageEngineers,
         exact: false,
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1714,7 +1714,7 @@ export function useAdminApprovePayment(options?: {
       });
       return data as AdminApprovePaymentResponses[200];
     },
-    onSuccess: async (data: any) => {
+    onSuccess: async (data) => {
       await queryClient.refetchQueries({
         predicate: (query) => {
           const firstKeyItem = query.queryKey?.[0];
@@ -1728,7 +1728,7 @@ export function useAdminApprovePayment(options?: {
         },
         type: "all",
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1756,7 +1756,7 @@ export function useAdminWithdrawalAction(options?: {
       });
       return data as AdminWithdrawalActionResponses[200];
     },
-    onSuccess: async (data: any) => {
+    onSuccess: async (data) => {
       await queryClient.refetchQueries({
         predicate: (query) => {
           const firstKeyItem = query.queryKey?.[0];
@@ -1770,7 +1770,7 @@ export function useAdminWithdrawalAction(options?: {
         },
         type: "all",
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1798,12 +1798,12 @@ export function useAdminDeleteEngineerMutation(options?: {
       });
       return data as AdminDeleteEngineerResponse;
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageEngineers,
         exact: false,
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1833,11 +1833,11 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
       });
       return data as AdminUpdateTransactionRequestStatusResponses[200];
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.admin.manageTransactions,
       });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1888,9 +1888,9 @@ export function useAdminCreateRateCard(options?: {
       });
       return data as BulkCreateRateCardsResponse;
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["admin", "rateCards"] });
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
@@ -1934,7 +1934,7 @@ export function useAdminBroadcastNotification(options?: {
         }),
       });
 
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
 
     onError: options?.onError,
