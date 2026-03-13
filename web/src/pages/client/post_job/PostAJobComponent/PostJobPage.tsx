@@ -365,7 +365,7 @@ const PostJobPage = () => {
     await Promise.all(uploadPromises);
     if (uploadPromises.length > 0) {
       await markUploaded({
-        body: { jobId: response.id, regionId: response.regionId},
+        body: { jobId: response.id, regionId: response.regionId },
       });
     }
   };
