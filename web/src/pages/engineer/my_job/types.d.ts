@@ -146,6 +146,7 @@ export interface JobHeaderCardProps {
   onToggleChat?: (jobId: string) => void;
   onCloseChat?: () => void;
   clientRegionId?: number;
+  viewReviewComment?: boolean;
 }
 
 export interface JobTabsProps {

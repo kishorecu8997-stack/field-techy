@@ -1,23 +1,23 @@
+import type { ClientGetJobsResponse } from "@/api";
 import { earningsData } from "@/dummy_data/jobDetails";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
+import { JOB_STATUSES as API_JOB_STATUSES } from "@/pages/engineer/search_result/types";
+import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
+import { useServiceCategories } from "@/shared/hooks/useLookup";
+import { scrollToTop } from "@/utils";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import jobFilters, {
   SORT_OPTIONS,
+  WORKING_TYPES,
   type Job,
   type JobStatus,
-  WORKING_TYPES,
 } from "../search_result/types";
-import { JOB_STATUSES as API_JOB_STATUSES } from "@/pages/engineer/search_result/types";
 import JobCard from "./components/JobCard";
-import { scrollToTop } from "@/utils";
-import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
-import type { ClientGetJobsResponse } from "@/api";
-import { useServiceCategories } from "@/shared/hooks/useLookup";
 
 // Map the UI filter label → API jobStatus query param
 type ApiJobStatus = NonNullable<
@@ -63,9 +63,9 @@ const MyJobsClient: React.FC = () => {
   }, [filterParam]);
 
   const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
-  const { data: jobsData, isLoading } = useClientGetJobs({
+  const { data: jobsData, isLoading,  isSuccess } = useClientGetJobs({
     jobStatus: apiJobStatus,
-    enabled: true,
+    enabled: true
   });
   const { data: serviceCategories } = useServiceCategories();
 
@@ -139,7 +139,7 @@ const MyJobsClient: React.FC = () => {
   // allJobs is already filtered by the API — no client-side filtering needed
   const allJobs: Job[] = useMemo(() => {
     return (jobsData || []).map(mapApiJobToUiJob);
-  }, [jobsData, serviceCategoryMap]);
+  }, [jobsData, serviceCategoryMap,isSuccess]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   useEffect(() => {
@@ -188,7 +188,7 @@ const MyJobsClient: React.FC = () => {
                     <LoaderComponent />
                   </div>
                 ) : currentJobs.length > 0 ? (
-                  currentJobs.map((job) => <JobCard key={job.id} job={job} />)
+                  currentJobs.map((job) => <JobCard key={`${job.id}-${job.title}`} job={job} />)
                 ) : (
                   <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
                     <div className="font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 p-20 rounded-lg">

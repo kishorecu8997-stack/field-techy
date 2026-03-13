@@ -1,3 +1,4 @@
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
@@ -6,17 +7,18 @@ import CustomTable, {
 } from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { absoluteUrls } from "@/config/urls";
-import React, { useState, useMemo } from "react";
 import { useAdminGetWalletOverview } from "@/shared/apiServices/admin/adminOpenApiService";
 
-interface WalletTransaction {
-  // These are optional in the generated API types, so they can be `undefined`.
-  profileImageUrl?: string | null;
+interface EngineerWalletOverviewItem {
+  userId?: number;
+  engineerId?: number;
+
+  dateAndTime: string;
+  amount: string;
+
+  engineerName?: string | null;
   mobileNo?: string | null;
-  clientName?: string | null;
-  transactionId?: string;
-  transactionType?: "credit" | "debit";
-  amount?: string;
+  profileImageUrl?: string | null;
 }
 /**
  * Engineer Component
@@ -32,79 +34,75 @@ const EngineerWallet: React.FC = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data, isLoading } = useAdminGetWalletOverview(
-    {
-      usertype: "engineer",
-      page,
-      limit,
-    },
-    {},
-  );
+  const { data, isLoading } = useAdminGetWalletOverview({
+    usertype: "engineer",
+    page,
+    limit,
+  });
 
-  const parseAmount = (amountStr: string | null | undefined) => {
-    if (!amountStr) return { symbol: "₹", value: 0 };
-
-    const match = amountStr.match(/^([^0-9]*)([\d,]+\.?\d*)$/);
-
-    if (match) {
-      const [, symbol, numPart] = match;
-      const cleanNum = numPart.replace(/,/g, "");
-      return {
-        symbol: symbol.trim() || "₹",
-        value: Number(cleanNum) || 0,
-      };
-    }
-
-    const cleaned = amountStr.replace(/[^0-9.]/g, "");
-    return {
-      symbol: "₹",
-      value: Number(cleaned) || 0,
-    };
-  };
+  const items = useMemo<EngineerWalletOverviewItem[]>(() => {
+    return (data?.engineerDetails ?? []).map((item) => ({
+      ...item,
+      userId: item.engineerId,
+      engineerName: item.clientName,
+    }));
+  }, [data]);
 
   const filtered = useMemo(() => {
-    const items = data?.engineerDetails ?? [];
-
     if (!search.trim()) return items;
 
     const term = search.toLowerCase().trim();
 
     return items.filter(
-      (tx: WalletTransaction) =>
-        tx.clientName?.toLowerCase().includes(term) ||
-        tx.mobileNo?.toLowerCase().includes(term) ||
-        tx.amount?.toLowerCase().includes(term) ||
-        tx.transactionId?.toLowerCase().includes(term),
+      (item) =>
+        (item.engineerName || "").toLowerCase().includes(term) ||
+        (item.mobileNo || "").toLowerCase().includes(term) ||
+        (item.amount || "").toLowerCase().includes(term),
     );
-  }, [data?.engineerDetails, search]);
+  }, [items, search]);
 
   const displayTotal = search.trim() ? filtered.length : (data?.total ?? 0);
 
-  const columns: Column<WalletTransaction>[] = [
+  const parseAmount = (amountStr?: string | null) => {
+    const safeAmount = amountStr ?? "";
+
+    const cleaned = safeAmount.replace(/[^0-9.-]/g, "");
+    const value = Number(cleaned) || 0;
+
+    const symbolMatch = safeAmount.match(/^[^0-9.]+/);
+    const symbol = symbolMatch ? symbolMatch[0].trim() : "-";
+
+    return { symbol, value };
+  };
+
+  const columns: Column<EngineerWalletOverviewItem>[] = [
     {
       key: "sno",
       label: "Sr.No.",
-      renderCell: (_row: WalletTransaction, index: number) =>
-        (page - 1) * limit + index + 1,
+      renderCell: (_row, index) => (page - 1) * limit + index + 1,
     },
     {
       key: "engineerDetails",
       label: "Engineer Details",
-      renderCell: (row: WalletTransaction) => (
+      renderCell: (row) => (
         <div className="flex items-center gap-2">
           <div>
             {row.profileImageUrl ? (
               <img
                 src={row.profileImageUrl}
-                alt=""
+                alt="Profile"
                 className="h-6 w-6 rounded-full object-cover"
               />
             ) : (
               <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
             )}
           </div>
+
           <div>
-            <div className="font-semibold">{row.clientName || "—"}</div>
+            <div className="font-semibold">
+              {row.engineerName?.trim() || "—"}
+            </div>
+
             <div className="text-sm text-neutral-500 dark:text-neutral-400">
               {row.mobileNo || "—"}
             </div>
@@ -113,21 +111,14 @@ const EngineerWallet: React.FC = () => {
       ),
     },
     {
-      key: "amount",
-      label: "Amount",
-      renderCell: (row: WalletTransaction) => {
+      key: "walletBalance",
+      label: "Wallet Balance",
+      renderCell: (row) => {
         const { symbol, value } = parseAmount(row.amount);
 
         return (
-          <span
-            className={
-              row.transactionType === "credit"
-                ? "text-green-600"
-                : "text-red-600"
-            }
-          >
-            {row.transactionType === "credit" ? "+" : "−"}
-            {symbol} {""}
+          <span className="font-medium">
+            {symbol}{" "}
             {value.toLocaleString("en-IN", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -139,27 +130,48 @@ const EngineerWallet: React.FC = () => {
     {
       key: "action",
       label: "Action",
-      align: "center" as const,
-      renderCell: (row: WalletTransaction) => (
-        <div className="flex items-center justify-center gap-2">
-          <div
-            className="p-2 bg-yellow-100 hover:bg-yellow-200 rounded-md cursor-pointer transition-colors"
-            onClick={() =>
-              navigate(
-                `${absoluteUrls.admin.home.wallet_overview_view}/${row.transactionId}`,
-                {
-                  state: {
-                    transactionId: row.transactionId,
-                    usertype: "engineer",
-                  },
-                },
-              )
-            }
-          >
-            <FiEye className="text-yellow-600" />
+      align: "center",
+      renderCell: (row) => {
+        if (!row.userId) {
+          return (
+            <div className="flex justify-center">
+              <div
+                className="p-2 bg-gray-100 rounded-md cursor-not-allowed opacity-50"
+                title="User ID missing – cannot view details"
+              >
+                <FiEye className="text-gray-500" />
+              </div>
+            </div>
+          );
+        }
+
+        const handleView = () => {
+          navigate(
+            `${absoluteUrls.admin.home.wallet_overview_view}/${row.userId}`,
+            {
+              state: {
+                userId: row.userId,
+                clientName: row.engineerName || undefined,
+                mobileNo: row.mobileNo || undefined,
+                usertype: "engineer",
+              },
+            },
+          );
+        };
+
+        return (
+          <div className="flex justify-center">
+            <button
+              className="p-2 bg-yellow-100 hover:bg-yellow-200 rounded-md transition-colors"
+              onClick={handleView}
+              title={`View wallet transactions for ${row.engineerName}`}
+              aria-label={`View wallet for ${row.engineerName}`}
+            >
+              <FiEye className="text-yellow-600" />
+            </button>
           </div>
-        </div>
-      ),
+        );
+      },
     },
   ];
 
