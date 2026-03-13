@@ -1,5 +1,5 @@
 import { assetsConfig } from "@/assets";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import { BsTextLeft } from "react-icons/bs";
 import { FaRegBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
