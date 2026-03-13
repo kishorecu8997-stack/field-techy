@@ -24,6 +24,10 @@ import { scrollToTop } from "@/utils";
 const ExploreJobs: React.FC = () => {
   const profile = useEngineerProfile();
   const [currentPage, setCurrentPage] = useState(1);
+  const isRecommended = location.pathname.includes("recommended");
+  const isFeatured = location.pathname.includes("featured");
+  const isExplore = location.pathname.includes("explore");
+
   const [filters, setFilters] = useState<Filters>({
     q: "",
     country: "",
@@ -58,7 +62,9 @@ const ExploreJobs: React.FC = () => {
     serviceCategoryIds: filters.category || [],
     experienceLevelId: filters.experience || 0,
     skillIds: filters.skills || [],
-    isExplore: true,
+    isExplore: isExplore && true,
+    sortBy: isRecommended ? "relevant" : "latest",
+    isFeatured: isFeatured && true,
   });
 
   const apiJobs = useMemo(() => {
@@ -121,7 +127,13 @@ const ExploreJobs: React.FC = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">
         <MyJobsHeader
-          title="Explore Jobs"
+          title={
+            isRecommended
+              ? "Recommended Jobs"
+              : isFeatured
+                ? "Featured Jobs"
+                : "Explore Jobs"
+          }
           description={`${apiJobs.length} job${
             apiJobs.length !== 1 ? "s" : ""
           } found`}
