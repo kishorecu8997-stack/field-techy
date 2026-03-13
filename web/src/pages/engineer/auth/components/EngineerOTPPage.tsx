@@ -1,3 +1,5 @@
+/*This component is removed from the UI (Flow) */
+
 import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
