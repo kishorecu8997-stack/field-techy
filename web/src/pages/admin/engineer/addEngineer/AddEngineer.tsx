@@ -14,6 +14,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import {
   useAdminAddEngineer,
   useAdminMarkFileAsUploaded,
+  type AdminAddEngineerBody,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
@@ -225,8 +226,8 @@ export default function AddEngineer() {
             try {
               const { body, files } = buildPayload(data);
               const res = await addEngineer({
-                body,
-              } as AdminCreateEngineerData);
+                body: body as AdminAddEngineerBody,
+              });
 
               const createdUserId = res?.userId;
 

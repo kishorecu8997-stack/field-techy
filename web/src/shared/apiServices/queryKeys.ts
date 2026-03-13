@@ -61,6 +61,7 @@ export const queryKeys = {
       detail: (id: string | number) =>
         ["admin", "paymentTransactions", String(id)] as const,
     },
+    manageTransactions: ["adminManageTransactions"] as const,
   },
   notifications: {
     all: ["notifications"] as const,

@@ -33,7 +33,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
     (tx) => {
       const amountNum = Number(tx.amount);
       const safeAmount = Number.isNaN(amountNum) ? 0 : amountNum;
-      const txDate = new Date(tx.timestamp);
+      const txDate = new Date(tx.timestamp ?? "");
       const safeDate = isNaN(txDate.getTime()) ? new Date() : txDate;
       return {
         id: String(tx.id),

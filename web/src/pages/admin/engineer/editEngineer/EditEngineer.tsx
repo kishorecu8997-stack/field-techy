@@ -4,6 +4,7 @@ import {
   useAdminGetEngineerById,
   useAdminUpdateEngineer,
   useAdminMarkFileAsUploaded,
+  type AdminUpdateEngineerBody,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -231,8 +232,8 @@ export default function EditEngineer() {
 
               const res = await updateEngineer({
                 path: { userId: engineerId },
-                body,
-              } as AdminUpdateEngineerData);
+                body: body as AdminUpdateEngineerBody,
+              });
 
               if (res && "uploadUrls" in res && res.uploadUrls) {
                 const uploadUrls = res.uploadUrls as Record<
