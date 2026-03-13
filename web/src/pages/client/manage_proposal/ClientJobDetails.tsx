@@ -76,6 +76,13 @@ const ClientJobDetails = () => {
   const numberOfApprovedProposals = assignments.filter((a) =>
     approvedStatuses.includes((a.assignmentStatus || "").toLowerCase()),
   ).length;
+
+const hasEngineerStarted = assignments.some(
+  (a) =>
+    a.assignmentStatus?.toLowerCase() === "started" ||
+    a.assignmentStatus?.toLowerCase() === "submit_pending_approval" ||
+    a.assignmentStatus?.toLowerCase() === "submitted"
+);
   const numberOfVacancy = job?.vacancies ?? undefined;
   const isDummyNetworkEngineer = job
     ? isDummyNetworkEngineerJob(job.id)
@@ -168,7 +175,8 @@ const ClientJobDetails = () => {
                 setActiveTab={setActiveTab}
                 setOfferJobStatus={setOfferJobStatus}
                 OfferJobStatus={OfferJobStatus}
-                hideBreakDetails={isDummyNetworkEngineer}
+                hideBreakDetails={isDummyNetworkEngineer || !hasEngineerStarted}
+                hideChats={!hasEngineerStarted}
                 hideClient={true}
                 jobLocation={job?.workLocationName || ""}
                 numberOfVacancy={numberOfVacancy}
@@ -188,6 +196,7 @@ const ClientJobDetails = () => {
                 }
                 allCardsApproved={job?.status === JOB_STATUSES.closed}
                 activeTab={activeTab}
+                clientRegionId={job?.regionId}
               />
               <JobTabSection
                 status={(jobStatus as JobStatus) || "Posted"}

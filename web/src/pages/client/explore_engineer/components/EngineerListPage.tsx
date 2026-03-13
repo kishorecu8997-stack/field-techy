@@ -32,6 +32,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
   // Reset to first page whenever filters affecting the query change
   useEffect(() => {
     setCurrentPage(1);
+    scrollToTop();
   }, [
     filters.q,
     filters.country,
@@ -90,7 +91,6 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
     pay_type: engineer.hourlyRate
       ? `${CurrencySymbol} ${engineer.hourlyRate}/hr`
       : "N/A",
-    availability: engineer.isEmployed ? "Busy" : "Available",
   }));
 
   if (isLoading) {

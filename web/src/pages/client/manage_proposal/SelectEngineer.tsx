@@ -7,7 +7,8 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import Popup from "@/shared/components/Popup";
 import type { RatingValue } from "@/shared/libs/constants/filterOptions";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
+import { scrollToTop } from "@/utils";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import InvitationSentModal from "../explore_engineer/components/invite_job/InvitationSentModal";
@@ -36,6 +37,16 @@ const SelectEngineer = () => {
   const [rating, setRating] = useState<RatingValue | null>(null);
   const [experience, setExperience] = useState<number>(0);
   const [selectedSkills, setSelectedSkills] = useState<Set<number>>(new Set());
+  useEffect(() => {
+    scrollToTop();
+  }, [
+    currentPage,
+    selectedLocation,
+    selectedCategory,
+    rating,
+    experience,
+    selectedSkills.size,
+  ]);
 
   const itemsPerPage = 8;
   const { showPopup } = usePopupStore();
@@ -182,27 +193,31 @@ const SelectEngineer = () => {
                   </p>
                 </div>
               ) : (
-                engineers.map((engineer) => (
-                  <FreelancerCard
-                    key={engineer.userId}
-                    id={engineer.userId}
-                    name={engineer.name}
-                    rating={engineer.averageRating}
-                    reviews={engineer.reviewCount}
-                    imageUrl={engineer.profilePictureUrl ?? undefined}
-                    role={engineer.serviceCategoryName ?? ""}
-                    selected={selectedIds.includes(engineer.userId)}
-                    onSelect={handleSelect}
-                    onInvite={() => handleCardInvite(engineer.userId)}
-                  />
-                ))
+                <>
+                  {engineers.map((engineer) => (
+                    <FreelancerCard
+                      key={engineer.userId}
+                      id={engineer.userId}
+                      name={engineer.name}
+                      rating={engineer.averageRating}
+                      reviews={engineer.reviewCount}
+                      imageUrl={engineer.profilePictureUrl ?? undefined}
+                      role={engineer.serviceCategoryName ?? ""}
+                      selected={selectedIds.includes(engineer.userId)}
+                      onSelect={handleSelect}
+                      onInvite={() => handleCardInvite(engineer.userId)}
+                    />
+                  ))}
+                  <div className="col-span-full flex justify-center mt-8 mb-4">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
+                  </div>
+                </>
               )}
             </div>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
           </div>
           <div className="lg:col-span-1">
             <div className="sticky top-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">

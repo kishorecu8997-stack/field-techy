@@ -371,8 +371,8 @@ export const transformBreakRequestsToItems = (
         // Short term: show time and date
         return `${startTime} - ${endTime} (${startDate})`;
       } else {
-        // Long term: show date and time
-        return `${startDate} - ${endDate} (${startTime} - ${endTime})`;
+        // Long term: show only date range without time
+        return `${startDate} - ${endDate}`;
       }
     };
 

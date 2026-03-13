@@ -123,14 +123,15 @@ const mapJobToJobOverview = (
   // Extract tools - handle both new structure (with toolId, toolName, budget, imageUrl) and old structure (Array<number>)
   const tools = Array.isArray(job.tools)
     ? job.tools.map((tool) => {
-      const toolId = String(tool.toolId);
-      const toolLabel = toolMap.get(toolId);
-      return {
-        name: toolLabel || tool.toolName || toolId,
-        price: tool.budget || "",
-        image: tool.imageUrl || undefined,
-      };
-    })
+        const toolId = String(tool.toolId);
+        const toolLabel = toolMap.get(toolId);
+        return {
+          name: toolLabel || tool.toolName || toolId,
+          price: tool.budget || "",
+          image: tool.imageUrl || undefined,
+          unit: job.currencySymbol || "$",
+        };
+      })
     : [];
 
   // Extract duration from startDate and endDate
@@ -629,8 +630,11 @@ const JobDetailsPage = () => {
 
   // Determine if proposal is approved (hide buttons when not approved)
   // Show buttons only after the job has started
-  const isProposalApproved = assignmentStatus === "started";
-
+  const isProposalApproved =
+    assignmentStatus === "started" ||
+    assignmentStatus === "submit_pending_approval" ||
+    assignmentStatus === "submitted";
+    
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">

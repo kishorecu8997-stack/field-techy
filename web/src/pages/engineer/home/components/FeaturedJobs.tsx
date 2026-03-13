@@ -8,6 +8,7 @@ import {
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { getExperienceLevel } from "@/utils";
 import { calculateMatchScore } from "@/utils/matchCalculator";
+import { formatCurrency } from "@/shared/libs/utils";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -192,6 +193,15 @@ const FeatureJobCard: React.FC<
     return match ? parseInt(match[0], 10) : 0;
   }, [props.experience]);
 
+  // Format salary with currency symbol and comma separation
+  const formattedSalary = useMemo(() => {
+    if (!props.salary) return "-";
+    const numericValue = parseFloat(String(props.salary).replace(/[^0-9.-]/g, ""));
+    if (isNaN(numericValue)) return props.salary;
+    const symbol = props.currencySymbol || "$";
+    return `${symbol} ${formatCurrency(numericValue).replace(/^\$/, "")}`;
+  }, [props.salary, props.currencySymbol]);
+
   return (
     <div className="flex flex-col h-full">
       <>
@@ -278,7 +288,7 @@ const FeatureJobCard: React.FC<
         {/* ✅ Bottom pinned section */}
         <div className="flex justify-between items-end mt-auto pt-4">
           <span className="font-bold text-lg text-gray-900 dark:text-white">
-            {props.salary || "-"}
+            {formattedSalary}
           </span>
           <div className="text-right">
             {props.slaLevel && (
