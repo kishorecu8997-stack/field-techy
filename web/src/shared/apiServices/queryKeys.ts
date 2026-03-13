@@ -50,6 +50,7 @@ export const queryKeys = {
     },
     manageEngineers: ["adminManageEngineers"] as const,
     adminGetClient: ["adminGetClient"] as const,
+    adminGetEngineer: ["adminGetEngineer"] as const,
     notifications: {
       all: ["admin", "notifications"] as const,
       detail: (id: string | number) =>
@@ -60,6 +61,7 @@ export const queryKeys = {
       detail: (id: string | number) =>
         ["admin", "paymentTransactions", String(id)] as const,
     },
+    manageTransactions: ["adminManageTransactions"] as const,
   },
   notifications: {
     all: ["notifications"] as const,

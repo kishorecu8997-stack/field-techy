@@ -18,13 +18,13 @@ import {
   useAdminUpdateClient,
   useAdminGetClientByUserId,
   useAdminMarkFileAsUploaded,
+  type AdminUpdateClientBody,
+  type AdminAddClientBody,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { extractErrorMessage } from "@/shared/libs/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 import type {
-  AdminUpdateClientData,
-  AdminCreateClientData,
   AdminCreateClientResponse,
 } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
@@ -215,9 +215,11 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
               const res = isEdit
                 ? await updateClient({
                     path: { userId: editUserId! },
-                    body: body as AdminUpdateClientData["body"],
+                    body: body as AdminUpdateClientBody,
                   })
-                : await addClient({ body } as AdminCreateClientData);
+                : await addClient({
+                    body: body as AdminAddClientBody,
+                  });
 
               const responseUserId = (res as AdminCreateClientResponse)?.userId;
               const resolvedUserId = isEdit ? editUserId : responseUserId;
@@ -238,7 +240,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                 )) {
                   const file = files[key as keyof typeof files];
                   if (!file) continue;
-                  if (
+                  if (resolvedUserId && 
                     (
                       await fetch(uploadUrl, {
                         method: "PUT",

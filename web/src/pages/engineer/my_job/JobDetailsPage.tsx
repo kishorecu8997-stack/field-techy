@@ -14,9 +14,10 @@ import GiveFeedbackModal from "@/shared/components/modals/GiveFeedbackModal";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import type { JobOverviewProps } from "@/shared/components/types";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
-import { usePopupStore } from "@/shared/store/popupStore";
-import { getDurationString } from "@/utils";
 import { getAttachmentFileName } from "@/shared/libs/utils";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { getDurationString } from "@/utils";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -36,7 +37,6 @@ import type {
   OfferedJobStatusType,
   ProgressUpdate,
 } from "./types.d";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -441,6 +441,7 @@ const JobDetailsPage = () => {
   };
 
   const { data: reviewsData } = useGetUserRatingAndReviews(true, assignmentId);
+
   const regionId = useUserSessionStore((state) => state.session?.regionId);
   const handleOpenGiveClientFeedback = () => {
     showPopup({
@@ -655,6 +656,7 @@ const JobDetailsPage = () => {
             <div className="lg:col-span-2 space-y-6">
               <JobHeaderCard
                 title={jobTitle}
+                viewReviewComment={reviewsData?.length ? true : false}
                 client={clientName}
                 duration={exactTimeline || getJobDuration()}
                 type={engagementType}

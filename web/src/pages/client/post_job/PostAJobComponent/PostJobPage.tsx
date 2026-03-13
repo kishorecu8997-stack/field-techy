@@ -15,6 +15,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
+import { scrollToTop } from "@/utils";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +28,6 @@ import {
   type PostAJobFieldsProps,
   type PostOption,
 } from "../types";
-import { scrollToTop } from "@/utils";
 import BillSummary from "./components/form_sections/BillSummary";
 import PostAJobFields from "./components/PostAJobFields";
 import JobPostDropdown from "./JobPostDropdown";
@@ -112,8 +112,11 @@ const PostJobPage = () => {
   const numberOfVacancy = formCtx.watch("numberOfVacancy");
   const toolsData = formCtx.watch("toolsData");
 
-  const isSafeDate = (d: any) => d && !Number.isNaN(new Date(d).getTime());
-
+  const isSafeDate = (
+    d: string | number | Date | null | undefined,
+  ): boolean => {
+    return !!d && !Number.isNaN(new Date(d).getTime());
+  };
   const queryEnabled = Boolean(
     serviceCategory &&
     experienceLevel &&
@@ -297,11 +300,6 @@ const PostJobPage = () => {
       ),
       body,
       actionButtons: [
-        // {
-        //   label: "Cancel",
-        //   value: null,
-        //   variant: "outline",
-        // },
         {
           label: "Edit Details",
           value: "edit",
@@ -327,7 +325,11 @@ const PostJobPage = () => {
     });
   };
 
-  const { mutate: postJob, isPending: isPosting } = useClientPostJob();
+  const {
+    mutate: postJob,
+    isPending: isPosting,
+  } = useClientPostJob();
+
   const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
 
   const getRequiredNumber = (val: unknown, fieldName: string): number => {
@@ -335,12 +337,14 @@ const PostJobPage = () => {
     if (!num) throw new Error(`${fieldName} is required`);
     return num;
   };
+
   const uploadFile = (file: File, url: string) =>
     fetch(url, {
       method: "PUT",
       body: file,
       headers: { "Content-Type": file.type },
     });
+
   const uploadAttachmentsAndTools = async (
     response: ClientPostJobResponse,
     data: PostAJobFieldsProps,
@@ -360,9 +364,12 @@ const PostJobPage = () => {
       });
     await Promise.all(uploadPromises);
     if (uploadPromises.length > 0) {
-      await markUploaded({ body: { jobId: response.id } });
+      await markUploaded({
+        body: { jobId: response.id, regionId: response.regionId},
+      });
     }
   };
+
   const createJobPayload = (
     data: PostAJobFieldsProps,
   ): ClientPostJobData["body"] => {

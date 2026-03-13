@@ -9,6 +9,7 @@ import {
   validateName,
   validatePortfolioLink,
   validatePricePerHour,
+  validateZipcode,
 } from "@/utils/validate";
 import { useEffect, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
@@ -17,6 +18,10 @@ import {
   useAppGetLookupData,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import type { EngineerFormData } from "../types";
+
+type BasicInformationProps = {
+  disableEmail?: boolean;
+};
 
 /**
  * BasicInformation component handles the first step of the engineer registration form.
@@ -48,15 +53,32 @@ import type { EngineerFormData } from "../types";
  * @returns {JSX.Element} A form section component with basic information fields
  */
 
-export default function BasicInformation() {
+export default function BasicInformation({
+  disableEmail,
+}: BasicInformationProps) {
   const { watch, setValue } = useFormContext<EngineerFormData>();
   const serviceCategoryValue = watch("serviceCategory");
+  const selectedCountry = watch("country");
+  const selectedState = watch("state");
 
   const { data: skills } = useAppGetLookupData(LookupTable.Skills);
   const { data: serviceCategories } = useAppGetLookupData(
     LookupTable.ServiceCategories,
   );
 
+  const { data: countries } = useAppGetLookupData(LookupTable.Countries);
+  const { data: states } = useAppGetLookupData(
+    LookupTable.States,
+    selectedCountry,
+    { enabled: !!selectedCountry },
+  );
+  const { data: cities } = useAppGetLookupData(
+    LookupTable.Cities,
+    selectedState,
+    {
+      enabled: !!selectedState,
+    },
+  );
   const serviceCategoryOptions = useMemo(() => {
     return (
       serviceCategories?.map((item) => ({
@@ -96,6 +118,20 @@ export default function BasicInformation() {
     }
   }, [serviceCategoryOptions, serviceCategoryValue, setValue]);
 
+  const countryOptions = useMemo(() => {
+    return (
+      countries?.map((c) => ({ value: String(c.id), label: c.name })) ?? []
+    );
+  }, [countries]);
+
+  const stateOptions = useMemo(() => {
+    return states?.map((s) => ({ value: String(s.id), label: s.name })) ?? [];
+  }, [states]);
+
+  const cityOptions = useMemo(() => {
+    return cities?.map((c) => ({ value: String(c.id), label: c.name })) ?? [];
+  }, [cities]);
+
   const priceField = (
     <InputField
       name="price"
@@ -112,7 +148,9 @@ export default function BasicInformation() {
       <div className="mb-6 mt-2 w-fit">
         <ImageUploaderField label="Profile Image" name="profileImage" />
       </div>
+
       <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+        {/* Left Column */}
         <div className="space-y-2">
           <InputField
             name="name"
@@ -122,7 +160,72 @@ export default function BasicInformation() {
             required
             rules={{ validate: (v: string) => validateName(v) }}
           />
+
           <PhoneInputWithValidation name="phoneNumber" label="Mobile Number" />
+
+          {/* Location */}
+          <SelectField
+            label="Country"
+            name="country"
+            placeholder="Select Country"
+            options={countryOptions}
+            required
+            onChange={() => {
+              setValue("state", "");
+              setValue("city", "");
+            }}
+          />
+
+          <SelectField
+            label="State"
+            name="state"
+            placeholder="Select State"
+            options={stateOptions}
+            required
+            disabled={!selectedCountry}
+            onChange={() => {
+              setValue("city", "");
+            }}
+          />
+
+          <SelectField
+            label="City"
+            name="city"
+            placeholder="Select City"
+            options={cityOptions}
+            required
+            disabled={!selectedState}
+          />
+
+          <InputField
+            name="postalCode"
+            label="Postal Code"
+            type="text"
+            placeholder="Enter Postal Code"
+            required
+            rules={{ validate: (v: string) => validateZipcode(v) }}
+          />
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-2">
+          <InputField
+            name="email"
+            label="Email Address"
+            type="text"
+            required
+            rules={validateEmailRules}
+            disabled={disableEmail}
+          />
+
+          <InputField
+            name="address"
+            label="Address"
+            type="text"
+            required
+            rules={{ validate: (v: string) => validateAddress(v) }}
+          />
+
           <TagSelectField
             name="skills"
             label="Skills"
@@ -136,24 +239,9 @@ export default function BasicInformation() {
             }
             maxTags={15}
           />
-          {priceField}
-        </div>
 
-        <div className="space-y-2">
-          <InputField
-            name="email"
-            label="Email Address"
-            type="text"
-            required
-            rules={validateEmailRules}
-          />
-          <InputField
-            name="address"
-            label="Address"
-            type="text"
-            required
-            rules={{ validate: (v: string) => validateAddress(v) }}
-          />
+          {priceField}
+
           <SelectField
             name="serviceCategory"
             label="Service Category"
@@ -161,6 +249,7 @@ export default function BasicInformation() {
             options={serviceCategoryOptions}
             required
           />
+
           <InputField
             name="portfolio"
             label="Portfolio Link"
