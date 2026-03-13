@@ -4,7 +4,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import Filters from "@/shared/components/Filters";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "../search_result/components/Pagination";
@@ -13,6 +13,7 @@ import InvitationSentModal from "../explore_engineer/components/invite_job/Invit
 import { useClientExploreEngineers } from "@/shared/apiServices/client/clientOpenApiService";
 import { useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
 import type { RatingValue } from "@/shared/libs/constants/filterOptions";
+import { scrollToTop } from "@/utils";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -33,6 +34,16 @@ const SelectEngineer = () => {
   const [rating, setRating] = useState<RatingValue | null>(null);
   const [experience, setExperience] = useState<number>(0);
   const [selectedSkills, setSelectedSkills] = useState<Set<number>>(new Set());
+  useEffect(() => {
+    scrollToTop();
+  }, [
+    currentPage,
+    selectedLocation,
+    selectedCategory,
+    rating,
+    experience,
+    selectedSkills.size,
+  ]);
 
   const itemsPerPage = 8;
   const { showPopup } = usePopupStore();

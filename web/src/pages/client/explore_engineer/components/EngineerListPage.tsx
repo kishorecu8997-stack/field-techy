@@ -31,6 +31,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
   // Reset to first page whenever filters affecting the query change
   useEffect(() => {
     setCurrentPage(1);
+    scrollToTop();
   }, [
     filters.q,
     filters.country,
