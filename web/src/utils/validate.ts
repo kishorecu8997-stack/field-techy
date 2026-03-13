@@ -753,29 +753,13 @@ export const validatePricingModel = (
 export const validateNotificationMessage = (value: string) => {
   const raw = value || "";
 
-  // Trim check: reject if has leading or trailing spaces
-  if (raw !== raw.trim()) {
-    return "Message must not have leading or trailing spaces";
-  }
-
-  // Reject if contains double (or more) consecutive spaces
-  if (/ {2,}/.test(raw)) {
-    return "Message must not contain consecutive spaces";
-  }
-
   // Length check
-  if (raw.length < 10) {
-    return "Message must be at least 10 characters";
+  if (raw.length < 120) {
+    return "Message must be at least 120 characters";
   }
-  if (raw.length > 500) {
-    return "Message must not exceed 500 characters";
-  }
-
-  const allowedPattern = /^[A-Za-z0-9 /(),.#-]+$/;
-
-  if (!allowedPattern.test(raw)) {
-    return "Only letters, spaces, numbers, and special characters such as / ( ) , . - # are allowed.";
-  }
+  // if (raw.length > 500) {
+  //   return "Message must not exceed 500000 characters";
+  // }
 
   return true;
 };
@@ -832,12 +816,15 @@ export const validateNotificationTitle = (value: string) => {
   if (raw.length < 5) return "Title must be at least 5 characters";
   if (raw.length > 100) return "Title must not exceed 100 characters";
 
-  // Disallow any digits (0-9)
-  if (/\d/.test(raw)) return "Title must not contain numbers";
+  // Must contain at least one letter (prevents numbers-only)
+  if (!/[A-Za-z]/.test(raw)) {
+    return "Title must contain at least one letter";
+  }
+  // Allowed characters
+  const allowedPattern = /^[A-Za-z0-9 /(),.#-]+$/;
 
-  // Allow only letters and spaces (no emojis, no symbols, no punctuation)
-  if (!/^[A-Za-z ]+$/.test(raw)) {
-    return "Title must contain only letters and spaces";
+  if (!allowedPattern.test(raw)) {
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . - # are allowed.";
   }
   return true;
 };

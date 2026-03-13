@@ -19,6 +19,7 @@ import {
 
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 interface AddFundFormProps {
   onClose: () => void;
@@ -32,6 +33,7 @@ interface AddFundFormProps {
  * @param onClose - callback function to close the modal
  */
 const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
+  const { session } = useUserSessionStore();
   const formCtx = useForm({
     mode: "onSubmit",
     defaultValues: {
@@ -80,7 +82,7 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
     try {
       setIsProcessingPayment(true);
       const { clientSecret } = await mutateAsync({
-        body: { amount: finalAmount, currency: currencyCode },
+        body: { amount: finalAmount, currency: currencyCode, regionId: session?.regionId },
       });
 
       if (!clientSecret) {

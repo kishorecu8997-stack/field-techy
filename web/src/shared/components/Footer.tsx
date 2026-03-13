@@ -40,7 +40,12 @@ const Footer = () => {
     data: contactData,
     isLoading: contactLoading,
     error: contactError,
-  } = useGetCmsContent("contact-info");
+  } = useGetCmsContent("contact-info", {
+    refetchInterval: () =>
+      typeof document !== "undefined" && document.visibilityState === "visible"
+        ? 5 * 60 * 1000
+        : false,
+  });
 
   const getContactInfo = () => {
     const defaults = {
