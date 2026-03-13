@@ -5,7 +5,7 @@ import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHea
 import { JOB_STATUSES } from "@/pages/engineer/search_result/types";
 import {
   useClientGetAssignmentDetails,
-  useClientGetJobs,
+  useClientGetJobs
 } from "@/shared/apiServices/client/clientOpenApiService";
 import ChatForJobs from "@/shared/components/ChatForJobs";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -130,6 +130,7 @@ const ClientJobDetails = () => {
     params.jobId ?? "",
     breadcrumbExtra === "chats" ? "Chats" : null,
   ].filter((v): v is string => typeof v === "string");
+
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

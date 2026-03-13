@@ -1,8 +1,11 @@
+import type { GetUserRatingAndReviewsResponse } from "@/api";
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
+import ViewClientFeedbackModal from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
+import { useGetUserRatingAndReviews } from "@/shared/apiServices/commonOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
-import useDrawerStore from "@/shared/store/useDrawerStore";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { createPathBuilder } from "@/utils";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
@@ -26,23 +29,39 @@ const ClientActions = ({
 }) => {
   const navigate = useNavigate();
   const { id, jobId } = useParams();
-  const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+  const { showPopup, closePopup } = usePopupStore();
   const [searchParams] = useSearchParams();
   const regionIdParam = searchParams.get("regionId");
 
   const makeUrl = createPathBuilder(absoluteUrls.client.home.SelectEngineer);
   const URl = makeUrl({ id: String(id || jobId) });
 
-  const handleViewFeedback = () => {
-    setActiveKey("engineerFromFeedback");
-    setISOpenSidebar(true);
-  };
   // Show "View Feedback From Engineers" button only on Timeline tab when all cards are approved
   const showFeedbackButton =
     activeTab === JOB_TAB_LABELS.timeline && allCardsApproved;
 
   // Check if job is cancelled
   const isCancelled = jobStatus?.toLowerCase() === "cancelled";
+
+  const { data: engineerFeedbackData } = useGetUserRatingAndReviews(
+    true,
+    undefined,
+    Number(id || jobId),
+    regionIdParam ? Number(regionIdParam) : undefined
+  );
+
+
+  const handleOpenViewClientFeedback = () => {
+    showPopup({
+      body: (
+        <ViewClientFeedbackModal
+          onClose={closePopup}
+          reviews={engineerFeedbackData as GetUserRatingAndReviewsResponse}
+          label="Feedback From Engineers"
+        />
+      ),
+    });
+  };
 
   return (
     <>
@@ -56,7 +75,7 @@ const ClientActions = ({
           <Button
             variant="no_style"
             className="text-white text-sm font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white rounded-none hover:rounded-t-lg hover:bg-white/4"
-            onClick={handleViewFeedback}
+            onClick={handleOpenViewClientFeedback}
             leftIcon={
               <icons.star
                 aria-hidden="true"
