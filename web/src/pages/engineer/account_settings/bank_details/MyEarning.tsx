@@ -31,21 +31,20 @@ const MyEarning = () => {
   const [showBalance, setShowBalance] = useState<boolean>(false);
   const [showWithdrawPopup, setShowWithdrawPopup] = useState<boolean>(false);
   const { data: balanceArr } = useEngineerBalance();
-    const { data:earningsData, isLoading: isEarningsLoading, isError: isEarningsError, refetch } = useEngineerEarnings();
+  const { data: earningsData, isLoading: isEarningsLoading, isError: isEarningsError, refetch } = useEngineerEarnings();
   const { data: personalInfo } = useEngineerGetPersonalInfo();
   const balance = balanceArr?.[0];
-  const hasCompletedOnboarding =
-    personalInfo?.stripeOnboardingStatus?.toLowerCase() === "completed";
+  const hasCompletedOnboarding = personalInfo?.stripeAccountId || personalInfo?.stripeOnboardingStatus?.toLowerCase() === "completed";
   const bankDetailsButtonLabel = hasCompletedOnboarding
     ? "Edit Bank Details"
     : "Add Bank Details";
 
   const formattedBalance = showBalance
     ? (() => {
-        const amount = Number(balance?.balance);
-        const currency = balance?.currencyCode ?? "USD";
-        return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
-      })()
+      const amount = Number(balance?.balance);
+      const currency = balance?.currencyCode ?? "USD";
+      return isNaN(amount) ? "$0.00" : formatCurrency(amount, currency);
+    })()
     : "******";
 
   const [hasError, setHasError] = useState(false);
@@ -239,7 +238,7 @@ const MyEarning = () => {
         </div>
       </div>
 
-      
+
       {showWithdrawPopup && balance && (
         <Popup open={showWithdrawPopup} onClose={() => setShowWithdrawPopup(false)}>
           <EngineerWithdraw

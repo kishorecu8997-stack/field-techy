@@ -15,7 +15,7 @@ import { assetsConfig } from "@/assets";
  */
 const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
   const navigate = useNavigate();
-  const detailsUrl = `${absoluteUrls.client.home.client_Explore_engineers_details}/${engineer.id}`;
+  const detailsUrl = `${absoluteUrls.client.home.client_Explore_engineers_details}/${engineer.id}?regionId=${engineer.regionId}`;
 
   return (
     <div

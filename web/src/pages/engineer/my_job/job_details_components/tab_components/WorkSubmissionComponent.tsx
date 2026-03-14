@@ -137,7 +137,7 @@ const WorkSubmissionComponent: React.FC<{
               await submitSignOff({
                 body: {
                   assignmentId: Number(assignmentId),
-                  regionId,
+                  regionId: Number(regionId),
                   workAttachment: attachmentMeta
                     ? {
                         filename: attachmentMeta.filename,

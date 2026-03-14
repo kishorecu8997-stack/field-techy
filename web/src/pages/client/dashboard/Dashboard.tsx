@@ -214,9 +214,10 @@ const Dashboard: React.FC = () => {
           : "Not scheduled",
         location: locationText,
         workLocationName: job.workLocationName || null,
-        cityId: job.cityId,
-        stateId: job.stateId,
-        countryId: job.countryId,
+        cityId: job.cityId ?? undefined,
+        stateId: job.stateId ?? undefined,
+        countryId: job.countryId ?? undefined,
+        regionId: job.regionId ?? undefined,
         duration: job.endDate
           ? job.startDate
             ? `${new Date(job.startDate).toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
@@ -343,13 +344,15 @@ const Dashboard: React.FC = () => {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
                   </div>
                 ) : inProgressJobsData.length > 0 ? (
-                  inProgressJobsData.map((job: Job) => (
-                    <InProgressJobCard
-                      key={job.id}
-                      job={job}
-                      navigateToJob={`${absoluteUrls.client.home.my_jobs}/${job.id}`}
-                    />
-                  ))
+                  inProgressJobsData.map((job: Job) => {
+                    return (
+                      <InProgressJobCard
+                        key={job.id}
+                        job={job}
+                        navigateToJob={`${absoluteUrls.client.home.my_jobs}/${job.id}?regionId=${job.regionId}`}
+                      />
+                    )
+                  })
                 ) : (
                   <div className="col-span-full font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 text-gray-400 p-20 rounded-lg cursor-default">
                     No in-progress jobs.

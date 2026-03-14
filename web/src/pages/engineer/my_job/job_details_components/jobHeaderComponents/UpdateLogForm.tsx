@@ -52,11 +52,11 @@ const UpdateLogForm = ({
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
-        query: { regionId },
+        query: { regionId: Number(regionId) },
       });
       const exactQueryKey = getJobLogsQueryKey({
         path: { assignmentId },
-        query: { regionId },
+        query: { regionId: Number(regionId) },
       });
       queryClient.setQueryData(exactQueryKey, response.data);
     } catch (error) {
@@ -117,7 +117,7 @@ const UpdateLogForm = ({
                 logType: "progress_update",
                 title: data.title,
                 details: data.notes,
-                regionId,
+                regionId: Number(regionId),
               };
 
               // Only add attachment if file exists
@@ -145,6 +145,7 @@ const UpdateLogForm = ({
                       assignmentId,
                       target: "log",
                       logId: response.id,
+                      regionId: Number(regionId),
                     },
                   });
                 }
