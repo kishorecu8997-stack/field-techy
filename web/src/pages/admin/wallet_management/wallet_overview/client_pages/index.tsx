@@ -142,7 +142,7 @@ const ClientWallet: React.FC = () => {
 
         const handleView = () => {
           navigate(
-            `${absoluteUrls.admin.home.wallet_overview_view}/${row.userId}`,
+            `${absoluteUrls.admin.home.wallet_overview_view}/userId=${row.userId}?type=client`,
             {
               state: {
                 userId: row.userId,
