@@ -31,18 +31,6 @@ const PostAJobFields = ({
   const selectedCountry = watch("country");
   const selectedState = watch("state");
 
-  const [startDate, endDate] = watch(["startDate", "endDate"]);
-
-  //calculate the duration
-  const durationInDays = useMemo(() => {
-    if (!startDate || !endDate) return 0;
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const diffInMs = end.getTime() - start.getTime();
-    const days = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
-    return days > 0 ? days : 0;
-  }, [startDate, endDate]);
-
   const { data: countriesData } = useLookupData("countries");
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
   const { data: experienceLevelsData } = useLookupData("experienceLevels");
