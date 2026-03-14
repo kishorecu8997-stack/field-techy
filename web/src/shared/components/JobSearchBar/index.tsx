@@ -221,7 +221,7 @@ export const JobSearchBar = ({
                 setActiveDropdown(null);
               }}
               placeholder={isEngineerRoute ? "Search Jobs.." : "Search Engineers.."}
-              className="w-full bg-transparent outline-none border-none text-gray-800 placeholder-gray-400 text-sm"
+              className="w-full bg-transparent outline-none border-none text-gray-800 placeholder-gray-400 text-sm dark:text-white"
             />
           </div>
 
