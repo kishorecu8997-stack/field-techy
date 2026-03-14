@@ -43,7 +43,7 @@ const ViewEngineerFeedbackSidebar = () => {
           feedbackList.map((feedback) => (
             <div
               key={feedback.id}
-              className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm"
+              className="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm"
             >
               {/* Engineer Info */}
               <div className="flex items-start gap-3 mb-3">
@@ -73,11 +73,10 @@ const ViewEngineerFeedbackSidebar = () => {
                         <FaStar
                           key={i}
                           aria-hidden="true"
-                          className={`w-4 h-4 ${
-                            i < safeRating
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-300 dark:text-gray-500"
-                          }`}
+                          className={`w-4 h-4 ${i < safeRating
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-gray-300 dark:text-gray-500"
+                            }`}
                         />
                       ));
                     })()}

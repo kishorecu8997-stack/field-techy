@@ -82,13 +82,13 @@ const BreakRequestForm = ({
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
-            query: { regionId },
+            query: { regionId: Number(regionId) },
           });
 
           // Update the query cache with the new data using exact key from getJobLogsQueryKey
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId },
-            query: { regionId },
+            query: { regionId: Number(regionId) },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
         } catch (error) {
@@ -235,7 +235,7 @@ const BreakRequestForm = ({
           reason: data.reason || "",
           startAt,
           endAt,
-          regionId,
+          regionId: Number(regionId),
         },
       });
 

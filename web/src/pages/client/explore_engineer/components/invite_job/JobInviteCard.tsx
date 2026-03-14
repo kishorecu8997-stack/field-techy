@@ -54,11 +54,10 @@ const JobInviteCard: React.FC<JobCardProps> = ({
         </h3>
 
         <div
-          className={`relative w-5 h-5 cursor-pointer transition-colors duration-200 ${
-            isSelected
-              ? "border-teal-900"
-              : "border-gray-400 dark:bg-gray-700 dark:border-gray-600"
-          }`}
+          className={`relative w-5 h-5 cursor-pointer transition-colors duration-200 ${isSelected
+            ? "border-teal-900"
+            : "border-gray-400 dark:bg-gray-700 dark:border-gray-600"
+            }`}
           onClick={(e) => {
             e.stopPropagation();
             onToggle(job.id);
@@ -119,6 +118,12 @@ const JobInviteCard: React.FC<JobCardProps> = ({
           <RiMoneyDollarCircleLine className="w-4 h-4 mr-2" />
           {job.price}
         </div>
+
+        {job.status && (
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 capitalize font-semibold border border-gray-400 dark:border-gray-600 rounded-lg px-2 py-1 w-fit">
+            {job.status}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -6,16 +6,19 @@ import { toast } from "react-toastify";
 import { formatDate } from "@/utils/formatDate";
 import { useClientActionOnBreak } from "@/shared/apiServices/client/clientOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { apiClient } from "@/shared/apiServices/apiClient";
 import { getJobLogsOptions } from "@/api/@tanstack/react-query.gen";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { TOAST_MESSAGES } from "@/constants/timelineConstants";
 
 interface BreakRequestDetailsProps {
   onClose: () => void;
   assignmentIds?: number[]; // Array of assignment IDs for multiple engineers
   isClientView?: boolean; // If true, hide action buttons and show all breaks
   engineerNames?: string[]; // Engineer names corresponding to assignment IDs
+  regionId?: number; // Region ID for API filtering
 }
 
 interface Break {
@@ -56,14 +59,16 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
 }) => {
   const { showPopup } = usePopupStore();
   const { mutate: actionOnBreak } = useClientActionOnBreak({});
-  const [allBreakRequests, setAllBreakRequests] = useState<Break[]>([]);
 
+  const regionId = useUserSessionStore.getState().session?.regionId;
   // Fetch job logs for all assignment IDs using useQueries for parallel fetching
+  // Use regionId from props
   const results = useQueries({
     queries: (assignmentIds || []).map((id) => ({
       ...getJobLogsOptions({
         client: apiClient,
         path: { assignmentId: id },
+        query: { regionId: Number(regionId) },
       }),
       enabled: !!assignmentIds?.length && id > 0,
     })),
@@ -72,11 +77,10 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
   // Derived loading state from all query results
   const isLoading = results.some((r) => r.isLoading);
 
-  // Collect all break requests from all assignments
-  useEffect(() => {
+  // Process break requests from query results - use useMemo to avoid infinite re-renders
+  const allBreakRequests = useMemo(() => {
     if (!assignmentIds?.length) {
-      setAllBreakRequests([]);
-      return;
+      return [];
     }
 
     const breaks: Break[] = [];
@@ -86,14 +90,13 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
         result.data.breakRequests.forEach((brk) => {
           breaks.push({
             ...brk,
-            // Map engineer name if available for this assignment
             engineerName: engineerNames?.[assignmentIndex] || undefined,
           });
         });
       }
     });
 
-    setAllBreakRequests(breaks);
+    return breaks;
   }, [assignmentIds, results, engineerNames]);
 
   // If assignmentIds is provided, show all breaks; otherwise show nothing
@@ -122,7 +125,8 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
                 approverComment: reason,
               },
             } as any);
-            toast.success("Break rejected!");
+            const breakTypeMsg = brk.type === "long_term" ? TOAST_MESSAGES.longBreakRejected : TOAST_MESSAGES.shortBreakRejected;
+            toast.success(breakTypeMsg);
             onClose();
           }}
           onClose={onClose}
@@ -150,7 +154,8 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
                 approverComment: reason,
               },
             } as any);
-            toast.success("Break approved!");
+            const breakTypeMsg = brk.type === "long_term" ? TOAST_MESSAGES.longBreakApproved : TOAST_MESSAGES.shortBreakApproved;
+            toast.success(breakTypeMsg);
             onClose();
           }}
           onClose={onClose}
@@ -247,13 +252,12 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
                   : "Short Term Break"}
               </p>
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
-                  brk.status === "pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : brk.status === "approved"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                }`}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${brk.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : brk.status === "approved"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                  }`}
               >
                 {brk.status === "pending"
                   ? "Pending"
@@ -264,11 +268,10 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
             </div>
 
             <p
-              className={`mb-2 inline-block px-2 py-0.5 rounded-2xl text-white text-xs ${
-                brk.type === "long_term"
-                  ? "bg-orange-400 dark:bg-orange-700"
-                  : "bg-green-600 dark:bg-green-700"
-              }`}
+              className={`mb-2 inline-block px-2 py-0.5 rounded-2xl text-white text-xs ${brk.type === "long_term"
+                ? "bg-orange-400 dark:bg-orange-700"
+                : "bg-green-600 dark:bg-green-700"
+                }`}
             >
               {brk.type === "long_term"
                 ? `${formatDateOnly(brk.startAt)} - ${formatDateOnly(brk.endAt)} (${calculateDuration(brk.startAt, brk.endAt)})`

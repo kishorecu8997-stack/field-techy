@@ -2,6 +2,7 @@ import { addToQueue } from "./offlineQueue";
 import type { OfflineAction } from "./types";
 import { apiClient } from "@/shared/apiServices/apiClient";
 import { engineerRequestStart } from "@/api/sdk.gen";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Fallback implementation of updateJobStatus used when the network is unstable.
@@ -31,7 +32,10 @@ export async function offlineAwareUpdateJobStatus(
     if (status === "In Progress") {
       return await engineerRequestStart({
         client: apiClient,
-        body: { assignmentId: Number(jobId) }, // Assuming jobId is assignmentId for start
+        body: {
+          assignmentId: Number(jobId),
+          regionId: Number(useUserSessionStore.getState().session?.regionId),
+        },
       });
     } else if (status === "Completed") {
       console.warn(

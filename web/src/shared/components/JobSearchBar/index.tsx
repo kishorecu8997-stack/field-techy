@@ -45,7 +45,7 @@ export const JobSearchBar = ({
   const location = useLocation();
   const [searchParams] = useSearchParams();
 
-  const isEngineerFallback = location.pathname.startsWith("/engineer");
+  const isEngineerFallback = location.pathname.includes("/engineer");
   const isEngineerRoute = userType
     ? userType === UserRole.ENGINEER
     : isEngineerFallback;
@@ -209,7 +209,7 @@ export const JobSearchBar = ({
         className="w-full"
       >
         <div
-          className="flex items-center w-full bg-white rounded-full border border-gray-200 shadow-md"
+          className="flex items-center w-full rounded-full border border-gray-400 dark:border-gray-600 dark:shadow-md"
           style={{ minHeight: "52px" }}
         >
           <div className="relative flex-1 min-w-[150px] flex-grow flex items-center px-5 py-2">
@@ -220,7 +220,7 @@ export const JobSearchBar = ({
               onFocus={() => {
                 setActiveDropdown(null);
               }}
-              placeholder="Search Jobs.."
+              placeholder={isEngineerRoute ? "Search Jobs.." : "Search Engineers.."}
               className="w-full bg-transparent outline-none border-none text-gray-800 placeholder-gray-400 text-sm"
             />
           </div>

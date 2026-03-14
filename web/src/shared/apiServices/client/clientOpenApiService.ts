@@ -20,6 +20,7 @@ import {
   type ClientGetAssignmentDetailsData,
   type ClientGetCompanyInfoResponse,
   type ClientGetJobsData,
+  type ClientGetPublicEngineerProfileData,
   type ClientGetRateCardData,
   type ClientGetRateCardResponse,
   type ClientInviteEngineerResponse,
@@ -328,6 +329,7 @@ export function useClientGetJobs({
   jobId,
   jobStatus,
   enabled,
+  regionId,
 }: {
   jobId?: number;
   regionId?: number;
@@ -337,7 +339,7 @@ export function useClientGetJobs({
   return useQuery({
     ...clientGetJobsOptions({
       client: apiClient,
-      query: { jobId, jobStatus },
+      query: { jobId, jobStatus, regionId },
     }),
     enabled: enabled,
     staleTime: 0,
@@ -628,22 +630,22 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => {},
+    refetch: () => { },
   };
 }
 
 export function useGetJobLogs(
   assignmentId: number,
   enabled: boolean = true,
-  regionId?: number,
+  regionId: number,
 ) {
   return useQuery({
     ...getJobLogsOptions({
       client: apiClient,
       path: { assignmentId },
-      query: regionId !== undefined ? { regionId } : undefined,
+      query: { regionId },
     }),
-    enabled: enabled && !!assignmentId,
+    enabled: enabled && !!assignmentId && !!regionId,
     retry: 1,
   });
 }
@@ -686,7 +688,8 @@ export function useClientTransactions(
     },
     enabled,
     staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 }
 
@@ -711,6 +714,8 @@ export function useClientExploreEngineers(
     }),
     enabled: enabled,
     staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 }
 
@@ -744,13 +749,17 @@ export function useClientExploreEngineersInfinite(
 export function useClientGetPublicEngineerProfile(
   id: number,
   enabled: boolean = true,
+  query: ClientGetPublicEngineerProfileData["query"] = {},
 ) {
   return useQuery({
     ...clientGetPublicEngineerProfileOptions({
       client: apiClient,
       path: { id },
+      query: query,
     }),
     enabled: enabled && !!id,
     staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 }

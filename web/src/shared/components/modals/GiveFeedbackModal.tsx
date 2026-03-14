@@ -76,7 +76,7 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
         assignmentId,
         rating: data.rating,
         review: (data.review || "").trim(),
-        regionId,
+        regionId: Number(regionId),
       },
     });
   };

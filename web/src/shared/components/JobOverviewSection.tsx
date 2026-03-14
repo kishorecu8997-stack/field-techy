@@ -2,6 +2,57 @@ import React from "react";
 import { IoAttach } from "react-icons/io5";
 import { Button } from "./commonUI/Buttons";
 import type { Attachment, JobOverviewProps } from "./types";
+import { FaFilePdf } from "react-icons/fa";
+
+/**
+ * Helper function to check if a URL points to a PDF file
+ */
+const isPdfFile = (url: string): boolean => {
+  return url?.toLowerCase().endsWith(".pdf") || url?.includes(".pdf?") || url?.includes("%2Epdf");
+};
+
+/**
+ * Formats a price string with comma separators while preserving the currency symbol/unit
+ * @param price - The price string (e.g., "₹1000", "$500", "1000")
+ * @param unit - Optional unit/currency to display (e.g., "INR", "USD")
+ * @returns Formatted price with comma separators (e.g., "₹ 1,000", "$ 5,000", "INR 1,000")
+ */
+const formatPriceWithComma = (price: string | undefined, unit?: string): string => {
+  if (!price) return "";
+  
+  // If unit is provided separately, use it - place currency symbol first
+  if (unit) {
+    // Extract numeric part from price
+    const numericPart = price.replace(/[^0-9.]/g, "");
+    if (!numericPart) return price;
+    
+    const number = parseFloat(numericPart);
+    if (isNaN(number)) return price;
+    
+    const formattedNumber = number.toLocaleString("en-US");
+    return `${unit} ${formattedNumber}`;
+  }
+  
+  // Extract currency symbol/unit from the beginning of the string
+  const currencyMatch = price.match(/^[₹$€£¥A-Z]+/i);
+  const currencySymbol = currencyMatch ? currencyMatch[0] : "";
+  
+  // Extract numeric part
+  const numericPart = price.replace(/^[₹$€£¥A-Z]+/i, "").trim();
+  
+  // If no numeric part, return original
+  if (!numericPart) return price;
+  
+  // Parse the number and format with commas
+  const number = parseFloat(numericPart.replace(/,/g, ""));
+  if (isNaN(number)) return price;
+  
+  // Format with comma separators
+  const formattedNumber = number.toLocaleString("en-US");
+  
+  // Return with currency symbol (add space between if symbol exists)
+  return currencySymbol ? `${currencySymbol} ${formattedNumber}` : formattedNumber;
+};
 
 /**
  * Displays comprehensive job details with skills, tools, earnings, and attachments.
@@ -21,6 +72,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
   experienceLevel,
   numberOfVacancies,
   totalPayment,
+  // engineerEarnings,
   additionalDetails = [],
   attachments = [],
   userType = "client",
@@ -91,33 +143,66 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                 Tools
               </p>
               <div className="grid grid-cols-2 gap-2">
-                {tools.map((tool, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-600"
-                  >
-                    {tool.image && (
-                      <img
-                        src={tool.image}
-                        alt={tool.name}
-                        className="w-8 h-8 object-contain"
-                      />
-                    )}
-                    {tool.image && (
-                      <div className="h-7 w-px bg-gray-200 dark:bg-gray-600" />
-                    )}
-                    <div className="space-y-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white leading-snug">
-                        {tool.name}
-                      </p>
-                      {tool.price && (
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
-                          {tool.price}
-                        </p>
+                {tools.map((tool, idx) => {
+                  const toolImage = tool.image || tool.imageUrl;
+                  const isPdf = toolImage ? isPdfFile(toolImage) : false;
+                  
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-600"
+                    >
+                      {toolImage && (
+                        <>
+                          {isPdf ? (
+                            <a
+                              href={toolImage}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="w-8 h-8 flex items-center justify-center text-red-500 hover:text-red-700"
+                              title="View PDF"
+                            >
+                              <FaFilePdf className="w-6 h-6" />
+                            </a>
+                          ) : (
+                            <a
+                              href={toolImage}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="w-8 h-8 flex-shrink-0"
+                            >
+                              <img
+                                src={toolImage}
+                                alt={tool.name}
+                                className="w-8 h-8 object-contain"
+                              />
+                            </a>
+                          )}
+                          <div className="h-7 w-px bg-gray-200 dark:bg-gray-600" />
+                        </>
                       )}
+                      <div className="space-y-0 flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white leading-snug truncate">
+                          {tool.name}
+                        </p>
+                        {(tool.price || tool.engineerPrice) && (
+                          <div className="flex flex-wrap gap-x-2 text-xs">
+                            {tool.price && (
+                              <p className="text-gray-600 dark:text-gray-400">
+                                <span className="font-medium">Price: </span> {formatPriceWithComma(tool.price, tool.unit)}
+                              </p>
+                            )}
+                            {tool.engineerPrice && (
+                              <p className="text-green-600 dark:text-green-400">
+                                <span className="font-medium">:</span> {formatPriceWithComma(tool.engineerPrice, tool.unit)}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -174,7 +259,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                   Number of Vacancies
                 </p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  {numberOfVacancies} Engineers
+                  {numberOfVacancies === 1 ? "1 Engineer" : `${numberOfVacancies} Engineers`}
                 </p>
               </div>
             )}
@@ -190,7 +275,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                 Total Amount
               </p>
               <p className="text-sm font-bold text-gray-900 dark:text-white">
-                {totalPayment}
+                {formatPriceWithComma(totalPayment)}
               </p>
             </div>
           )}
@@ -204,7 +289,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
             Total Cost
           </h3>
           <p className="text-sm font-bold text-gray-900 dark:text-white">
-            {totalPayment}
+           {formatPriceWithComma(totalPayment)}
           </p>
         </div>
       )}
