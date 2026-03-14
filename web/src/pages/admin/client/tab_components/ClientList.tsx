@@ -294,11 +294,11 @@ const ClientList: React.FC<ClientListProps> = ({
   ];
 
   return (
-    <div className="h-full w-full flex flex-1 overflow-hidden flex-col bg-white dark:bg-gray-800 rounded-md p-4">
+    <div className="h-full w-full flex flex-1 overflow-hidden flex-col bg-white dark:bg-gray-700 rounded-md p-4">
       <div className="mb-4 flex justify-between items-center gap-2">
         <SearchInput value={search} onChange={handleSearchChange} />
         <Button
-          className="w-fit bg-gradient-to-r from-teal-700 to-teal-900 text-white shadow-md hover:shadow-lg transition-all"
+          className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
           onClick={() => {
             const addUrl =
               clientType === "corporate"

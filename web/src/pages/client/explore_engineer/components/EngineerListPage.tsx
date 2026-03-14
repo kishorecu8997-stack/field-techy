@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import EngineerCard from "./EngineerCard";
-import Pagination from "../../search_result/components/Pagination";
-import { scrollToTop } from "@/utils";
 import {
   useClientBalance,
   useClientExploreEngineers,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import { scrollToTop } from "@/utils";
+import React, { useEffect, useState } from "react";
+import Pagination from "../../search_result/components/Pagination";
 import type { FiltersType } from "../index";
+import EngineerCard from "./EngineerCard";
 
 interface EngineerListPageProps {
   filters: FiltersType;
@@ -25,12 +25,14 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
   onTotalEngineerCountChange,
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
+
   useEffect(() => {
     scrollToTop();
   }, [currentPage]);
   // Reset to first page whenever filters affecting the query change
   useEffect(() => {
     setCurrentPage(1);
+    scrollToTop();
   }, [
     filters.q,
     filters.country,
@@ -83,12 +85,12 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
     name: engineer.name,
     rating: Number(engineer.averageRating),
     reviewCount: engineer.reviewCount,
+    regionId: engineer.regionId ? String(engineer.regionId) : "",
     title: engineer.serviceCategoryName ?? "Engineer",
     imageUrl: engineer.profilePictureUrl ?? "",
     pay_type: engineer.hourlyRate
       ? `${CurrencySymbol} ${engineer.hourlyRate}/hr`
       : "N/A",
-    availability: engineer.isEmployed ? "Busy" : "Available",
   }));
 
   if (isLoading) {

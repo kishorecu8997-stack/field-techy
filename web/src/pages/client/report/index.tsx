@@ -89,7 +89,7 @@ const ReportPage = ({
               issueCategory: data.category,
               priorityLevel: data.priority,
               attachment: attachmentData,
-              regionId,
+              regionId: Number(regionId),
             };
 
             const mutationOptions = {

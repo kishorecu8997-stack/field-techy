@@ -143,7 +143,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           assignmentId: assignmentId,
           pendingApproval: "application",
           action: "approve",
-          regionId: regionId,
+          regionId: Number(regionId),
         },
       });
       setAcceptedProposals((prev) => [...prev, String(assignmentId)]);
@@ -169,7 +169,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
           assignmentId: assignmentId,
           pendingApproval: "application",
           action: "reject",
-          regionId: regionId,
+          regionId: Number(regionId),
         },
       });
       setRejectedProposals((prev) => [...prev, String(assignmentId)]);

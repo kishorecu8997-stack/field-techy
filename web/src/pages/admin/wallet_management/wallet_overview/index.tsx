@@ -30,10 +30,8 @@ export default function WalletOverview() {
         <h1 className="font-semibold">Wallet Management</h1>
         <Button variant="solid">Export CSV</Button>
       </div>
-      <div className="w-full h-full bg-white dark:bg-gray-700 rounded-lg p-2">
-        <div className="flex p-2 w-full h-full">
-          <AdminTabComponent tabs={tabs} defaultActiveTab="Client" />
-        </div>
+      <div className="flex-1 overflow-hidden bg-white dark:bg-gray-700 rounded-lg p-4">
+        <AdminTabComponent tabs={tabs} defaultActiveTab="Client" />
       </div>
     </div>
   );

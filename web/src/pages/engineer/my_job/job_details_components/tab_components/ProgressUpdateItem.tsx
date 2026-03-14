@@ -65,7 +65,7 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
   return (
     <div
       key={`${update.title}-${index}`}
-      className="relative border border-gray-200 bg-gray-50 rounded-lg p-4 shadow-sm"
+      className="relative border border-gray-200 bg-white rounded-lg p-4 dark:border-gray-700 dark:bg-gray-800"
     >
       <span
         className="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg"
@@ -76,12 +76,12 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
       />
       <div className="flex justify-between items-start gap-4">
         <div className="flex-1">
-          <p className="text-sm font-semibold text-gray-800 leading-5">
+          <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-5">
             {updateTitle}
             {breakTimeDisplay}
           </p>
           {!isCollapsed && update.description && (
-            <p className="text-sm text-gray-700 mt-1 whitespace-pre-line break-all leading-5">
+            <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 break-all">
               {update.description}
             </p>
           )}
@@ -90,7 +90,7 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
               href={update.attachmentUrl || "#"}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 cursor-pointer transition-colors"
+              className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 cursor-pointer"
               onClick={(e) => {
                 if (!update.attachmentUrl) {
                   e.preventDefault();
@@ -140,7 +140,7 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
               />
             </Button>
           )}
-          <span className="text-xs text-gray-500 leading-4">
+          <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
             {update.timestamp}
           </span>
           {update.statusText && (

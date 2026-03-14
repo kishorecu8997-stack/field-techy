@@ -44,10 +44,11 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
+            query: { regionId: Number(regionId) },
           });
           const exactQueryKey = getJobLogsQueryKey({
             path: { assignmentId },
-            query: { regionId },
+            query: { regionId: Number(regionId) },
           });
           queryClient.setQueryData(exactQueryKey, response.data);
           queryClient.setQueryData(
@@ -73,8 +74,12 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           const response = await getJobLogs({
             client: apiClient,
             path: { assignmentId },
+            query: { regionId: Number(regionId) },
           });
-          const exactQueryKey = getJobLogsQueryKey({ path: { assignmentId } });
+          const exactQueryKey = getJobLogsQueryKey({
+            path: { assignmentId },
+            query: { regionId: Number(regionId) },
+          });
           queryClient.setQueryData(exactQueryKey, response.data);
           queryClient.setQueryData(
             ["getJobLogs", { path: { assignmentId } }],
@@ -132,7 +137,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
               // Handle Status Update
               if (data.status === "in-progress") {
                 await requestStart({
-                  body: { assignmentId: Number(jobId), regionId },
+                  body: { assignmentId: Number(jobId), regionId: Number(regionId) },
                 });
               } else {
                 await addWorkLog({
@@ -141,7 +146,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
                     logType: data.status,
                     details: data.remarks,
                     attachment: attachmentMetadata,
-                    regionId,
+                    regionId: Number(regionId),
                   },
                 });
               }

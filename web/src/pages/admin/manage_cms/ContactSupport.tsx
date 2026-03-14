@@ -193,7 +193,7 @@ export default function ContactSupport() {
         <div className="flex justify-end mt-6">
           <Button
             type="submit"
-            className="w-fit bg-gradient-to-r from-teal-900 to-teal-700 text-white py-2 px-6 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             disabled={mutation.isPending}
           >
             {mutation.isPending ? "Saving..." : "Save Changes"}

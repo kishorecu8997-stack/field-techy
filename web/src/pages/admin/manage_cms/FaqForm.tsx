@@ -114,7 +114,7 @@ export default function FaqForm({
         <div className="flex justify-end mt-6">
           <Button
             type="submit"
-            className="w-fit bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2.5 px-6 rounded-lg hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             disabled={isLoading}
           >
             {isLoading

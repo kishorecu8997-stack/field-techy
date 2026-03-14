@@ -3,14 +3,14 @@ import CustomTable, {
   type Column,
 } from "@/shared/components/commonUI/custom_table";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useMemo } from "react";
+import { useNavigate, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   useAdminGetManageTransactions,
   useAdminDownloadInvoice,
 } from "@/shared/apiServices/admin/adminOpenApiService";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+
 import { toast } from "react-toastify";
 import { formatApiDate } from "@/utils/timelineUtils";
 import { FiDownload } from "react-icons/fi";
@@ -89,41 +89,49 @@ function InvoiceDownloadButton({
 export default function WalletView() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { id: urlUserId } = useParams();
+  const [searchParams] = useSearchParams();
 
-  const { usertype, userId, clientName, mobileNo } = (location.state || {}) as {
+  const urlType = searchParams.get("type");
+
+  let parsedUrlUserId = urlUserId;
+  if (urlUserId?.startsWith("userId=")) {
+    parsedUrlUserId = urlUserId.split("=")[1];
+  }
+
+  const { usertype, userId: stateUserId, clientName, mobileNo, email } = (location.state ||
+    {}) as {
     usertype?: "client" | "engineer";
     userId?: number;
     clientName?: string;
     mobileNo?: string;
+    email?: string;
   };
 
+  const finalUserId = Number(parsedUrlUserId) || stateUserId;
+  const finalUserType = (urlType as "client" | "engineer") || usertype;
+
   const methods = useForm();
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  const { data, isLoading: isTransactionsLoading } =
-    useAdminGetManageTransactions({ limit: 9999 }, { enabled: !!userId });
+  const transactionsQuery = useAdminGetManageTransactions({
+    page,
+    limit,
+    ...(finalUserType === "client" && finalUserId ? { clientId: finalUserId } : {}),
+    ...(finalUserType === "engineer" && finalUserId ? { engineerId: finalUserId } : {}),
+  });
 
-  const userTransactions = useMemo<TransactionType[]>(() => {
-    if (!data?.data || !userId) return [];
+  const { data: manageTransactionsData, isLoading: isTransactionsLoading } = transactionsQuery;
 
-    return data.data.filter((tx) => {
-      if (usertype === "client") {
-        return tx.clientId === userId;
-      }
-
-      if (usertype === "engineer") {
-        return tx.engineerId === userId;
-      }
-
-      return false;
-    });
-  }, [data?.data, userId, usertype]);
-
-  const hasTransactions = userTransactions.length > 0;
+  const transactions = manageTransactionsData?.data || [];
+  const totalCount = manageTransactionsData?.total || 0;
 
   const columns: Column<TransactionType>[] = [
     {
+      key: "srNo",
       label: "Sr.No.",
-      renderCell: (_row, index) => index + 1,
+      renderCell: (_row, index) => (page - 1) * limit + index + 1,
     },
     {
       key: "invoiceNumber",
@@ -167,85 +175,78 @@ export default function WalletView() {
       renderCell: (row) => row.description ?? "—",
     },
     {
+      key: "action",
       label: "Action",
       renderCell: (row) => <InvoiceDownloadButton transaction={row} />,
     },
   ];
 
-  if (isTransactionsLoading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center p-12">
-        <LoaderComponent />
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full h-full p-4 md:p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">Wallet Transactions</h1>
-
+    <div className="h-full w-full flex flex-1 overflow-hidden flex-col bg-gray-50 dark:bg-gray-800 rounded-md p-4 md:p-6">
+      <div className="flex justify-between items-center mb-4 gap-2">
+        <h1 className="text-xl font-semibold">Wallet Transactions</h1>
         <Button variant="solid" onClick={() => navigate(-1)}>
           Back
         </Button>
       </div>
 
-      {hasTransactions ? (
-        <div className="bg-white dark:bg-gray-700 rounded-lg shadow-sm p-6">
-          <FormContainer methods={methods} className="mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm text-gray-500 mb-1">Name</label>
-                <p className="font-medium">
-                  {userTransactions[0]?.clientDetails?.name ||
-                    clientName ||
-                    "—"}
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-500 mb-1">
-                  Email
-                </label>
-                <p className="font-medium">
-                  {userTransactions[0]?.clientDetails?.email || "—"}
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-500 mb-1">
-                  Phone
-                </label>
-                <p className="font-medium">
-                  {userTransactions[0]?.clientDetails?.phone || mobileNo || "—"}
-                </p>
-              </div>
+      <div className="flex flex-col flex-1 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-sm p-4">
+        <FormContainer methods={methods} className="mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm text-gray-500 mb-1">Name</label>
+              <p className="font-medium">
+                {clientName ||
+                  transactions.find(
+                    (t) => t.clientDetails?.name || t.engineerDetails?.name,
+                  )?.clientDetails?.name ||
+                  transactions.find((t) => t.engineerDetails?.name)
+                    ?.engineerDetails?.name ||
+                  "—"}
+              </p>
             </div>
-          </FormContainer>
 
+            <div>
+              <label className="block text-sm text-gray-500 mb-1">Email</label>
+              <p className="font-medium">
+                {email ||
+                  transactions.find(
+                    (t) => t.clientDetails?.email || t.engineerDetails?.email,
+                  )?.clientDetails?.email ||
+                  transactions.find((t) => t.engineerDetails?.email)
+                    ?.engineerDetails?.email ||
+                  "—"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-500 mb-1">Phone</label>
+              <p className="font-medium">
+                {mobileNo ||
+                  transactions.find(
+                    (t) => t.clientDetails?.phone || t.engineerDetails?.phone,
+                  )?.clientDetails?.phone ||
+                  transactions.find((t) => t.engineerDetails?.phone)
+                    ?.engineerDetails?.phone ||
+                  "—"}
+              </p>
+            </div>
+          </div>
+        </FormContainer>
+
+        <div className="h-full flex-1 overflow-hidden">
           <CustomTable<TransactionType>
             columns={columns}
-            data={userTransactions}
-            initialPageSize={10}
-            totalCount={userTransactions.length}
-            loading={false}
+            data={transactions}
+            initialPageSize={limit}
+            totalCount={totalCount}
+            currentPage={page}
+            onPageChange={setPage}
+            onPageSizeChange={setLimit}
+            loading={isTransactionsLoading}
           />
         </div>
-      ) : (
-        <div className="p-8 text-center bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-          <div className="text-xl font-semibold text-amber-600 mb-4">
-            No transactions found
-          </div>
-
-          <div className="text-gray-600 mb-2">
-            No matching records for user ID <strong>{userId}</strong>
-          </div>
-
-          <Button variant="solid" onClick={() => navigate(-1)}>
-            Go Back
-          </Button>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

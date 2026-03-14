@@ -7,7 +7,7 @@ export const STATUS_LABEL_MAP: Record<JobStatus, string> = {
   [JOB_STATUSES.NOTIFIED]: "Notified",
   [JOB_STATUSES.HOLD]: "Hold",
   [JOB_STATUSES.DRAFT]: "Draft",
-  [JOB_STATUSES.CANCELED]: "Canceled",
+  [JOB_STATUSES.CANCELED]: "Cancelled",
   [JOB_STATUSES.ESCALATION_IN_PROGRESS]: "Escalation In Progress",
   [JOB_STATUSES.WORK_IN_PROGRESS]: "Work In Progress",
   [JOB_STATUSES.CLOSED]: "Closed",

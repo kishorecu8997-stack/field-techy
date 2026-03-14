@@ -56,11 +56,11 @@ const RevisionRequestUpdateForm = ({
       const response = await getJobLogs({
         client: apiClient,
         path: { assignmentId },
-        query: { regionId },
+        query: { regionId: Number(regionId) },
       });
       const exactQueryKey = getJobLogsQueryKey({
         path: { assignmentId },
-        query: { regionId },
+        query: { regionId: Number(regionId) },
       });
       queryClient.setQueryData(exactQueryKey, response.data);
     } catch (error) {
@@ -115,7 +115,7 @@ const RevisionRequestUpdateForm = ({
                     logId,
                     revisionId,
                     content: notes,
-                    regionId,
+                    regionId: Number(regionId),
                     attachment: attachment
                       ? {
                           filename: attachment.name,
@@ -141,6 +141,7 @@ const RevisionRequestUpdateForm = ({
                       target: "revision",
                       revisionId: response.revisionId || revisionId,
                       logId,
+                      regionId: Number(regionId),
                     },
                   });
                 }

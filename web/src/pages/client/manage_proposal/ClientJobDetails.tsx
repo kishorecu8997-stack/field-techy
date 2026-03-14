@@ -5,7 +5,7 @@ import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHea
 import { JOB_STATUSES } from "@/pages/engineer/search_result/types";
 import {
   useClientGetAssignmentDetails,
-  useClientGetJobs,
+  useClientGetJobs
 } from "@/shared/apiServices/client/clientOpenApiService";
 import ChatForJobs from "@/shared/components/ChatForJobs";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -76,6 +76,13 @@ const ClientJobDetails = () => {
   const numberOfApprovedProposals = assignments.filter((a) =>
     approvedStatuses.includes((a.assignmentStatus || "").toLowerCase()),
   ).length;
+
+const hasEngineerStarted = assignments.some(
+  (a) =>
+    a.assignmentStatus?.toLowerCase() === "started" ||
+    a.assignmentStatus?.toLowerCase() === "submit_pending_approval" ||
+    a.assignmentStatus?.toLowerCase() === "submitted"
+);
   const numberOfVacancy = job?.vacancies ?? undefined;
   const isDummyNetworkEngineer = job
     ? isDummyNetworkEngineerJob(job.id)
@@ -131,6 +138,7 @@ const ClientJobDetails = () => {
     breadcrumbExtra === "chats" ? "Chats" : null,
   ].filter((v): v is string => typeof v === "string");
 
+
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -167,7 +175,8 @@ const ClientJobDetails = () => {
                 setActiveTab={setActiveTab}
                 setOfferJobStatus={setOfferJobStatus}
                 OfferJobStatus={OfferJobStatus}
-                hideBreakDetails={isDummyNetworkEngineer}
+                hideBreakDetails={isDummyNetworkEngineer || !hasEngineerStarted}
+                hideChats={!hasEngineerStarted}
                 hideClient={true}
                 jobLocation={job?.workLocationName || ""}
                 numberOfVacancy={numberOfVacancy}
@@ -187,6 +196,7 @@ const ClientJobDetails = () => {
                 }
                 allCardsApproved={job?.status === JOB_STATUSES.closed}
                 activeTab={activeTab}
+                clientRegionId={job?.regionId}
               />
               <JobTabSection
                 status={(jobStatus as JobStatus) || "Posted"}

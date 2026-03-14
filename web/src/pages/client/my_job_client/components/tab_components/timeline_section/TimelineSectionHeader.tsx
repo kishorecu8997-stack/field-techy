@@ -49,6 +49,9 @@ interface TimelineSectionHeaderProps {
     duration?: string;
     detailsType?: string;
     detailsLabel?: string;
+    // Proposal specific fields
+    proposalDetail?: string | null;
+    proposalAttachmentUrl?: string | null;
   }>;
   apiRevisionUpdateDataList?: RevisionData[];
 }
@@ -112,15 +115,15 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
           const revisions = getRevisions(item);
           const hasApproverComment = !!item.approverComment;
           const shouldShowExpandButton = itemHasRevisions || hasApproverComment;
-          const singleAttachmentName =
-            item.attachmentName ||
-            getAttachmentFileName({ url: item.attachmentUrl || undefined });
+          // const singleAttachmentName =
+          //   item.attachmentName ||
+          //   getAttachmentFileName({ url: item.attachmentUrl || undefined });
 
           // Engineer timeline style: border-gray-200 bg-gray-50 rounded-lg p-4 shadow-sm
           return (
             <div
               key={itemKey}
-              className="relative border border-gray-200 bg-gray-50 rounded-lg p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800/50"
+              className="relative border border-gray-200 bg-white rounded-lg p-4 dark:border-gray-700 dark:bg-gray-800"
             >
               {/* Accent bar on left */}
               <span
@@ -148,11 +151,11 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                       {item.details}
                     </p>
                   )}
-                  {/* Attachment display for progress updates and final statements */}
-                  {item.attachmentUrl && (
+                  {/* Attachment display for progress updates and final statements and proposal received */}
+                  {(item.attachmentUrl || item.proposalAttachmentUrl) && (
                     <div className="mt-2">
                       <a
-                        href={item.attachmentUrl}
+                        href={item.attachmentUrl || item.proposalAttachmentUrl || ""}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 cursor-pointer"
@@ -170,7 +173,7 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                             d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
                           />
                         </svg>
-                        {singleAttachmentName}
+                        {item.attachmentName || getAttachmentFileName({ url: item.attachmentUrl || item.proposalAttachmentUrl || undefined }) || "View Attachment"}
                       </a>
                     </div>
                   )}

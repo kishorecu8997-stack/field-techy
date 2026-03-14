@@ -327,7 +327,6 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
         <Button
           variant="solid"
           onClick={() => navigate(absoluteUrls.admin.home.manage_client)}
-          className="bg-teal-900"
         >
           Back
         </Button>
@@ -365,7 +364,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                       setActiveTab("Documents")
               }
               disabled={isSubmitting}
-              className="px-8 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:from-teal-800 hover:to-teal-950 transition-all font-medium min-w-[140px]"
+              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             >
               {isSubmitting
                 ? "Processing..."

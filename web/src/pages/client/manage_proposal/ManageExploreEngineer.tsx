@@ -83,6 +83,7 @@ const ManageExploreEngineer = () => {
                   // this data should be come from the client data or job list
                   pendingApproval: "application",
                   action: "approve",
+                  regionId: Number(regionIdParam),
                 },
               });
               navigate(
@@ -123,6 +124,7 @@ const ManageExploreEngineer = () => {
                   // this data should be come from the client data or job list
                   pendingApproval: "application",
                   action: "reject",
+                  regionId: Number(regionIdParam),
                 },
               });
               navigate(-1);
