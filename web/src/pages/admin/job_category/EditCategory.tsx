@@ -9,7 +9,6 @@ import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useAdminUpdateServiceCategory } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * `EditCategory` component renders a page with a form to edit an existing Service category.
@@ -24,7 +23,6 @@ import { useQueryClient } from "@tanstack/react-query";
 export default function EditCategory() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const location = useLocation();
 
   const categoryId = id ? Number(id) : undefined;
@@ -50,7 +48,7 @@ export default function EditCategory() {
   const { showPopup } = usePopupStore();
   const { mutateAsync: updateServiceCategory, isPending: isUpdatingCategory } =
     useAdminUpdateServiceCategory({
-      onSuccess: () => {
+      onSuccess: async () => {
         toast.success("Service category updated successfully!");
         methods.reset();
         navigate(absoluteUrls.admin.home.manage_categories);
@@ -83,34 +81,6 @@ export default function EditCategory() {
               path: { id: categoryId },
               body: { name: data.categoryName },
             });
-            queryClient.setQueriesData(
-              {
-                predicate: (query) =>
-                  Array.isArray(query.queryKey) &&
-                  query.queryKey[0] &&
-                  typeof query.queryKey[0] === "object" &&
-                  (query.queryKey[0] as { _id?: string })._id ===
-                    "adminGetServiceCategories",
-              },
-              (oldData) => {
-                if (!oldData || typeof oldData !== "object") return oldData;
-                const prev = oldData as {
-                  data?: Array<{ id: number; name: string }>;
-                  total?: number;
-                  page?: number;
-                  limit?: number;
-                };
-                if (!Array.isArray(prev.data)) return oldData;
-                return {
-                  ...prev,
-                  data: prev.data.map((item) =>
-                    item.id === categoryId
-                      ? { ...item, name: data.categoryName }
-                      : item,
-                  ),
-                };
-              },
-            );
             close(true);
           },
         },
