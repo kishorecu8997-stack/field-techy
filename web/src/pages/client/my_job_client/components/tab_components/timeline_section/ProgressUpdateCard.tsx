@@ -68,9 +68,8 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
     hasRevisions;
   return (
     <div
-      className={`relative rounded-lg border bg-white dark:bg-gray-800 shadow-sm ${
-        isCollapsed ? "px-4 py-2.5 flex items-center justify-between" : "p-4"
-      }`}
+      className={`relative rounded-lg border bg-white dark:bg-gray-800 shadow-sm ${isCollapsed ? "px-4 py-2.5 flex items-center justify-between" : "p-4"
+        }`}
       style={{ borderColor: progressAccentColor }}
     >
       <span
@@ -142,31 +141,6 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                   </>
                 )}
               </div>
-              {/* Action buttons below the details */}
-              {progressStatus === TIMELINE_STATUS.pending && (
-                <div className="absolute right-4 top-4 flex gap-3 mt-7">
-                  <Button
-                    variant="no_style"
-                    onClick={() => onProgressReject()}
-                    className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  >
-                    Reject
-                  </Button>
-                  <Button
-                    variant="no_style"
-                    onClick={onRequestRevision}
-                    className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  >
-                    Request Revision
-                  </Button>
-                  <Button
-                    onClick={() => onProgressApprove()}
-                    className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
-                  >
-                    Approve
-                  </Button>
-                </div>
-              )}
             </div>
             <div className="flex flex-col items-end gap-3">
               <div className="flex items-center gap-3">
@@ -203,6 +177,32 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
               )}
             </div>
           </div>
+
+          {/* Action buttons below the details in full width */}
+          {progressStatus === TIMELINE_STATUS.pending && (
+            <div className="mt-4 flex flex-wrap justify-end gap-3 pr-2">
+              <Button
+                variant="no_style"
+                onClick={() => onProgressReject()}
+                className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                Reject
+              </Button>
+              <Button
+                variant="no_style"
+                onClick={onRequestRevision}
+                className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                Request Revision
+              </Button>
+              <Button
+                onClick={() => onProgressApprove()}
+                className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
+              >
+                Approve
+              </Button>
+            </div>
+          )}
 
           {/* Show revisions when in revision status OR when toggle is enabled (approved/rejected) */}
           {(progressStatus === TIMELINE_STATUS.revision || showRevisions) &&
@@ -256,16 +256,16 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                         <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
                           {revision.createdAt
                             ? new Date(revision.createdAt).toLocaleString(
-                                "en-US",
-                                {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: true,
-                                },
-                              )
+                              "en-US",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              },
+                            )
                             : ""}
                         </span>
                       </div>
@@ -306,16 +306,16 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                             <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
                               {revision.updatedAt
                                 ? new Date(revision.updatedAt).toLocaleString(
-                                    "en-US",
-                                    {
-                                      day: "2-digit",
-                                      month: "short",
-                                      year: "numeric",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                      hour12: true,
-                                    },
-                                  )
+                                  "en-US",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                  },
+                                )
                                 : ""}
                             </span>
                           </div>
