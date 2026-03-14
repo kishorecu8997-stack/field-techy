@@ -272,27 +272,23 @@ const EditRateCard = () => {
   const isView = path.includes("/view");
 
   return (
-    <div className="bg-white dark:bg-gray-700 w-full h-full flex flex-col overflow-y-auto p-4">
+    <div className="dark:bg-gray-800 w-full h-full flex flex-col overflow-y-auto p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-bold text-gray-900">
+        <h2 className="font-bold text-gray-900 dark:text-white">
           {isEdit
             ? "Edit Rate Card"
             : isView
               ? "View Rate Card"
               : "Add Rate Card"}
         </h2>
-        <Button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="bg-neutral-900 text-neutral-200 hover:bg-neutral-800 dark:bg-neutral-600 dark:text-neutral-950"
-        >
+        <Button type="button" variant="solid" onClick={() => navigate(-1)}>
           Back
         </Button>
       </div>
       <FormContainer
         methods={methods}
         onSubmit={onSubmit}
-        className="w-full h-full flex-1 overflow-y-auto"
+        className="w-full h-full flex-1 overflow-y-auto bg-white dark:bg-gray-700 p-4 rounded-lg"
       >
         {isEdit || isView ? (
           <RateCardForm readOnly={isView || isEdit} />
@@ -305,7 +301,7 @@ const EditRateCard = () => {
           <div className="flex justify-end">
             <Button
               type="submit"
-              className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700"
+              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             >
               Submit
             </Button>

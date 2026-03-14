@@ -110,6 +110,7 @@ import {
   type AdminApprovePaymentResponses,
   type AdminGetEngineersForManagementError,
   adminGetEngineersForManagement,
+  adminGetManageTransactions,
   type AdminUpdateTransactionRequestStatusResponses,
   type AdminWithdrawalActionResponses,
   adminUpdateTransactionRequestStatus,
@@ -162,7 +163,6 @@ import {
   adminGetReportsOptions,
   adminGetSubAdminsOptions,
   adminGetSubAdminsQueryKey,
-  adminGetManageTransactionsOptions,
   adminGetTransactionRequestsOptions,
   adminGetWithdrawalRequestsOptions,
   adminGetWalletOverviewOptions,
@@ -1393,6 +1393,7 @@ export function useAdminGetManageTransactions(
     onError?: (data: AdminGetManageTransactionsError) => void;
   },
 ) {
+  const { enabled, ...queryOptions } = options ?? {};
   const selectedRegionId = useAdminCountryStore((state) => state.regionId);
 
   const mergedQuery: AdminGetManageTransactionsQuery = {
@@ -1402,12 +1403,23 @@ export function useAdminGetManageTransactions(
       Number(selectedRegionId),
   };
 
-  return useQuery({
-    ...adminGetManageTransactionsOptions({
-      client: apiClient,
-      query: mergedQuery,
-    }),
-    ...options,
+  return useQuery<
+    AdminGetManageTransactionsResponse,
+    AdminGetManageTransactionsError,
+    AdminGetManageTransactionsResponse,
+    QueryKey
+  >({
+    queryKey: [...queryKeys.admin.manageTransactions, mergedQuery],
+    queryFn: async ({ signal }) => {
+      const { data } = await adminGetManageTransactions({
+        client: apiClient,
+        query: mergedQuery,
+        signal,
+        throwOnError: true,
+      });
+      return data as AdminGetManageTransactionsResponse;
+    },
+    ...queryOptions,
   });
 }
 

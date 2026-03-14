@@ -75,7 +75,7 @@ const ManageClient: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col p-3 gap-3 overflow-hidden bg-gray-50 dark:bg-gray-900">
+    <div className="w-full h-full flex flex-col p-3 gap-3 overflow-hidden dark:bg-gray-800">
       <div className="flex justify-between items-center px-1">
         <h1 className="font-semibold text-gray-800 dark:text-white">
           Manage Clients
@@ -83,7 +83,7 @@ const ManageClient: React.FC = () => {
         <Button variant="solid">Export CSV</Button>
       </div>
 
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden bg-white dark:bg-gray-700 rounded-lg p-2">
         <AdminTabComponent tabs={tabs} defaultActiveTab="Corporate Client" />
       </div>
 

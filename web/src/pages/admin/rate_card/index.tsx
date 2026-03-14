@@ -294,7 +294,7 @@ const ManageRateCards: React.FC = () => {
   ];
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
-      <h1 className="font-semibold ">Manage Rate Cards</h1>
+      <h1 className="font-semibold text-gray-800 dark:text-white">Manage Rate Cards</h1>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex justify-between">
           <SearchInput

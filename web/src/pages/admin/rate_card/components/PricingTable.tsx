@@ -24,7 +24,7 @@ const PricingTable: React.FC<{
   return (
     <div className="overflow-x-auto mt-2 rounded-lg">
       <table className="w-full text-sm text-left border-collapse">
-        <thead className="bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
+        <thead className="bg-neutral-100 text-neutral-700 dark:bg-gray-900 dark:text-neutral-200">
           <tr>
             <th className="px-4 py-2 font-semibold text-left">
               Experience Level
