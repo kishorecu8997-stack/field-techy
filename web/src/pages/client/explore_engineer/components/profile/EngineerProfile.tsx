@@ -6,11 +6,9 @@ import InformationCard from "@/shared/components/InformationCard";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import EngineerProfileCard from "./EngineerProfileCard";
-import { useQuery } from "@tanstack/react-query";
-import { clientGetPublicEngineerProfileOptions } from "@/api/@tanstack/react-query.gen";
-import { apiClient } from "@/shared/apiServices/apiClient";
+import { useClientGetPublicEngineerProfile } from "@/shared/apiServices/client/clientOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
@@ -22,17 +20,14 @@ const EngineerProfile: React.FC = () => {
   const { id } = useParams();
   const engineerId = Number(id);
 
-  const { data, isLoading, error } = useQuery({
-    ...clientGetPublicEngineerProfileOptions({
-      client: apiClient,
-      path: { id: engineerId },
-    }),
-    enabled: !!engineerId,
-  });
+  const [searchParams] = useSearchParams();
+  const regionId = Number(searchParams.get("regionId"));
+
+  const { data, isLoading, error } = useClientGetPublicEngineerProfile(engineerId, true, { regionId });
 
   const handleInviteClick = () => {
     if (data?.userId) {
-      navigate(`${absoluteUrls.client.home.ClientJobInvite}/${data.userId}`);
+      navigate(`${absoluteUrls.client.home.ClientJobInvite}/${data.userId}?regionId=${regionId}`);
     }
   };
 

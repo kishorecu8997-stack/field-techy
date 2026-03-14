@@ -123,7 +123,7 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
           return (
             <div
               key={itemKey}
-              className="relative border border-gray-200 bg-gray-50 rounded-lg p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800/50"
+              className="relative border border-gray-200 bg-white rounded-lg p-4 dark:border-gray-700 dark:bg-gray-800"
             >
               {/* Accent bar on left */}
               <span

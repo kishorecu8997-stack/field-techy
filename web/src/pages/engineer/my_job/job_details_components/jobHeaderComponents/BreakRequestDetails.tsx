@@ -10,6 +10,7 @@ import { useMemo } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { apiClient } from "@/shared/apiServices/apiClient";
 import { getJobLogsOptions } from "@/api/@tanstack/react-query.gen";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { TOAST_MESSAGES } from "@/constants/timelineConstants";
 
 interface BreakRequestDetailsProps {
@@ -55,11 +56,11 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
   assignmentIds,
   isClientView = false,
   engineerNames,
-  regionId,
 }) => {
   const { showPopup } = usePopupStore();
   const { mutate: actionOnBreak } = useClientActionOnBreak({});
 
+  const regionId = useUserSessionStore.getState().session?.regionId;
   // Fetch job logs for all assignment IDs using useQueries for parallel fetching
   // Use regionId from props
   const results = useQueries({
@@ -67,8 +68,7 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
       ...getJobLogsOptions({
         client: apiClient,
         path: { assignmentId: id },
-        // Use regionId from props
-        query: regionId !== undefined ? { regionId } : undefined,
+        query: { regionId: Number(regionId) },
       }),
       enabled: !!assignmentIds?.length && id > 0,
     })),
@@ -252,13 +252,12 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
                   : "Short Term Break"}
               </p>
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
-                  brk.status === "pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : brk.status === "approved"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                }`}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${brk.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : brk.status === "approved"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                  }`}
               >
                 {brk.status === "pending"
                   ? "Pending"
@@ -269,11 +268,10 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
             </div>
 
             <p
-              className={`mb-2 inline-block px-2 py-0.5 rounded-2xl text-white text-xs ${
-                brk.type === "long_term"
-                  ? "bg-orange-400 dark:bg-orange-700"
-                  : "bg-green-600 dark:bg-green-700"
-              }`}
+              className={`mb-2 inline-block px-2 py-0.5 rounded-2xl text-white text-xs ${brk.type === "long_term"
+                ? "bg-orange-400 dark:bg-orange-700"
+                : "bg-green-600 dark:bg-green-700"
+                }`}
             >
               {brk.type === "long_term"
                 ? `${formatDateOnly(brk.startAt)} - ${formatDateOnly(brk.endAt)} (${calculateDuration(brk.startAt, brk.endAt)})`

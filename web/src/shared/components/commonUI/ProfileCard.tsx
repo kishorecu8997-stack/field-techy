@@ -6,6 +6,7 @@ import { getUserId } from "@/utils";
 import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
 import { FaLink } from "react-icons/fa6";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useLocation } from "react-router-dom";
 
 /**
  * ProfileCard component displays a user profile with avatar, name, title, and rating information.
@@ -53,6 +54,8 @@ const ProfileCard = ({
 }) => {
   const formContext = useFormContext();
   const watch = formContext?.watch;
+  const path = useLocation();
+  const isClient = path.pathname.includes("/client");
 
   const { setActiveKey } = useDrawerStore();
 
@@ -77,11 +80,10 @@ const ProfileCard = ({
     space-x-4 
     mb-6 
     p-4 
-    ${
-      backgroundcolor
-        ? "bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900"
-        : ""
-    }`}
+    ${backgroundcolor
+          ? "bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900"
+          : ""
+        }`}
     >
       <div className="relative">
         <ImageUploaderField
@@ -97,9 +99,9 @@ const ProfileCard = ({
         <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
         <p
           className="text-xs text-gray-500 dark:text-gray-400 hover:text-green-500 cursor-pointer hover:underline"
-          onClick={() => setActiveKey("engineerFromFeedback", true)}
+          onClick={() => isClient ? setActiveKey("engineerFromFeedback", true) : setActiveKey("clientFromFeedback", true)}
         >
-          {rating} Ratings | {reviewCount} Reviews 
+          {rating} Ratings | {reviewCount} Reviews
           <FaLink className="inline-block ml-1" />
         </p>
       </div>

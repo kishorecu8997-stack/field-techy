@@ -1,6 +1,7 @@
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { Button } from "../../commonUI/Buttons";
+import { formatRating } from "@/utils/helpers";
 
 export interface ExploreEngineerHeaderCardProps {
   name: string;
@@ -31,6 +32,7 @@ const ExploreEngineerHeaderCard: React.FC<ExploreEngineerHeaderCardProps> = ({
   onAccept,
   onDecline,
 }) => {
+  const formattedRating = formatRating(rating);
   return (
     <div className="grid grid-cols-[1fr_auto] gap-6 p-4 rounded-2xl bg-emerald-900 text-white w-full max-w-4xl  overflow-hidden">
       <div className="flex items-center gap-6 ">
@@ -51,7 +53,7 @@ const ExploreEngineerHeaderCard: React.FC<ExploreEngineerHeaderCardProps> = ({
 
           <div className="flex items-center text-sm mt-1">
             <span className="text-yellow-400 text-base">★</span>
-            <span className="ml-1 font-medium">{rating}</span>
+            <span className="ml-1 font-medium">{formattedRating}</span>
             <span className="ml-1 text-gray-300">({reviews} reviews)</span>
           </div>
 
