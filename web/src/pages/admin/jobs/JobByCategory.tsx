@@ -59,9 +59,9 @@ const normalizeStatus = (
   if (normalized === "flag" || normalized === "flagged") {
     return "Flagged";
   }
-    if (normalized === "unhold") {
-      return "Unhold";
-    }
+  if (normalized === "unhold") {
+    return "Unhold";
+  }
   return "Hold";
 };
 
@@ -223,7 +223,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       key: "totalPrice",
       label: "Job Price",
       renderCell: (row: JobItem) =>
-        row.totalPrice ? `₹${row.totalPrice}` : "N/A",
+        row.totalPrice ? `${row.currencySymbol}${row.totalPrice}` : "N/A",
     },
     { key: "countryName", label: "Country" },
     { key: "stateName", label: "State" },
