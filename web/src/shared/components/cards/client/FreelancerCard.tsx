@@ -1,6 +1,7 @@
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { Button } from "../../commonUI/Buttons";
+import { formatRating } from "@/utils/helpers";
 
 export interface FreelancerCardProps {
   id: number;
@@ -31,6 +32,7 @@ const FreelancerCard: React.FC<FreelancerCardProps> = ({
   selected,
   onSelect,
 }) => {
+  const formattedRating = formatRating(rating);
   return (
     <div
       className="relative flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-300 dark:border-gray-700 hover:shadow-md transition-shadow cursor-pointer"
@@ -55,7 +57,7 @@ const FreelancerCard: React.FC<FreelancerCardProps> = ({
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 mt-1">
           <span className="text-yellow-500 text-base">★</span>
-          <span className="ml-1 font-medium">{rating}</span>
+          <span className="ml-1 font-medium">{formattedRating}</span>
           <span className="ml-1 text-gray-500 dark:text-gray-400">
             ({reviews} reviews)
           </span>

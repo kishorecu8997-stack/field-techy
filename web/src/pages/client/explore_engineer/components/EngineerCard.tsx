@@ -4,6 +4,7 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import type { EngineerCardProps } from "../types";
 import { assetsConfig } from "@/assets";
+import { formatRating } from "@/utils/helpers";
 
 /**
  * `EngineerCard` is a component that displays a summary of an engineer's profile.
@@ -16,6 +17,7 @@ import { assetsConfig } from "@/assets";
 const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
   const navigate = useNavigate();
   const detailsUrl = `${absoluteUrls.client.home.client_Explore_engineers_details}/${engineer.id}?regionId=${engineer.regionId}`;
+  const formattedRating = formatRating(engineer.rating);
 
   return (
     <div
@@ -31,8 +33,8 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
         <h3 className="font-bold text-lg truncate">{engineer.name}</h3>
         <div className="flex items-center gap-1 text-sm mb-1 dark:text-gray-300">
           <span className="text-yellow-500">★</span>
-          <span className="truncate dark:text-gray-300">
-            {engineer.rating} ({engineer.reviewCount} reviews)
+          <span className="truncate">
+            {formattedRating} ({engineer.reviewCount} reviews)
           </span>
         </div>
         <p className="text-sm truncate dark:text-gray-300">{engineer.title}</p>
@@ -53,8 +55,8 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
             </Button>
           </NavLink>
         </nav>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

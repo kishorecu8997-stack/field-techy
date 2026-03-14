@@ -2,6 +2,7 @@ import React from "react";
 import { assetsConfig } from "@/assets";
 import type { ProfileCardProps } from "../../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { formatRating } from "@/utils/helpers";
 
 /**
  * A card component to display a summary of an engineer's profile.
@@ -17,6 +18,7 @@ const EngineerProfileCard: React.FC<ProfileCardProps> = ({
   profile,
   onInviteClick,
 }) => {
+const formattedRating = formatRating(profile.rating);
   return (
     <div className="bg-emerald-900 dark:bg-emerald-800 rounded-2xl p-6 shadow-lg transition-colors duration-300">
       <div className="flex flex-col md:flex-row gap-6 items-start">
@@ -37,7 +39,7 @@ const EngineerProfileCard: React.FC<ProfileCardProps> = ({
           <div className="flex items-center mb-2">
             <span className="text-yellow-400 mr-1">★</span>
             <span className="text-white text-sm">
-              {profile.rating} ({profile.reviewCount} reviews)
+              {formattedRating} ({profile.reviewCount} reviews)
             </span>
           </div>
 
