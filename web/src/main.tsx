@@ -28,12 +28,12 @@ import GlobalErrorBoundary from "./shared/components/commonUI/GlobalErrorBoundar
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 0, // Always consider data stale so it refetches immediately
       gcTime: 30 * 60 * 1000, // Replaces cacheTime
       retry: 2,
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true, // Automatically refetch when the browser window regains focus
       refetchOnReconnect: true,
-      refetchOnMount: false,
+      refetchOnMount: true, // Always fetch when a screen component mounts
     },
   },
 });
