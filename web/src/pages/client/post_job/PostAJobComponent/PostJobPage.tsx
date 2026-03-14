@@ -333,6 +333,7 @@ const PostJobPage = () => {
   const getRequiredNumber = (val: unknown, fieldName: string): number => {
     const num = Number(val);
     if (!num) throw new Error(`${fieldName} is required`);
+    console.log(num, "naa inga iruken");
     return num;
   };
 
@@ -393,8 +394,8 @@ const PostJobPage = () => {
       jobDescription: data.description,
       jobType: data.locationType,
       countryId: getRequiredNumber(data.country, "Country"),
-      stateId: getRequiredNumber(data.state, "State"),
-      cityId: getRequiredNumber(data.city, "City"),
+      stateId: data.state ? getRequiredNumber(data.state, "State") : undefined,
+      cityId: data.city ? getRequiredNumber(data.city, "City") : undefined,
       workLocationLat: data.workLocationLat ?? undefined,
       workLocationLng: data.workLocationLng ?? undefined,
       workLocationName: data.workLocationName || undefined,
