@@ -2,6 +2,7 @@ import { assetsConfig } from "@/assets";
 import React from "react";
 import { Link } from "react-router-dom";
 import type { EngineerCardListProps } from "../types";
+import { formatRating } from "@/utils/helpers";
 
 /**
  * `ProposalListCard` is a React component that displays a summary of an engineer's proposal.
@@ -18,6 +19,7 @@ const ProposalListCard: React.FC<{
   engineer: EngineerCardListProps;
   navigateToJob?: string;
 }> = ({ engineer, navigateToJob = "#" }) => {
+  const formattedRating = formatRating(engineer.rating);
   return (
     <Link
       to={navigateToJob}
@@ -35,7 +37,7 @@ const ProposalListCard: React.FC<{
           <div className="flex items-center gap-1 text-sm mb-1">
             <span className="text-yellow-500">★</span>
             <span>
-              {engineer.rating} ({engineer.reviewCount} reviews)
+              {formattedRating} ({engineer.reviewCount} reviews)
             </span>
           </div>
           <div>

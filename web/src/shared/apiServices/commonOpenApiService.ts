@@ -295,16 +295,25 @@ export function useCreateRateAndReviewAssignment(options?: {
 export function useGetUserRatingAndReviews(
   enabled: boolean = true,
   assignmentId?: number,
+  jobId?: number,
+  regionId?: number,
 ) {
   return useQuery({
-    ...getUserRatingAndReviewsOptions({ client: apiClient }),
+    ...getUserRatingAndReviewsOptions({
+      client: apiClient,
+      query: {
+        ...(jobId !== undefined ? { jobId } : {}),
+        ...(regionId !== undefined ? { regionId } : {}),
+      },
+    }),
     enabled,
     refetchOnMount: true,
+    refetchOnWindowFocus: true,
     select: assignmentId
       ? (data) =>
-          Array.isArray(data)
-            ? data.filter((r) => r.jobAssignmentId === assignmentId)
-            : data
+        Array.isArray(data)
+          ? data.filter((r) => r.jobAssignmentId === assignmentId)
+          : data
       : undefined,
   });
 }

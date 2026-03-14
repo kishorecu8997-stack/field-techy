@@ -120,8 +120,8 @@ const MyJobsClient: React.FC = () => {
     duration: calculateDuration(apiJob.startDate, apiJob.endDate),
     location:
       apiJob.workLocationName || `${apiJob.cityId}, ${apiJob.countryId}`,
-    cityId: apiJob.cityId,
-    stateId: apiJob.stateId,
+    cityId: apiJob.cityId ?? undefined,
+    stateId: apiJob.stateId ?? undefined,
     countryId: apiJob.countryId,
     workLocationName: apiJob.workLocationName,
     pay:

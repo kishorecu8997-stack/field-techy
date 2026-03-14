@@ -143,6 +143,7 @@ export default function ManageJobs() {
         setFilterRegion={handleFilterChange(setFilterRegion)}
         onClearFilters={handleClearFilters}
         showStatusSelect={config.label === "All Jobs"}
+        showCurrentStatus={config.label === "All Jobs"}
         currentStatus={currentStatus}
         page={page}
         limit={limit}

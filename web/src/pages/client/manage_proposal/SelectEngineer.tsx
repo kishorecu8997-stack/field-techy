@@ -1,18 +1,18 @@
 import { absoluteUrls } from "@/config/urls";
+import { useClientExploreEngineers, useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
 import FreelancerCard from "@/shared/components/cards/client/FreelancerCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import Filters from "@/shared/components/Filters";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import Pagination from "../search_result/components/Pagination";
 import Popup from "@/shared/components/Popup";
-import InvitationSentModal from "../explore_engineer/components/invite_job/InvitationSentModal";
-import { useClientExploreEngineers } from "@/shared/apiServices/client/clientOpenApiService";
-import { useClientInviteEngineer } from "@/shared/apiServices/client/clientOpenApiService";
 import type { RatingValue } from "@/shared/libs/constants/filterOptions";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { scrollToTop } from "@/utils";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import InvitationSentModal from "../explore_engineer/components/invite_job/InvitationSentModal";
+import Pagination from "../search_result/components/Pagination";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -23,6 +23,10 @@ import type { RatingValue } from "@/shared/libs/constants/filterOptions";
 const SelectEngineer = () => {
   const params = useParams();
   const jobId = Number(params.id);
+
+  const [searchParams] = useSearchParams();
+  const regionIdParam = searchParams.get("regionId");
+
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +37,16 @@ const SelectEngineer = () => {
   const [rating, setRating] = useState<RatingValue | null>(null);
   const [experience, setExperience] = useState<number>(0);
   const [selectedSkills, setSelectedSkills] = useState<Set<number>>(new Set());
+  useEffect(() => {
+    scrollToTop();
+  }, [
+    currentPage,
+    selectedLocation,
+    selectedCategory,
+    rating,
+    experience,
+    selectedSkills.size,
+  ]);
 
   const itemsPerPage = 8;
   const { showPopup } = usePopupStore();
@@ -43,6 +57,7 @@ const SelectEngineer = () => {
     {
       page: currentPage,
       limit: itemsPerPage,
+      regionId: regionIdParam ? Number(regionIdParam) : undefined,
       jobType: selectedLocation
         ? selectedLocation === 1
           ? "On site"
@@ -109,6 +124,7 @@ const SelectEngineer = () => {
                     body: {
                       jobId,
                       engineerId,
+                      regionId: Number(regionIdParam),
                     },
                   }),
                 ),
@@ -136,6 +152,7 @@ const SelectEngineer = () => {
         body: {
           jobId,
           engineerId,
+          regionId: Number(regionIdParam),
         },
       });
       toast.success("Engineer invited successfully!");
@@ -176,27 +193,31 @@ const SelectEngineer = () => {
                   </p>
                 </div>
               ) : (
-                engineers.map((engineer) => (
-                  <FreelancerCard
-                    key={engineer.userId}
-                    id={engineer.userId}
-                    name={engineer.name}
-                    rating={engineer.averageRating}
-                    reviews={engineer.reviewCount}
-                    imageUrl={engineer.profilePictureUrl ?? undefined}
-                    role={engineer.serviceCategoryName ?? ""}
-                    selected={selectedIds.includes(engineer.userId)}
-                    onSelect={handleSelect}
-                    onInvite={() => handleCardInvite(engineer.userId)}
-                  />
-                ))
+                <>
+                  {engineers.map((engineer) => (
+                    <FreelancerCard
+                      key={engineer.userId}
+                      id={engineer.userId}
+                      name={engineer.name}
+                      rating={engineer.averageRating}
+                      reviews={engineer.reviewCount}
+                      imageUrl={engineer.profilePictureUrl ?? undefined}
+                      role={engineer.serviceCategoryName ?? ""}
+                      selected={selectedIds.includes(engineer.userId)}
+                      onSelect={handleSelect}
+                      onInvite={() => handleCardInvite(engineer.userId)}
+                    />
+                  ))}
+                  <div className="col-span-full flex justify-center mt-8 mb-4">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
+                  </div>
+                </>
               )}
             </div>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
           </div>
           <div className="lg:col-span-1">
             <div className="sticky top-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">

@@ -19,7 +19,7 @@ import {
 import { scrollToTop } from "@/utils";
 import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { SelectedJobCardId } from "../../types";
 import InvitationSentModal from "./InvitationSentModal";
@@ -35,6 +35,10 @@ import JobInviteCard from "./JobInviteCard";
 const InviteJob: React.FC = () => {
   const { engineerId } = useParams();
   const engineer = Number(engineerId);
+
+  const [searchParams] = useSearchParams();
+  const regionId = Number(searchParams.get("regionId"));
+
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,6 +54,7 @@ const InviteJob: React.FC = () => {
 
   const { data: jobsData, isLoading } = useClientGetJobs({
     enabled: true,
+    regionId,
   });
 
   const { mutateAsync: inviteEngineer } = useClientInviteEngineer({});
@@ -79,7 +84,13 @@ const InviteJob: React.FC = () => {
     }
     try {
       const invitations = data.id.map((jobId) =>
-        inviteEngineer({ body: { jobId, engineerId: engineer } }),
+        inviteEngineer({
+          body: {
+            jobId,
+            engineerId: engineer,
+            regionId: Number(regionId),
+          },
+        }),
       );
       await Promise.all(invitations);
       toast.success(`Invitation sent successfully`);
@@ -141,14 +152,15 @@ const InviteJob: React.FC = () => {
     return "Not specified";
   };
 
+
   const mappedJobs = paginatedJobs.map((apiJob) => ({
     id: apiJob.id,
     title: apiJob.jobTitle,
     date: apiJob.startDate ? new Date(apiJob.startDate).toDateString() : "",
     location: apiJob.workLocationName || "",
     countryId: apiJob.countryId,
-    stateId: apiJob.stateId,
-    cityId: apiJob.cityId,
+    stateId: apiJob.stateId ?? undefined,
+    cityId: apiJob.cityId ?? undefined,
     duration: calculateDuration(apiJob.startDate, apiJob.endDate),
     jobType: apiJob.jobType,
     status: apiJob.status,

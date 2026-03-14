@@ -8,6 +8,7 @@ interface EngineerCardProps {
     imageUrl: string;
     pay_type?: string;
     availability?: string;
+    regionId?: string | null;
   };
 }
 
