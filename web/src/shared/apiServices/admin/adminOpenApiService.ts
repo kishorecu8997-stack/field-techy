@@ -1117,6 +1117,9 @@ export function useAdminGetServiceCategories(
   query?: Partial<AdminGetServiceCategoriesQuery>,
   options?: {
     enabled?: boolean;
+    refetchOnMount?: boolean;
+    refetchOnWindowFocus?: boolean;
+    staleTime?: number;
     onSuccess?: (data: AdminGetServiceCategoriesResponse) => void;
     onError?: (error: unknown) => void;
   },

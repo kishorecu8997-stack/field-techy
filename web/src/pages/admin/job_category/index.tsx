@@ -44,11 +44,17 @@ const ManageJobCategory: React.FC = () => {
     isLoading,
     isFetching,
     error,
-  } = useAdminGetServiceCategories({
-    page,
-    limit: pageSize,
-    search: search.trim() || undefined,
-  });
+  } = useAdminGetServiceCategories(
+    {
+      page,
+      limit: pageSize,
+      search: search.trim() || undefined,
+    },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    },
+  );
 
   const tableData = useMemo<ServerCategoryProps[]>(
     () =>

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useAdminCreateServiceCategory } from "@/shared/apiServices/admin/adminOpenApiService";
 
@@ -24,13 +25,17 @@ export default function AddCategory() {
     },
   });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { showPopup } = usePopupStore();
   const { mutateAsync: createServiceCategory, isPending: isCreatingCategory } =
     useAdminCreateServiceCategory({
-      onSuccess: async () => {
+      onSuccess: () => {
         toast.success("Service category added successfully!");
         methods.reset();
+        // Invalidate and refetch the categories list
+        queryClient.invalidateQueries({ queryKey: ["lookup", "serviceCategories", "root"] });
+        queryClient.invalidateQueries({ queryKey: ["adminGetServiceCategories"] });
         navigate(absoluteUrls.admin.home.manage_categories);
       },
       onError: (error) => {
