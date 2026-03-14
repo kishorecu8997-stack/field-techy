@@ -333,7 +333,6 @@ const PostJobPage = () => {
   const getRequiredNumber = (val: unknown, fieldName: string): number => {
     const num = Number(val);
     if (!num) throw new Error(`${fieldName} is required`);
-    console.log(num, "naa inga iruken");
     return num;
   };
 
