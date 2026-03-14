@@ -38,7 +38,7 @@ const ManageCurrencyConversion: React.FC = () => {
     { key: "currencyPair", label: "Currency Pair" },
     {
       key: "rate",
-      label: "Exchange Rates (Base: INR)",
+      label: "Exchange Rates",
       renderCell: (row: CurrencyConversionRow) => {
         const parsedRate = Number(row.rate);
         const displayRate = Number.isFinite(parsedRate)

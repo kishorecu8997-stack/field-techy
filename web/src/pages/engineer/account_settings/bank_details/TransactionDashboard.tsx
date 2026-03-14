@@ -207,7 +207,6 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
                 const amountColor = isCredit
                   ? "text-emerald-600 dark:text-emerald-400"
                   : "text-rose-600 dark:text-rose-400";
-                const sign = isCredit ? "+" : "-";
 
                 return (
                   <tr key={tx.id}>
@@ -222,7 +221,6 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
                     <td
                       className={`px-8 py-4 whitespace-nowrap text-sm font-semibold ${amountColor}`}
                     >
-                      {sign}
                       {formatCurrency(Math.abs(txAmount), currencyCode)}
                     </td>
                   </tr>
