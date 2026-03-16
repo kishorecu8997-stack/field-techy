@@ -63,9 +63,13 @@ const MyJobsClient: React.FC = () => {
   }, [filterParam]);
 
   const apiJobStatus = FILTER_TO_API_STATUS[activeFilter];
-  const { data: jobsData, isLoading,  isSuccess } = useClientGetJobs({
+  const {
+    data: jobsData,
+    isLoading,
+    isSuccess,
+  } = useClientGetJobs({
     jobStatus: apiJobStatus,
-    enabled: true
+    enabled: true,
   });
   const { data: serviceCategories } = useServiceCategories();
 
@@ -139,7 +143,7 @@ const MyJobsClient: React.FC = () => {
   // allJobs is already filtered by the API — no client-side filtering needed
   const allJobs: Job[] = useMemo(() => {
     return (jobsData || []).map(mapApiJobToUiJob);
-  }, [jobsData, serviceCategoryMap,isSuccess]);
+  }, [jobsData, serviceCategoryMap, isSuccess]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   useEffect(() => {
@@ -188,7 +192,9 @@ const MyJobsClient: React.FC = () => {
                     <LoaderComponent />
                   </div>
                 ) : currentJobs.length > 0 ? (
-                  currentJobs.map((job) => <JobCard key={`${job.id}-${job.title}`} job={job} />)
+                  currentJobs.map((job) => (
+                    <JobCard key={`${job.id}-${job.title}`} job={job} />
+                  ))
                 ) : (
                   <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
                     <div className="font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 p-20 rounded-lg">

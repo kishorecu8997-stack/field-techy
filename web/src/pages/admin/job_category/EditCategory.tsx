@@ -54,8 +54,12 @@ export default function EditCategory() {
         toast.success("Service category updated successfully!");
         methods.reset();
         // Invalidate and refetch the categories list
-        await queryClient.invalidateQueries({ queryKey: ["lookup", "serviceCategories", "root"] });
-        await queryClient.invalidateQueries({ queryKey: ["adminGetServiceCategories"] });
+        await queryClient.invalidateQueries({
+          queryKey: ["lookup", "serviceCategories", "root"],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ["adminGetServiceCategories"],
+        });
         navigate(absoluteUrls.admin.home.manage_categories);
       },
       onError: (error) => {

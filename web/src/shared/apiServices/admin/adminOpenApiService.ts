@@ -178,7 +178,6 @@ import {
   adminUpdateToolMutation,
 } from "@/api/@tanstack/react-query.gen";
 
-
 import {
   type AdminGetSkillsData,
   type AdminCreateSkillData,
@@ -191,7 +190,6 @@ import {
   type AdminUpdateToolData,
   type AdminUpdateToolResponse,
 } from "@/api/types.gen";
-
 
 import {
   useMutation,
@@ -291,7 +289,7 @@ export function useAdminCreateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -316,7 +314,7 @@ export function useAdminUpdateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -341,7 +339,7 @@ export function useAdminDeleteServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -477,9 +475,7 @@ export function useAdminManageClients(options?: {
   const queryParams: AdminGetClientsQuery = {
     ...query,
     ...(clientType ? { clientType } : {}),
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery<
@@ -872,10 +868,10 @@ export function useAdminGetJobDetails(
   const isValidJobId = query?.jobId && Number.isFinite(query.jobId);
 
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
-    ? {
-      ...query,
-      regionId: Number(query?.regionId ?? selectedRegionId),
-    } as AdminGetJobDetailsQuery
+    ? ({
+        ...query,
+        regionId: Number(query?.regionId ?? selectedRegionId),
+      } as AdminGetJobDetailsQuery)
     : { jobId: 0, regionId: Number(selectedRegionId) };
 
   return useQuery({
@@ -1282,11 +1278,14 @@ export function useAdminGetJobLogs(
   const isValidJobId = query?.jobId && Number.isFinite(query.jobId);
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
-    ? {
-      ...query,
-      regionId: Number(query?.regionId ?? selectedRegionId) || 0,
-    } as AdminGetJobLogsQuery
-    : ({ jobId: 0, regionId: Number(selectedRegionId) } as AdminGetJobLogsQuery);
+    ? ({
+        ...query,
+        regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+      } as AdminGetJobLogsQuery)
+    : ({
+        jobId: 0,
+        regionId: Number(selectedRegionId),
+      } as AdminGetJobLogsQuery);
 
   return useQuery({
     ...adminGetJobLogsOptions({
@@ -1322,9 +1321,7 @@ export function useAdminGetPaymentTransactions(
   const mergedQuery: AdminGetPaymentTransactionsQuery = {
     ...query,
     jobId: query?.jobId ?? 0,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1521,9 +1518,7 @@ export function useAdminGetSubAdmins(
 
   const mergedQuery: AdminGetSubAdminsQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1557,9 +1552,7 @@ export function useAdminGetManageTransactions(
 
   const mergedQuery: AdminGetManageTransactionsQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery<
@@ -1600,9 +1593,7 @@ export function useAdminGetTransactionRequests(
 
   const mergedQuery: AdminGetTransactionRequestsQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1632,9 +1623,7 @@ export function useAdminGetWithdrawalRequests(
 
   const mergedQuery: AdminGetWithdrawalRequestsQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({
@@ -2014,7 +2003,6 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
   });
 }
 
-
 // Rate Card - Get All
 export function useGetRateCards(
   params?: {
@@ -2123,9 +2111,7 @@ export function useAdminGetNotifications(
 
   const mergedQuery: AdminGetNotificationsData["query"] = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({

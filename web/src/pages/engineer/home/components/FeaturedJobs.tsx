@@ -196,7 +196,9 @@ const FeatureJobCard: React.FC<
   // Format salary with currency symbol and comma separation
   const formattedSalary = useMemo(() => {
     if (!props.salary) return "-";
-    const numericValue = parseFloat(String(props.salary).replace(/[^0-9.-]/g, ""));
+    const numericValue = parseFloat(
+      String(props.salary).replace(/[^0-9.-]/g, ""),
+    );
     if (isNaN(numericValue)) return props.salary;
     const symbol = props.currencySymbol || "$";
     return `${symbol} ${formatCurrency(numericValue).replace(/^\$/, "")}`;

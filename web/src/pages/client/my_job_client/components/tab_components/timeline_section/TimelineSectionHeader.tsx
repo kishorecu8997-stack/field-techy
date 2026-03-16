@@ -155,7 +155,9 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                   {(item.attachmentUrl || item.proposalAttachmentUrl) && (
                     <div className="mt-2">
                       <a
-                        href={item.attachmentUrl || item.proposalAttachmentUrl || ""}
+                        href={
+                          item.attachmentUrl || item.proposalAttachmentUrl || ""
+                        }
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 cursor-pointer"
@@ -173,7 +175,14 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                             d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
                           />
                         </svg>
-                        {item.attachmentName || getAttachmentFileName({ url: item.attachmentUrl || item.proposalAttachmentUrl || undefined }) || "View Attachment"}
+                        {item.attachmentName ||
+                          getAttachmentFileName({
+                            url:
+                              item.attachmentUrl ||
+                              item.proposalAttachmentUrl ||
+                              undefined,
+                          }) ||
+                          "View Attachment"}
                       </a>
                     </div>
                   )}

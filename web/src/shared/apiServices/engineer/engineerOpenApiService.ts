@@ -109,7 +109,7 @@ export {
   useLookupData,
   useResetPassword,
   useSendOtp,
-  useVerifyOtp
+  useVerifyOtp,
 } from "../commonOpenApiService";
 
 /**
@@ -582,7 +582,11 @@ export function useEngineerRequestStart(options?: {
         queryClient.invalidateQueries({
           queryKey: getJobLogsQueryKey({
             path: { assignmentId: options.assignmentId },
-            query: { regionId: Number(useUserSessionStore.getState().session?.regionId) },
+            query: {
+              regionId: Number(
+                useUserSessionStore.getState().session?.regionId,
+              ),
+            },
           }),
         });
         queryClient.invalidateQueries({
@@ -592,7 +596,11 @@ export function useEngineerRequestStart(options?: {
         await queryClient.refetchQueries({
           queryKey: getJobLogsQueryKey({
             path: { assignmentId: options.assignmentId },
-            query: { regionId: Number(useUserSessionStore.getState().session?.regionId) },
+            query: {
+              regionId: Number(
+                useUserSessionStore.getState().session?.regionId,
+              ),
+            },
           }),
           type: "active",
         });
