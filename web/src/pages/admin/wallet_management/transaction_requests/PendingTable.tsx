@@ -93,7 +93,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
         row.engineerProfileUrl?.toLowerCase().includes(term) ||
         row.engineerName?.toLowerCase().includes(term) ||
         row.amount?.toLowerCase().includes(term) ||
-        row.currencySymbol?.toLowerCase().includes(term)||
+        row.currencySymbol?.toLowerCase().includes(term) ||
         row.status?.toLowerCase().includes(term) ||
         row.requestedAt?.toLowerCase().includes(term)
       );
@@ -209,7 +209,7 @@ const PendingTable: React.FC<TableProps> = ({ active }) => {
           </div>
         </div>
       ),
-    },     
+    },
     {
       key: "date&time",
       label: "Requested Date",

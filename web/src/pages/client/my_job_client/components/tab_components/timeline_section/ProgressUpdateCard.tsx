@@ -68,8 +68,9 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
     hasRevisions;
   return (
     <div
-      className={`relative rounded-lg border bg-white dark:bg-gray-800 shadow-sm ${isCollapsed ? "px-4 py-2.5 flex items-center justify-between" : "p-4"
-        }`}
+      className={`relative rounded-lg border bg-white dark:bg-gray-800 shadow-sm ${
+        isCollapsed ? "px-4 py-2.5 flex items-center justify-between" : "p-4"
+      }`}
       style={{ borderColor: progressAccentColor }}
     >
       <span
@@ -256,16 +257,16 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                         <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
                           {revision.createdAt
                             ? new Date(revision.createdAt).toLocaleString(
-                              "en-US",
-                              {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true,
-                              },
-                            )
+                                "en-US",
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                },
+                              )
                             : ""}
                         </span>
                       </div>
@@ -306,16 +307,16 @@ const ProgressUpdateCard: React.FC<ProgressUpdateCardProps> = ({
                             <span className="text-xs text-gray-500 dark:text-gray-400 leading-4">
                               {revision.updatedAt
                                 ? new Date(revision.updatedAt).toLocaleString(
-                                  "en-US",
-                                  {
-                                    day: "2-digit",
-                                    month: "short",
-                                    year: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                  },
-                                )
+                                    "en-US",
+                                    {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    },
+                                  )
                                 : ""}
                             </span>
                           </div>

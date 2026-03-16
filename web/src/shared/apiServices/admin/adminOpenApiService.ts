@@ -169,8 +169,27 @@ import {
   adminGetNotificationsQueryKey,
   adminGetNotificationsOptions,
   adminDownloadInvoiceOptions,
+  adminGetSkillsOptions,
+  adminCreateSkillMutation,
+  adminUpdateSkillMutation,
+  adminGetToolsQueryKey,
+  adminGetToolsOptions,
+  adminCreateToolMutation,
+  adminUpdateToolMutation,
 } from "@/api/@tanstack/react-query.gen";
 
+import {
+  type AdminGetSkillsData,
+  type AdminCreateSkillData,
+  type AdminCreateSkillResponse,
+  type AdminUpdateSkillData,
+  type AdminUpdateSkillResponse,
+  type AdminGetToolsData,
+  type AdminCreateToolData,
+  type AdminCreateToolResponse,
+  type AdminUpdateToolData,
+  type AdminUpdateToolResponse,
+} from "@/api/types.gen";
 
 import {
   useMutation,
@@ -270,7 +289,7 @@ export function useAdminCreateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -295,7 +314,7 @@ export function useAdminUpdateServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -320,7 +339,7 @@ export function useAdminDeleteServiceCategory(options?: {
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
           (query.queryKey[0] as { _id?: string })._id ===
-          "adminGetServiceCategories",
+            "adminGetServiceCategories",
       });
       options?.onSuccess?.(data);
     },
@@ -456,9 +475,7 @@ export function useAdminManageClients(options?: {
   const queryParams: AdminGetClientsQuery = {
     ...query,
     ...(clientType ? { clientType } : {}),
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery<
@@ -851,10 +868,10 @@ export function useAdminGetJobDetails(
   const isValidJobId = query?.jobId && Number.isFinite(query.jobId);
 
   const mergedQuery: AdminGetJobDetailsQuery = isValidJobId
-    ? {
-      ...query,
-      regionId: Number(query?.regionId ?? selectedRegionId),
-    } as AdminGetJobDetailsQuery
+    ? ({
+        ...query,
+        regionId: Number(query?.regionId ?? selectedRegionId),
+      } as AdminGetJobDetailsQuery)
     : { jobId: 0, regionId: Number(selectedRegionId) };
 
   return useQuery({
@@ -1096,6 +1113,9 @@ export function useAdminGetServiceCategories(
   query?: Partial<AdminGetServiceCategoriesQuery>,
   options?: {
     enabled?: boolean;
+    refetchOnMount?: boolean;
+    refetchOnWindowFocus?: boolean;
+    staleTime?: number;
     onSuccess?: (data: AdminGetServiceCategoriesResponse) => void;
     onError?: (error: unknown) => void;
   },
@@ -1108,6 +1128,141 @@ export function useAdminGetServiceCategories(
     ...options,
   });
 }
+
+export function useAdminGetSkills(
+  query?: Partial<AdminGetSkillsData["query"]>,
+  options?: {
+    enabled?: boolean;
+    refetchOnMount?: boolean;
+    refetchOnWindowFocus?: boolean;
+    staleTime?: number;
+  },
+) {
+  return useQuery({
+    ...adminGetSkillsOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
+  });
+}
+
+export function useAdminCreateSkill(options?: {
+  onSuccess?: (data: AdminCreateSkillResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateSkillMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["lookup", "skills", "root"] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "adminGetSkills",
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateSkill(options?: {
+  onSuccess?: (data: AdminUpdateSkillResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateSkillMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["lookup", "skills", "root"] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "adminGetSkills",
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminGetTools(
+  query?: Partial<AdminGetToolsData["query"]>,
+  options?: {
+    enabled?: boolean;
+    refetchOnMount?: boolean;
+    refetchOnWindowFocus?: boolean;
+    staleTime?: number;
+  },
+) {
+  return useQuery({
+    ...adminGetToolsOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
+  });
+}
+
+export function useAdminCreateTool(options?: {
+  onSuccess?: (data: AdminCreateToolResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminCreateToolMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["lookup", "tools", "root"] });
+      queryClient.invalidateQueries({
+        queryKey: adminGetToolsQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "adminGetTools",
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUpdateTool(options?: {
+  onSuccess?: (data: AdminUpdateToolResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateToolMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["lookup", "tools", "root"] });
+      queryClient.invalidateQueries({
+        queryKey: adminGetToolsQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "adminGetTools",
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export type AdminAddSkillBody = AdminCreateSkillData["body"];
+export type AdminUpdateSkillBody = AdminUpdateSkillData["body"];
+export type AdminAddToolBody = AdminCreateToolData["body"];
+export type AdminUpdateToolBody = AdminUpdateToolData["body"];
 
 export type AdminGetJobLogsQuery = NonNullable<AdminGetJobLogsData["query"]>;
 
@@ -1123,11 +1278,14 @@ export function useAdminGetJobLogs(
   const isValidJobId = query?.jobId && Number.isFinite(query.jobId);
 
   const mergedQuery: AdminGetJobLogsQuery = isValidJobId
-    ? {
-      ...query,
-      regionId: Number(query?.regionId ?? selectedRegionId) || 0,
-    } as AdminGetJobLogsQuery
-    : ({ jobId: 0, regionId: Number(selectedRegionId) } as AdminGetJobLogsQuery);
+    ? ({
+        ...query,
+        regionId: Number(query?.regionId ?? selectedRegionId) || 0,
+      } as AdminGetJobLogsQuery)
+    : ({
+        jobId: 0,
+        regionId: Number(selectedRegionId),
+      } as AdminGetJobLogsQuery);
 
   return useQuery({
     ...adminGetJobLogsOptions({
@@ -1163,9 +1321,7 @@ export function useAdminGetPaymentTransactions(
   const mergedQuery: AdminGetPaymentTransactionsQuery = {
     ...query,
     jobId: query?.jobId ?? 0,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1362,9 +1518,7 @@ export function useAdminGetSubAdmins(
 
   const mergedQuery: AdminGetSubAdminsQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1398,9 +1552,7 @@ export function useAdminGetManageTransactions(
 
   const mergedQuery: AdminGetManageTransactionsQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery<
@@ -1441,9 +1593,7 @@ export function useAdminGetTransactionRequests(
 
   const mergedQuery: AdminGetTransactionRequestsQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1473,9 +1623,7 @@ export function useAdminGetWithdrawalRequests(
 
   const mergedQuery: AdminGetWithdrawalRequestsQuery = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({
@@ -1855,7 +2003,6 @@ export function useAdminUpdateTransactionRequestStatus(options?: {
   });
 }
 
-
 // Rate Card - Get All
 export function useGetRateCards(
   params?: {
@@ -1964,9 +2111,7 @@ export function useAdminGetNotifications(
 
   const mergedQuery: AdminGetNotificationsData["query"] = {
     ...query,
-    regionId:
-      query?.regionId ??
-      Number(selectedRegionId),
+    regionId: query?.regionId ?? Number(selectedRegionId),
   };
 
   return useQuery({

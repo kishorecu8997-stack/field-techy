@@ -18,7 +18,7 @@ const EngineerProfileCard: React.FC<ProfileCardProps> = ({
   profile,
   onInviteClick,
 }) => {
-const formattedRating = formatRating(profile.rating);
+  const formattedRating = formatRating(profile.rating);
   return (
     <div className="bg-emerald-900 dark:bg-emerald-800 rounded-2xl p-6 shadow-lg transition-colors duration-300">
       <div className="flex flex-col md:flex-row gap-6 items-start">

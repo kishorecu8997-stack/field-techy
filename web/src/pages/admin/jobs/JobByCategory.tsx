@@ -36,7 +36,13 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered "All Jobs" view with filters and a data table.
  */
 
-type StatusKind = "Hold" | "Flagged" | "Cancelled" | "Unhold" | "Closed" | "Unknown";
+type StatusKind =
+  | "Hold"
+  | "Flagged"
+  | "Cancelled"
+  | "Unhold"
+  | "Closed"
+  | "Unknown";
 const getCurrentStatusKind = (
   status: string | null | undefined,
 ): StatusKind => {

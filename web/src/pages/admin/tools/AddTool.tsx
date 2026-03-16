@@ -4,56 +4,47 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { CategoryFormData } from "./types";
-import JobCategoryForm from "./JobCategoryForm";
-import { useQueryClient } from "@tanstack/react-query";
+import type { ToolFormData } from "./types";
+import ToolForm from "./ToolForm";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminCreateServiceCategory } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminCreateTool } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
- * `AddCategory` component renders a page with a form to add a new Service category.
+ * `AddTool` component renders a page with a form to add a new Tool.
  * It uses `react-hook-form` for form state management and provides UI for creating
- * a new category, including a name and an image.
+ * a new tool, including a name and an image.
  *
- * @returns {JSX.Element} The rendered component for adding a category.
+ * @returns {JSX.Element} The rendered component for adding a tool.
  */
-export default function AddCategory() {
-  const methods = useForm<CategoryFormData>({
+export default function AddTool() {
+  const methods = useForm<ToolFormData>({
     defaultValues: {
-      categoryName: "",
-      categoryImage: null,
+      toolName: "",
+      toolImage: null,
     },
   });
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const { showPopup } = usePopupStore();
-  const { mutateAsync: createServiceCategory, isPending: isCreatingCategory } =
-    useAdminCreateServiceCategory({
+  const { mutateAsync: createTool, isPending: isCreatingTool } =
+    useAdminCreateTool({
       onSuccess: () => {
-        toast.success("Service category added successfully!");
+        toast.success("Tool added successfully!");
         methods.reset();
-        // Invalidate and refetch the categories list
-        queryClient.invalidateQueries({
-          queryKey: ["lookup", "serviceCategories", "root"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["adminGetServiceCategories"],
-        });
-        navigate(absoluteUrls.admin.home.manage_categories);
+        navigate(absoluteUrls.admin.home.manage_tools);
       },
       onError: (error) => {
         const errorMessage =
           error instanceof Error
             ? error.message
-            : "A category with this name already exists";
+            : "A tool with this name already exists";
         toast.error(errorMessage);
       },
     });
 
-  const handleSubmit = async (data: CategoryFormData) => {
+  const handleSubmit = async (data: ToolFormData) => {
     await showPopup({
-      title: "Add Category",
+      title: "Add Tool",
       body: "Are you sure you want to save this details?",
       actionButtons: [
         {
@@ -66,10 +57,10 @@ export default function AddCategory() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            if (isCreatingCategory) return;
-            await createServiceCategory({
+            if (isCreatingTool) return;
+            await createTool({
               body: {
-                name: data.categoryName,
+                name: data.toolName,
               },
             });
             close(true);
@@ -82,10 +73,10 @@ export default function AddCategory() {
   return (
     <div className="w-full h-full p-4">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold ">Add Category</h1>
+        <h1 className="font-semibold ">Add Tool</h1>
         <Button
           variant="solid"
-          onClick={() => navigate(absoluteUrls.admin.home.manage_categories)}
+          onClick={() => navigate(absoluteUrls.admin.home.manage_tools)}
         >
           Back
         </Button>
@@ -96,7 +87,7 @@ export default function AddCategory() {
           onSubmit={handleSubmit}
           className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
         >
-          <JobCategoryForm />
+          <ToolForm />
           <div className="flex justify-end mt-2">
             <Button
               type="submit"

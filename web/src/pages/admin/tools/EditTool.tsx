@@ -5,73 +5,67 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { CategoryFormData } from "./types";
-import JobCategoryForm from "./JobCategoryForm";
-import { useQueryClient } from "@tanstack/react-query";
+import type { ToolFormData } from "./types";
+import ToolForm from "./ToolForm";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminUpdateServiceCategory } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminUpdateTool } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
- * `EditCategory` component renders a page with a form to edit an existing Service category.
- * It uses `react-hook-form` for form state management and reuses the `JobCategoryForm`.
+ * `EditTool` component renders a page with a form to edit an existing Tool.
+ * It uses `react-hook-form` for form state management and reuses the `ToolForm`.
  *
- * **Note:** This component currently initializes with empty default values. In a real-world
- * application, it should fetch the specific category's data (e.g., using a category ID from
- * the URL) and use it to populate the form's default values.
- *
- * @returns {JSX.Element} The rendered component for editing a category.
+ * @returns {JSX.Element} The rendered component for editing a tool.
  */
-export default function EditCategory() {
+export default function EditTool() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
 
-  const categoryId = id ? Number(id) : undefined;
-  const category =
-    (location.state as { category?: { id: number; name: string } } | null)
-      ?.category ?? null;
+  const toolId = id ? Number(id) : undefined;
+  const tool =
+    (location.state as { tool?: { id: number; name: string } } | null)?.tool ??
+    null;
 
-  const methods = useForm<CategoryFormData>({
+  const methods = useForm<ToolFormData>({
     defaultValues: {
-      categoryName: category?.name || "",
-      categoryImage: null,
+      toolName: tool?.name || "",
+      toolImage: null,
     },
   });
 
   useEffect(() => {
-    if (!category) return;
+    if (!tool) return;
     methods.reset({
-      categoryName: category.name || "",
-      categoryImage: null,
+      toolName: tool.name || "",
+      toolImage: null,
     });
-  }, [category]);
+  }, [tool]);
 
   const { showPopup } = usePopupStore();
-  const { mutateAsync: updateServiceCategory, isPending: isUpdatingCategory } =
-    useAdminUpdateServiceCategory({
+  const { mutateAsync: updateTool, isPending: isUpdatingTool } =
+    useAdminUpdateTool({
       onSuccess: async () => {
-        toast.success("Service category updated successfully!");
+        toast.success("Tool updated successfully!");
         methods.reset();
-        // Invalidate and refetch the categories list
+        // Invalidate and refetch the tools list
         await queryClient.invalidateQueries({
-          queryKey: ["lookup", "serviceCategories", "root"],
+          queryKey: ["lookup", "tools", "root"],
         });
-        await queryClient.invalidateQueries({
-          queryKey: ["adminGetServiceCategories"],
-        });
-        navigate(absoluteUrls.admin.home.manage_categories);
+        await queryClient.invalidateQueries({ queryKey: ["adminGetTools"] });
+        navigate(absoluteUrls.admin.home.manage_tools);
       },
       onError: (error) => {
         const errorMessage =
-          error instanceof Error ? error.message : "Update category failed";
+          error instanceof Error ? error.message : "Update tool failed";
         toast.error(errorMessage);
       },
     });
 
-  const handleSaveConfirmation = async (data: CategoryFormData) => {
+  const handleSaveConfirmation = async (data: ToolFormData) => {
     await showPopup({
-      title: "Update Category",
+      title: "Update Tool",
       body: "Are you sure you want to update this details?",
       actionButtons: [
         {
@@ -84,11 +78,10 @@ export default function EditCategory() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            if (!categoryId) return;
-            if (isUpdatingCategory) return;
-            await updateServiceCategory({
-              path: { id: categoryId },
-              body: { name: data.categoryName },
+            if (!toolId) return;
+            if (isUpdatingTool) return;
+            await updateTool({
+              body: { id: toolId, name: data.toolName },
             });
             close(true);
           },
@@ -103,11 +96,11 @@ export default function EditCategory() {
   return (
     <div className="w-full h-full p-4">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold ">Edit Category</h1>
+        <h1 className="font-semibold ">Edit Tool</h1>
         <Button
           variant="solid"
           className=""
-          onClick={() => navigate(absoluteUrls.admin.home.manage_categories)}
+          onClick={() => navigate(absoluteUrls.admin.home.manage_tools)}
         >
           Back
         </Button>
@@ -118,7 +111,7 @@ export default function EditCategory() {
           onSubmit={handleSubmit}
           className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
         >
-          <JobCategoryForm />
+          <ToolForm />
           <div className="flex justify-end mt-2">
             <Button
               type="submit"

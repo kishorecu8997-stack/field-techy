@@ -311,9 +311,9 @@ export function useGetUserRatingAndReviews(
     refetchOnWindowFocus: true,
     select: assignmentId
       ? (data) =>
-        Array.isArray(data)
-          ? data.filter((r) => r.jobAssignmentId === assignmentId)
-          : data
+          Array.isArray(data)
+            ? data.filter((r) => r.jobAssignmentId === assignmentId)
+            : data
       : undefined,
   });
 }

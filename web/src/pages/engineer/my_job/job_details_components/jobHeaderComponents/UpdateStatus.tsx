@@ -137,7 +137,10 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
               // Handle Status Update
               if (data.status === "in-progress") {
                 await requestStart({
-                  body: { assignmentId: Number(jobId), regionId: Number(regionId) },
+                  body: {
+                    assignmentId: Number(jobId),
+                    regionId: Number(regionId),
+                  },
                 });
               } else {
                 await addWorkLog({

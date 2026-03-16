@@ -5,73 +5,67 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { CategoryFormData } from "./types";
-import JobCategoryForm from "./JobCategoryForm";
-import { useQueryClient } from "@tanstack/react-query";
+import type { SkillFormData } from "./types";
+import SkillForm from "./SkillForm";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminUpdateServiceCategory } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminUpdateSkill } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
- * `EditCategory` component renders a page with a form to edit an existing Service category.
- * It uses `react-hook-form` for form state management and reuses the `JobCategoryForm`.
+ * `EditSkill` component renders a page with a form to edit an existing Skill.
+ * It uses `react-hook-form` for form state management and reuses the `SkillForm`.
  *
- * **Note:** This component currently initializes with empty default values. In a real-world
- * application, it should fetch the specific category's data (e.g., using a category ID from
- * the URL) and use it to populate the form's default values.
- *
- * @returns {JSX.Element} The rendered component for editing a category.
+ * @returns {JSX.Element} The rendered component for editing a skill.
  */
-export default function EditCategory() {
+export default function EditSkill() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
 
-  const categoryId = id ? Number(id) : undefined;
-  const category =
-    (location.state as { category?: { id: number; name: string } } | null)
-      ?.category ?? null;
+  const skillId = id ? Number(id) : undefined;
+  const skill =
+    (location.state as { skill?: { id: number; name: string } } | null)
+      ?.skill ?? null;
 
-  const methods = useForm<CategoryFormData>({
+  const methods = useForm<SkillFormData>({
     defaultValues: {
-      categoryName: category?.name || "",
-      categoryImage: null,
+      skillName: skill?.name || "",
+      skillImage: null,
     },
   });
 
   useEffect(() => {
-    if (!category) return;
+    if (!skill) return;
     methods.reset({
-      categoryName: category.name || "",
-      categoryImage: null,
+      skillName: skill.name || "",
+      skillImage: null,
     });
-  }, [category]);
+  }, [skill]);
 
   const { showPopup } = usePopupStore();
-  const { mutateAsync: updateServiceCategory, isPending: isUpdatingCategory } =
-    useAdminUpdateServiceCategory({
+  const { mutateAsync: updateSkill, isPending: isUpdatingSkill } =
+    useAdminUpdateSkill({
       onSuccess: async () => {
-        toast.success("Service category updated successfully!");
+        toast.success("Skill updated successfully!");
         methods.reset();
-        // Invalidate and refetch the categories list
+        // Invalidate and refetch the skills list
         await queryClient.invalidateQueries({
-          queryKey: ["lookup", "serviceCategories", "root"],
+          queryKey: ["lookup", "skills", "root"],
         });
-        await queryClient.invalidateQueries({
-          queryKey: ["adminGetServiceCategories"],
-        });
-        navigate(absoluteUrls.admin.home.manage_categories);
+        await queryClient.invalidateQueries({ queryKey: ["adminGetSkills"] });
+        navigate(absoluteUrls.admin.home.manage_skills);
       },
       onError: (error) => {
         const errorMessage =
-          error instanceof Error ? error.message : "Update category failed";
+          error instanceof Error ? error.message : "Update skill failed";
         toast.error(errorMessage);
       },
     });
 
-  const handleSaveConfirmation = async (data: CategoryFormData) => {
+  const handleSaveConfirmation = async (data: SkillFormData) => {
     await showPopup({
-      title: "Update Category",
+      title: "Update Skill",
       body: "Are you sure you want to update this details?",
       actionButtons: [
         {
@@ -84,11 +78,10 @@ export default function EditCategory() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            if (!categoryId) return;
-            if (isUpdatingCategory) return;
-            await updateServiceCategory({
-              path: { id: categoryId },
-              body: { name: data.categoryName },
+            if (!skillId) return;
+            if (isUpdatingSkill) return;
+            await updateSkill({
+              body: { id: skillId, name: data.skillName },
             });
             close(true);
           },
@@ -103,11 +96,11 @@ export default function EditCategory() {
   return (
     <div className="w-full h-full p-4">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold ">Edit Category</h1>
+        <h1 className="font-semibold ">Edit Skill</h1>
         <Button
           variant="solid"
           className=""
-          onClick={() => navigate(absoluteUrls.admin.home.manage_categories)}
+          onClick={() => navigate(absoluteUrls.admin.home.manage_skills)}
         >
           Back
         </Button>
@@ -118,7 +111,7 @@ export default function EditCategory() {
           onSubmit={handleSubmit}
           className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
         >
-          <JobCategoryForm />
+          <SkillForm />
           <div className="flex justify-end mt-2">
             <Button
               type="submit"
