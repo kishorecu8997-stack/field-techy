@@ -55,6 +55,7 @@ export default function ActiveUser() {
     type: ProfileFileType;
   } | null>(null);
 
+  const normalizedSearch = search.trim();
   const {
     data: engineersResponse,
     isLoading,
@@ -64,7 +65,7 @@ export default function ActiveUser() {
     page: currentPage,
     limit: pageSize,
     status: "active",
-    search: search || undefined,
+    ...(normalizedSearch ? { search: normalizedSearch } : {}),
   });
 
   const { mutateAsync: deleteEngineer } = useAdminDeleteEngineerMutation();
@@ -80,23 +81,7 @@ export default function ActiveUser() {
     );
   }, [engineerData, selectedFile]);
 
-  const filteredEngineers = useMemo(() => {
-    if (!search.trim()) return engineerData;
 
-    const term = search.toLowerCase();
-
-    return engineerData.filter((engineer) =>
-      [
-        engineer.engineerCode,
-        engineer.name,
-        engineer.email,
-        engineer.phoneNumber,
-        engineer.location,
-      ]
-        .filter(Boolean)
-        .some((value) => value!.toLowerCase().includes(term)),
-    );
-  }, [engineerData, search]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
@@ -405,14 +390,10 @@ export default function ActiveUser() {
         <div className="h-full flex-1 overflow-hidden">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredEngineers}
+            data={engineerData}
             initialPageSize={pageSize}
             currentPage={currentPage}
-            totalCount={
-              search
-                ? filteredEngineers.length
-                : (engineersResponse?.total ?? 0)
-            }
+            totalCount={engineersResponse?.total ?? 0}
             loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}

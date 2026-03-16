@@ -39,6 +39,7 @@ export default function PendingRequest() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  const normalizedSearch = search.trim();
   const {
     data: engineersResponse,
     isLoading,
@@ -48,7 +49,7 @@ export default function PendingRequest() {
     page: currentPage,
     limit: pageSize,
     profileStatus: "pending",
-    search: search || undefined,
+    ...(normalizedSearch ? { search: normalizedSearch } : {}),
   });
 
   // Mutation for updating status
@@ -86,23 +87,7 @@ export default function PendingRequest() {
     );
   }, [engineerData, selectedFile]);
 
-  const filteredEngineers = useMemo(() => {
-    if (!search.trim()) return engineerData;
 
-    const term = search.toLowerCase();
-
-    return engineerData.filter((engineer) =>
-      [
-        engineer.engineerCode,
-        engineer.name,
-        engineer.email,
-        engineer.phoneNumber,
-        engineer.location,
-      ]
-        .filter(Boolean)
-        .some((value) => value!.toLowerCase().includes(term)),
-    );
-  }, [engineerData, search]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
@@ -325,14 +310,10 @@ export default function PendingRequest() {
         <div className="h-full flex-1 overflow-hidden">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredEngineers}
+            data={engineerData}
             initialPageSize={pageSize}
             currentPage={currentPage}
-            totalCount={
-              search
-                ? filteredEngineers.length
-                : (engineersResponse?.total ?? 0)
-            }
+            totalCount={engineersResponse?.total ?? 0}
             loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}

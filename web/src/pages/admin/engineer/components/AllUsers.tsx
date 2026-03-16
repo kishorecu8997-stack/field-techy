@@ -38,6 +38,7 @@ export default function AllUsers() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  const normalizedSearch = search.trim();
   const {
     data: engineersResponse,
     isLoading,
@@ -45,7 +46,7 @@ export default function AllUsers() {
   } = useAdminManageEngineers({
     page: currentPage,
     limit: pageSize,
-    search: search || undefined,
+    ...(normalizedSearch ? { search: normalizedSearch } : {}),
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];

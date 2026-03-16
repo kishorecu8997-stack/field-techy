@@ -2,7 +2,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -50,13 +50,18 @@ const ClientList: React.FC<ClientListProps> = ({
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
+  const normalizedSearch = search.trim();
   const {
     data: manageClient,
     refetch: refetchClients,
     isLoading,
   } = useAdminManageClients({
     clientType,
-    query: { page, limit, search: search || undefined },
+    query: {
+      page,
+      limit,
+      ...(normalizedSearch ? { search: normalizedSearch } : {}),
+    },
   });
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();

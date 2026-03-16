@@ -43,6 +43,7 @@ export default function BlockedUser() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  const normalizedSearch = search.trim();
   const {
     data: engineersResponse,
     isLoading,
@@ -52,7 +53,7 @@ export default function BlockedUser() {
     page: currentPage,
     limit: pageSize,
     status: "blocked",
-    search: search || undefined,
+    ...(normalizedSearch ? { search: normalizedSearch } : {}),
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
@@ -66,23 +67,7 @@ export default function BlockedUser() {
     );
   }, [engineerData, selectedFile]);
 
-  const filteredEngineers = useMemo(() => {
-    if (!search.trim()) return engineerData;
 
-    const term = search.toLowerCase();
-
-    return engineerData.filter((engineer) =>
-      [
-        engineer.engineerCode,
-        engineer.name,
-        engineer.email,
-        engineer.phoneNumber,
-        engineer.location,
-      ]
-        .filter(Boolean)
-        .some((value) => value!.toLowerCase().includes(term)),
-    );
-  }, [engineerData, search]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
@@ -269,22 +254,24 @@ export default function BlockedUser() {
     <>
       <div className="h-full w-full flex flex-1 overflow-hidden flex-col">
         <div className="mb-4 flex flex-wrap gap-4 items-center">
-          <SearchInput value={search} onChange={setSearch} />
+          <SearchInput
+            value={search}
+            onChange={(value) => {
+              setSearch(value);
+              setCurrentPage(1);
+            }}
+          />
         </div>
         <div className="h-full flex-1 overflow-hidden">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredEngineers}
+            data={engineerData}
             loading={isLoading || isFetching}
             initialPageSize={pageSize}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}
-            totalCount={
-              search
-                ? filteredEngineers.length
-                : (engineersResponse?.total ?? 0)
-            }
+            totalCount={engineersResponse?.total ?? 0}
           />
         </div>
       </div>
