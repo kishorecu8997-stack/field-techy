@@ -28,20 +28,89 @@ const Home = () => {
     scrollToTop();
   }, []);
   const navigate = useNavigate();
-
   // Use engineer search jobs to fetch available jobs
   const {
-    data: jobsResponse,
-    isLoading,
-    isError,
-    refetch,
-  } = useEngineerSearchJobs({});
+    data: featuredJobsResponse,
+    isLoading: featuredJobLoading,
+    isError: featuredJobError,
+    refetch: featuredJobRefetch,
+  } = useEngineerSearchJobs({ sortBy: "latest", featured: true });
 
-  // Transform API response to UI model
-  const jobs = useMemo(() => {
-    if (!jobsResponse) return [];
+  const {
+    data: recommendedJobsResponse,
+    isLoading: recommendedJobLoading,
+    isError: recommendedJobError,
+    refetch: recommendedJobRefetch,
+  } = useEngineerSearchJobs({ sortBy: "latest", isRecommended: true });
 
-    return jobsResponse.map((job): JobItem => {
+  // Transform API response to recommentedjob UI model
+  const recommendedJobsData = useMemo(() => {
+    if (!recommendedJobsResponse) return [];
+
+    return recommendedJobsResponse.map((job): JobItem => {
+      const clientDetails = job.clientDetails;
+      const pay = job.totalPrice;
+      const currencySymbol = job.currencySymbol ?? "$";
+
+      return {
+        id: job.id.toString(),
+        jobCode: job.jobCode,
+        clientId: job.clientId.toString(),
+        jobTitle: job.jobTitle,
+        jobDescription: job.jobDescription || "",
+        category: job.serviceCategoryId,
+        jobType: job.jobType,
+        engagementModel: job.engagementModelId,
+        countryId: job.countryId,
+        stateId: job.stateId ?? undefined,
+        cityId: job.cityId ?? undefined,
+        location: job.workLocationName || null,
+        startDate: job.startDate || new Date().toISOString(),
+        endDate: job.endDate || null,
+        numberOfVacancy: job.vacancies || 1,
+        assignedEngineerCount:
+          (job as unknown as { assignedEngineerCount?: number })
+            .assignedEngineerCount || 0,
+        experience: job.experienceLevelId || 0,
+        salary: pay,
+        currencySymbol: currencySymbol,
+        status: job.status || "NEW",
+        skills: [],
+        tools: [],
+        toolImage: null,
+        toolAdditionalBudget: null,
+        postedTime: job.createdAt || new Date().toISOString(),
+        // jobDuration: "",
+        budgetType: null,
+        isSaved: job.isSaved,
+        client: {
+          id: job.clientId.toString(),
+          clientType: clientDetails?.clientType || "unknown",
+          companyName:
+            clientDetails?.companyName ??
+            clientDetails?.personName ??
+            "Unknown",
+          name: clientDetails?.name ?? clientDetails?.personName ?? "Unknown",
+          contactPersonName: clientDetails?.personName || "Unknown",
+          email: clientDetails?.email || "",
+          phoneNumber: clientDetails?.phoneNumber || "",
+          state: "",
+          city: "",
+          country: "",
+          postalCode: "",
+          address: clientDetails?.address || "",
+        },
+        assignmentId: job.assignmentId,
+        assignmentType: null,
+      };
+    });
+  }, [recommendedJobsResponse]);
+
+  // Transform API response to featuredjob UI model
+  const featuredJobsData = useMemo(() => {
+    if (!featuredJobsResponse) return [];
+
+    return featuredJobsResponse.map((job): JobItem => {
       const clientDetails = job.clientDetails;
       const pay = job.totalPrice;
       const currencySymbol = job.currencySymbol ?? "$";
@@ -100,36 +169,40 @@ const Home = () => {
         assignmentType: null,
       };
     });
-  }, [jobsResponse]);
+  }, [featuredJobsResponse]);
 
   const profile = useEngineerProfile();
 
-  const handleExploreJobs = () => {
+  const handleFeaturedJobs = () => {
     scrollToTop();
-    navigate(absoluteUrls.engineer.home.explore_jobs);
+    navigate(absoluteUrls.engineer.home.featured_jobs);
+  };
+  const handleRecommendedJobs = () => {
+    scrollToTop();
+    navigate(absoluteUrls.engineer.home.recommended_jobs);
   };
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 5;
 
   const findNewJobs = useMemo(() => {
     return (
-      jobs?.filter(
+      featuredJobsData?.filter(
         (job) =>
           (job.status === "Posted" || job.status === "NEW") &&
           (job.assignedEngineerCount ?? 0) < job.numberOfVacancy,
       ) || []
     );
-  }, [jobs]);
+  }, [featuredJobsData]);
 
   const recommendedJobs = useMemo(() => {
     return (
-      jobs?.filter(
+      recommendedJobsData?.filter(
         (job) =>
           (job.status === "Posted" || job.status === "NEW") &&
           (job.assignedEngineerCount ?? 0) < job.numberOfVacancy,
       ) || []
     );
-  }, [jobs]);
+  }, [recommendedJobsData]);
 
   const totalPages = Math.ceil(recommendedJobs.length / jobsPerPage);
 
@@ -143,7 +216,7 @@ const Home = () => {
     scrollToTop();
   };
 
-  if (isLoading) {
+  if (featuredJobLoading || recommendedJobLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <LoaderComponent />
@@ -157,28 +230,31 @@ const Home = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-4">
             <JobExplorationBanner />
-            {isError && (
-              <ErrorState
-                title="Unable to Load Jobs"
-                message="Something went wrong. Please try again later."
-                onRetry={refetch}
-              />
-            )}
-            {!isError && !jobsResponse?.length && (
-              <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
-                <div className="font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 p-20 rounded-lg">
-                  No jobs found.
-                </div>
-              </p>
-            )}
+            {recommendedJobError ||
+              (featuredJobError && (
+                <ErrorState
+                  title="Unable to Load Jobs"
+                  message="Something went wrong. Please try again later."
+                  onRetry={recommendedJobRefetch || featuredJobRefetch}
+                />
+              ))}
+            {!recommendedJobError ||
+              (!featuredJobError && !recommendedJobsResponse?.length) ||
+              (!featuredJobsResponse?.length && (
+                <p className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
+                  <div className="font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 p-20 rounded-lg">
+                    No jobs found.
+                  </div>
+                </p>
+              ))}
             {findNewJobs.length > 0 && (
               <FeaturedJobs
                 jobs={findNewJobs}
                 userSkills={[]}
                 userTools={profile?.tools || []}
                 title="Featured Jobs"
-                onViewAll={handleExploreJobs}
-                bookMarkRefetch={refetch}
+                onViewAll={handleFeaturedJobs}
+                bookMarkRefetch={featuredJobRefetch}
               />
             )}
 
@@ -187,10 +263,10 @@ const Home = () => {
                 jobs={paginatedRecommendedJobs}
                 userSkills={[]}
                 userTools={profile?.tools || []}
-                onViewAll={handleExploreJobs}
+                onViewAll={handleRecommendedJobs}
                 title="Recommended Jobs"
                 totalJobs={recommendedJobs.length}
-                bookMarkRefetch={refetch}
+                bookMarkRefetch={recommendedJobRefetch}
               />
             )}
             {recommendedJobs.length > 5 && (

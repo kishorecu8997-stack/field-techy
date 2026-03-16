@@ -138,6 +138,7 @@ export default function ReportTable({
       renderCell: (_, index) => (currentPage - 1) * pageSize + index + 1,
     },
     { key: "jobId", label: "Job ID" },
+    { key: "reporterName", label: "Reporter" },
     { key: "reporterRole", label: "Role" },
     { key: "detailedDescription", label: "Issue" },
     { key: "issueCategory", label: "Issue category" },

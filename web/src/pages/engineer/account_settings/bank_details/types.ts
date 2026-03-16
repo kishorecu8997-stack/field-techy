@@ -6,7 +6,8 @@ export const WITHDRAW_STATUS = {
   REJECTED: "rejected",
   PENDING: "pending",
 } as const;
-export type WithdrawStatus = (typeof WITHDRAW_STATUS)[keyof typeof WITHDRAW_STATUS];
+export type WithdrawStatus =
+  (typeof WITHDRAW_STATUS)[keyof typeof WITHDRAW_STATUS];
 
 export interface Transaction {
   id: number | string;
@@ -28,5 +29,3 @@ export interface BankDetails {
 }
 
 export type bankDetails = BankDetails;
-
-

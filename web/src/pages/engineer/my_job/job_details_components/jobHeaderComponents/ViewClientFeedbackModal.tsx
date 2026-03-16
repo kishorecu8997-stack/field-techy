@@ -24,7 +24,7 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
   onClose,
   className = "w-full",
   reviews,
-  label
+  label,
 }) => {
   return (
     <div className={className}>
@@ -44,12 +44,14 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
       </div>
 
       <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
-        {(!reviews || reviews.length === 0) ? (
+        {!reviews || reviews.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
               <FaStar className="w-8 h-8 text-gray-300 dark:text-gray-600" />
             </div>
-            <p className="text-gray-500 dark:text-gray-400 font-medium">No feedback available yet</p>
+            <p className="text-gray-500 dark:text-gray-400 font-medium">
+              No feedback available yet
+            </p>
           </div>
         ) : (
           reviews.map((review, index) => (
@@ -71,9 +73,10 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
                         alt={review.reviewerName || "Reviewer"}
                         className="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 shadow-sm"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                          const nextEl = (e.target as HTMLImageElement).nextElementSibling;
-                          if (nextEl) nextEl.classList.remove('hidden');
+                          (e.target as HTMLImageElement).style.display = "none";
+                          const nextEl = (e.target as HTMLImageElement)
+                            .nextElementSibling;
+                          if (nextEl) nextEl.classList.remove("hidden");
                         }}
                       />
                       <div className="hidden w-12 h-12 rounded-full bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/50 dark:to-teal-800/50 flex flex-col items-center justify-center text-teal-700 dark:text-teal-300 font-bold tracking-wider ring-2 ring-white dark:ring-gray-800 shadow-sm text-lg">
@@ -107,10 +110,11 @@ const ViewClientFeedbackModal: React.FC<ViewClientFeedbackModalProps> = ({
                           <FaStar
                             key={i}
                             aria-hidden="true"
-                            className={`w-3.5 h-3.5 ${i < safeRating
-                              ? "fill-amber-400 text-amber-400"
-                              : "text-gray-200 dark:text-gray-600"
-                              } transition-transform duration-300 group-hover:scale-110`}
+                            className={`w-3.5 h-3.5 ${
+                              i < safeRating
+                                ? "fill-amber-400 text-amber-400"
+                                : "text-gray-200 dark:text-gray-600"
+                            } transition-transform duration-300 group-hover:scale-110`}
                             style={{ transitionDelay: `${i * 50}ms` }}
                           />
                         ));

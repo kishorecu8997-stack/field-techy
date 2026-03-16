@@ -155,7 +155,9 @@ const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
                   {(item.attachmentUrl || item.proposalAttachmentUrl) && (
                     <div className="mt-2">
                       <a
-                        href={item.attachmentUrl || item.proposalAttachmentUrl || ""}
+                        href={
+                          item.attachmentUrl || item.proposalAttachmentUrl || ""
+                        }
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 cursor-pointer"

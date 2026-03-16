@@ -125,7 +125,10 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
                 approverComment: reason,
               },
             } as any);
-            const breakTypeMsg = brk.type === "long_term" ? TOAST_MESSAGES.longBreakRejected : TOAST_MESSAGES.shortBreakRejected;
+            const breakTypeMsg =
+              brk.type === "long_term"
+                ? TOAST_MESSAGES.longBreakRejected
+                : TOAST_MESSAGES.shortBreakRejected;
             toast.success(breakTypeMsg);
             onClose();
           }}
@@ -154,7 +157,10 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
                 approverComment: reason,
               },
             } as any);
-            const breakTypeMsg = brk.type === "long_term" ? TOAST_MESSAGES.longBreakApproved : TOAST_MESSAGES.shortBreakApproved;
+            const breakTypeMsg =
+              brk.type === "long_term"
+                ? TOAST_MESSAGES.longBreakApproved
+                : TOAST_MESSAGES.shortBreakApproved;
             toast.success(breakTypeMsg);
             onClose();
           }}
@@ -252,12 +258,13 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
                   : "Short Term Break"}
               </p>
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${brk.status === "pending"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : brk.status === "approved"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                  }`}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
+                  brk.status === "pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : brk.status === "approved"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                }`}
               >
                 {brk.status === "pending"
                   ? "Pending"
@@ -268,10 +275,11 @@ const BreakRequestDetails: React.FC<BreakRequestDetailsProps> = ({
             </div>
 
             <p
-              className={`mb-2 inline-block px-2 py-0.5 rounded-2xl text-white text-xs ${brk.type === "long_term"
-                ? "bg-orange-400 dark:bg-orange-700"
-                : "bg-green-600 dark:bg-green-700"
-                }`}
+              className={`mb-2 inline-block px-2 py-0.5 rounded-2xl text-white text-xs ${
+                brk.type === "long_term"
+                  ? "bg-orange-400 dark:bg-orange-700"
+                  : "bg-green-600 dark:bg-green-700"
+              }`}
             >
               {brk.type === "long_term"
                 ? `${formatDateOnly(brk.startAt)} - ${formatDateOnly(brk.endAt)} (${calculateDuration(brk.startAt, brk.endAt)})`

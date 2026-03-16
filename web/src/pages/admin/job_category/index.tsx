@@ -81,7 +81,9 @@ const ManageJobCategory: React.FC = () => {
       key: "id",
       label: "Sr.No.",
       renderCell: (_row: ServerCategoryProps, index: number) => (
-        <div className="whitespace-nowrap">{(page - 1) * pageSize + index + 1}</div>
+        <div className="whitespace-nowrap">
+          {(page - 1) * pageSize + index + 1}
+        </div>
       ),
     },
     { key: "categoryName", label: "Category" },

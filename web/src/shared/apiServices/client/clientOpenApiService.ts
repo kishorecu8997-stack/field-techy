@@ -652,7 +652,7 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => { },
+    refetch: () => {},
   };
 }
 
