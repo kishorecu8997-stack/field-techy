@@ -60,7 +60,12 @@ const mapClientJobToJobOverview = (
   const rawTools = getJobValue<unknown>("tools");
   const toolAttachmentUrls = getJobValue<string[]>("toolAttachmentUrls") || [];
   const currencySymbol = getJobValue<string>("currencySymbol") || "$";
-  let tools: Array<{ name: string; price: string; image?: string; unit?: string }> = [];
+  let tools: Array<{
+    name: string;
+    price: string;
+    image?: string;
+    unit?: string;
+  }> = [];
 
   // Helper function to convert tool ID to label
   const getToolLabel = (toolValue: string | number): string => {
@@ -91,11 +96,11 @@ const mapClientJobToJobOverview = (
       toolObj.toolImage ??
       toolObj.attachmentUrl ??
       toolObj.url;
-    
+
     if (directImage && typeof directImage === "string" && directImage.trim()) {
       return directImage;
     }
-    
+
     // If no direct image, return undefined (don't use fallback - we'll handle that separately)
     return undefined;
   };
@@ -103,36 +108,44 @@ const mapClientJobToJobOverview = (
   // Check for tools array first
   if (Array.isArray(rawTools) && rawTools.length > 0) {
     tools = rawTools
-      .map((tool, index): { name: string; price: string; image?: string; unit?: string } => {
-        if (typeof tool === "object" && tool !== null) {
-          const toolObj = tool as Record<string, unknown>;
-          const toolName = toolObj.name || toolObj.toolId || toolObj.id;
-          
-          // Get direct image from tool object first
-          let toolImage = getToolImage(toolObj);
-          
-          // Only use toolAttachmentUrls as fallback if tool doesn't have its own image
-          // and there's a valid URL at this index
-          if (!toolImage && index < toolAttachmentUrls.length) {
-            toolImage = toolAttachmentUrls[index];
+      .map(
+        (
+          tool,
+          index,
+        ): { name: string; price: string; image?: string; unit?: string } => {
+          if (typeof tool === "object" && tool !== null) {
+            const toolObj = tool as Record<string, unknown>;
+            const toolName = toolObj.name || toolObj.toolId || toolObj.id;
+
+            // Get direct image from tool object first
+            let toolImage = getToolImage(toolObj);
+
+            // Only use toolAttachmentUrls as fallback if tool doesn't have its own image
+            // and there's a valid URL at this index
+            if (!toolImage && index < toolAttachmentUrls.length) {
+              toolImage = toolAttachmentUrls[index];
+            }
+
+            return {
+              name: toolName
+                ? getToolLabel(toolName as string | number)
+                : String(tool),
+              price: getToolPrice(toolObj),
+              image: toolImage,
+              unit: currencySymbol,
+            };
           }
-          
           return {
-            name: toolName
-              ? getToolLabel(toolName as string | number)
-              : String(tool),
-            price: getToolPrice(toolObj),
-            image: toolImage,
+            name: getToolLabel(tool as string | number),
+            price: "",
+            image:
+              index < toolAttachmentUrls.length
+                ? toolAttachmentUrls[index]
+                : undefined,
             unit: currencySymbol,
           };
-        }
-        return {
-          name: getToolLabel(tool as string | number),
-          price: "",
-          image: index < toolAttachmentUrls.length ? toolAttachmentUrls[index] : undefined,
-          unit: currencySymbol,
-        };
-      })
+        },
+      )
       .filter((t) => t.name && t.name !== "undefined");
   } else {
     // Check for individual tool fields: toolName, toolImage, toolAdditionalBudget
@@ -165,7 +178,9 @@ const mapClientJobToJobOverview = (
   if (tools.length > 0 && toolAttachmentUrls.length > 0) {
     tools = tools.map((tool, index) => ({
       ...tool,
-      image: tool.image || (toolAttachmentUrls[index] ? toolAttachmentUrls[index] : undefined),
+      image:
+        tool.image ||
+        (toolAttachmentUrls[index] ? toolAttachmentUrls[index] : undefined),
       unit: tool.unit || currencySymbol,
     }));
   }

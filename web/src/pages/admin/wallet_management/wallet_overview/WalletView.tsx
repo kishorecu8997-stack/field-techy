@@ -3,7 +3,12 @@ import CustomTable, {
   type Column,
 } from "@/shared/components/commonUI/custom_table";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useNavigate, useLocation, useParams, useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -99,8 +104,13 @@ export default function WalletView() {
     parsedUrlUserId = urlUserId.split("=")[1];
   }
 
-  const { usertype, userId: stateUserId, clientName, mobileNo, email } = (location.state ||
-    {}) as {
+  const {
+    usertype,
+    userId: stateUserId,
+    clientName,
+    mobileNo,
+    email,
+  } = (location.state || {}) as {
     usertype?: "client" | "engineer";
     userId?: number;
     clientName?: string;
@@ -118,11 +128,16 @@ export default function WalletView() {
   const transactionsQuery = useAdminGetManageTransactions({
     page,
     limit,
-    ...(finalUserType === "client" && finalUserId ? { clientId: finalUserId } : {}),
-    ...(finalUserType === "engineer" && finalUserId ? { engineerId: finalUserId } : {}),
+    ...(finalUserType === "client" && finalUserId
+      ? { clientId: finalUserId }
+      : {}),
+    ...(finalUserType === "engineer" && finalUserId
+      ? { engineerId: finalUserId }
+      : {}),
   });
 
-  const { data: manageTransactionsData, isLoading: isTransactionsLoading } = transactionsQuery;
+  const { data: manageTransactionsData, isLoading: isTransactionsLoading } =
+    transactionsQuery;
 
   const transactions = manageTransactionsData?.data || [];
   const totalCount = manageTransactionsData?.total || 0;

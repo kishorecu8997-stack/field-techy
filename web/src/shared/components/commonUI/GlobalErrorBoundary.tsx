@@ -40,7 +40,10 @@ class GlobalErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900">
           <ErrorState
             title="Application Error"
-            message={this.state.error?.message || "Something went wrong while rendering this page."}
+            message={
+              this.state.error?.message ||
+              "Something went wrong while rendering this page."
+            }
             retryLabel="Reload Page"
             onRetry={() => window.location.reload()}
           />
@@ -53,7 +56,7 @@ class GlobalErrorBoundary extends Component<Props, State> {
 }
 
 /**
- * RouteErrorBoundary is a functional component designed to be used as 
+ * RouteErrorBoundary is a functional component designed to be used as
  * React Router's errorElement. It uses useRouteError to handle routing errors.
  */
 export const RouteErrorBoundary = () => {

@@ -47,9 +47,7 @@ export const AdminManageJobCategoryAdd = React.lazy(
 export const AdminManageJobCategoryEdit = React.lazy(
   () => import("@/pages/admin/job_category/EditCategory"),
 );
-export const AdminManageTools = React.lazy(
-  () => import("@/pages/admin/tools"),
-);
+export const AdminManageTools = React.lazy(() => import("@/pages/admin/tools"));
 export const AdminManageToolsAdd = React.lazy(
   () => import("@/pages/admin/tools/AddTool"),
 );

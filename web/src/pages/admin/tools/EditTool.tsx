@@ -50,7 +50,9 @@ export default function EditTool() {
         toast.success("Tool updated successfully!");
         methods.reset();
         // Invalidate and refetch the tools list
-        await queryClient.invalidateQueries({ queryKey: ["lookup", "tools", "root"] });
+        await queryClient.invalidateQueries({
+          queryKey: ["lookup", "tools", "root"],
+        });
         await queryClient.invalidateQueries({ queryKey: ["adminGetTools"] });
         navigate(absoluteUrls.admin.home.manage_tools);
       },

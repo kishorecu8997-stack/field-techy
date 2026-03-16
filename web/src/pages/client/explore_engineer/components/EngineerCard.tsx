@@ -55,8 +55,8 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
             </Button>
           </NavLink>
         </nav>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 

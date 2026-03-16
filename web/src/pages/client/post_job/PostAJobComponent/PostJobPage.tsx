@@ -126,7 +126,6 @@ const PostJobPage = () => {
     isSafeDate(endDate),
   );
 
-
   const {
     mutate: getJobPrice,
     data: priceData,
@@ -142,8 +141,8 @@ const PostJobPage = () => {
       ?.map((t) => ({ budget: Number(t.budget) || 0 }))
       .filter((t) => t.budget > 0).length
       ? toolsData
-        ?.map((t) => ({ budget: Number(t.budget) || 0 }))
-        .filter((t) => t.budget > 0)
+          ?.map((t) => ({ budget: Number(t.budget) || 0 }))
+          .filter((t) => t.budget > 0)
       : undefined;
 
     getJobPrice({
@@ -193,6 +192,23 @@ const PostJobPage = () => {
   ]);
 
   const { mutate: getRateCard } = useClientGetRateCard();
+
+  // Track previous country to detect changes and reset rate
+  const previousCountryRef = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    // Reset rate when country changes
+    if (
+      previousCountryRef.current !== undefined &&
+      previousCountryRef.current !== selectedCountry
+    ) {
+      // Country changed - reset rate immediately before fetching new one
+      setRateAndCurrency("", 0);
+      setAmount("");
+      setCurrencySymbol("");
+    }
+    previousCountryRef.current = selectedCountry;
+  }, [selectedCountry, setRateAndCurrency, setAmount, setCurrencySymbol]);
 
   useEffect(() => {
     if (
@@ -323,10 +339,7 @@ const PostJobPage = () => {
     });
   };
 
-  const {
-    mutate: postJob,
-    isPending: isPosting,
-  } = useClientPostJob();
+  const { mutate: postJob, isPending: isPosting } = useClientPostJob();
 
   const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
 
