@@ -119,10 +119,7 @@ const FeatureJobCard: React.FC<
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
   const regionId = useUserSessionStore.getState().session?.regionId;
 
-  const { refetch } = useGetEngineerSavedJobs({
-    limit: 10,
-    page: 1,
-  });
+  const { refetch } = useGetEngineerSavedJobs({});
   const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
     onSuccess: (response) => {
       refetch();
@@ -196,7 +193,9 @@ const FeatureJobCard: React.FC<
   // Format salary with currency symbol and comma separation
   const formattedSalary = useMemo(() => {
     if (!props.salary) return "-";
-    const numericValue = parseFloat(String(props.salary).replace(/[^0-9.-]/g, ""));
+    const numericValue = parseFloat(
+      String(props.salary).replace(/[^0-9.-]/g, ""),
+    );
     if (isNaN(numericValue)) return props.salary;
     const symbol = props.currencySymbol || "$";
     return `${symbol} ${formatCurrency(numericValue).replace(/^\$/, "")}`;

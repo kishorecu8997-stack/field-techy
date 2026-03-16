@@ -32,18 +32,19 @@ const RateCardForm: React.FC<{ readOnly?: boolean }> = ({
     ? parseInt(countryValue.replace(/\D/g, "")) || 0
     : 0;
 
-    // Fetch service categories from API
-   const { data: serviceCategoriesData, isLoading } = useGetServiceCategories();
-   // Fetch all rate cards to check for existing combinations
-   const { data: rateCardsData } = useGetRateCards(
-     { page: 1, limit: 100 },
-     { enabled: !isView && !isEdit && selectedCountryId > 0 },
-   );
+  // Fetch service categories from API
+  const { data: serviceCategoriesData, isLoading } = useGetServiceCategories();
+  // Fetch all rate cards to check for existing combinations
+  const { data: rateCardsData } = useGetRateCards(
+    { page: 1, limit: 100 },
+    { enabled: !isView && !isEdit && selectedCountryId > 0 },
+  );
 
   // Get existing service category IDs for the selected country
-  const existingServiceCategoryIds = rateCardsData?.data
-    ?.filter((card) => card.countryId === selectedCountryId)
-    .map((card) => card.serviceCategoryId) || [];
+  const existingServiceCategoryIds =
+    rateCardsData?.data
+      ?.filter((card) => card.countryId === selectedCountryId)
+      .map((card) => card.serviceCategoryId) || [];
 
   // Get current service category from form
   const currentServiceCategory = ctx.watch("serviceCategory");
@@ -52,11 +53,10 @@ const RateCardForm: React.FC<{ readOnly?: boolean }> = ({
   // In edit/view mode, include current service category even if it already exists
   const serviceCategoryOptions =
     serviceCategoriesData?.data
-      ?.filter(
-        (category) =>
-          isView || isEdit
-            ? true
-            : !existingServiceCategoryIds.includes(category.id),
+      ?.filter((category) =>
+        isView || isEdit
+          ? true
+          : !existingServiceCategoryIds.includes(category.id),
       )
       .map((category) => ({
         label: category.name,
@@ -64,9 +64,13 @@ const RateCardForm: React.FC<{ readOnly?: boolean }> = ({
       })) || [];
 
   // If in edit/view mode and current service category exists, ensure it's in options
-  if ((isView || isEdit) && currentServiceCategory && !serviceCategoryOptions.some(opt => opt.value === currentServiceCategory)) {
+  if (
+    (isView || isEdit) &&
+    currentServiceCategory &&
+    !serviceCategoryOptions.some((opt) => opt.value === currentServiceCategory)
+  ) {
     const currentCategory = serviceCategoriesData?.data?.find(
-      (cat) => `serviceCategory${cat.id}` === currentServiceCategory
+      (cat) => `serviceCategory${cat.id}` === currentServiceCategory,
     );
     if (currentCategory) {
       serviceCategoryOptions.unshift({

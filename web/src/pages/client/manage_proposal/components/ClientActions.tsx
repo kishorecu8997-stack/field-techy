@@ -47,9 +47,8 @@ const ClientActions = ({
     true,
     undefined,
     Number(id || jobId),
-    regionIdParam ? Number(regionIdParam) : undefined
+    regionIdParam ? Number(regionIdParam) : undefined,
   );
-
 
   const handleOpenViewClientFeedback = () => {
     showPopup({

@@ -216,7 +216,9 @@ const EngineersActions = ({
           action: async (close) => {
             try {
               if (assignmentId) {
-                await requestStartJob({ body: { assignmentId, regionId: Number(regionId) } });
+                await requestStartJob({
+                  body: { assignmentId, regionId: Number(regionId) },
+                });
               } else {
                 toast.error(
                   "No assignment found. Please apply to the job first.",
@@ -286,16 +288,16 @@ const EngineersActions = ({
   const postStartActions = isFinalStatementApproved ? (
     <div className="flex flex-wrap gap-4 w-fit">
       {/* {viewReviewComment && ( */}
-        <Button
-          variant="no_style"
-          className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
-          onClick={() => onOpenViewClientFeedback?.()}
-          leftIcon={
-            <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-          }
-        >
-          <span>View Feedback From Client</span>
-        </Button>
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
+        onClick={() => onOpenViewClientFeedback?.()}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
+      >
+        <span>View Feedback From Client</span>
+      </Button>
       {/* )}   */}
       <Button
         variant="no_style"
@@ -332,16 +334,16 @@ const EngineersActions = ({
   ) : isFinalStatementSubmitted ? (
     <div className="flex flex-wrap gap-4 w-fit">
       {/* {viewReviewComment && ( */}
-        <Button
-          variant="no_style"
-          className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
-          onClick={() => onOpenViewClientFeedback?.()}
-          leftIcon={
-            <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-          }
-        >
-          <span>View Feedback From Client</span>
-        </Button>
+      <Button
+        variant="no_style"
+        className="text-white px-2 py-1 font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-1 border-white hover:bg-teal-700/20 rounded-none hover:rounded-t-lg  "
+        onClick={() => onOpenViewClientFeedback?.()}
+        leftIcon={
+          <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        }
+      >
+        <span>View Feedback From Client</span>
+      </Button>
       {/* )}   */}
       <Button
         variant="no_style"
@@ -572,7 +574,7 @@ const EngineersActions = ({
                 >
                   View Feedback From Client
                 </Button>
-              )}  
+              )}
               <Button
                 variant="no_style"
                 className="text-white px-2 py-1 font-semibold flex items-center gap-2 hover:bg-teal-700/20"

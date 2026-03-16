@@ -37,17 +37,24 @@ const EditRateCard = () => {
   const path = useLocation().pathname;
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const { serviceCategoryId: serviceCategoryIdParam, countryId: countryIdParam } = useParams<{
+  const {
+    serviceCategoryId: serviceCategoryIdParam,
+    countryId: countryIdParam,
+  } = useParams<{
     serviceCategoryId: string;
     countryId: string;
   }>();
   const queryClient = useQueryClient();
 
   // Parse serviceCategoryId and countryId from URL params
-   const parsedServiceCategoryId = serviceCategoryIdParam ? parseInt(serviceCategoryIdParam, 10) : 0;
-   const serviceCategoryId = Number.isNaN(parsedServiceCategoryId) ? 0 : parsedServiceCategoryId;
-   const parsedCountryId = countryIdParam ? parseInt(countryIdParam, 10) : 0;
-   const countryId = Number.isNaN(parsedCountryId) ? 0 : parsedCountryId;
+  const parsedServiceCategoryId = serviceCategoryIdParam
+    ? parseInt(serviceCategoryIdParam, 10)
+    : 0;
+  const serviceCategoryId = Number.isNaN(parsedServiceCategoryId)
+    ? 0
+    : parsedServiceCategoryId;
+  const parsedCountryId = countryIdParam ? parseInt(countryIdParam, 10) : 0;
+  const countryId = Number.isNaN(parsedCountryId) ? 0 : parsedCountryId;
 
   // Store countryId from URL param for use in mutation
   const countryIdRef = useRef<number>(countryId);
@@ -65,13 +72,23 @@ const EditRateCard = () => {
   // Fetch rate cards using the same API as index table
   const { data: rateCardsResponse } = useGetRateCards(
     { page: 1, limit: 100 },
-    { enabled: !!serviceCategoryId && serviceCategoryId > 0 && !!countryId && countryId > 0 },
+    {
+      enabled:
+        !!serviceCategoryId &&
+        serviceCategoryId > 0 &&
+        !!countryId &&
+        countryId > 0,
+    },
   );
 
   // Filter rate cards by serviceCategoryId AND countryId and populate form
   useEffect(() => {
-    console.log("useEffect triggered:", { serviceCategoryId, countryId, hasData: !!rateCardsResponse?.data });
-    
+    console.log("useEffect triggered:", {
+      serviceCategoryId,
+      countryId,
+      hasData: !!rateCardsResponse?.data,
+    });
+
     if (rateCardsResponse?.data) {
       // Filter by serviceCategoryId AND countryId
       const filteredData = rateCardsResponse.data.filter(

@@ -99,7 +99,6 @@ const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({
     setIsOpen(false);
   };
 
-
   return (
     <>
       <div

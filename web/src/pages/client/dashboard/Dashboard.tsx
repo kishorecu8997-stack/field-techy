@@ -104,9 +104,7 @@ const Dashboard: React.FC = () => {
   // Get in-progress job IDs for fetching assignments
   const inProgressJobs = useMemo(() => {
     if (!clientJobs) return [];
-    return clientJobs
-      .filter((job) => job.status === "In Progress")
-      .slice(0, 4);
+    return clientJobs.filter((job) => job.status === "In Progress").slice(0, 4);
   }, [clientJobs]);
 
   // Fetch assignments for each in-progress job (max 4 jobs)
@@ -350,7 +348,7 @@ const Dashboard: React.FC = () => {
                         job={job}
                         navigateToJob={`${absoluteUrls.client.home.my_jobs}/${job.id}?regionId=${job.regionId}`}
                       />
-                    )
+                    );
                   })
                 ) : (
                   <div className="col-span-full font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 text-gray-400 p-20 rounded-lg cursor-default">

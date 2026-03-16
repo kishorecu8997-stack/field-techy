@@ -28,7 +28,7 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
   // email,
 }) => {
   const formattedRating = formatRating(rating);
-  
+
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-6">
       <div className="flex items-center justify-between mb-4">

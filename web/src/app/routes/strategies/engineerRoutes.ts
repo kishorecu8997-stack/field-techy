@@ -101,6 +101,14 @@ export class EngineerRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.EngineerExploreSavedJobs),
           },
           {
+            path: urls.engineer.home.recommended_jobs,
+            element: withSuspense(Components.EngineerExploreJobs),
+          },
+          {
+            path: urls.engineer.home.featured_jobs,
+            element: withSuspense(Components.EngineerExploreJobs),
+          },
+          {
             path: urls.engineer.home.my_jobs,
             element: withSuspense(Components.EngineerMyJobsPage),
           },

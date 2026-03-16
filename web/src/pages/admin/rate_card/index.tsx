@@ -50,10 +50,14 @@ const ManageRateCards: React.FC = () => {
     // Sort by createdDate descending (newest first) - handle DD/MM/YYYY format
     const parseDate = (dateStr: string | null) => {
       if (!dateStr) return 0;
-      const parts = dateStr.split('/');
+      const parts = dateStr.split("/");
       if (parts.length === 3) {
         // DD/MM/YYYY format - create date using YYYY, MM-1, DD
-        return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])).getTime();
+        return new Date(
+          parseInt(parts[2]),
+          parseInt(parts[1]) - 1,
+          parseInt(parts[0]),
+        ).getTime();
       }
       return new Date(dateStr).getTime() || 0;
     };
@@ -65,8 +69,8 @@ const ManageRateCards: React.FC = () => {
     // Group by serviceCategoryId AND countryId to show different rate cards for same service category in different countries
     const groupedData = new Map<string, RateCardProps>();
     // Track which serviceCategoryId-countryId-experienceLevel combinations have already been processed.
-     // Because sortedData is ordered newest-first, this ensures only the newest record for each combination is used.
-     const processedLevels = new Set<string>();
+    // Because sortedData is ordered newest-first, this ensures only the newest record for each combination is used.
+    const processedLevels = new Set<string>();
 
     sortedData.forEach((item) => {
       // Create composite key with both serviceCategoryId and countryId
@@ -77,16 +81,16 @@ const ManageRateCards: React.FC = () => {
       else if (item.experienceLevelId === 2) level = "L2";
       else if (item.experienceLevelId === 3) level = "L3";
 
-       // If the experience level is not recognized, skip this item.
-       if (!level) {
-         return;
-       }
-       const levelKey = `${key}-${level}`;
-       // Only process the first (newest) item for each serviceCategoryId-countryId-experienceLevel combination.
-       if (processedLevels.has(levelKey)) {
-         return;
-       }
-       processedLevels.add(levelKey);
+      // If the experience level is not recognized, skip this item.
+      if (!level) {
+        return;
+      }
+      const levelKey = `${key}-${level}`;
+      // Only process the first (newest) item for each serviceCategoryId-countryId-experienceLevel combination.
+      if (processedLevels.has(levelKey)) {
+        return;
+      }
+      processedLevels.add(levelKey);
 
       if (!groupedData.has(key)) {
         // First entry for this service category - create base row
@@ -159,7 +163,6 @@ const ManageRateCards: React.FC = () => {
         item.monthly.toLowerCase().includes(search),
     );
   }, [tableData, searchTerm]);
-
 
   const columns: Column<RateCardProps>[] = [
     {
@@ -263,10 +266,7 @@ const ManageRateCards: React.FC = () => {
             onClick={() =>
               navigate(
                 absoluteUrls.admin.home.view_rate_card
-                  .replace(
-                    ":serviceCategoryId",
-                    String(row.serviceCategoryId),
-                  )
+                  .replace(":serviceCategoryId", String(row.serviceCategoryId))
                   .replace(":countryId", String(row.countryId)),
               )
             }
@@ -278,10 +278,7 @@ const ManageRateCards: React.FC = () => {
             onClick={() =>
               navigate(
                 absoluteUrls.admin.home.edit_rate_card
-                  .replace(
-                    ":serviceCategoryId",
-                    String(row.serviceCategoryId),
-                  )
+                  .replace(":serviceCategoryId", String(row.serviceCategoryId))
                   .replace(":countryId", String(row.countryId)),
               )
             }
@@ -294,7 +291,9 @@ const ManageRateCards: React.FC = () => {
   ];
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
-      <h1 className="font-semibold text-gray-800 dark:text-white">Manage Rate Cards</h1>
+      <h1 className="font-semibold text-gray-800 dark:text-white">
+        Manage Rate Cards
+      </h1>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex justify-between">
           <SearchInput
