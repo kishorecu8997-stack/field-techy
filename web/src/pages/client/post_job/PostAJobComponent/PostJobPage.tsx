@@ -193,6 +193,23 @@ const PostJobPage = () => {
 
   const { mutate: getRateCard } = useClientGetRateCard();
 
+  // Track previous country to detect changes and reset rate
+  const previousCountryRef = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    // Reset rate when country changes
+    if (
+      previousCountryRef.current !== undefined &&
+      previousCountryRef.current !== selectedCountry
+    ) {
+      // Country changed - reset rate immediately before fetching new one
+      setRateAndCurrency("", 0);
+      setAmount("");
+      setCurrencySymbol("");
+    }
+    previousCountryRef.current = selectedCountry;
+  }, [selectedCountry, setRateAndCurrency, setAmount, setCurrencySymbol]);
+
   useEffect(() => {
     if (
       !serviceCategory ||
