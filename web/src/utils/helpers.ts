@@ -26,3 +26,13 @@ export const formatRating = (rating: string | number): string => {
       ? String(num)
       : `${Math.floor(num)}+`;
 };
+
+export const getRatingDisplay = (rating?: string | number | null): string => {
+  const num = parseFloat(String(rating));
+  return rating != null && !isNaN(num) && num > 0 ? `${formatRating(num)} Ratings` : "Ratings";
+};
+
+export const getReviewDisplay = (reviewCount?: string | number | null): string => {
+  const num = parseInt(String(reviewCount), 10);
+  return reviewCount != null && !isNaN(num) && num > 0 ? `${num} Reviews` : "Reviews";
+};

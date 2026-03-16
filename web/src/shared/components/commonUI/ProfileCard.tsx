@@ -7,6 +7,7 @@ import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
 import { FaLink } from "react-icons/fa6";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useLocation } from "react-router-dom";
+import { getRatingDisplay, getReviewDisplay } from "@/utils/helpers";
 
 /**
  * ProfileCard component displays a user profile with avatar, name, title, and rating information.
@@ -106,7 +107,7 @@ const ProfileCard = ({
               : setActiveKey("clientFromFeedback", true)
           }
         >
-          {rating} Ratings | {reviewCount} Reviews
+        {getRatingDisplay(rating)} | {getReviewDisplay(reviewCount)}
           <FaLink className="inline-block ml-1" />
         </p>
       </div>
