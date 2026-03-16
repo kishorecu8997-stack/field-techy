@@ -37,75 +37,47 @@ const EditRateCard = () => {
   const path = useLocation().pathname;
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const { id } = useParams<{ id: string }>();
+  const { serviceCategoryId: serviceCategoryIdParam, countryId: countryIdParam } = useParams<{
+    serviceCategoryId: string;
+    countryId: string;
+  }>();
   const queryClient = useQueryClient();
 
-  // Parse serviceCategoryId from URL param
-  const serviceCategoryId = id ? parseInt(id, 10) : 0;
+  // Parse serviceCategoryId and countryId from URL params
+   const parsedServiceCategoryId = serviceCategoryIdParam ? parseInt(serviceCategoryIdParam, 10) : 0;
+   const serviceCategoryId = Number.isNaN(parsedServiceCategoryId) ? 0 : parsedServiceCategoryId;
+   const parsedCountryId = countryIdParam ? parseInt(countryIdParam, 10) : 0;
+   const countryId = Number.isNaN(parsedCountryId) ? 0 : parsedCountryId;
 
-  // Store countryId from API response for use in mutation
-  const countryIdRef = useRef<number>(1);
+  // Store countryId from URL param for use in mutation
+  const countryIdRef = useRef<number>(countryId);
 
-  console.log("Service Category ID:", serviceCategoryId, "from param:", id);
-
-  const methods = useForm({
+  const methods = useForm<any>({
     defaultValues: {
       rateType: "masterRateCard",
-      clientName: "client1",
-      projectName: "project1",
-      country: "country1",
+      clientName: "",
+      projectName: "",
+      country: "",
       serviceCategory: "",
-      skills: [
-        {
-          id: "d22b25f8-c18c-4db9-badb-cdbb64b556e7",
-          name: "Skill 1",
-          isEditing: false,
-          tiers: [
-            {
-              level: "L1",
-              description: "Junior (1–3 yrs)",
-              hourly: 25,
-              halfDay: 80,
-              fullDay: 160,
-              weekly: 750,
-              monthly: 3000,
-            },
-            {
-              level: "L2",
-              description: "Mid (3–5 yrs)",
-              hourly: 40,
-              halfDay: 120,
-              fullDay: 240,
-              weekly: 1100,
-              monthly: 4400,
-            },
-            {
-              level: "L3",
-              description: "Senior (5+ yrs)",
-              hourly: 55,
-              halfDay: 160,
-              fullDay: 320,
-              weekly: 1500,
-              monthly: 6000,
-            },
-          ],
-        },
-      ],
     },
   });
 
   // Fetch rate cards using the same API as index table
   const { data: rateCardsResponse } = useGetRateCards(
     { page: 1, limit: 100 },
-    { enabled: !!serviceCategoryId && serviceCategoryId > 0 },
+    { enabled: !!serviceCategoryId && serviceCategoryId > 0 && !!countryId && countryId > 0 },
   );
 
-  // Filter rate cards by serviceCategoryId and populate form
+  // Filter rate cards by serviceCategoryId AND countryId and populate form
   useEffect(() => {
+    console.log("useEffect triggered:", { serviceCategoryId, countryId, hasData: !!rateCardsResponse?.data });
+    
     if (rateCardsResponse?.data) {
-      // Filter by serviceCategoryId
+      // Filter by serviceCategoryId AND countryId
       const filteredData = rateCardsResponse.data.filter(
-        (item) => item.serviceCategoryId === serviceCategoryId,
+        (item) =>
+          item.serviceCategoryId === serviceCategoryId &&
+          item.countryId === countryId,
       );
 
       console.log("Filtered rate cards:", filteredData);
@@ -114,8 +86,8 @@ const EditRateCard = () => {
         // Get the first item to get country info
         const firstItem = filteredData[0];
 
-        // Store countryId for use in mutation
-        countryIdRef.current = firstItem.countryId || 1;
+        // Use countryId from URL parameter
+        countryIdRef.current = countryId;
 
         // Map country name to country value (e.g., "India" -> "country1")
         const countryValueMap: Record<string, string> = {
@@ -197,7 +169,7 @@ const EditRateCard = () => {
         });
       }
     }
-  }, [rateCardsResponse, serviceCategoryId, methods]);
+  }, [rateCardsResponse, serviceCategoryId, countryId, methods]);
 
   const createRateCardMutation = useAdminCreateRateCard({
     onSuccess: async () => {
@@ -300,30 +272,26 @@ const EditRateCard = () => {
   const isView = path.includes("/view");
 
   return (
-    <div className="bg-white dark:bg-gray-700 w-full h-full flex flex-col overflow-y-auto p-4">
+    <div className="dark:bg-gray-800 w-full h-full flex flex-col overflow-y-auto p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-bold text-gray-900">
+        <h2 className="font-bold text-gray-900 dark:text-white">
           {isEdit
             ? "Edit Rate Card"
             : isView
               ? "View Rate Card"
               : "Add Rate Card"}
         </h2>
-        <Button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="bg-neutral-900 text-neutral-200 hover:bg-neutral-800 dark:bg-neutral-600 dark:text-neutral-950"
-        >
+        <Button type="button" variant="solid" onClick={() => navigate(-1)}>
           Back
         </Button>
       </div>
       <FormContainer
         methods={methods}
         onSubmit={onSubmit}
-        className="w-full h-full flex-1 overflow-y-auto"
+        className="w-full h-full flex-1 overflow-y-auto bg-white dark:bg-gray-700 p-4 rounded-lg"
       >
         {isEdit || isView ? (
-          <RateCardForm readOnly={isView} />
+          <RateCardForm readOnly={isView || isEdit} />
         ) : (
           <RateCardDetails />
         )}
@@ -333,7 +301,7 @@ const EditRateCard = () => {
           <div className="flex justify-end">
             <Button
               type="submit"
-              className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700"
+              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             >
               Submit
             </Button>

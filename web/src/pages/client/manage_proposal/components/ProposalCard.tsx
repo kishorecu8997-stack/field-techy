@@ -2,6 +2,7 @@ import { absoluteUrls } from "@/config/urls";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import type { EngineerCardProps } from "../types";
+import { formatRating } from "@/utils/helpers";
 
 /**ProposalCard Component
  * Renders a card for a proposal, displaying the engineer's name, rating, title, and availability.
@@ -10,6 +11,7 @@ import type { EngineerCardProps } from "../types";
  *  */
 const ProposalCard: React.FC<EngineerCardProps> = ({ engineer }) => {
   const navigate = useNavigate();
+  const formattedRating = formatRating(engineer.rating);
 
   return (
     <div
@@ -28,7 +30,7 @@ const ProposalCard: React.FC<EngineerCardProps> = ({ engineer }) => {
         <div className="flex items-center gap-1 text-sm mb-1">
           <span className="text-yellow-500">★</span>
           <span>
-            {engineer.rating} ({engineer.reviewCount} reviews)
+            {formattedRating} ({engineer.reviewCount} reviews)
           </span>
         </div>
         <p className="text-sm font-medium">{engineer.title}</p>

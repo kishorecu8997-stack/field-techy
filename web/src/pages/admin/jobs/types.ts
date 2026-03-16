@@ -3,7 +3,9 @@ import type {
   AdminGetJobsResponse,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 
-export type JobItem = AdminGetJobsResponse["data"][number];
+export type JobItem = AdminGetJobsResponse["data"][number] & {
+  currencySymbol?: string;
+};
 export interface JobByCategoryProps {
   data: JobItem[];
   isLoading?: boolean;
@@ -28,6 +30,7 @@ export interface JobByCategoryProps {
   total?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
+  showCurrentStatus?: boolean;
 }
 
 export interface JobDataProps {

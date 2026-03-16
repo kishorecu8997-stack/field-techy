@@ -284,12 +284,12 @@ export default function SuspendedUser() {
   ];
 
   return (
-    <div>
-      <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
-        <div className="flex flex-wrap gap-4 items-center">
+    <>
+      <div className="h-full w-full flex flex-1 overflow-hidden flex-col">
+        <div className="mb-4 flex flex-wrap gap-4 items-center">
           <SearchInput value={search} onChange={setSearch} />
         </div>
-        <div className="h-full flex-1 overflow-y-auto ">
+        <div className="h-full flex-1 overflow-hidden">
           <CustomTable<ManageEngineerProps>
             columns={columns}
             initialPageSize={pageSize}
@@ -317,6 +317,6 @@ export default function SuspendedUser() {
           />
         )}
       </Popup>
-    </div>
+    </>
   );
 }

@@ -130,7 +130,7 @@ const EditCurrencyRates: React.FC = () => {
         className="w-full flex-1 overflow-y-auto"
       >
         <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
-          <div className="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden flex flex-col flex-1 min-h-[260px]">
+          <div className="bg-white dark:bg-gray-700 rounded-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden flex flex-col flex-1 min-h-[260px]">
             <div className="p-5">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <InputField
@@ -152,7 +152,7 @@ const EditCurrencyRates: React.FC = () => {
                 <div className="flex flex-col gap-2">
                   <InputField
                     name="rate"
-                    label="Exchange Rate (Base: INR)"
+                    label="Exchange Rate"
                     type="text"
                     required="Exchange rate is required"
                     allowedCharacters="numbers-dot"

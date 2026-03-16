@@ -149,115 +149,108 @@ export default function BasicInformation({
         <ImageUploaderField label="Profile Image" name="profileImage" />
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-        {/* Left Column */}
-        <div className="space-y-2">
-          <InputField
-            name="name"
-            label="Full Name"
-            type="text"
-            placeholder="Enter Name"
-            required
-            rules={{ validate: (v: string) => validateName(v) }}
-          />
+      <div className="grid w-full grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-2">
+        {/* Row 1 */}
+        <InputField
+          name="name"
+          label="Full Name"
+          type="text"
+          placeholder="Enter Name"
+          required
+          rules={{ validate: (v: string) => validateName(v) }}
+        />
+        <InputField
+          name="email"
+          label="Email Address"
+          type="text"
+          required
+          rules={validateEmailRules}
+          disabled={disableEmail}
+        />
 
-          <PhoneInputWithValidation name="phoneNumber" label="Mobile Number" />
+        {/* Row 2 */}
+        <PhoneInputWithValidation name="phoneNumber" label="Mobile Number" />
+        <InputField
+          name="address"
+          label="Address"
+          type="text"
+          required
+          rules={{ validate: (v: string) => validateAddress(v) }}
+        />
 
-          {/* Location */}
-          <SelectField
-            label="Country"
-            name="country"
-            placeholder="Select Country"
-            options={countryOptions}
-            required
-            onChange={() => {
-              setValue("state", "");
-              setValue("city", "");
-            }}
-          />
+        {/* Row 3 */}
+        <SelectField
+          label="Country"
+          name="country"
+          placeholder="Select Country"
+          options={countryOptions}
+          required
+          onChange={() => {
+            setValue("state", "");
+            setValue("city", "");
+          }}
+        />
+        <TagSelectField
+          name="skills"
+          label="Skills"
+          placeholder="Add your skills"
+          required
+          options={
+            skills?.map((item) => ({
+              value: item.id,
+              label: item.name,
+            })) ?? []
+          }
+          maxTags={15}
+        />
 
-          <SelectField
-            label="State"
-            name="state"
-            placeholder="Select State"
-            options={stateOptions}
-            required
-            disabled={!selectedCountry}
-            onChange={() => {
-              setValue("city", "");
-            }}
-          />
+        {/* Row 4 */}
+        <SelectField
+          label="State"
+          name="state"
+          placeholder="Select State"
+          options={stateOptions}
+          required
+          disabled={!selectedCountry}
+          onChange={() => {
+            setValue("city", "");
+          }}
+        />
+        {priceField}
 
-          <SelectField
-            label="City"
-            name="city"
-            placeholder="Select City"
-            options={cityOptions}
-            required
-            disabled={!selectedState}
-          />
+        {/* Row 5 */}
+        <SelectField
+          label="City"
+          name="city"
+          placeholder="Select City"
+          options={cityOptions}
+          required
+          disabled={!selectedState}
+        />
+        <SelectField
+          name="serviceCategory"
+          label="Service Category"
+          placeholder="Select Category"
+          options={serviceCategoryOptions}
+          required
+        />
 
-          <InputField
-            name="postalCode"
-            label="Postal Code"
-            type="text"
-            placeholder="Enter Postal Code"
-            required
-            rules={{ validate: (v: string) => validateZipcode(v) }}
-          />
-        </div>
-
-        {/* Right Column */}
-        <div className="space-y-2">
-          <InputField
-            name="email"
-            label="Email Address"
-            type="text"
-            required
-            rules={validateEmailRules}
-            disabled={disableEmail}
-          />
-
-          <InputField
-            name="address"
-            label="Address"
-            type="text"
-            required
-            rules={{ validate: (v: string) => validateAddress(v) }}
-          />
-
-          <TagSelectField
-            name="skills"
-            label="Skills"
-            placeholder="Add your skills"
-            required
-            options={
-              skills?.map((item) => ({
-                value: item.id,
-                label: item.name,
-              })) ?? []
-            }
-            maxTags={15}
-          />
-
-          {priceField}
-
-          <SelectField
-            name="serviceCategory"
-            label="Service Category"
-            placeholder="Select Category"
-            options={serviceCategoryOptions}
-            required
-          />
-
-          <InputField
-            name="portfolio"
-            label="Portfolio Link"
-            type="text"
-            placeholder="Portfolio Link"
-            rules={{ validate: (v: string) => validatePortfolioLink(v) }}
-          />
-        </div>
+        {/* Row 6 */}
+        <InputField
+          name="postalCode"
+          label="Postal Code"
+          type="text"
+          placeholder="Enter Postal Code"
+          required
+          rules={{ validate: (v: string) => validateZipcode(v) }}
+        />
+        <InputField
+          name="portfolio"
+          label="Portfolio Link"
+          type="text"
+          placeholder="Portfolio Link"
+          rules={{ validate: (v: string) => validatePortfolioLink(v) }}
+        />
       </div>
     </div>
   );

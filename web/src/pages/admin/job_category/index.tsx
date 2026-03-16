@@ -44,11 +44,17 @@ const ManageJobCategory: React.FC = () => {
     isLoading,
     isFetching,
     error,
-  } = useAdminGetServiceCategories({
-    page,
-    limit: pageSize,
-    search: search.trim() || undefined,
-  });
+  } = useAdminGetServiceCategories(
+    {
+      page,
+      limit: pageSize,
+      search: search.trim() || undefined,
+    },
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    },
+  );
 
   const tableData = useMemo<ServerCategoryProps[]>(
     () =>
@@ -75,7 +81,7 @@ const ManageJobCategory: React.FC = () => {
       key: "id",
       label: "Sr.No.",
       renderCell: (_row: ServerCategoryProps, index: number) => (
-        <div className="whitespace-nowrap">{index + 1}</div>
+        <div className="whitespace-nowrap">{(page - 1) * pageSize + index + 1}</div>
       ),
     },
     { key: "categoryName", label: "Category" },

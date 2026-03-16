@@ -280,18 +280,22 @@ export default function ReportTable({
   };
 
   return (
-    <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
-      <SearchInput value={search} onChange={setSearch} />
-      <CustomTable<AdminReportIssue>
-        columns={columns}
-        data={filteredData}
-        initialPageSize={pageSize}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-        onPageSizeChange={setPageSize}
-        totalCount={total}
-        loading={isLoading}
-      />
+    <div className="h-full w-full flex flex-1 flex-col overflow-hidden bg-white dark:bg-gray-700 rounded-md p-4">
+      <div className="mb-4">
+        <SearchInput value={search} onChange={setSearch} />
+      </div>
+      <div className="h-full flex-1 overflow-hidden">
+        <CustomTable<AdminReportIssue>
+          columns={columns}
+          data={filteredData}
+          initialPageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+          totalCount={total}
+          loading={isLoading}
+        />
+      </div>
     </div>
   );
 }

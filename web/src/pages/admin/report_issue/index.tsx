@@ -116,9 +116,9 @@ export default function AdminReportIssue() {
   ];
 
   return (
-    <div className="relative w-full h-full px-4 overflow-y-auto">
+    <div className="relative w-full h-full px-4 flex flex-col overflow-hidden">
       {/* Header Section */}
-      <div className="flex justify-between items-center mt-2 mb-6">
+      <div className="flex justify-between items-center mt-2 mb-6 shrink-0">
         <p className="font-semibold text-xl">Reported Issue</p>
 
         {/* Filter Toggle Icon */}
@@ -128,7 +128,7 @@ export default function AdminReportIssue() {
         />
       </div>
 
-      <div className="flex justify-between bg-white dark:bg-gray-800 rounded-lg p-2">
+      <div className="flex flex-col flex-1 bg-white dark:bg-gray-800 rounded-lg p-2 overflow-hidden">
         <AdminTabComponent tabs={tabs} defaultActiveTab="All Users" />
       </div>
 

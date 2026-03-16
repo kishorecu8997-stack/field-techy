@@ -462,4 +462,8 @@ export const sectionConfig: Record<
     component: FeedbackFromEngineer,
     title: "Feedback From Engineers",
   },
+  clientFromFeedback: {
+    component: FeedbackFromEngineer,
+    title: "Feedback From Client",
+  },
 };

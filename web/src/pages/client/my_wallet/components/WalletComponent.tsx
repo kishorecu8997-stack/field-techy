@@ -263,8 +263,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                             ? "text-red-400"
                             : "text-red-600"
                       }`}
-                    >
-                      {transaction.type === "credit" ? "+" : "-"}
+                    >                      
                       {formatCurrency(
                         Math.abs(transaction.amount),
                         balance?.currencyCode,

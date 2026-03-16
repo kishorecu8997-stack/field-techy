@@ -126,6 +126,7 @@ const PostJobPage = () => {
     isSafeDate(endDate),
   );
 
+
   const {
     mutate: getJobPrice,
     data: priceData,
@@ -141,8 +142,8 @@ const PostJobPage = () => {
       ?.map((t) => ({ budget: Number(t.budget) || 0 }))
       .filter((t) => t.budget > 0).length
       ? toolsData
-          ?.map((t) => ({ budget: Number(t.budget) || 0 }))
-          .filter((t) => t.budget > 0)
+        ?.map((t) => ({ budget: Number(t.budget) || 0 }))
+        .filter((t) => t.budget > 0)
       : undefined;
 
     getJobPrice({
@@ -166,12 +167,9 @@ const PostJobPage = () => {
           if (value === undefined || value === null) continue;
 
           if (key === "tools" && Array.isArray(value)) {
-            // Backend expects an array. Since it is in the query string,
-            // the standard way to send an array of objects so it is natively
-            // parsed as an array is using indexed bracket notation.
-            value.forEach((tool, index) => {
+            value.forEach((tool) => {
               if (tool && tool.budget !== undefined) {
-                params.append(`tools[${index}][budget]`, String(tool.budget));
+                params.append("tools", String(tool.budget));
               }
             });
           } else {
@@ -365,7 +363,7 @@ const PostJobPage = () => {
     await Promise.all(uploadPromises);
     if (uploadPromises.length > 0) {
       await markUploaded({
-        body: { jobId: response.id, regionId: response.regionId},
+        body: { jobId: response.id, regionId: response.regionId },
       });
     }
   };
@@ -395,8 +393,8 @@ const PostJobPage = () => {
       jobDescription: data.description,
       jobType: data.locationType,
       countryId: getRequiredNumber(data.country, "Country"),
-      stateId: getRequiredNumber(data.state, "State"),
-      cityId: getRequiredNumber(data.city, "City"),
+      stateId: data.state ? getRequiredNumber(data.state, "State") : undefined,
+      cityId: data.city ? getRequiredNumber(data.city, "City") : undefined,
       workLocationLat: data.workLocationLat ?? undefined,
       workLocationLng: data.workLocationLng ?? undefined,
       workLocationName: data.workLocationName || undefined,

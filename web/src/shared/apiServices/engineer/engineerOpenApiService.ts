@@ -582,6 +582,7 @@ export function useEngineerRequestStart(options?: {
         queryClient.invalidateQueries({
           queryKey: getJobLogsQueryKey({
             path: { assignmentId: options.assignmentId },
+            query: { regionId: Number(useUserSessionStore.getState().session?.regionId) },
           }),
         });
         queryClient.invalidateQueries({
@@ -591,6 +592,7 @@ export function useEngineerRequestStart(options?: {
         await queryClient.refetchQueries({
           queryKey: getJobLogsQueryKey({
             path: { assignmentId: options.assignmentId },
+            query: { regionId: Number(useUserSessionStore.getState().session?.regionId) },
           }),
           type: "active",
         });
@@ -750,7 +752,7 @@ export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
       client: apiClient,
       path: { assignmentId },
       query: {
-        regionId: useUserSessionStore.getState().session?.regionId,
+        regionId: Number(useUserSessionStore.getState().session?.regionId),
       },
     }),
     enabled: enabled && !!assignmentId,

@@ -143,6 +143,7 @@ export default function ManageJobs() {
         setFilterRegion={handleFilterChange(setFilterRegion)}
         onClearFilters={handleClearFilters}
         showStatusSelect={config.label === "All Jobs"}
+        showCurrentStatus={config.label === "All Jobs"}
         currentStatus={currentStatus}
         page={page}
         limit={limit}
@@ -155,16 +156,18 @@ export default function ManageJobs() {
   }));
 
   return (
-    <div className="w-full h-full flex flex-col p-3 gap-3">
-      <div className="flex justify-between mt-2">
-        <h1 className="font-semibold">Manage Jobs</h1>
+    <div className="w-full h-full flex flex-col p-3 gap-3 overflow-hidden dark:bg-gray-800">
+      <div className="flex items-center justify-between px-1">
+        <h1 className="font-semibold text-gray-800 dark:text-white">
+          Manage Jobs
+        </h1>
         <div className="flex gap-4">
           <Button variant="solid" className="">
             Export CSV
           </Button>
         </div>
       </div>
-      <div className="bg-white dark:bg-gray-700 rounded-lg p-2 h-full flex-1">
+      <div className="flex-1 overflow-hidden bg-white dark:bg-gray-700 rounded-lg p-2">
         <AdminTabComponent
           tabs={tabs}
           activeTab={activeTabLabel}

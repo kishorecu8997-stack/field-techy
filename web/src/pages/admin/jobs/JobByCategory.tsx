@@ -36,7 +36,7 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered "All Jobs" view with filters and a data table.
  */
 
-type StatusKind = "Hold" | "Flagged" | "Cancelled" | "Unknown";
+type StatusKind = "Hold" | "Flagged" | "Cancelled" | "Unhold" | "Closed" | "Unknown";
 const getCurrentStatusKind = (
   status: string | null | undefined,
 ): StatusKind => {
@@ -44,6 +44,8 @@ const getCurrentStatusKind = (
   if (s === "cancel" || s === "cancelled") return "Cancelled";
   if (s === "flag" || s === "flagged") return "Flagged";
   if (s === "hold" || s === "onhold" || s === "held") return "Hold";
+  if (s === "close" || s === "closed") return "Closed";
+
   return "Unknown";
 };
 
@@ -56,6 +58,9 @@ const normalizeStatus = (
   }
   if (normalized === "flag" || normalized === "flagged") {
     return "Flagged";
+  }
+  if (normalized === "unhold") {
+    return "Unhold";
   }
   return "Hold";
 };
@@ -84,6 +89,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
   total,
   onPageChange,
   onPageSizeChange,
+  showCurrentStatus = false,
 }) => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
@@ -217,7 +223,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       key: "totalPrice",
       label: "Job Price",
       renderCell: (row: JobItem) =>
-        row.totalPrice ? `₹${row.totalPrice}` : "N/A",
+        row.totalPrice ? `${row.currencySymbol}${row.totalPrice}` : "N/A",
     },
     { key: "countryName", label: "Country" },
     { key: "stateName", label: "State" },
@@ -248,13 +254,12 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
             }
             return true;
           }).map((option) => {
-            if (currentKind === "Cancelled") {
+            if (currentKind === "Cancelled" || currentKind === "Closed") {
               return {
                 ...option,
-                disabled: option.value !== "Cancelled",
+                disabled: option.value !== currentKind,
               };
             }
-
             if (
               option.value !== "Unhold" &&
               currentKind !== "Unknown" &&
@@ -312,6 +317,18 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       ),
     },
   ];
+
+  const currentStatusColumn = {
+    key: "currentStatus",
+    label: "Current Status",
+    renderCell: (row: JobItem) => (
+      <span className="capitalize">{row.status || "N/A"}</span>
+    ),
+  };
+
+  if (showCurrentStatus) {
+    columns.splice(13, 0, currentStatusColumn);
+  }
 
   const hasSelectedFilters = [
     filterType,

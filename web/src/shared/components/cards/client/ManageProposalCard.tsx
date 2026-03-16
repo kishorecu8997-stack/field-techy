@@ -1,3 +1,4 @@
+import { formatRating } from "@/utils/helpers";
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 
@@ -33,6 +34,7 @@ const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
   receivedOn,
   onClick,
 }) => {
+  const formattedRating = formatRating(rating);
   // The card has an onClick handler but lacks keyboard accessibility.
   // When a div is clickable, it should either be a button element or include
   // role="button", tabIndex={0}, and keyboard event handlers (onKeyDown/onKeyPress)
@@ -69,7 +71,7 @@ const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 mt-1">
           <span className="text-yellow-500 text-base">★</span>
-          <span className="ml-1 font-medium">{rating}</span>
+          <span className="ml-1 font-medium">{formattedRating}</span>
           <span className="ml-1 text-gray-500 dark:text-gray-400">
             ({reviews} reviews)
           </span>

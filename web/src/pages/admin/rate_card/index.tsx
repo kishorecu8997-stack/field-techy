@@ -8,7 +8,6 @@ import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
-import useToggleStatus from "@/shared/components/ToggleStatus";
 import { useGetRateCards } from "@/shared/apiServices/admin/adminOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
@@ -48,16 +47,46 @@ const ManageRateCards: React.FC = () => {
   const tableData: RateCardProps[] = useMemo(() => {
     if (!rateCardsResponse?.data) return [];
 
-    // Group by serviceCategoryId
-    const groupedData = new Map<number, RateCardProps>();
+    // Sort by createdDate descending (newest first) - handle DD/MM/YYYY format
+    const parseDate = (dateStr: string | null) => {
+      if (!dateStr) return 0;
+      const parts = dateStr.split('/');
+      if (parts.length === 3) {
+        // DD/MM/YYYY format - create date using YYYY, MM-1, DD
+        return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])).getTime();
+      }
+      return new Date(dateStr).getTime() || 0;
+    };
 
-    rateCardsResponse.data.forEach((item) => {
-      const key = item.serviceCategoryId;
+    const sortedData = [...rateCardsResponse.data].sort((a, b) => {
+      return parseDate(b.createdDate) - parseDate(a.createdDate); // Descending order
+    });
+
+    // Group by serviceCategoryId AND countryId to show different rate cards for same service category in different countries
+    const groupedData = new Map<string, RateCardProps>();
+    // Track which serviceCategoryId-countryId-experienceLevel combinations have already been processed.
+     // Because sortedData is ordered newest-first, this ensures only the newest record for each combination is used.
+     const processedLevels = new Set<string>();
+
+    sortedData.forEach((item) => {
+      // Create composite key with both serviceCategoryId and countryId
+      const key = `${item.serviceCategoryId}-${item.countryId}`;
       // Map experienceLevelId to level string
       let level: "L1" | "L2" | "L3" | undefined;
       if (item.experienceLevelId === 1) level = "L1";
       else if (item.experienceLevelId === 2) level = "L2";
       else if (item.experienceLevelId === 3) level = "L3";
+
+       // If the experience level is not recognized, skip this item.
+       if (!level) {
+         return;
+       }
+       const levelKey = `${key}-${level}`;
+       // Only process the first (newest) item for each serviceCategoryId-countryId-experienceLevel combination.
+       if (processedLevels.has(levelKey)) {
+         return;
+       }
+       processedLevels.add(levelKey);
 
       if (!groupedData.has(key)) {
         // First entry for this service category - create base row
@@ -131,14 +160,6 @@ const ManageRateCards: React.FC = () => {
     );
   }, [tableData, searchTerm]);
 
-  const initialStatus = React.useMemo(() => {
-    const initial: Record<string, boolean> = {};
-    tableData.forEach((rateCard) => {
-      initial[rateCard.id] = rateCard.status;
-    });
-    return initial;
-  }, [tableData]);
-  const { get, toggle } = useToggleStatus(initialStatus);
 
   const columns: Column<RateCardProps>[] = [
     {
@@ -233,25 +254,6 @@ const ManageRateCards: React.FC = () => {
     },
     { key: "createdDate", label: "Created Date" },
     {
-      key: "status",
-      label: "Status",
-      renderCell: (row: RateCardProps) => {
-        const val = get(row.id) ?? row.status;
-
-        return (
-          <div
-            className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-              val ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-            }`}
-            onClick={() => toggle(row.id)}
-          >
-            {val ? "On" : "Off"}
-          </div>
-        );
-      },
-    },
-
-    {
       key: "action",
       label: "Actions",
       renderCell: (row: RateCardProps) => (
@@ -260,10 +262,12 @@ const ManageRateCards: React.FC = () => {
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(
-                absoluteUrls.admin.home.view_rate_card.replace(
-                  ":id",
-                  String(row.serviceCategoryId),
-                ),
+                absoluteUrls.admin.home.view_rate_card
+                  .replace(
+                    ":serviceCategoryId",
+                    String(row.serviceCategoryId),
+                  )
+                  .replace(":countryId", String(row.countryId)),
               )
             }
           >
@@ -273,10 +277,12 @@ const ManageRateCards: React.FC = () => {
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(
-                absoluteUrls.admin.home.edit_rate_card.replace(
-                  ":id",
-                  String(row.serviceCategoryId),
-                ),
+                absoluteUrls.admin.home.edit_rate_card
+                  .replace(
+                    ":serviceCategoryId",
+                    String(row.serviceCategoryId),
+                  )
+                  .replace(":countryId", String(row.countryId)),
               )
             }
           >
@@ -288,7 +294,7 @@ const ManageRateCards: React.FC = () => {
   ];
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
-      <h1 className="font-semibold ">Manage Rate Cards</h1>
+      <h1 className="font-semibold text-gray-800 dark:text-white">Manage Rate Cards</h1>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex justify-between">
           <SearchInput

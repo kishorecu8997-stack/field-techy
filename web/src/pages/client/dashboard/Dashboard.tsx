@@ -102,31 +102,30 @@ const Dashboard: React.FC = () => {
   const { data: serviceCategories } = useServiceCategories();
 
   // Get in-progress job IDs for fetching assignments
-  const inProgressJobIds = useMemo(() => {
+  const inProgressJobs = useMemo(() => {
     if (!clientJobs) return [];
     return clientJobs
       .filter((job) => job.status === "In Progress")
-      .slice(0, 4)
-      .map((job) => job.id);
+      .slice(0, 4);
   }, [clientJobs]);
 
   // Fetch assignments for each in-progress job (max 4 jobs)
   // Call hooks at top level with enabled flag to avoid calls when jobId is undefined
   const assignmentData1 = useClientGetAssignmentDetails(
-    { jobId: inProgressJobIds[0] },
-    !!inProgressJobIds[0],
+    { jobId: inProgressJobs[0]?.id, regionId: inProgressJobs[0]?.regionId },
+    !!inProgressJobs[0]?.id,
   );
   const assignmentData2 = useClientGetAssignmentDetails(
-    { jobId: inProgressJobIds[1] },
-    !!inProgressJobIds[1],
+    { jobId: inProgressJobs[1]?.id, regionId: inProgressJobs[1]?.regionId },
+    !!inProgressJobs[1]?.id,
   );
   const assignmentData3 = useClientGetAssignmentDetails(
-    { jobId: inProgressJobIds[2] },
-    !!inProgressJobIds[2],
+    { jobId: inProgressJobs[2]?.id, regionId: inProgressJobs[2]?.regionId },
+    !!inProgressJobs[2]?.id,
   );
   const assignmentData4 = useClientGetAssignmentDetails(
-    { jobId: inProgressJobIds[3] },
-    !!inProgressJobIds[3],
+    { jobId: inProgressJobs[3]?.id, regionId: inProgressJobs[3]?.regionId },
+    !!inProgressJobs[3]?.id,
   );
 
   // Build a map of jobId to assignment data
@@ -135,10 +134,10 @@ const Dashboard: React.FC = () => {
     const map = new Map<number, { avatars: string[]; count: number }>();
 
     const queries = [
-      { data: assignmentData1.data, jobId: inProgressJobIds[0] },
-      { data: assignmentData2.data, jobId: inProgressJobIds[1] },
-      { data: assignmentData3.data, jobId: inProgressJobIds[2] },
-      { data: assignmentData4.data, jobId: inProgressJobIds[3] },
+      { data: assignmentData1.data, jobId: inProgressJobs[0]?.id },
+      { data: assignmentData2.data, jobId: inProgressJobs[1]?.id },
+      { data: assignmentData3.data, jobId: inProgressJobs[2]?.id },
+      { data: assignmentData4.data, jobId: inProgressJobs[3]?.id },
     ];
 
     queries.forEach(({ data, jobId }) => {
@@ -164,7 +163,7 @@ const Dashboard: React.FC = () => {
     });
     return map;
   }, [
-    inProgressJobIds,
+    inProgressJobs,
     assignmentData1.data,
     assignmentData2.data,
     assignmentData3.data,
@@ -214,9 +213,10 @@ const Dashboard: React.FC = () => {
           : "Not scheduled",
         location: locationText,
         workLocationName: job.workLocationName || null,
-        cityId: job.cityId,
-        stateId: job.stateId,
-        countryId: job.countryId,
+        cityId: job.cityId ?? undefined,
+        stateId: job.stateId ?? undefined,
+        countryId: job.countryId ?? undefined,
+        regionId: job.regionId ?? undefined,
         duration: job.endDate
           ? job.startDate
             ? `${new Date(job.startDate).toLocaleDateString()} - ${new Date(job.endDate).toLocaleDateString()}`
@@ -343,13 +343,15 @@ const Dashboard: React.FC = () => {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
                   </div>
                 ) : inProgressJobsData.length > 0 ? (
-                  inProgressJobsData.map((job: Job) => (
-                    <InProgressJobCard
-                      key={job.id}
-                      job={job}
-                      navigateToJob={`${absoluteUrls.client.home.my_jobs}/${job.id}`}
-                    />
-                  ))
+                  inProgressJobsData.map((job: Job) => {
+                    return (
+                      <InProgressJobCard
+                        key={job.id}
+                        job={job}
+                        navigateToJob={`${absoluteUrls.client.home.my_jobs}/${job.id}?regionId=${job.regionId}`}
+                      />
+                    )
+                  })
                 ) : (
                   <div className="col-span-full font-semibold w-fit mx-auto border-2 border-gray-200 dark:border-gray-700 text-gray-400 p-20 rounded-lg cursor-default">
                     No in-progress jobs.

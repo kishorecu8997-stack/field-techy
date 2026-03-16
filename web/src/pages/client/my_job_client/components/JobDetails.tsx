@@ -2,7 +2,7 @@ import { earningsData } from "@/dummy_data/jobDetails";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { SORT_OPTIONS } from "../../search_result/types";
 import JobCardDetailsHeader from "./JobCardDetailsHeader";
 import JobTabSection from "./JobTabSection";
@@ -16,6 +16,9 @@ import { JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
  */
 const JobsDetails: React.FC = () => {
   const params = useParams();
+  const [searchParams] = useSearchParams();
+  const regionIdParam = searchParams.get("regionId");
+  const parsedRegionId = regionIdParam ? Number(regionIdParam) : undefined;
   const [activeTab] = useState(JOB_TAB_LABELS.timeline);
   const jobId = params.jobId;
   const [pageHeading, setPageHeading] = useState("Job Details");
@@ -32,8 +35,13 @@ const JobsDetails: React.FC = () => {
   // Find the specific job from the API data
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   const job =
-    jobsArray.find((j: { id?: string | number }) => String(j.id) === jobId) ||
-    jobsArray[0];
+    jobsArray.find(
+      (j: { id?: string | number; regionId?: number | string }) => {
+        const jobIdMatch = String(j.id) === jobId;
+        const regionIdMatch = parsedRegionId ? Number(j.regionId) === parsedRegionId : true;
+        return jobIdMatch && regionIdMatch;
+      }
+    ) || jobsArray[0];
   // Loading state
   if (isLoading) {
     return (
@@ -96,7 +104,7 @@ const JobsDetails: React.FC = () => {
           <div className="flex justify-center items-center h-64">
             <div className="text-gray-600 dark:text-gray-400">
               {jobsArray.length > 0
-                ? `Job with ID ${jobId} not found. Available IDs: ${jobsArray.map((j: { id: number }) => j.id).join(", ")}`
+                ? `Job with ID ${jobId}${parsedRegionId ? ` and regionId ${parsedRegionId}` : ""} not found. Available jobs: ${jobsArray.map((j: { id: number; regionId?: number }) => `${j.id}(region:${j.regionId})`).join(", ")}`
                 : "No jobs found for this client"}
             </div>
           </div>

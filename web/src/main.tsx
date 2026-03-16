@@ -8,7 +8,6 @@ import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
 import "./shared/apiServices/utils/errorHandlerConfig";
 import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
 import { FCMHandler } from "./shared/components/FCMHandler.tsx";
-import GlobalErrorBoundary from "./shared/components/commonUI/GlobalErrorBoundary.tsx";
 
 // Stripe is initialized lazily in AddFundModal to avoid loading Stripe SDK on every page
 
@@ -28,12 +27,12 @@ import GlobalErrorBoundary from "./shared/components/commonUI/GlobalErrorBoundar
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 0, // Always consider data stale so it refetches immediately
       gcTime: 30 * 60 * 1000, // Replaces cacheTime
       retry: 2,
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true, // Automatically refetch when the browser window regains focus
       refetchOnReconnect: true,
-      refetchOnMount: false,
+      refetchOnMount: true, // Always fetch when a screen component mounts
     },
   },
 });
@@ -49,15 +48,13 @@ if (!root) {
 
 root.render(
   <React.StrictMode>
-    <GlobalErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ToastProvider>
-          <GlobalPopup />
-          <ToastHandler />
-          <FCMHandler />
-          <App />
-        </ToastProvider>
-      </QueryClientProvider>
-    </GlobalErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ToastProvider>
+        <GlobalPopup />
+        <ToastHandler />
+        <FCMHandler />
+        <App />
+      </ToastProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );

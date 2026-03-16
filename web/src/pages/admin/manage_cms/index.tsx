@@ -64,11 +64,11 @@ export default function ManageCMS() {
   ];
 
   return (
-    <div className="w-full h-full p-4">
-      <div className="flex justify-between">
+    <div className="w-full h-full p-4 flex flex-col overflow-hidden">
+      <div className="flex justify-between shrink-0">
         <p className="mt-2 mb-6 font-semibold">Manage CMS</p>
       </div>
-      <div className="bg-white dark:bg-gray-700 rounded-lg p-4">
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-4 flex-1 flex flex-col overflow-hidden">
         <AdminTabComponent tabs={tabs} defaultActiveTab="Contact Support" />
       </div>
     </div>

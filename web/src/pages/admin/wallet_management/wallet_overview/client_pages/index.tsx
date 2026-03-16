@@ -142,7 +142,7 @@ const ClientWallet: React.FC = () => {
 
         const handleView = () => {
           navigate(
-            `${absoluteUrls.admin.home.wallet_overview_view}/${row.userId}`,
+            `${absoluteUrls.admin.home.wallet_overview_view}/userId=${row.userId}?type=client`,
             {
               state: {
                 userId: row.userId,
@@ -171,7 +171,7 @@ const ClientWallet: React.FC = () => {
   ];
 
   return (
-    <div className="h-full w-full flex flex-col flex-1 overflow-hidden bg-white dark:bg-gray-800 rounded-md p-4 gap-4">
+    <div className="h-full w-full flex flex-col flex-1 overflow-hidden rounded-md gap-4">
       <div className="flex justify-between items-center gap-4">
         <SearchInput value={search} onChange={setSearch} />
       </div>
