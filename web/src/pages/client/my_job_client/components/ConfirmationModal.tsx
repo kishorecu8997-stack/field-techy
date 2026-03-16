@@ -67,8 +67,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <p className="text-gray-600 dark:text-gray-300 mb-8">
             {descriptions[actionType]}
           </p>
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row gap-4">          
             <Button
+              onClick={onClose}
+              className="w-full py-3 px-6 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-white font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-700 dark:hover:bg-emerald-600"
+            >
+              Go back
+            </Button>
+             <Button
               onClick={onConfirm}
               className={`w-full py-3 px-6 rounded-lg font-medium transition-colors duration-300
     focus:outline-none focus:ring-2 focus:ring-offset-2
@@ -81,12 +87,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             >
               {" "}
               {buttonTexts[actionType]}
-            </Button>
-            <Button
-              onClick={onClose}
-              className="w-full py-3 px-6 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-white font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-700 dark:hover:bg-emerald-600"
-            >
-              Go back
             </Button>
           </div>
         </div>
