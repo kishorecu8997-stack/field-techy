@@ -7,9 +7,9 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useAdminUpdateServiceCategory } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * `EditCategory` component renders a page with a form to edit an existing Service category.
@@ -24,8 +24,8 @@ import { useQueryClient } from "@tanstack/react-query";
 export default function EditCategory() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   const categoryId = id ? Number(id) : undefined;
   const category =
@@ -50,9 +50,12 @@ export default function EditCategory() {
   const { showPopup } = usePopupStore();
   const { mutateAsync: updateServiceCategory, isPending: isUpdatingCategory } =
     useAdminUpdateServiceCategory({
-      onSuccess: () => {
+      onSuccess: async () => {
         toast.success("Service category updated successfully!");
         methods.reset();
+        // Invalidate and refetch the categories list
+        await queryClient.invalidateQueries({ queryKey: ["lookup", "serviceCategories", "root"] });
+        await queryClient.invalidateQueries({ queryKey: ["adminGetServiceCategories"] });
         navigate(absoluteUrls.admin.home.manage_categories);
       },
       onError: (error) => {
@@ -83,34 +86,6 @@ export default function EditCategory() {
               path: { id: categoryId },
               body: { name: data.categoryName },
             });
-            queryClient.setQueriesData(
-              {
-                predicate: (query) =>
-                  Array.isArray(query.queryKey) &&
-                  query.queryKey[0] &&
-                  typeof query.queryKey[0] === "object" &&
-                  (query.queryKey[0] as { _id?: string })._id ===
-                    "adminGetServiceCategories",
-              },
-              (oldData) => {
-                if (!oldData || typeof oldData !== "object") return oldData;
-                const prev = oldData as {
-                  data?: Array<{ id: number; name: string }>;
-                  total?: number;
-                  page?: number;
-                  limit?: number;
-                };
-                if (!Array.isArray(prev.data)) return oldData;
-                return {
-                  ...prev,
-                  data: prev.data.map((item) =>
-                    item.id === categoryId
-                      ? { ...item, name: data.categoryName }
-                      : item,
-                  ),
-                };
-              },
-            );
             close(true);
           },
         },

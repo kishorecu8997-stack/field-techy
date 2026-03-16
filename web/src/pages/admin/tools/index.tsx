@@ -6,45 +6,45 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import React, { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
-import { useAdminGetServiceCategories } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useAdminGetTools } from "@/shared/apiServices/admin/adminOpenApiService";
 
-export interface ServerCategoryProps {
+export interface ServerToolProps {
   id: string;
-  categoryImg: string;
-  categoryName: string;
+  toolImg: string;
+  toolName: string;
   createdDate: string;
   status: boolean;
 }
 
 /**
- * ManageJobCategory Component
+ * ManageTools Component
  *
- * Renders a table view to manage all service categories with the following features:
- * - Displays category name, created date, and current status.
+ * Renders a table view to manage all tools with the following features:
+ * - Displays tool name, created date, and current status.
  * - Allows toggling the active/inactive status inline.
- * - Provides action buttons for viewing, editing, or deleting categories.
+ * - Provides action buttons for viewing, editing, or deleting tools.
  * - Includes a search bar for quick filtering.
  *
  * @component
  * @example
  * return (
- *   <ManageJobCategory />
+ *   <ManageTools />
  * );
  *
- * @returns {JSX.Element} The rendered ManageJobCategory component.
+ * @returns {JSX.Element} The rendered ManageTools component.
  */
-const ManageJobCategory: React.FC = () => {
+const ManageTools: React.FC = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   const {
-    data: categoriesResponse,
+    data: toolsResponse,
     isLoading,
     isFetching,
     error,
-  } = useAdminGetServiceCategories(
+  } = useAdminGetTools(
     {
       page,
       limit: pageSize,
@@ -56,19 +56,19 @@ const ManageJobCategory: React.FC = () => {
     },
   );
 
-  const tableData = useMemo<ServerCategoryProps[]>(
+  const tableData = useMemo<ServerToolProps[]>(
     () =>
-      (categoriesResponse?.data ?? []).map((item) => ({
+      (toolsResponse?.data ?? []).map((item) => ({
         id: String(item.id),
-        categoryName: item.name,
-        categoryImg: "",
+        toolName: item.name,
+        toolImg: "",
         createdDate: "-",
         status: true,
       })),
-    [categoriesResponse],
+    [toolsResponse],
   );
 
-  const totalCount = categoriesResponse?.total ?? 0;
+  const totalCount = toolsResponse?.total ?? 0;
   const errorMessage =
     error instanceof Error
       ? error.message
@@ -76,31 +76,31 @@ const ManageJobCategory: React.FC = () => {
         ? "Failed to load data."
         : null;
 
-  const columns: Column<ServerCategoryProps>[] = [
+  const columns: Column<ServerToolProps>[] = [
     {
       key: "id",
       label: "Sr.No.",
-      renderCell: (_row: ServerCategoryProps, index: number) => (
+      renderCell: (_row: ServerToolProps, index: number) => (
         <div className="whitespace-nowrap">{(page - 1) * pageSize + index + 1}</div>
       ),
     },
-    { key: "categoryName", label: "Category" },
+    { key: "toolName", label: "Tool Name" },
     {
       key: "action",
       label: "Actions",
-      renderCell: (row: ServerCategoryProps) => (
+      renderCell: (row: ServerToolProps) => (
         <div className="flex items-center">
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
             <CiEdit
               className="text-blue-600"
               onClick={() =>
                 navigate(
-                  `${absoluteUrls.admin.home.manage_categories_edit}/${row.id}`,
+                  `${absoluteUrls.admin.home.manage_tools_edit}/${row.id}`,
                   {
                     state: {
-                      category: {
+                      tool: {
                         id: Number(row.id),
-                        name: row.categoryName,
+                        name: row.toolName,
                       },
                     },
                   },
@@ -115,15 +115,15 @@ const ManageJobCategory: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold">Manage Service Categories</h1>
+        <h1 className="font-semibold">Manage Tools</h1>
         <Button
           type="submit"
           className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-md hover:opacity-90 transition"
           onClick={() =>
-            navigate(`${absoluteUrls.admin.home.manage_categories_add}`)
+            navigate(`${absoluteUrls.admin.home.manage_tools_add}`)
           }
         >
-          Add Category
+          Add Tool
         </Button>
       </div>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
@@ -137,7 +137,7 @@ const ManageJobCategory: React.FC = () => {
           />
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
-          <CustomTable<ServerCategoryProps>
+          <CustomTable<ServerToolProps>
             columns={columns}
             data={tableData}
             initialPageSize={pageSize}
@@ -158,4 +158,4 @@ const ManageJobCategory: React.FC = () => {
   );
 };
 
-export default ManageJobCategory;
+export default ManageTools;
