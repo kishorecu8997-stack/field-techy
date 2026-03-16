@@ -173,10 +173,7 @@ const JobCard: React.FC<{
   const [showWhyPopover, setShowWhyPopover] = useState(false);
   const regionId = useUserSessionStore.getState().session?.regionId;
 
-  const { refetch } = useGetEngineerSavedJobs({
-    limit: 10,
-    page: 1,
-  });
+  const { refetch } = useGetEngineerSavedJobs({});
 
   const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
     onSuccess: (response) => {

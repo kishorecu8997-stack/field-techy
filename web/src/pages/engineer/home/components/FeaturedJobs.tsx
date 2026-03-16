@@ -119,10 +119,7 @@ const FeatureJobCard: React.FC<
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
   const regionId = useUserSessionStore.getState().session?.regionId;
 
-  const { refetch } = useGetEngineerSavedJobs({
-    limit: 10,
-    page: 1,
-  });
+  const { refetch } = useGetEngineerSavedJobs({});
   const { isPending, mutate: toggleSaveMutation } = useStoreEngineerSaveJobs({
     onSuccess: (response) => {
       refetch();
