@@ -1,6 +1,9 @@
 import type { ClientGetAssignmentDetailsResponse } from "@/api";
 import { getJobLogs } from "@/api";
-import { clientGetAssignmentDetailsQueryKey, getJobLogsQueryKey } from "@/api/@tanstack/react-query.gen";
+import {
+  clientGetAssignmentDetailsQueryKey,
+  getJobLogsQueryKey,
+} from "@/api/@tanstack/react-query.gen";
 import type { TimelineStatus } from "@/constants/timelineConstants";
 import {
   MODAL_MESSAGES,
@@ -225,20 +228,22 @@ const TimelineSection: React.FC<{
           console.error("Failed to refetch timeline:", error);
           queryClient.invalidateQueries({ queryKey: ["getJobLogs"] });
         }
-        
+
         // Invalidate assignment details query to update hasPendingStartRequest
         // This ensures the Action Required badge updates immediately
         try {
           const assignmentDetailsQueryKey = clientGetAssignmentDetailsQueryKey({
             query: { jobId: jobId, regionId: regionIdParam },
           });
-          queryClient.invalidateQueries({ queryKey: assignmentDetailsQueryKey });
+          queryClient.invalidateQueries({
+            queryKey: assignmentDetailsQueryKey,
+          });
         } catch (error) {
           console.error("Failed to invalidate assignment details:", error);
           // Fallback: invalidate all client assignment details queries
-          queryClient.invalidateQueries({ 
+          queryClient.invalidateQueries({
             queryKey: ["clientGetAssignmentDetails"],
-            exact: false 
+            exact: false,
           });
         }
       }
@@ -1355,7 +1360,10 @@ const TimelineSection: React.FC<{
     handleRevisionRejectClick(keepExpanded, revisionId, logId);
   };
 
-  const handleShortBreakApprove = (requestId: number, breakType?: "short_term" | "long_term") => {
+  const handleShortBreakApprove = (
+    requestId: number,
+    breakType?: "short_term" | "long_term",
+  ) => {
     setCurrentBreakRequestId(requestId);
     if (breakType) setCurrentBreakType(breakType);
     setShowShortBreakApprovalModal(true);
@@ -1380,7 +1388,10 @@ const TimelineSection: React.FC<{
     setShowShortBreakApprovalModal(false);
     setShortBreakNotes("");
     setCurrentBreakRequestId(null);
-    const breakTypeMsg = currentBreakType === "long_term" ? TOAST_MESSAGES.longBreakApproved : TOAST_MESSAGES.shortBreakApproved;
+    const breakTypeMsg =
+      currentBreakType === "long_term"
+        ? TOAST_MESSAGES.longBreakApproved
+        : TOAST_MESSAGES.shortBreakApproved;
     toast.success(breakTypeMsg, { position: "top-right" });
     setCurrentBreakType(null);
   };
@@ -1392,7 +1403,10 @@ const TimelineSection: React.FC<{
     setCurrentBreakType(null);
   };
 
-  const handleShortBreakReject = (requestId: number, breakType?: "short_term" | "long_term") => {
+  const handleShortBreakReject = (
+    requestId: number,
+    breakType?: "short_term" | "long_term",
+  ) => {
     setCurrentBreakRequestId(requestId);
     if (breakType) setCurrentBreakType(breakType);
     setShowShortBreakRejectModal(true);
@@ -1417,7 +1431,10 @@ const TimelineSection: React.FC<{
     setShowShortBreakRejectModal(false);
     setShortBreakRejectNotes("");
     setCurrentBreakRequestId(null);
-    const breakTypeMsg = currentBreakType === "long_term" ? TOAST_MESSAGES.longBreakRejected : TOAST_MESSAGES.shortBreakRejected;
+    const breakTypeMsg =
+      currentBreakType === "long_term"
+        ? TOAST_MESSAGES.longBreakRejected
+        : TOAST_MESSAGES.shortBreakRejected;
     toast.error(breakTypeMsg, { position: "top-right" });
     setCurrentBreakType(null);
   };
@@ -2036,10 +2053,16 @@ const TimelineSection: React.FC<{
                             breakStatus,
                           )}
                           onShortBreakReject={() =>
-                            handleShortBreakReject(breakData.requestId, breakData.breakType)
+                            handleShortBreakReject(
+                              breakData.requestId,
+                              breakData.breakType,
+                            )
                           }
                           onShortBreakApprove={() =>
-                            handleShortBreakApprove(breakData.requestId, breakData.breakType)
+                            handleShortBreakApprove(
+                              breakData.requestId,
+                              breakData.breakType,
+                            )
                           }
                         />
                       );

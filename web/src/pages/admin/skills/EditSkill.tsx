@@ -25,8 +25,8 @@ export default function EditSkill() {
 
   const skillId = id ? Number(id) : undefined;
   const skill =
-    (location.state as { skill?: { id: number; name: string } } | null)?.skill ??
-    null;
+    (location.state as { skill?: { id: number; name: string } } | null)
+      ?.skill ?? null;
 
   const methods = useForm<SkillFormData>({
     defaultValues: {
@@ -50,7 +50,9 @@ export default function EditSkill() {
         toast.success("Skill updated successfully!");
         methods.reset();
         // Invalidate and refetch the skills list
-        await queryClient.invalidateQueries({ queryKey: ["lookup", "skills", "root"] });
+        await queryClient.invalidateQueries({
+          queryKey: ["lookup", "skills", "root"],
+        });
         await queryClient.invalidateQueries({ queryKey: ["adminGetSkills"] });
         navigate(absoluteUrls.admin.home.manage_skills);
       },

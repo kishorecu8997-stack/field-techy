@@ -54,10 +54,11 @@ const JobInviteCard: React.FC<JobCardProps> = ({
         </h3>
 
         <div
-          className={`relative w-5 h-5 cursor-pointer transition-colors duration-200 ${isSelected
-            ? "border-teal-900"
-            : "border-gray-400 dark:bg-gray-700 dark:border-gray-600"
-            }`}
+          className={`relative w-5 h-5 cursor-pointer transition-colors duration-200 ${
+            isSelected
+              ? "border-teal-900"
+              : "border-gray-400 dark:bg-gray-700 dark:border-gray-600"
+          }`}
           onClick={(e) => {
             e.stopPropagation();
             onToggle(job.id);
@@ -92,11 +93,15 @@ const JobInviteCard: React.FC<JobCardProps> = ({
             <IoMdTime className="w-4 h-4 mr-2" />
             {job.date}
           </div>
-          <span className={`text-xs font-medium ${getStatusColor(job.status ?? "")}`}>
-          {job.status?.toLowerCase() === "inprogress"
-            ? "In-Progress"
-            : job.status ? job.status.charAt(0).toUpperCase() + job.status.slice(1) : ""}
-        </span>
+          <span
+            className={`text-xs font-medium ${getStatusColor(job.status ?? "")}`}
+          >
+            {job.status?.toLowerCase() === "inprogress"
+              ? "In-Progress"
+              : job.status
+                ? job.status.charAt(0).toUpperCase() + job.status.slice(1)
+                : ""}
+          </span>
         </div>
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">

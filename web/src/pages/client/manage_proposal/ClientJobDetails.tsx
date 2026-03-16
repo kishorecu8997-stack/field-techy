@@ -5,7 +5,7 @@ import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHea
 import { JOB_STATUSES } from "@/pages/engineer/search_result/types";
 import {
   useClientGetAssignmentDetails,
-  useClientGetJobs
+  useClientGetJobs,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import ChatForJobs from "@/shared/components/ChatForJobs";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -77,12 +77,12 @@ const ClientJobDetails = () => {
     approvedStatuses.includes((a.assignmentStatus || "").toLowerCase()),
   ).length;
 
-const hasEngineerStarted = assignments.some(
-  (a) =>
-    a.assignmentStatus?.toLowerCase() === "started" ||
-    a.assignmentStatus?.toLowerCase() === "submit_pending_approval" ||
-    a.assignmentStatus?.toLowerCase() === "submitted"
-);
+  const hasEngineerStarted = assignments.some(
+    (a) =>
+      a.assignmentStatus?.toLowerCase() === "started" ||
+      a.assignmentStatus?.toLowerCase() === "submit_pending_approval" ||
+      a.assignmentStatus?.toLowerCase() === "submitted",
+  );
   const numberOfVacancy = job?.vacancies ?? undefined;
   const isDummyNetworkEngineer = job
     ? isDummyNetworkEngineerJob(job.id)
@@ -137,7 +137,6 @@ const hasEngineerStarted = assignments.some(
     params.jobId ?? "",
     breadcrumbExtra === "chats" ? "Chats" : null,
   ].filter((v): v is string => typeof v === "string");
-
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

@@ -34,8 +34,12 @@ export default function AddCategory() {
         toast.success("Service category added successfully!");
         methods.reset();
         // Invalidate and refetch the categories list
-        queryClient.invalidateQueries({ queryKey: ["lookup", "serviceCategories", "root"] });
-        queryClient.invalidateQueries({ queryKey: ["adminGetServiceCategories"] });
+        queryClient.invalidateQueries({
+          queryKey: ["lookup", "serviceCategories", "root"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["adminGetServiceCategories"],
+        });
         navigate(absoluteUrls.admin.home.manage_categories);
       },
       onError: (error) => {

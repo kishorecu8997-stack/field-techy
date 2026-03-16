@@ -224,10 +224,10 @@ const JobTabSection = ({
 
     const proposalAttachmentMeta = file
       ? {
-        filename: file.name,
-        size: file.size,
-        mimeType: file.type,
-      }
+          filename: file.name,
+          size: file.size,
+          mimeType: file.type,
+        }
       : undefined;
 
     try {
@@ -285,7 +285,7 @@ const JobTabSection = ({
           client: apiClient,
           query: {
             regionId,
-          }
+          },
         });
         if (response.data) {
           const exactQueryKey = engineerGetMyJobsQueryKey({
@@ -341,21 +341,21 @@ const JobTabSection = ({
   const tabs = [
     ...(showTimelineTab
       ? [
-        {
-          label: JOB_TAB_LABELS.timeline,
-          content: (
-            <TimelineSection
-              progressUpdates={progressUpdates}
-              onAddProgressUpdate={onAddProgressUpdate}
-              assignmentId={assignmentId}
-              jobId={jobId}
-              hasApplied={
-                hasAppliedFromApi || !!hasApplied || !!submittedProposal
-              }
-            />
-          ),
-        },
-      ]
+          {
+            label: JOB_TAB_LABELS.timeline,
+            content: (
+              <TimelineSection
+                progressUpdates={progressUpdates}
+                onAddProgressUpdate={onAddProgressUpdate}
+                assignmentId={assignmentId}
+                jobId={jobId}
+                hasApplied={
+                  hasAppliedFromApi || !!hasApplied || !!submittedProposal
+                }
+              />
+            ),
+          },
+        ]
       : []),
     {
       label: JOB_TAB_LABELS.jobOverview,
@@ -380,27 +380,27 @@ const JobTabSection = ({
     // Show Proposal Info tab after proposal is submitted (from API or local state)
     ...(hasAppliedFromApi || hasApplied || submittedProposal
       ? [
-        {
-          label: JOB_TAB_LABELS.proposalInfo,
-          content: (
-            <ProposalInfoTab
-              submittedProposal={
-                submittedProposal ||
-                (apiProposalData?.proposalDetail
-                  ? {
-                    proposalDescription: apiProposalData.proposalDetail,
-                    attachmentUrl: apiProposalData.proposalAttachmentUrl,
-                  }
-                  : {
-                    proposalDescription: "",
-                    attachments: null,
-                  })
-              }
-              proposalAppliedDate={apiProposalData?.appliedAt}
-            />
-          ),
-        },
-      ]
+          {
+            label: JOB_TAB_LABELS.proposalInfo,
+            content: (
+              <ProposalInfoTab
+                submittedProposal={
+                  submittedProposal ||
+                  (apiProposalData?.proposalDetail
+                    ? {
+                        proposalDescription: apiProposalData.proposalDetail,
+                        attachmentUrl: apiProposalData.proposalAttachmentUrl,
+                      }
+                    : {
+                        proposalDescription: "",
+                        attachments: null,
+                      })
+                }
+                proposalAppliedDate={apiProposalData?.appliedAt}
+              />
+            ),
+          },
+        ]
       : []),
   ];
 

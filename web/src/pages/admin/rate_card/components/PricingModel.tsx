@@ -27,14 +27,13 @@ const PricingModel: React.FC = () => {
     name: "skills",
   });
 
-
   const createDefaultSkill = (name: string, id: string): SkillPricing => ({
     id,
     name,
     isEditing: true,
     tiers: JSON.parse(JSON.stringify(defaultPricingTiers)),
   });
-  
+
   const addExperinceLevel = () => {
     // Add a single skill with all 3 experience levels (L1, L2, L3)
     append(

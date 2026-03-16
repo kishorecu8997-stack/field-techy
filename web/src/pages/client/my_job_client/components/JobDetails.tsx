@@ -38,9 +38,11 @@ const JobsDetails: React.FC = () => {
     jobsArray.find(
       (j: { id?: string | number; regionId?: number | string }) => {
         const jobIdMatch = String(j.id) === jobId;
-        const regionIdMatch = parsedRegionId ? Number(j.regionId) === parsedRegionId : true;
+        const regionIdMatch = parsedRegionId
+          ? Number(j.regionId) === parsedRegionId
+          : true;
         return jobIdMatch && regionIdMatch;
-      }
+      },
     ) || jobsArray[0];
   // Loading state
   if (isLoading) {

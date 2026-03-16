@@ -126,7 +126,6 @@ const PostJobPage = () => {
     isSafeDate(endDate),
   );
 
-
   const {
     mutate: getJobPrice,
     data: priceData,
@@ -142,8 +141,8 @@ const PostJobPage = () => {
       ?.map((t) => ({ budget: Number(t.budget) || 0 }))
       .filter((t) => t.budget > 0).length
       ? toolsData
-        ?.map((t) => ({ budget: Number(t.budget) || 0 }))
-        .filter((t) => t.budget > 0)
+          ?.map((t) => ({ budget: Number(t.budget) || 0 }))
+          .filter((t) => t.budget > 0)
       : undefined;
 
     getJobPrice({
@@ -323,10 +322,7 @@ const PostJobPage = () => {
     });
   };
 
-  const {
-    mutate: postJob,
-    isPending: isPosting,
-  } = useClientPostJob();
+  const { mutate: postJob, isPending: isPosting } = useClientPostJob();
 
   const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
 
