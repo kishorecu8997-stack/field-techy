@@ -145,6 +145,7 @@ const transformProposalToTimelineItems = (
           details: proposalDetails,
           sortOrder: 25,
           attachmentUrl: job.proposalAttachmentUrl || undefined,
+          attachmentName: job.proposalAttachmentUrl ? "View Attachment" : undefined,
         });
       }
     }
