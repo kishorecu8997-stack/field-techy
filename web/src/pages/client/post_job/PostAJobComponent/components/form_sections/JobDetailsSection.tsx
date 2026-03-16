@@ -41,7 +41,7 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
         placeholder="Describe the role."
         required
         disabled={isDisable}
-textareaClassName="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition whitespace-pre-wrap resize-vertical min-h-[120px] bg-white dark:bg-gray-800 focus:ring-primary/40 focus:border-primary"
+        textareaClassName="w-full rounded-md border px-5 py-3 text-base outline-none transition whitespace-pre-wrap resize-y min-h-[120px] bg-white dark:bg-gray-800 focus:border-primary"
         rules={{
           required: "Job Description is required",
           validate: (value: string) => {

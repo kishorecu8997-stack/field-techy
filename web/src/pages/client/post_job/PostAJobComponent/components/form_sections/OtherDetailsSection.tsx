@@ -18,7 +18,7 @@ const OtherDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
           placeholder="Add any additional guidelines or notes."
           disabled={isDisable}
           required
-textareaClassName="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition whitespace-pre-wrap resize-vertical min-h-[100px] bg-white dark:bg-gray-800 focus:ring-primary/40 focus:border-primary"
+          textareaClassName="w-full rounded-md border px-5 py-3 text-base outline-none transition whitespace-pre-wrap resize-y min-h-[120px] bg-white dark:bg-gray-800 focus:border-primary"
           rules={{
             required: "Additional Details is required",
             validate: (value: string) => {
