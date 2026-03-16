@@ -88,21 +88,20 @@ const RecentTransactionsList: React.FC = () => {
   const groupedTransactions = groupTransactionsByDate(paginatedTransactions);
 
   const formatAmount = (amount: number): string => {
-    if (!currencyCode) return amount.toFixed(2);
-
-    const formatted = Math.abs(amount).toLocaleString("en-US", {
-      style: "currency",
-      currency: currencyCode,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-    return amount >= 0 ? `+${formatted}` : `-${formatted}`;
-  };
+  if (!currencyCode) return amount.toFixed(2);
+  const formatted = Math.abs(amount).toLocaleString("en-US", {
+    style: "currency", 
+    currency: currencyCode,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return formatted; 
+};
   if (isLoading) {
     return <div className="text-center py-8">Loading transactions...</div>;
   }
   if (isError) {
-    return (
+    return ( 
       <div className="text-center py-8 text-red-600">
         Failed to load transactions
       </div>
