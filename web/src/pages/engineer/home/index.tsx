@@ -34,14 +34,14 @@ const Home = () => {
     isLoading: featuredJobLoading,
     isError: featuredJobError,
     refetch: featuredJobRefetch,
-  } = useEngineerSearchJobs({ sortBy: "latest", isFeatured: true });
+  } = useEngineerSearchJobs({ sortBy: "latest", featured: true });
 
   const {
     data: recommendedJobsResponse,
     isLoading: recommendedJobLoading,
     isError: recommendedJobError,
     refetch: recommendedJobRefetch,
-  } = useEngineerSearchJobs({ sortBy: "relevant" });
+  } = useEngineerSearchJobs({ sortBy: "latest", isRecommended: true });
 
   // Transform API response to recommentedjob UI model
   const recommendedJobsData = useMemo(() => {
