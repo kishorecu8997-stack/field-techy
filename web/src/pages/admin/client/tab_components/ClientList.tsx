@@ -56,7 +56,7 @@ const ClientList: React.FC<ClientListProps> = ({
     isLoading,
   } = useAdminManageClients({
     clientType,
-    query: { page, limit },
+    query: { page, limit, search: search || undefined },
   });
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
@@ -82,21 +82,7 @@ const ClientList: React.FC<ClientListProps> = ({
     handleStatusChange,
   });
 
-  const rawData = (manageClient?.data || []) as unknown as ManageClientProps[];
-
-  // Client-side search filtering
-  const clientData = useMemo(() => {
-    if (!search) return rawData;
-    const query = search.toLowerCase();
-    return rawData.filter(
-      (row) =>
-        row.name?.toLowerCase().includes(query) ||
-        row.companyName?.toLowerCase().includes(query) ||
-        row.email?.toLowerCase().includes(query) ||
-        row.clientCode?.toLowerCase().includes(query) ||
-        row.phoneNumber?.includes(query),
-    );
-  }, [rawData, search]);
+  const clientData = (manageClient?.data || []) as unknown as ManageClientProps[];
 
   const handleSearchChange = (value: string) => {
     setSearch(value);

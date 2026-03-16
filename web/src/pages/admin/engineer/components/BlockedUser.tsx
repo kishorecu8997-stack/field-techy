@@ -52,6 +52,7 @@ export default function BlockedUser() {
     page: currentPage,
     limit: pageSize,
     status: "blocked",
+    search: search || undefined,
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];

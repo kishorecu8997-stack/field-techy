@@ -45,6 +45,7 @@ export default function AllUsers() {
   } = useAdminManageEngineers({
     page: currentPage,
     limit: pageSize,
+    search: search || undefined,
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
@@ -58,25 +59,7 @@ export default function AllUsers() {
     );
   }, [engineerData, selectedFile]);
 
-  const filteredEngineers = useMemo(() => {
-    if (!search.trim()) return engineerData;
 
-    const term = search.toLowerCase();
-
-    return engineerData.filter((engineer) =>
-      [
-        engineer.engineerCode,
-        engineer.name,
-        engineer.email,
-        engineer.phoneNumber,
-        engineer.location,
-        engineer.cityName,
-        engineer.countryName,
-      ]
-        .filter(Boolean)
-        .some((value) => value!.toLowerCase().includes(term)),
-    );
-  }, [engineerData, search]);
 
   const isPreviewOpen = !!selectedFile && !!selectedEngineer;
 
@@ -219,14 +202,10 @@ export default function AllUsers() {
         <div className="h-full flex-1 overflow-hidden">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={filteredEngineers}
+            data={engineerData}
             initialPageSize={pageSize}
             currentPage={currentPage}
-            totalCount={
-              search
-                ? filteredEngineers.length
-                : (engineersResponse?.total ?? 0)
-            }
+            totalCount={engineersResponse?.total ?? 0}
             loading={isLoading || isFetching}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}

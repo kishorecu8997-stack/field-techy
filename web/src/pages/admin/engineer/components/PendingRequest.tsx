@@ -48,6 +48,7 @@ export default function PendingRequest() {
     page: currentPage,
     limit: pageSize,
     profileStatus: "pending",
+    search: search || undefined,
   });
 
   // Mutation for updating status

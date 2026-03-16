@@ -65,6 +65,7 @@ export default function InactiveUser() {
     page: currentPage,
     limit: pageSize,
     status: "inactive",
+    search: search || undefined,
   });
 
   const { mutateAsync: deleteEngineer } = useAdminDeleteEngineerMutation();

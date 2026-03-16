@@ -52,6 +52,7 @@ export default function SuspendedUser() {
     page: currentPage,
     limit: pageSize,
     status: "suspended",
+    search: search || undefined,
   });
 
   const engineerData = (engineersResponse?.data ?? []) as ManageEngineerProps[];
