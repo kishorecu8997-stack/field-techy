@@ -8,7 +8,6 @@ import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
 import "./shared/apiServices/utils/errorHandlerConfig";
 import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
 import { FCMHandler } from "./shared/components/FCMHandler.tsx";
-import GlobalErrorBoundary from "./shared/components/commonUI/GlobalErrorBoundary.tsx";
 
 // Stripe is initialized lazily in AddFundModal to avoid loading Stripe SDK on every page
 
@@ -49,15 +48,13 @@ if (!root) {
 
 root.render(
   <React.StrictMode>
-    <GlobalErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ToastProvider>
-          <GlobalPopup />
-          <ToastHandler />
-          <FCMHandler />
-          <App />
-        </ToastProvider>
-      </QueryClientProvider>
-    </GlobalErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ToastProvider>
+        <GlobalPopup />
+        <ToastHandler />
+        <FCMHandler />
+        <App />
+      </ToastProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );

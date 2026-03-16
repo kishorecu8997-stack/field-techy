@@ -100,6 +100,30 @@ export class AdminRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.AdminManageJobCategoryEdit),
           },
           {
+            path: urls.admin.home.manage_tools,
+            element: withSuspense(Components.AdminManageTools),
+          },
+          {
+            path: urls.admin.home.manage_tools_add,
+            element: withSuspense(Components.AdminManageToolsAdd),
+          },
+          {
+            path: `${urls.admin.home.manage_tools_edit}/:id?`,
+            element: withSuspense(Components.AdminManageToolsEdit),
+          },
+          {
+            path: urls.admin.home.manage_skills,
+            element: withSuspense(Components.AdminManageSkills),
+          },
+          {
+            path: urls.admin.home.manage_skills_add,
+            element: withSuspense(Components.AdminManageSkillsAdd),
+          },
+          {
+            path: `${urls.admin.home.manage_skills_edit}/:id?`,
+            element: withSuspense(Components.AdminManageSkillsEdit),
+          },
+          {
             path: urls.admin.home.manage_rate_card,
             element: withSuspense(Components.AdminManageRateCard),
           },

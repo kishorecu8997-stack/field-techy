@@ -20,5 +20,9 @@ export const getLevelColor = (level?: string) => {
 
 export const formatRating = (rating: string | number): string => {
   const num = parseFloat(String(rating));
-  return isNaN(num) ? String(rating) : num % 1 === 0 ? String(num) : `${Math.floor(num)}+`;
+  return isNaN(num)
+    ? String(rating)
+    : num % 1 === 0
+      ? String(num)
+      : `${Math.floor(num)}+`;
 };

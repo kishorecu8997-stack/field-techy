@@ -24,9 +24,7 @@ import {
 import { extractErrorMessage } from "@/shared/libs/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
-import type {
-  AdminCreateClientResponse,
-} from "@/api";
+import type { AdminCreateClientResponse } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 const DEFAULT_FORM_VALUES: Partial<ClientFormData> = {
@@ -240,7 +238,8 @@ const ClientForm: React.FC<ClientFormProps> = ({ isEdit: propIsEdit }) => {
                 )) {
                   const file = files[key as keyof typeof files];
                   if (!file) continue;
-                  if (resolvedUserId && 
+                  if (
+                    resolvedUserId &&
                     (
                       await fetch(uploadUrl, {
                         method: "PUT",

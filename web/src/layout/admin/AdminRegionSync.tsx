@@ -43,7 +43,9 @@ export default function AdminRegionSync() {
   // Safely persist the default store initialization outside the render phase
   useEffect(() => {
     if (regionToSync) {
-      useAdminCountryStore.getState().setRegion(regionToSync.id, regionToSync.name);
+      useAdminCountryStore
+        .getState()
+        .setRegion(regionToSync.id, regionToSync.name);
     }
   }, [regionToSync?.id, regionToSync?.name]);
 
@@ -56,9 +58,6 @@ export default function AdminRegionSync() {
   // Inject (or correct) the regionId param, preserving all other existing params
   searchParams.set("regionId", effectiveRegionId);
   return (
-    <Navigate
-      to={`${location.pathname}?${searchParams.toString()}`}
-      replace
-    />
+    <Navigate to={`${location.pathname}?${searchParams.toString()}`} replace />
   );
 }

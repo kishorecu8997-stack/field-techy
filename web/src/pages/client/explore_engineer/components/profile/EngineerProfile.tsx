@@ -23,11 +23,17 @@ const EngineerProfile: React.FC = () => {
   const [searchParams] = useSearchParams();
   const regionId = Number(searchParams.get("regionId"));
 
-  const { data, isLoading, error } = useClientGetPublicEngineerProfile(engineerId, true, { regionId });
+  const { data, isLoading, error } = useClientGetPublicEngineerProfile(
+    engineerId,
+    true,
+    { regionId },
+  );
 
   const handleInviteClick = () => {
     if (data?.userId) {
-      navigate(`${absoluteUrls.client.home.ClientJobInvite}/${data.userId}?regionId=${regionId}`);
+      navigate(
+        `${absoluteUrls.client.home.ClientJobInvite}/${data.userId}?regionId=${regionId}`,
+      );
     }
   };
 

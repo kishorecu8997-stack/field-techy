@@ -23,10 +23,7 @@ const SkillAccordion: React.FC<{
   });
 
   return (
-    <Accordion
-      title={skill.name}
-      showRemove={false}
-    >
+    <Accordion title={skill.name} showRemove={false}>
       <PricingTable
         control={control}
         index={index}

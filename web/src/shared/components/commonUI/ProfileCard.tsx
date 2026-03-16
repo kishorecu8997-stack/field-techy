@@ -80,10 +80,11 @@ const ProfileCard = ({
     space-x-4 
     mb-6 
     p-4 
-    ${backgroundcolor
-          ? "bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900"
-          : ""
-        }`}
+    ${
+      backgroundcolor
+        ? "bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900"
+        : ""
+    }`}
     >
       <div className="relative">
         <ImageUploaderField
@@ -99,7 +100,11 @@ const ProfileCard = ({
         <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
         <p
           className="text-xs text-gray-500 dark:text-gray-400 hover:text-green-500 cursor-pointer hover:underline"
-          onClick={() => isClient ? setActiveKey("engineerFromFeedback", true) : setActiveKey("clientFromFeedback", true)}
+          onClick={() =>
+            isClient
+              ? setActiveKey("engineerFromFeedback", true)
+              : setActiveKey("clientFromFeedback", true)
+          }
         >
           {rating} Ratings | {reviewCount} Reviews
           <FaLink className="inline-block ml-1" />
