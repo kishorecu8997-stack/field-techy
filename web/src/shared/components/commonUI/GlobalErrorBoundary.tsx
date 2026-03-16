@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import { useRouteError, isRouteErrorResponse } from "react-router-dom";
 import ErrorState from "./ErrorState";
 
 interface Props {
@@ -15,28 +16,18 @@ interface State {
 /**
  * GlobalErrorBoundary catches JavaScript errors anywhere in its child component tree,
  * logs those errors, and displays a fallback UI instead of the component tree that crashed.
- *
- * Note: Error boundaries do NOT catch errors for event handlers, asynchronous code,
- * or server-side rendering.
  */
 class GlobalErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
   };
 
-  /**
-   * Updates state so the next render will show the fallback UI
-   */
   public static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  /**
-   * Used to log the error to an error reporting service
-   */
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error in component tree:", error, errorInfo);
-    // You could also log to an external service like Sentry or LogRocket here
   }
 
   public render() {
@@ -49,7 +40,7 @@ class GlobalErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900">
           <ErrorState
             title="Application Error"
-            message="Something went wrong while rendering this page. Please try reloading, or contact support if the problem persists."
+            message={this.state.error?.message || "Something went wrong while rendering this page."}
             retryLabel="Reload Page"
             onRetry={() => window.location.reload()}
           />
@@ -60,5 +51,34 @@ class GlobalErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+/**
+ * RouteErrorBoundary is a functional component designed to be used as 
+ * React Router's errorElement. It uses useRouteError to handle routing errors.
+ */
+export const RouteErrorBoundary = () => {
+  const error = useRouteError();
+
+  let title = "Application Error";
+  let message = "Something went wrong while navigating or loading data.";
+
+  if (isRouteErrorResponse(error)) {
+    title = `${error.status} ${error.statusText}`;
+    message = error.data?.message || message;
+  } else if (error instanceof Error) {
+    message = error.message;
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900">
+      <ErrorState
+        title={title}
+        message={message}
+        retryLabel="Reload Page"
+        onRetry={() => window.location.reload()}
+      />
+    </div>
+  );
+};
 
 export default GlobalErrorBoundary;
