@@ -43,6 +43,9 @@ const ClientActions = ({
   // Check if job is cancelled
   const isCancelled = jobStatus?.toLowerCase() === "cancelled";
 
+  // Check if job is on hold
+  const isOnHold = jobStatus?.toLowerCase() === "hold";
+
   const { data: engineerFeedbackData } = useGetUserRatingAndReviews(
     true,
     undefined,
@@ -70,6 +73,11 @@ const ClientActions = ({
           <div className="flex flex-wrap gap-2 w-fit items-center">
             <icons.checkCircle className="text-red-500 w-6 h-6" />
             <span className="text-lg">Job Cancelled</span>
+          </div>
+        ) : isOnHold ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-yellow-500 w-6 h-6" />
+            <span className="text-lg">Job is on hold</span>
           </div>
         ) : showFeedbackButton ? (
           <Button

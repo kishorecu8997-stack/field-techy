@@ -7,6 +7,7 @@ import {
   clientGetRateCard,
   clientInviteEngineer,
   clientPostJob,
+  // clientUpdateJobStatus,
   getClientTransactions,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
@@ -28,6 +29,7 @@ import {
   type ClientPostJobData,
   type ClientPostJobResponse,
   type ClientUpdateCompanyInfoResponse,
+  // type ClientUpdateJobStatusData,
   type CreatePaymentIntentError,
   type CreatePaymentIntentResponse,
   type GetClientTransactionsData,
@@ -62,6 +64,7 @@ import {
   clientInviteEngineerMutation,
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
+  clientUpdateJobStatusMutation,
   createPaymentIntentMutation,
   getClientBalanceOptions,
   getClientBalanceQueryKey,
@@ -476,6 +479,25 @@ export function useClientCancelJob(options?: {
     ...clientCancelJobMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      syncClientBalance(queryClient);
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientUpdateJobStatus(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientUpdateJobStatusMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      queryClient.invalidateQueries({
+        queryKey: clientGetJobsQueryKey({ client: apiClient }),
+      });
       syncClientBalance(queryClient);
       options?.onSuccess?.(data);
     },

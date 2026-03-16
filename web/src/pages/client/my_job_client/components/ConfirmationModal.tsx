@@ -4,6 +4,7 @@ import { AiOutlineClose } from "react-icons/ai";
 
 interface ConfirmationModalProps {
   actionType: "hold" | "clone" | "cancel"; // new
+  currentStatus?: string;
   onConfirm: () => void;
   onClose: () => void;
 }
@@ -15,24 +16,30 @@ interface ConfirmationModalProps {
  */
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   actionType,
+  currentStatus,
   onConfirm,
   onClose,
 }) => {
-  // Dynamic texts based on action type
+  // Determine if currently on hold
+  const isCurrentlyOnHold = currentStatus?.toLowerCase() === "hold";
+
+  // Dynamic texts based on action type and current status
   const titles = {
-    hold: "Are you sure you want to Hold?",
+    hold: isCurrentlyOnHold ? "Are you sure you want to Unhold?" : "Are you sure you want to Hold?",
     clone: "Are you sure you want to Clone?",
     cancel: "Are you sure you want to Cancel?",
   };
 
   const descriptions = {
-    hold: "This will temporarily pause the job until you decide to resume it",
+    hold: isCurrentlyOnHold 
+      ? "This will resume the job and make it active again" 
+      : "This will temporarily pause the job until you decide to resume it",
     clone: "This will create a duplicate of the current item.",
     cancel: "This action will remove or cancel the job permanently.",
   };
 
   const buttonTexts = {
-    hold: "Hold the job",
+    hold: isCurrentlyOnHold ? "Unhold the job" : "Hold the job",
     clone: "Clone the job",
     cancel: "Cancel the job",
   };
