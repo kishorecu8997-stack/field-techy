@@ -26,6 +26,9 @@ interface FiltersProps {
   experience?: number;
   onExperienceChange?: (experience: number) => void;
   selectedSkills?: Set<number>;
+  isRegionFilterEnabled?: boolean;
+  selectedRegion?: number | null;
+  onRegionChange?: (regionId: number | null) => void;
   onSkillToggle?: (skillId: number) => void;
   onClearAll?: () => void;
 }
@@ -43,11 +46,14 @@ interface FiltersProps {
 const Filters: React.FC<FiltersProps> = ({
   selectedLocation = null,
   onLocationChange = () => {},
+  onRegionChange = () => {},
   selectedCategory = null,
   onCategoryChange = () => {},
   rating = null,
   onRatingChange = () => {},
   experience = 0,
+  isRegionFilterEnabled = false,
+  selectedRegion = null,
   onExperienceChange = () => {},
   selectedSkills = new Set(),
   onSkillToggle = () => {},
@@ -60,6 +66,7 @@ const Filters: React.FC<FiltersProps> = ({
     useLookupData("serviceCategories");
   const { data: skillsData, isLoading: isLoadingSkills } =
     useLookupData("skills");
+  const { data: regions } = useLookupData("regions");
 
   // Transform skills data to include selection state
   const skills = useMemo<SkillItem[]>(() => {
@@ -126,6 +133,28 @@ const Filters: React.FC<FiltersProps> = ({
           CLEAR ALL
         </div>
       </div>
+
+      {/* Regions */}
+      {isRegionFilterEnabled && (
+        <div className="mb-6">
+          <h3 className="font-medium mb-3">Regions</h3>
+          <div className="flex flex-wrap gap-2">
+            {regions?.map((region) => (
+              <Button
+                key={region.id}
+                onClick={() => onRegionChange(region.id)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  selectedRegion === region.id
+                    ? "bg-teal-800 dark:bg-teal text-white"
+                    : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
+                }`}
+              >
+                {region.name}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Work Location (Job Type) */}
       <div className="mb-6">

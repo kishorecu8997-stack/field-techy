@@ -43,6 +43,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
     filters.rating,
     filters.experience,
     filters.skills,
+    filters.regionId,
   ]);
   const itemsPerPage = 8;
   const { data, isLoading } = useClientExploreEngineers(
@@ -50,6 +51,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
       page: currentPage,
       limit: itemsPerPage,
       search: filters.q || undefined,
+      regionId: filters.regionId,
       jobType:
         filters.location === 1
           ? "On site"
