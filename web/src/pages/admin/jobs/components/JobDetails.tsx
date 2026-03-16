@@ -56,7 +56,7 @@ const JobDetails = () => {
     (engineer) =>
       engineer.assignmentStatus === "started" ||
       engineer.assignmentStatus === "assigned" ||
-      engineer.assignmentStatus === "paid"||
+      engineer.assignmentStatus === "paid" ||
       engineer.assignmentStatus === "submitted",
   );
 
