@@ -15,9 +15,27 @@ const OtherDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
         <TextareaInput
           name="otherInfo"
           label="Additional Details"
-          placeholder="Add any additional guidelines or notes"
+          placeholder="Add any additional guidelines or notes."
           disabled={isDisable}
           required
+          textareaClassName="w-full rounded-md border px-5 py-3 text-base outline-none transition whitespace-pre-wrap resize-y min-h-[120px] bg-white dark:bg-gray-800 focus:border-primary"
+          rules={{
+            required: "Additional Details is required",
+            validate: (value: string) => {
+              if (!value) return "Additional Details is required";
+              // Check for leading or trailing spaces
+              if (value !== value.trim()) {
+                return "Additional Details must not have leading or trailing spaces";
+              }
+              // Check for multiple consecutive spaces
+              if (/[^\S\r\n]{3,}/.test(value)) {
+                return "Additional Details must not have excessive consecutive spaces";
+              }
+              if (value.length < 10) return "Must be at least 10 characters";
+              if (value.length > 1000) return "Must not exceed 1000 characters";
+              return true;
+            }
+          }}
         />
         <FileUpload
           name="attachment"
@@ -31,3 +49,4 @@ const OtherDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
 };
 
 export default OtherDetailsSection;
+
