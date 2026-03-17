@@ -232,6 +232,15 @@ const JobDetailsPage = () => {
 
   const job = jobList?.[0];
 
+  // Console log to check the URL ID, API ID, and Review data condition
+  console.log("ID & Review Checking Condition ->", {
+    urlId: params.jobId,
+    apiId: job?.id,
+    isIdMatched: String(params.jobId) === String(job?.id),
+    reviewText: (job as any)?.review,
+    hasReviewData: Boolean((job as any)?.review && String((job as any).review).trim() !== "")
+  });
+
   // Fetch skills, tools, experience levels and engagement models from the lookup API
   const { data: skillsResponse } = useLookupData("skills");
   const { data: toolsResponse } = useLookupData("tools");
