@@ -192,6 +192,11 @@ const InviteJob: React.FC = () => {
       : [...currentIds, jobId];
     setValue("id", newIds, { shouldValidate: true, shouldDirty: true });
   };
+  const breadcrumbSegments = [
+    "Client",
+    "Explore-Engineers",
+    "Select Jobs",
+  ];
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
@@ -203,6 +208,7 @@ const InviteJob: React.FC = () => {
               description={undefined}
               isShowBreadcrumb={true}
               isShowSort={false}
+              segments={breadcrumbSegments}
               action={
                 <Button
                   variant="primary"
