@@ -7,6 +7,7 @@ import { RATING_OPTIONS } from "@/shared/libs/constants/filterOptions";
 import React, { useMemo } from "react";
 import { usePopupStore } from "../store/popupStore";
 import { Button } from "./commonUI/Buttons";
+import { useUserSessionStore } from "../store/useUserSessionStore";
 
 interface SkillItem {
   id: number;
@@ -67,6 +68,9 @@ const Filters: React.FC<FiltersProps> = ({
   const { data: skillsData, isLoading: isLoadingSkills } =
     useLookupData("skills");
   const { data: regions } = useLookupData("regions");
+  const regionIdFromSession = useUserSessionStore(
+    (state) => state.session?.regionId,
+  );
 
   // Transform skills data to include selection state
   const skills = useMemo<SkillItem[]>(() => {
@@ -135,23 +139,31 @@ const Filters: React.FC<FiltersProps> = ({
       </div>
 
       {/* Regions */}
+
       {isRegionFilterEnabled && (
         <div className="mb-6">
           <h3 className="font-medium mb-3">Regions</h3>
           <div className="flex flex-wrap gap-2">
-            {regions?.map((region) => (
-              <Button
-                key={region.id}
-                onClick={() => onRegionChange(region.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  selectedRegion === region.id
-                    ? "bg-teal-800 dark:bg-teal text-white"
-                    : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
-                }`}
-              >
-                {region.name}
-              </Button>
-            ))}
+            {regions?.map((region) => {
+              const isActive =
+                selectedRegion !== null && selectedRegion !== undefined
+                  ? selectedRegion === region.id
+                  : regionIdFromSession === region.id;
+
+              return (
+                <Button
+                  key={region.id}
+                  onClick={() => onRegionChange(region.id)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-teal-800 dark:bg-teal text-white shadow-md ring-1 ring-teal-900/30 dark:ring-teal-500/40"
+                      : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500/20 dark:hover:bg-teal-900/30 hover:border-teal-500/50"
+                  }`}
+                >
+                  {region.name}
+                </Button>
+              );
+            })}
           </div>
         </div>
       )}
