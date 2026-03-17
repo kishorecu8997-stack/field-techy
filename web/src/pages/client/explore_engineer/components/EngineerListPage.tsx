@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../../search_result/components/Pagination";
 import type { FiltersType } from "../index";
 import EngineerCard from "./EngineerCard";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 interface EngineerListPageProps {
   filters: FiltersType;
@@ -25,6 +26,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
   onTotalEngineerCountChange,
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const regionId = useUserSessionStore((state) => state.session?.regionId);
 
   useEffect(() => {
     scrollToTop();
@@ -43,6 +45,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
     filters.rating,
     filters.experience,
     filters.skills,
+    filters.regionId,
   ]);
   const itemsPerPage = 8;
   const { data, isLoading } = useClientExploreEngineers(
@@ -50,6 +53,7 @@ const EngineerListPage: React.FC<EngineerListPageProps> = ({
       page: currentPage,
       limit: itemsPerPage,
       search: filters.q || undefined,
+      regionId: filters.regionId ?? regionId,
       jobType:
         filters.location === 1
           ? "On site"

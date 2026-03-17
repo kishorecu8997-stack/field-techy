@@ -5,10 +5,7 @@ import type { Transaction } from "../types";
 import Popup from "@/shared/components/Popup";
 import DownloadInvoice from "./DownloadInvoice";
 import Filter from "./Filter";
-import {
-  useClientBalance,
-  useClientTransactions,
-} from "@/shared/apiServices/client/clientOpenApiService";
+import { useClientTransactions } from "@/shared/apiServices/client/clientOpenApiService";
 import Pagination from "../../search_result/components/Pagination";
 
 const RecentTransactionsList: React.FC = () => {
@@ -22,9 +19,6 @@ const RecentTransactionsList: React.FC = () => {
   endDate.setHours(23, 59, 59, 999);
   const startDateStr = startDate.toISOString();
   const endDateStr = endDate.toISOString();
-  const { data: balanceArr } = useClientBalance();
-  const balance = balanceArr?.[0];
-  const currencyCode = balance?.currencyCode;
   const offset = (currentPage - 1) * transactionsPerPage;
   const {
     data: transactionsRaw,
@@ -40,6 +34,9 @@ const RecentTransactionsList: React.FC = () => {
     },
     true,
   );
+  const currencyCode =
+    transactionsRaw?.transactions?.[0]?.currencyCode || "USD";
+
   const transactions: Transaction[] = (transactionsRaw?.transactions ?? []).map(
     (tx) => {
       const rawAmount = Number(tx.amount);

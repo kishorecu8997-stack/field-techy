@@ -97,14 +97,14 @@ export const syncClientBalance = (
   const performSync = () => {
     void queryClient.invalidateQueries({
       queryKey: getClientBalanceQueryKey({ client: apiClient }),
-      refetchType: "all",
+      refetchType: "active",
     });
     void useClientWalletStore.getState().fetchBalance();
   };
 
   performSync(); // Initial sync
-  setTimeout(performSync, 1000); // Delayed sync for server processing
-  setTimeout(performSync, 3000); // Long delayed sync for safety
+  // setTimeout(performSync, 1000); // Delayed sync for server processing
+  // setTimeout(performSync, 3000); // Long delayed sync for safety
 };
 
 /**

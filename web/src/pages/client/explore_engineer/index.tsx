@@ -15,6 +15,7 @@ export type FiltersType = {
   rating: number | null;
   experience: number;
   skills: Set<number>;
+  regionId?: number | null;
 };
 
 /**
@@ -38,6 +39,7 @@ const ExploreEngineer = () => {
     rating: null,
     experience: 0,
     skills: new Set(),
+    regionId: null,
   }));
 
   const [totalEngineerCount, setTotalEngineerCount] = useState<number>(0);
@@ -126,6 +128,11 @@ const ExploreEngineer = () => {
           <div className="lg:col-span-1">
             <div className="sticky top-6">
               <Filters
+                isRegionFilterEnabled
+                selectedRegion={filters.regionId}
+                onRegionChange={(regionId) =>
+                  handleFilterChange({ regionId })
+                }
                 selectedLocation={filters.location}
                 onLocationChange={(location) =>
                   handleFilterChange({ location })
