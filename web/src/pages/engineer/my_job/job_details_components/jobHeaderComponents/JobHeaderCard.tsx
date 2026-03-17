@@ -23,7 +23,7 @@ import {
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import { useClientCancelJob } from "@/shared/apiServices/client/clientOpenApiService";
+import { useClientCancelJob, useClientUpdateJobStatus } from "@/shared/apiServices/client/clientOpenApiService";
 import { toast } from "react-toastify";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -110,11 +110,30 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     },
   });
 
+  // Update job status (hold/unhold) mutation
+  const [pendingStatus, setPendingStatus] = useState<"Hold" | "Unhold" | null>(null);
+  const { mutate: updateJobStatus } = useClientUpdateJobStatus({
+    onSuccess: () => {
+      if (pendingStatus === "Hold") {
+        toast.success("Job put on hold successfully!");
+      } else if (pendingStatus === "Unhold") {
+        toast.success("Job unheld successfully!");
+      }
+      setPendingStatus(null);
+    },
+    onError: (error) => {
+      console.error("Failed to update job status:", error);
+      toast.error("Failed to update job status. Please try again.");
+      setPendingStatus(null);
+    },
+  });
+
   const handleMenuAction = (action: string) => {
     let type: "hold" | "clone" | "cancel";
 
     switch (action) {
       case "Hold the job":
+      case "Unhold the job":
         type = "hold";
         break;
       case "Clone the job":
@@ -145,6 +164,27 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           jobId: jobIdNumber,
           status: "Cancelled" as const,
           regionId,
+        },
+      });
+    } else if (actionType === "hold" && jobId) {
+      const jobIdNumber = Number(jobId);
+      if (isNaN(jobIdNumber)) {
+        console.error("Invalid job ID:", jobId);
+        setIsConfirmOpen(false);
+        return;
+      }
+      
+      // Determine if we should hold or unhold based on current status
+      const currentStatus = status?.toLowerCase();
+      const isCurrentlyOnHold = currentStatus === "hold";
+      const newStatus = isCurrentlyOnHold ? "Unhold" as const : "Hold" as const;
+      
+      setPendingStatus(newStatus);
+      updateJobStatus({
+        body: {
+          jobId: jobIdNumber,
+          status: newStatus,
+          regionId
         },
       });
     }
@@ -281,7 +321,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-20 text-gray-800 dark:text-white">
                     <ul className="py-1">
                       {[
-                        "Hold the job",
+                        status?.toLowerCase() === "hold" ? "Unhold the job" : "Hold the job",
                         "Cancel the job",
                         // "Clone the job",
                         "Report Issue",
@@ -375,6 +415,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
       <Popup open={isConfirmOpen} onClose={() => setIsConfirmOpen(false)}>
         <ConfirmationModal
           actionType={actionType}
+          currentStatus={status}
           onConfirm={handleConfirmAction}
           onClose={() => setIsConfirmOpen(false)}
         />

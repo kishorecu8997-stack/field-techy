@@ -458,6 +458,7 @@ const JobDetailsPage = () => {
           targetName={
             job?.clientDetails?.companyName ||
             job?.clientDetails?.personName ||
+            job?.clientDetails?.name ||
             "Test Client"
           }
           targetRole={job?.clientDetails?.clientType || "client"}
@@ -570,6 +571,7 @@ const JobDetailsPage = () => {
   const clientName =
     job?.clientDetails?.companyName ||
     job?.clientDetails?.personName ||
+    job?.clientDetails?.name ||
     `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
 

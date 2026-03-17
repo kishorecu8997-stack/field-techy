@@ -27,6 +27,27 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
       : "bg-blue-600 text-white";
   };
 
+  const formatPrice = (price: string | number) => {
+    if (price == null || price === "") return "";
+    const priceStr = String(price);
+    // Match currency symbol (like $, €, £, ₹ etc.) and the numeric part
+    const match = priceStr.match(/^([^0-9]+)?(.*)$/);
+    if (!match) return priceStr;
+    
+    const rawCurrencySymbol = match[1] || "";
+     const currencySymbol = rawCurrencySymbol.trim();
+    const numericPart = match[2] || "";
+    
+    // Add space between currency and number, normalizing any existing whitespace
+    const withSpace = currencySymbol ? `${currencySymbol} ` : "";
+    
+    // Add comma separators to the numeric part
+    const number = numericPart.replace(/[^0-9.]/g, "");
+    const formattedNumber = number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    return `${withSpace}${formattedNumber}`;
+  };
+
   return (
     <Link to={navigateToJob}>
       <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-4 shadow-sm hover:shadow-md transition-shadow">
@@ -74,7 +95,7 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
 
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
             <RiMoneyDollarCircleLine className="w-4 h-4 mr-2 flex-shrink-0" />
-            {job.pay}
+            {formatPrice(job.pay || "")}
           </div>
         </div>
 

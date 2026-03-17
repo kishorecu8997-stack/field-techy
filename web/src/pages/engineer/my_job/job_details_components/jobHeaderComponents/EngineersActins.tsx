@@ -408,6 +408,7 @@ const EngineersActions = ({
   //   status === JOB_STATUSES.inProgress || status === "In Progress";
   const isCancelled =
     status?.toLowerCase() === "cancelled" || status === JOB_STATUSES.cancelled;
+  const isOnHold = status?.toLowerCase() === "hold";
   const isClosed = status === JOB_STATUSES.closed;
 
   // Check if job has actually started
@@ -548,6 +549,11 @@ const EngineersActions = ({
           <div className="flex flex-wrap gap-2 w-fit items-center">
             <icons.checkCircle className="text-red-500 w-6 h-6" />
             <span className="text-lg ">Job Cancelled</span>
+          </div>
+        ) : isOnHold ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-yellow-500 w-6 h-6" />
+            <span className="text-lg text-yellow-500">Job is on hold</span>
           </div>
         ) : hasStartPending ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">

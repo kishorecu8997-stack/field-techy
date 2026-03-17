@@ -55,7 +55,7 @@ const ClientJobDetails = () => {
   // Fallback to useClientGetJobs if needed for job details
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   type ExtendedJob = (typeof jobsArray)[0] & {
-    clientDetails?: { personName?: string };
+    clientDetails?: { personName?: string; name?: string; };
   };
 
   const job = (jobsArray as ExtendedJob[]).find((j) => Number(j.id) === jobId);
@@ -164,7 +164,7 @@ const ClientJobDetails = () => {
             <div className="lg:col-span-2 space-y-6">
               <JobHeaderCard
                 title={job?.jobTitle || ""}
-                client={job?.clientDetails?.personName || ""}
+                client={job?.clientDetails?.personName || job?.clientDetails?.name || ""}
                 duration={durationDisplay}
                 type={job?.jobType || ""}
                 status={jobStatus}

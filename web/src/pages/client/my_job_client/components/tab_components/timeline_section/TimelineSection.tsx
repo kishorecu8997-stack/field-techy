@@ -1110,6 +1110,9 @@ const TimelineSection: React.FC<{
   const finalStatementAccentColor = TIMELINE_CARD_COLORS.green;
 
   const actionRequiredCount = useMemo(() => {
+    // If job is completed/closed, no action is required
+    if (isJobCompleted) return 0;
+
     let count = actionRequiredProgressCards.length;
     // Count pending break requests directly from apiBreakRequestsData
     // This ensures we count break requests that are pending regardless of shortBreakStatuses state
@@ -1127,6 +1130,7 @@ const TimelineSection: React.FC<{
     if (hasPendingStartRequest) count++;
     return count;
   }, [
+    isJobCompleted,
     actionRequiredProgressCards.length,
     hasBreakData,
     apiBreakRequestsData,
