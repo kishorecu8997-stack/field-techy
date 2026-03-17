@@ -329,7 +329,8 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                     <span className="text-gray-900 dark:text-white font-bold">
                       •
                     </span>
-                    <span>{detail}</span>
+                    <p className="text-sm text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{detail}</p>
+
                   </li>
                 ))}
               </ul>
