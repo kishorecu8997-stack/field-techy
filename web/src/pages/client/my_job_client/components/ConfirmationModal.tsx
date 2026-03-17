@@ -10,9 +10,9 @@ interface ConfirmationModalProps {
 }
 
 /**
- * A modal component that confirms a job hold has been successfully sent.
- * It provides buttons to navigate back to the home/dashboard page.
- * It also displays a checkmark icon and a confirmation message.
+  * A generic confirmation modal shown before performing a job action.
+  * Supports hold/unhold, cancel, and clone actions with dynamic titles, descriptions,
+  * and primary button text based on the provided action type and current status.
  */
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   actionType,

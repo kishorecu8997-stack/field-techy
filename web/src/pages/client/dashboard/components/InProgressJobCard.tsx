@@ -28,16 +28,17 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
   };
 
   const formatPrice = (price: string | number) => {
-    if (!price) return "";
+    if (price == null || price === "") return "";
     const priceStr = String(price);
     // Match currency symbol (like $, €, £, ₹ etc.) and the numeric part
     const match = priceStr.match(/^([^0-9]+)?(.*)$/);
     if (!match) return priceStr;
     
-    const currencySymbol = match[1] || "";
+    const rawCurrencySymbol = match[1] || "";
+     const currencySymbol = rawCurrencySymbol.trim();
     const numericPart = match[2] || "";
     
-    // Add space between currency and number
+    // Add space between currency and number, normalizing any existing whitespace
     const withSpace = currencySymbol ? `${currencySymbol} ` : "";
     
     // Add comma separators to the numeric part

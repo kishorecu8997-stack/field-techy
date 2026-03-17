@@ -61,6 +61,8 @@ export type TimelineItem = {
   statusColor?: string;
   attachmentUrl?: string | null;
   attachmentName?: string;
+  // Optional explicit label for attachment - if provided, overrides default display
+  attachmentLabel?: string;
   details?: string | null;
   description?: string | null;
   attachments?: Array<{ name: string; url: string }>;
