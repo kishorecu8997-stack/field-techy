@@ -4,35 +4,42 @@ import { AiOutlineClose } from "react-icons/ai";
 
 interface ConfirmationModalProps {
   actionType: "hold" | "clone" | "cancel"; // new
+  currentStatus?: string;
   onConfirm: () => void;
   onClose: () => void;
 }
 
 /**
- * A modal component that confirms a job hold has been successfully sent.
- * It provides buttons to navigate back to the home/dashboard page.
- * It also displays a checkmark icon and a confirmation message.
+  * A generic confirmation modal shown before performing a job action.
+  * Supports hold/unhold, cancel, and clone actions with dynamic titles, descriptions,
+  * and primary button text based on the provided action type and current status.
  */
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   actionType,
+  currentStatus,
   onConfirm,
   onClose,
 }) => {
-  // Dynamic texts based on action type
+  // Determine if currently on hold
+  const isCurrentlyOnHold = currentStatus?.toLowerCase() === "hold";
+
+  // Dynamic texts based on action type and current status
   const titles = {
-    hold: "Are you sure you want to Hold?",
+    hold: isCurrentlyOnHold ? "Are you sure you want to Unhold?" : "Are you sure you want to Hold?",
     clone: "Are you sure you want to Clone?",
     cancel: "Are you sure you want to Cancel?",
   };
 
   const descriptions = {
-    hold: "This will temporarily pause the job until you decide to resume it",
+    hold: isCurrentlyOnHold 
+      ? "This will resume the job and make it active again" 
+      : "This will temporarily pause the job until you decide to resume it",
     clone: "This will create a duplicate of the current item.",
     cancel: "This action will remove or cancel the job permanently.",
   };
 
   const buttonTexts = {
-    hold: "Hold the job",
+    hold: isCurrentlyOnHold ? "Unhold the job" : "Hold the job",
     clone: "Clone the job",
     cancel: "Cancel the job",
   };
@@ -60,8 +67,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <p className="text-gray-600 dark:text-gray-300 mb-8">
             {descriptions[actionType]}
           </p>
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row gap-4">          
             <Button
+              onClick={onClose}
+              className="w-full py-3 px-6 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-white font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-700 dark:hover:bg-emerald-600"
+            >
+              Go back
+            </Button>
+             <Button
               onClick={onConfirm}
               className={`w-full py-3 px-6 rounded-lg font-medium transition-colors duration-300
     focus:outline-none focus:ring-2 focus:ring-offset-2
@@ -74,12 +87,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             >
               {" "}
               {buttonTexts[actionType]}
-            </Button>
-            <Button
-              onClick={onClose}
-              className="w-full py-3 px-6 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-white font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-700 dark:hover:bg-emerald-600"
-            >
-              Go back
             </Button>
           </div>
         </div>

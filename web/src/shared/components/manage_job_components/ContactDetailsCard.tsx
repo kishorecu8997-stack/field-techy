@@ -51,7 +51,7 @@ const ContactDetailsCard: React.FC<ContactDetailsCardProps> = ({
         <div className="flex items-start space-x-3">
           {defaultAvatar}
           <div>
-            <p className="text-gray-800 font-medium">{client?.name || "-"}</p>
+            <p className="text-gray-600 font-medium">{client?.name || "-"}</p>
             <p className="text-gray-600 text-sm">{client?.email || "-"}</p>
             <p className="text-gray-600 text-sm">{client?.phone || "-"}</p>
           </div>
@@ -67,7 +67,7 @@ const ContactDetailsCard: React.FC<ContactDetailsCardProps> = ({
             <div key={index} className="flex items-start space-x-3">
               {defaultAvatar}
               <div>
-                <p className="text-gray-800 font-medium">{engineer.name}</p>
+                <p className="text-gray-600 font-medium">{engineer.name}</p>
                 <p className="text-gray-600 text-sm">{engineer.email}</p>
                 <p className="text-gray-600 text-sm">{engineer.phone}</p>
               </div>

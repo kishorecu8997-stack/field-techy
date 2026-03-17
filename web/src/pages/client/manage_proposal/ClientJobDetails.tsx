@@ -5,7 +5,7 @@ import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHea
 import { JOB_STATUSES } from "@/pages/engineer/search_result/types";
 import {
   useClientGetAssignmentDetails,
-  useClientGetJobs
+  useClientGetJobs,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import ChatForJobs from "@/shared/components/ChatForJobs";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -55,7 +55,7 @@ const ClientJobDetails = () => {
   // Fallback to useClientGetJobs if needed for job details
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
   type ExtendedJob = (typeof jobsArray)[0] & {
-    clientDetails?: { personName?: string };
+    clientDetails?: { personName?: string; name?: string; };
   };
 
   const job = (jobsArray as ExtendedJob[]).find((j) => Number(j.id) === jobId);
@@ -77,12 +77,12 @@ const ClientJobDetails = () => {
     approvedStatuses.includes((a.assignmentStatus || "").toLowerCase()),
   ).length;
 
-const hasEngineerStarted = assignments.some(
-  (a) =>
-    a.assignmentStatus?.toLowerCase() === "started" ||
-    a.assignmentStatus?.toLowerCase() === "submit_pending_approval" ||
-    a.assignmentStatus?.toLowerCase() === "submitted"
-);
+  const hasEngineerStarted = assignments.some(
+    (a) =>
+      a.assignmentStatus?.toLowerCase() === "started" ||
+      a.assignmentStatus?.toLowerCase() === "submit_pending_approval" ||
+      a.assignmentStatus?.toLowerCase() === "submitted",
+  );
   const numberOfVacancy = job?.vacancies ?? undefined;
   const isDummyNetworkEngineer = job
     ? isDummyNetworkEngineerJob(job.id)
@@ -138,7 +138,6 @@ const hasEngineerStarted = assignments.some(
     breadcrumbExtra === "chats" ? "Chats" : null,
   ].filter((v): v is string => typeof v === "string");
 
-
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -165,7 +164,7 @@ const hasEngineerStarted = assignments.some(
             <div className="lg:col-span-2 space-y-6">
               <JobHeaderCard
                 title={job?.jobTitle || ""}
-                client={job?.clientDetails?.personName || ""}
+                client={job?.clientDetails?.personName || job?.clientDetails?.name || ""}
                 duration={durationDisplay}
                 type={job?.jobType || ""}
                 status={jobStatus}

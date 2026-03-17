@@ -1,4 +1,7 @@
-import type { EngineerSearchJobsResponse, GetUserRatingAndReviewsResponse } from "@/api";
+import type {
+  EngineerSearchJobsResponse,
+  GetUserRatingAndReviewsResponse,
+} from "@/api";
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import {
   useGetUserRatingAndReviews,
@@ -57,9 +60,9 @@ const mapJobToJobInfo = (
     },
     // Add total price if available
     job.totalPrice &&
-    job.currencySymbol && {
-      text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
-    },
+      job.currencySymbol && {
+        text: `Budget: ${job.currencySymbol}${job.totalPrice}`,
+      },
     // Add work location
     job.workLocationName && { text: `Location: ${job.workLocationName}` },
   ].filter(Boolean) as Array<{ text: string }>;
@@ -113,11 +116,11 @@ const mapJobToJobOverview = (
   // Extract skills - convert IDs to labels using skillMap
   const skills = Array.isArray(job.skills)
     ? job.skills.map((skill) => {
-      const skillId =
-        typeof skill === "number" ? skill : parseInt(String(skill), 10);
-      const skillLabel = skillMap.get(skillId);
-      return skillLabel || String(skill);
-    })
+        const skillId =
+          typeof skill === "number" ? skill : parseInt(String(skill), 10);
+        const skillLabel = skillMap.get(skillId);
+        return skillLabel || String(skill);
+      })
     : [];
 
   // Extract tools - handle both new structure (with toolId, toolName, budget, imageUrl) and old structure (Array<number>)
@@ -326,13 +329,13 @@ const JobDetailsPage = () => {
           attachmentUrl: originalAttachmentUrl,
           timestamp: log.timestamp
             ? new Date(log.timestamp).toLocaleString("en-US", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })
             : "",
           statusText,
           statusColor:
@@ -367,11 +370,11 @@ const JobDetailsPage = () => {
               clientAttachmentId: rev.clientAttachmentId ?? null,
               clientAttachment: rev.clientAttachment
                 ? {
-                  filename: rev.clientAttachment.filename ?? "",
-                  id: rev.clientAttachment.id,
-                  size: rev.clientAttachment.size ?? 0,
-                  url: rev.clientAttachment.url ?? "",
-                }
+                    filename: rev.clientAttachment.filename ?? "",
+                    id: rev.clientAttachment.id,
+                    size: rev.clientAttachment.size ?? 0,
+                    url: rev.clientAttachment.url ?? "",
+                  }
                 : undefined,
               clientAttachmentName: rev.clientAttachment?.filename ?? null,
               createdAt: rev.createdAt ?? null,
@@ -443,10 +446,10 @@ const JobDetailsPage = () => {
 
   const regionId = useUserSessionStore((state) => state.session?.regionId);
   const { data: reviewsData } = useGetUserRatingAndReviews(
-    true, 
-    assignmentId, 
-    Number(params.jobId), 
-    regionId
+    true,
+    assignmentId,
+    Number(params.jobId),
+    regionId,
   );
   const handleOpenGiveClientFeedback = () => {
     showPopup({
@@ -455,6 +458,7 @@ const JobDetailsPage = () => {
           targetName={
             job?.clientDetails?.companyName ||
             job?.clientDetails?.personName ||
+            job?.clientDetails?.name ||
             "Test Client"
           }
           targetRole={job?.clientDetails?.clientType || "client"}
@@ -502,7 +506,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowSort={false}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -527,7 +531,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowSort={false}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <LoaderComponent />
@@ -546,7 +550,7 @@ const JobDetailsPage = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             isShowSort={false}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -567,6 +571,7 @@ const JobDetailsPage = () => {
   const clientName =
     job?.clientDetails?.companyName ||
     job?.clientDetails?.personName ||
+    job?.clientDetails?.name ||
     `Client #${clientId}`;
   const jobLocation = job?.workLocationName || "";
 
@@ -634,14 +639,14 @@ const JobDetailsPage = () => {
     assignmentStatus === "started" ||
     assignmentStatus === "submit_pending_approval" ||
     assignmentStatus === "submitted";
-    
+
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
           title={pageHeading}
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
           isShowSort={false}
           isShowBreadcrumb
           customLabels={
@@ -718,10 +723,10 @@ const JobDetailsPage = () => {
                   job
                     ? mapJobToJobInfo(job)
                     : {
-                      jobTitle: "",
-                      terms: { title: "Job Details", items: [] },
-                      files: [],
-                    }
+                        jobTitle: "",
+                        terms: { title: "Job Details", items: [] },
+                        files: [],
+                      }
                 }
                 jobOverview={job ? jobOverview : undefined}
               />
@@ -757,7 +762,7 @@ const JobDetailsPage = () => {
           isOpen={isReviewOpen}
           onClose={() => setIsReviewOpen(false)}
           clientName={clientName}
-        // onSubmit={handleSubmitReview}
+          // onSubmit={handleSubmitReview}
         />
       )}
     </div>

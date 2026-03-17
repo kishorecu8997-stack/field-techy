@@ -8,7 +8,11 @@ import { FaFilePdf } from "react-icons/fa";
  * Helper function to check if a URL points to a PDF file
  */
 const isPdfFile = (url: string): boolean => {
-  return url?.toLowerCase().endsWith(".pdf") || url?.includes(".pdf?") || url?.includes("%2Epdf");
+  return (
+    url?.toLowerCase().endsWith(".pdf") ||
+    url?.includes(".pdf?") ||
+    url?.includes("%2Epdf")
+  );
 };
 
 /**
@@ -17,41 +21,46 @@ const isPdfFile = (url: string): boolean => {
  * @param unit - Optional unit/currency to display (e.g., "INR", "USD")
  * @returns Formatted price with comma separators (e.g., "₹ 1,000", "$ 5,000", "INR 1,000")
  */
-const formatPriceWithComma = (price: string | undefined, unit?: string): string => {
+const formatPriceWithComma = (
+  price: string | undefined,
+  unit?: string,
+): string => {
   if (!price) return "";
-  
+
   // If unit is provided separately, use it - place currency symbol first
   if (unit) {
     // Extract numeric part from price
     const numericPart = price.replace(/[^0-9.]/g, "");
     if (!numericPart) return price;
-    
+
     const number = parseFloat(numericPart);
     if (isNaN(number)) return price;
-    
+
     const formattedNumber = number.toLocaleString("en-US");
     return `${unit} ${formattedNumber}`;
   }
-  
+
   // Extract currency symbol/unit from the beginning of the string
   const currencyMatch = price.match(/^[₹$€£¥A-Z]+/i);
   const currencySymbol = currencyMatch ? currencyMatch[0] : "";
-  
+
   // Extract numeric part
   const numericPart = price.replace(/^[₹$€£¥A-Z]+/i, "").trim();
-  
+
   // If no numeric part, return original
   if (!numericPart) return price;
-  
+
   // Parse the number and format with commas
   const number = parseFloat(numericPart.replace(/,/g, ""));
   if (isNaN(number)) return price;
-  
+
   // Format with comma separators
   const formattedNumber = number.toLocaleString("en-US");
-  
+
   // Return with currency symbol (add space between if symbol exists)
-  return currencySymbol ? `${currencySymbol} ${formattedNumber}` : formattedNumber;
+  return currencySymbol
+    ? `${currencySymbol} ${formattedNumber}`
+    : formattedNumber;
 };
 
 /**
@@ -146,7 +155,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                 {tools.map((tool, idx) => {
                   const toolImage = tool.image || tool.imageUrl;
                   const isPdf = toolImage ? isPdfFile(toolImage) : false;
-                  
+
                   return (
                     <div
                       key={idx}
@@ -189,12 +198,17 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                           <div className="flex flex-wrap gap-x-2 text-xs">
                             {tool.price && (
                               <p className="text-gray-600 dark:text-gray-400">
-                                <span className="font-medium">Price: </span> {formatPriceWithComma(tool.price, tool.unit)}
+                                <span className="font-medium">Price: </span>{" "}
+                                {formatPriceWithComma(tool.price, tool.unit)}
                               </p>
                             )}
                             {tool.engineerPrice && (
                               <p className="text-green-600 dark:text-green-400">
-                                <span className="font-medium">:</span> {formatPriceWithComma(tool.engineerPrice, tool.unit)}
+                                <span className="font-medium">:</span>{" "}
+                                {formatPriceWithComma(
+                                  tool.engineerPrice,
+                                  tool.unit,
+                                )}
                               </p>
                             )}
                           </div>
@@ -259,7 +273,9 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                   Number of Vacancies
                 </p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  {numberOfVacancies === 1 ? "1 Engineer" : `${numberOfVacancies} Engineers`}
+                  {numberOfVacancies === 1
+                    ? "1 Engineer"
+                    : `${numberOfVacancies} Engineers`}
                 </p>
               </div>
             )}
@@ -289,7 +305,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
             Total Cost
           </h3>
           <p className="text-sm font-bold text-gray-900 dark:text-white">
-           {formatPriceWithComma(totalPayment)}
+            {formatPriceWithComma(totalPayment)}
           </p>
         </div>
       )}
@@ -313,7 +329,8 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                     <span className="text-gray-900 dark:text-white font-bold">
                       •
                     </span>
-                    <span>{detail}</span>
+                    <p className="text-sm text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{detail}</p>
+
                   </li>
                 ))}
               </ul>

@@ -152,7 +152,6 @@ const InviteJob: React.FC = () => {
     return "Not specified";
   };
 
-
   const mappedJobs = paginatedJobs.map((apiJob) => ({
     id: apiJob.id,
     title: apiJob.jobTitle,

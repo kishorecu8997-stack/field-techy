@@ -48,6 +48,7 @@ const OfferPages = () => {
     const clientName =
       rawJob.clientDetails?.companyName ||
       rawJob.clientDetails?.personName ||
+      rawJob.clientDetails?.name ||
       "Unknown Client";
 
     return {
@@ -104,6 +105,7 @@ const OfferPages = () => {
               name={
                 rawJob?.clientDetails?.companyName ||
                 rawJob?.clientDetails?.personName ||
+                rawJob?.clientDetails?.name ||
                 "Client"
               }
               memberSince={dummyClient.memberSince}

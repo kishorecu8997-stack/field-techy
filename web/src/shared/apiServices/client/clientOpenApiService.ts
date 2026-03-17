@@ -62,6 +62,7 @@ import {
   clientInviteEngineerMutation,
   clientMarksJobFileUploadedMutation,
   clientUpdateCompanyInfoMutation,
+  clientUpdateJobStatusMutation,
   createPaymentIntentMutation,
   getClientBalanceOptions,
   getClientBalanceQueryKey,
@@ -483,6 +484,25 @@ export function useClientCancelJob(options?: {
   });
 }
 
+export function useClientUpdateJobStatus(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientUpdateJobStatusMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      queryClient.invalidateQueries({
+        queryKey: clientGetJobsQueryKey({ client: apiClient }),
+      });
+      syncClientBalance(queryClient);
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
 export function useClientCalculateJobPrice(options?: {
   onSuccess?: (data: ClientCalculateJobPriceResponse) => void;
   onError?: (error: unknown) => void;
@@ -630,7 +650,7 @@ export function useClientFiles() {
   return {
     data: [] as ClientFile[],
     isLoading: false,
-    refetch: () => { },
+    refetch: () => {},
   };
 }
 

@@ -14,7 +14,15 @@ import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
  *
  * All values are derived from the `transactions` data source.
  */
-const TotalEarningsSummary = ({ data, isLoading, isError }: { data: GetEngineerEarningsResponse, isLoading: boolean, isError: boolean }) => {
+const TotalEarningsSummary = ({
+  data,
+  isLoading,
+  isError,
+}: {
+  data: GetEngineerEarningsResponse;
+  isLoading: boolean;
+  isError: boolean;
+}) => {
   const [showBalance, setShowBalance] = useState<boolean>(false);
   const totalEarnings = data ? Number(data.totalEarnings) : 0;
   const now = new Date();

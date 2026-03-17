@@ -200,10 +200,7 @@ const EarningsCard = () => {
  * Counts update in real-time when jobs are bookmarked or unbookmarked.
  */
 const SavedJobsCard = () => {
-  const { data: savedJobsData } = useGetEngineerSavedJobs({
-    limit: 10,
-    page: 1,
-  });
+  const { data: savedJobsData } = useGetEngineerSavedJobs({});
   const savedJobs = savedJobsData;
   const navigate = useNavigate();
   const animateTotalCount = useCountUp(savedJobs?.summary?.savedJobsCount ?? 0);

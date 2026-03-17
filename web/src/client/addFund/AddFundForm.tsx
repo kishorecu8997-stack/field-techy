@@ -82,7 +82,11 @@ const AddFundForm: React.FC<AddFundFormProps> = ({ onClose }) => {
     try {
       setIsProcessingPayment(true);
       const { clientSecret } = await mutateAsync({
-        body: { amount: finalAmount, currency: currencyCode, regionId: session?.regionId },
+        body: {
+          amount: finalAmount,
+          currency: currencyCode,
+          regionId: session?.regionId,
+        },
       });
 
       if (!clientSecret) {

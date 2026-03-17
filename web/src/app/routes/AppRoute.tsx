@@ -1,5 +1,8 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import { RouteFactory } from "./factory/routeFactory";
+import GlobalErrorBoundary, {
+  RouteErrorBoundary,
+} from "@/shared/components/commonUI/GlobalErrorBoundary";
 
 /**
  * Configures the application's routing structure using React Router.
@@ -9,13 +12,18 @@ import { RouteFactory } from "./factory/routeFactory";
  * - Client routes (public auth + private dashboard)
  * - Admin routes (public auth + private dashboard)
  * - Common routes (landing, 404, etc.)
- *
- * Routes are separated into:
- * - Public routes: Authentication pages, landing pages
- * - Private routes: Protected dashboard pages requiring authentication
- *
- * @module routes
- * @see {@link https://reactrouter.com|React Router Documentation}
  */
 const routeFactory = new RouteFactory();
-export const routes = createBrowserRouter(routeFactory.getAllRoutes());
+
+export const routes = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <GlobalErrorBoundary>
+        <Outlet />
+      </GlobalErrorBoundary>
+    ),
+    errorElement: <RouteErrorBoundary />,
+    children: routeFactory.getAllRoutes(),
+  },
+]);

@@ -47,6 +47,22 @@ export const AdminManageJobCategoryAdd = React.lazy(
 export const AdminManageJobCategoryEdit = React.lazy(
   () => import("@/pages/admin/job_category/EditCategory"),
 );
+export const AdminManageTools = React.lazy(() => import("@/pages/admin/tools"));
+export const AdminManageToolsAdd = React.lazy(
+  () => import("@/pages/admin/tools/AddTool"),
+);
+export const AdminManageToolsEdit = React.lazy(
+  () => import("@/pages/admin/tools/EditTool"),
+);
+export const AdminManageSkills = React.lazy(
+  () => import("@/pages/admin/skills"),
+);
+export const AdminManageSkillsAdd = React.lazy(
+  () => import("@/pages/admin/skills/AddSkill"),
+);
+export const AdminManageSkillsEdit = React.lazy(
+  () => import("@/pages/admin/skills/EditSkill"),
+);
 export const AdminManageJobs = React.lazy(() => import("@/pages/admin/jobs"));
 export const AdminManageRateCard = React.lazy(
   () => import("@/pages/admin/rate_card"),
