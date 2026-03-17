@@ -12,6 +12,7 @@ import {
 } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 import AuthPasswordSection from "./AuthPasswordSection";
 
 /**
@@ -137,9 +138,9 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
+            <IconWithTheme
+              lightLogo={assetsConfig.logos.companyLogo}
+              darkLogo={assetsConfig.logos.company_logo_white}
               className="h-20 w-24"
             />
           </div>
@@ -171,6 +172,8 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
             placeholder="Enter 6-digit OTP"
             required
             maxLength={6}
+            allowedCharacters="numbers"
+            inputMode="number"
           />
 
           {/* Timer and Resend Button */}

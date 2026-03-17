@@ -1,5 +1,4 @@
 import React from "react";
-import { taxDocuments } from "@/dummy_data/adminClientData";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
@@ -56,6 +55,7 @@ const ClientAdd: React.FC<ClientAddProps> = ({
     },
   );
   const { data: industriesData } = useAppGetLookupData(LookupTable.Industries);
+  const { data: taxDocuments } = useAppGetLookupData(LookupTable.TaxDocuments);
 
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-transparent p-4">
@@ -238,7 +238,12 @@ const ClientAdd: React.FC<ClientAddProps> = ({
               label="Tax Document (VAT)"
               name="documentType"
               placeholder="Select tax document"
-              options={taxDocuments}
+              options={
+                taxDocuments?.map((item) => ({
+                  value: item.id,
+                  label: item.name,
+                })) ?? []
+              }
               required
               disabled={isView}
             />

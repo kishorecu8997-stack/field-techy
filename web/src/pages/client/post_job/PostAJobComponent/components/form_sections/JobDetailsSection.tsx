@@ -21,11 +21,9 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
           required: "Job Title is required",
           validate: (value: string) => {
             if (!value) return "Job Title is required";
-            // Check for leading or trailing spaces
             if (value !== value.trim()) {
               return "Job Title must not have leading or trailing spaces";
             }
-            // Check for multiple consecutive spaces
             if (/\s{2,}/.test(value)) {
               return "Job Title must not have consecutive spaces";
             }
@@ -40,29 +38,24 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
       <TextareaInput
         name="description"
         label="Job Description"
-        placeholder="Describe the role"
+        placeholder="Describe the role."
         required
         disabled={isDisable}
+        textareaClassName="w-full rounded-md border px-5 py-3 text-base outline-none transition whitespace-pre-wrap resize-y min-h-[120px] bg-white dark:bg-gray-800 focus:border-primary"
         rules={{
           required: "Job Description is required",
           validate: (value: string) => {
             if (!value) return "Job Description is required";
-            // Check for leading or trailing spaces
             if (value !== value.trim()) {
               return "Job Description must not have leading or trailing spaces";
             }
-            // Check for multiple consecutive spaces
-            if (/[^\S\r\n]{2,}/.test(value)) {
-              return "Job Description must not have consecutive spaces";
+            if (/[^\S\r\n]{3,}/.test(value)) {
+              return "Job Description must not have excessive spaces";
             }
             if (value.length < 50)
               return "Job Description must be at least 50 characters";
             if (value.length > 2000)
               return "Job Description must not exceed 2000 characters";
-            // Allow letters, numbers, spaces, and special characters / ( ) , . - #
-            if (!/^[A-Za-z0-9\s\/(),.\-#]+$/.test(value)) {
-              return "Only letters, numbers, spaces, and special characters / ( ) , . - # are allowed";
-            }
             return true;
           },
         }}
@@ -70,4 +63,6 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
     </div>
   );
 };
+
 export default JobDetailsSection;
+
