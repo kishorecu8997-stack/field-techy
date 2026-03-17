@@ -10,6 +10,7 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import Popup from "@/shared/components/Popup";
 import { IoCloseSharp } from "react-icons/io5";
 import { IoStar } from "react-icons/io5";
+import { formatRating } from "@/utils/helpers";
 
 interface Education {
   institute: string;
@@ -264,7 +265,7 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                 <div className="flex items-center gap-1 mt-1">
                   <IoStar className="w-4 h-4 text-yellow-400" />
                   <span className="text-sm text-gray-700 dark:text-gray-300">
-                    {Number(proposal.engineer.averageRating).toFixed(2)}
+                    {formatRating(proposal.engineer.averageRating)}
                   </span>
                 </div>
               )}
