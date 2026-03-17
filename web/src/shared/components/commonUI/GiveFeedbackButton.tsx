@@ -15,6 +15,7 @@ interface GiveFeedbackButtonProps {
   bodyClassName?: string;
   assignmentId?: number;
   regionId?: number;
+  onSuccess?: () => void;
 }
 
 /**
@@ -32,6 +33,7 @@ const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
   bodyClassName,
   assignmentId,
   regionId,
+  onSuccess,
 }) => {
   const { showPopup } = usePopupStore();
 
@@ -48,6 +50,7 @@ const GiveFeedbackButton: React.FC<GiveFeedbackButtonProps> = ({
           placeholder={placeholder}
           assignmentId={assignmentId}
           regionId={regionId}
+          onSuccess={onSuccess}
         />
       ),
       bodyClassName,

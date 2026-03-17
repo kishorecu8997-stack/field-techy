@@ -10,6 +10,7 @@ import {
 import {
   useEngineerSearchJobs,
   useGetJobLogs,
+  useEngineerGetJobs,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import ChatForJobs from "@/shared/components/ChatForJobs";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
@@ -29,6 +30,8 @@ import {
   type AssignmentStatus,
   type JobStatus,
 } from "../search_result/types";
+import { engineerGetMyJobsQueryKey } from "@/api/@tanstack/react-query.gen";
+import { useQueryClient } from "@tanstack/react-query";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
@@ -224,22 +227,20 @@ const JobDetailsPage = () => {
   const [breadcrumbExtra, setBreadcrumbExtra] = useState<string | null>(null);
   const [pageHeading, setPageHeading] = useState<string>("Job Details");
   const { showPopup, closePopup } = usePopupStore();
+  const [localFeedbackGiven, setLocalFeedbackGiven] = useState(false);
+  const queryClient = useQueryClient();
 
   // Fetch job data from real API using search endpoint with jobId filter
   const { data: jobList, isLoading: isJobsLoading } = useEngineerSearchJobs({
     jobId: Number(params.jobId),
   });
 
-  const job = jobList?.[0];
+  // Fetch all my jobs to get the review data which isn't present in the search endpoint
+  const { data: myJobs } = useEngineerGetJobs({});
 
-  // Console log to check the URL ID, API ID, and Review data condition
-  console.log("ID & Review Checking Condition ->", {
-    urlId: params.jobId,
-    apiId: job?.id,
-    isIdMatched: String(params.jobId) === String(job?.id),
-    reviewText: (job as any)?.review,
-    hasReviewData: Boolean((job as any)?.review && String((job as any).review).trim() !== "")
-  });
+  const job = jobList?.[0];
+  const myJobDetails = (myJobs as Array<{ id: number | string; review?: string }> | undefined)?.find((j) => String(j.id) === String(params.jobId));
+  const hasGivenFeedback = localFeedbackGiven || Boolean(myJobDetails?.review && String(myJobDetails.review).trim() !== "");
 
   // Fetch skills, tools, experience levels and engagement models from the lookup API
   const { data: skillsResponse } = useLookupData("skills");
@@ -474,6 +475,13 @@ const JobDetailsPage = () => {
           placeholder="Share your feedback about your experience with the client..."
           assignmentId={job?.assignmentId || undefined}
           regionId={regionId || undefined}
+          onClose={(result) => {
+            if (result) {
+              setLocalFeedbackGiven(true);
+              queryClient.invalidateQueries({ queryKey: engineerGetMyJobsQueryKey() });
+            }
+            closePopup();
+          }}
         />
       ),
     });
@@ -710,6 +718,7 @@ const JobDetailsPage = () => {
                 jobEndDate={job?.endDate || undefined}
                 onOpenGiveClientFeedback={handleOpenGiveClientFeedback}
                 onOpenViewClientFeedback={handleOpenViewClientFeedback}
+                hasGivenFeedback={hasGivenFeedback}
               />
 
               <JobTabSection

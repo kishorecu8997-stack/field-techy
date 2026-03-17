@@ -175,6 +175,7 @@ const TimelineSection: React.FC<{
   const [revisionRequestDetails, setRevisionRequestDetails] =
     useState<RevisionRequestDetails | null>(null);
   const [isSectionCollapsed, setIsSectionCollapsed] = useState(true);
+  const [localFeedbackGiven, setLocalFeedbackGiven] = useState(false);
   // const [isRevisionUpdateCollapsed, setIsRevisionUpdateCollapsed] = useState(false);
 
   const revisionFormMethods = useForm<RevisionFormData>({
@@ -186,7 +187,7 @@ const TimelineSection: React.FC<{
     },
   });
 
-const hasReview = assignments?.some(
+const hasReview = localFeedbackGiven || assignments?.some(
   (item) => item.review && item.review.length > 0
 );
 console.log("Assignments prop:", hasReview);
@@ -1889,6 +1890,10 @@ console.log("Assignments prop:", hasReview);
                     stopPropagation
                     textClassName="cursor-pointer font-medium text-amber-600 dark:text-amber-500"
                     regionId={regionIdParam}
+                    onSuccess={() => {
+                      setLocalFeedbackGiven(true);
+                      refetchAssignments?.();
+                    }}
                   />
                 )}
                 <button

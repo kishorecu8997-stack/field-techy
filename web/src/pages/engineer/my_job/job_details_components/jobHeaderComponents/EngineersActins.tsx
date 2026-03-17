@@ -84,6 +84,7 @@ const EngineersActions = ({
   numberOfApprovedProposals,
   jobStartDate,
   jobEndDate,
+  hasGivenFeedback,
 }: {
   setOfferJobStatus?: Dispatch<
     SetStateAction<OfferedJobStatusType | undefined>
@@ -113,6 +114,7 @@ const EngineersActions = ({
   jobEndDate?: string;
   clientRegionId?: number;
   viewReviewComment?: boolean;
+  hasGivenFeedback?: boolean;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
@@ -429,22 +431,6 @@ const EngineersActions = ({
     numberOfApprovedProposals !== undefined &&
     numberOfApprovedProposals >= numberOfVacancy;
 
-  console.log("EngineersActions Rendering State ->", {
-    viewReviewComment,
-    isFinalStatementApproved,
-    isFinalStatementRejected,
-    isFinalStatementSubmitted,
-    hasStartPending,
-    hasJobStarted,
-    isApplied,
-    isSubmitted,
-    isRejected,
-    isJobStarted,
-    isClosed,
-    status,
-    OfferJobStatus
-  });
-
   // Extracted shared button logic to avoid duplication
   const renderJobActionButtons = () => {
     // Hide Send Proposal button when engineer is currently filling the proposal form
@@ -597,7 +583,7 @@ const EngineersActions = ({
                   View Feedback From Client
                 </Button>
               )}  
-              {!viewReviewComment && (
+              {!hasGivenFeedback && isFinalStatementApproved && (
                 <Button
                   variant="no_style"
                   className="text-white px-2 py-1 font-semibold flex items-center gap-2 hover:bg-teal-700/20"
@@ -630,7 +616,7 @@ const EngineersActions = ({
               Final Statement
             </Button>
           </div>
-        ) : isFinalStatementSubmitted ? (
+        ) : isFinalStatementApproved ? (
           <div className="flex flex-wrap gap-4 w-fit">
             <Button
               variant="no_style"

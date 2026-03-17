@@ -32,7 +32,7 @@ import { toast } from "react-toastify";
  * @param {JobHeaderCardProps} props - Props for the JobHeaderCard component.
  * @returns {JSX.Element} The rendered JobHeaderCard component.
  */
-const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
+const JobHeaderCard: React.FC<JobHeaderCardProps & { hasGivenFeedback?: boolean }> = ({
   title,
   client,
   duration,
@@ -71,6 +71,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onToggleChat,
   clientRegionId,
   viewReviewComment = false,
+  hasGivenFeedback = false,
 }) => {
   const params = useParams();
   const location = useLocation();
@@ -392,6 +393,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             isFinalStatementRejected={isFinalStatementRejected}
             onOpenGiveClientFeedback={onOpenGiveClientFeedback}
             onOpenViewClientFeedback={onOpenViewClientFeedback}
+            hasGivenFeedback={hasGivenFeedback}
             assignmentId={assignmentId}
             progressUpdates={progressUpdates}
             numberOfVacancy={numberOfVacancy}

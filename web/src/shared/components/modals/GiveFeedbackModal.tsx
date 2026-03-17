@@ -6,6 +6,7 @@ import { StarRating } from "@/shared/components/commonUI/StarRating";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { Button } from "../commonUI/Buttons";
 import { FormContainer } from "../commonUI/inputs/FormContainer";
 
@@ -17,6 +18,7 @@ type GiveFeedbackModalProps = {
   placeholder?: string;
   assignmentId?: number;
   regionId?: number;
+  onSuccess?: () => void;
 };
 
 type FormValues = {
@@ -38,12 +40,17 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
   onClose,
   assignmentId,
   regionId,
+  onSuccess,
 }) => {
+  const { closePopup } = usePopupStore();
+
   const { mutate: submitFeedback, isPending } =
     useCreateRateAndReviewAssignment({
       onSuccess: () => {
         toast.success("Feedback submitted successfully!");
+        onSuccess?.();
         onClose?.(true);
+        closePopup();
       },
       onError: (error: unknown) => {
         toast.error(
@@ -150,7 +157,10 @@ const GiveFeedbackModal: React.FC<GiveFeedbackModalProps> = ({
             type="button"
             variant="outline"
             className="px-6"
-            onClick={() => onClose?.(null)}
+          onClick={() => {
+            onClose?.(null);
+            closePopup();
+          }}
           >
             Cancel
           </Button>

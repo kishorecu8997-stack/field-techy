@@ -267,6 +267,19 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                   <span className="text-sm text-gray-700 dark:text-gray-300">
                     {formatRating(proposal.engineer.averageRating)}
                   </span>
+                  {/* Show review only if > 0 */}
+                  {Number(proposal.engineer.reviewCount) > 0 && (
+                    <>
+                      <span className="text-gray-400 mx-1">|</span>
+
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        {Number(proposal.engineer.reviewCount)}{" "}
+                        {Number(proposal.engineer.reviewCount) === 1
+                          ? "review"
+                          : "reviews"}
+                      </span>
+                    </>
+                  )}
                 </div>
               )}
 
