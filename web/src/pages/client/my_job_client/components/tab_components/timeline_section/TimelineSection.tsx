@@ -186,6 +186,10 @@ const TimelineSection: React.FC<{
     },
   });
 
+const hasReview = assignments?.some(
+  (item) => item.review && item.review.length > 0
+);
+console.log("Assignments prop:", hasReview);
   // Fetch assignment details - pass both jobId and assignmentId to API
   // API accepts both parameters, so we can use either one or both
   // Ensure jobId is valid (not NaN) before passing
@@ -1874,7 +1878,7 @@ const TimelineSection: React.FC<{
               )}
 
               <div className="flex items-center gap-3">
-                {isWorkCompleted && (
+                {isWorkCompleted && !hasReview && (
                   <GiveFeedbackButton
                     label="Give Feedback On Engineer"
                     targetName={engineerData?.name || "Unknown"}
